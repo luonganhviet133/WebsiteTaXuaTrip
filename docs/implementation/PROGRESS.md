@@ -10,7 +10,7 @@
 | **G0.2** | CI GitHub Actions chạy Node 22 (typecheck, build, test), bỏ deploy GitHub Pages | **ĐẠT** (CI `check` xanh trên Node 22, commit `0adccf8`) | 2026-11-12 |
 | **G0.3** | Turnstile thật: widget ở form đăng nhập/đăng ký, Worker đọc secret từ env, chặn khi production thiếu secret, bỏ lỗ vượt qua bằng token test | **ĐẠT** (kiểm trên workers.dev; đăng ký thật có giải widget chờ chủ dự án thử) | 2026-11-12 |
 | **G0.4** | Một bộ xử lý API dùng chung cho Worker và Express; Worker có đủ route | **ĐẠT** (gộp vào `main`, production đã kiểm) | 2026-11-12 |
-| **G0.5** | Chặn chèn HTML ở bản đồ và file lịch trình; tắt thanh toán mô phỏng; gắn nhãn "Bản demo"; ẩn tài khoản mẫu trên production | **ĐẠT TRÊN NHÁNH `dot/G0.5`** (kiểm trên bản xem trước Cloudflare; chưa gộp vào `main`) | 2026-11-12 |
+| **G0.5** | Chặn chèn HTML ở bản đồ và file lịch trình; tắt thanh toán mô phỏng; gắn nhãn "Bản demo"; ẩn tài khoản mẫu trên production | **ĐẠT** (gộp vào `main` commit `ea3d542`; production đã kiểm: không còn khối biên lai, chat có nhãn demo, không còn tài khoản mẫu) | 2026-11-12 |
 | **N03** | Dữ liệu danh bạ, CMS và thẩm định thực tế | *SẴN SÀNG TRIỂN KHAI* | — |
 
 ---
