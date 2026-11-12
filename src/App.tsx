@@ -4420,7 +4420,7 @@ export default function App() {
       {/* Global Modals */}
       {selectedListingDetail && (
         <ListingDetailModal
-          listing={selectedListingDetail}
+          listing={applyAvailability([selectedListingDetail], availabilityMap)[0]}
           searchIntent={{ checkIn: stayCheckIn, checkOut: stayCheckOut, adults: stayAdults, children: stayChildren, rooms: stayRooms }}
           onChangeSearchIntent={updateSearchIntent}
           reviews={reviews.filter((r) => r.listingId === selectedListingDetail.id)}
