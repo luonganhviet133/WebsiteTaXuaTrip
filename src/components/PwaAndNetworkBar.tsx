@@ -167,10 +167,10 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
                   <Smartphone className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold text-[#073161]">
+                  <h3 className="text-base font-extrabold text-brand-800">
                     Cài App Tà Xùa Trip (Chạy Khi Mất Sóng)
                   </h3>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-xs text-slate-500">
                     Chuẩn Progressive Web App (PWA) · Service Worker đã kích hoạt
                   </p>
                 </div>
@@ -190,18 +190,18 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>Đã lưu đệm (Cache) thành công vào bộ nhớ trình duyệt!</span>
               </div>
-              <p className="text-[11px] leading-relaxed">
+              <p className="text-xs leading-relaxed">
                 Toàn bộ SĐT chủ homestay, tọa độ GPS săn mây, mã đặt phòng và danh bạ Cứu hộ Đèo Chẹn 24/7 đã sẵn sàng mở ngay cả khi lên đèo mất sóng 4G.
               </p>
             </div>
 
             <div className="space-y-2 text-xs text-slate-700 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-              <div className="font-extrabold text-[#073161]">
+              <div className="font-extrabold text-brand-800">
                 {isIOS
                   ? 'Cách thêm vào Màn hình chính trên iPhone / iPad:'
                   : 'Cách cài đặt lên Màn hình chính điện thoại / máy tính:'}
               </div>
-              <ol className="list-decimal list-inside space-y-1.5 text-[11px]">
+              <ol className="list-decimal list-inside space-y-1.5 text-xs">
                 <li>
                   Trên thanh địa chỉ trình duyệt (Chrome / Edge / Safari), bấm biểu tượng{' '}
                   <strong>Cài đặt ứng dụng (Install)</strong> hoặc nút <strong>Chia sẻ (Share)</strong>.
@@ -219,7 +219,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
               <button
                 type="button"
                 onClick={() => setShowGuideModal(false)}
-                className="w-full rounded-full bg-[#073161] hover:bg-[#0a3f7c] py-2.5 text-xs font-extrabold text-white cursor-pointer"
+                className="w-full rounded-full bg-brand-800 hover:bg-brand-700 py-2.5 text-xs font-extrabold text-white cursor-pointer"
               >
                 Đã hiểu & Đóng
               </button>

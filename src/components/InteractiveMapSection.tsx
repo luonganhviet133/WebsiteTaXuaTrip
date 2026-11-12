@@ -857,11 +857,11 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
         {/* Compact Above-the-Fold Header + Quick Landmark Jump Pills */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3.5">
           <div className="flex items-center gap-2.5 flex-wrap">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-50 border border-teal-200 text-[11px] font-extrabold uppercase tracking-wider text-teal-800">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-50 border border-teal-200 text-xs font-extrabold uppercase tracking-wider text-teal-800">
               <Compass className="w-3.5 h-3.5 text-teal-600" />
               <span>Bản Đồ Số Tà Xùa</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-[#073161] tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-brand-800 tracking-tight">
               Định Vị Homestay, Tọa Độ Săn Mây & Tuyến Đèo Thực Địa
             </h2>
             <span className="text-xs text-slate-500 font-semibold hidden xl:inline">
@@ -874,7 +874,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
             <button
               type="button"
               onClick={handleResetOverview}
-              className="px-3 py-1.5 rounded-full bg-white hover:bg-slate-100 border border-slate-200 text-xs font-bold text-[#073161] transition-colors flex items-center gap-1 shrink-0 cursor-pointer shadow-2xs"
+              className="px-3 py-1.5 rounded-full bg-white hover:bg-slate-100 border border-slate-200 text-xs font-bold text-brand-800 transition-colors flex items-center gap-1 shrink-0 cursor-pointer shadow-2xs"
             >
               <Navigation className="w-3.5 h-3.5 text-teal-700" />
               <span>Toàn cảnh</span>
@@ -887,8 +887,8 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                 onClick={() => handleFlyToLandmark(spot)}
                 className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 shrink-0 border cursor-pointer ${
                   selectedLandmark?.id === spot.id && !selectedMapListing
-                    ? 'bg-[#073161] text-white border-[#073161] shadow-2xs'
-                    : 'bg-white hover:bg-slate-50 text-[#073161] border-slate-200'
+                    ? 'bg-brand-800 text-white border-brand-800 shadow-2xs'
+                    : 'bg-white hover:bg-slate-50 text-brand-800 border-slate-200'
                 }`}
               >
                 <CloudSun
@@ -923,7 +923,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   }
                 }}
                 placeholder="Tìm Homestay, Cafe (Mị Ơi, Lu Trế...)"
-                className="w-full pl-8 pr-7 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#073161] focus:bg-white transition-all"
+                className="w-full pl-8 pr-7 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-brand-800 focus:bg-white transition-all"
               />
               {searchQuery && (
                 <button
@@ -939,7 +939,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
 
             {/* 3 Cloud Hunting Routes Buttons */}
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar flex-1">
-              <span className="text-[11px] font-extrabold text-[#073161] shrink-0 hidden md:inline flex items-center gap-1">
+              <span className="text-xs font-extrabold text-brand-800 shrink-0 hidden md:inline flex items-center gap-1">
                 <Route className="w-3.5 h-3.5 text-teal-700" />
                 <span>Cung săn mây:</span>
               </span>
@@ -952,13 +952,13 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                     onClick={() => handleSelectCloudRoute(route)}
                     className={`px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
                       isActive
-                        ? 'bg-[#073161] text-white border-[#073161] shadow-2xs'
+                        ? 'bg-brand-800 text-white border-brand-800 shadow-2xs'
                         : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
                     }`}
                   >
                     <span>{route.shortName.split(':')[0]}</span>
                     <span
-                      className={`text-[10px] ${
+                      className={`text-xs ${
                         isActive ? 'text-teal-200' : 'text-slate-500 font-normal'
                       }`}
                     >
@@ -971,7 +971,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                 <button
                   type="button"
                   onClick={() => setActiveCloudRouteId(null)}
-                  className="text-[11px] font-bold text-slate-400 hover:text-rose-600 px-1.5 cursor-pointer shrink-0"
+                  className="text-xs font-bold text-slate-400 hover:text-rose-600 px-1.5 cursor-pointer shrink-0"
                 >
                   ✕ Bỏ cung
                 </button>
@@ -1019,10 +1019,10 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   className="w-2.5 h-2.5 rounded-full shrink-0"
                   style={{ backgroundColor: activeCloudRoute.color }}
                 />
-                <strong className="text-[#073161] shrink-0">{activeCloudRoute.title}:</strong>
+                <strong className="text-brand-800 shrink-0">{activeCloudRoute.title}:</strong>
                 <span className="truncate text-slate-700">{activeCloudRoute.advice}</span>
               </div>
-              <span className="font-bold text-[11px] text-teal-800 bg-teal-100/70 px-2 py-0.5 rounded-md shrink-0">
+              <span className="font-bold text-xs text-teal-800 bg-teal-100/70 px-2 py-0.5 rounded-md shrink-0">
                 {activeCloudRoute.difficultyLabel}
               </span>
             </div>
@@ -1050,7 +1050,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                 onClick={() => setActiveFilter('all')}
                 className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   activeFilter === 'all'
-                    ? 'bg-[#073161] text-white shadow-2xs'
+                    ? 'bg-brand-800 text-white shadow-2xs'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
@@ -1061,7 +1061,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                 onClick={() => setActiveFilter('landmarks')}
                 className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   activeFilter === 'landmarks'
-                    ? 'bg-[#073161] text-white shadow-2xs'
+                    ? 'bg-brand-800 text-white shadow-2xs'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
@@ -1072,7 +1072,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                 onClick={() => setActiveFilter('homestay')}
                 className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   activeFilter === 'homestay'
-                    ? 'bg-[#073161] text-white shadow-2xs'
+                    ? 'bg-brand-800 text-white shadow-2xs'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
@@ -1083,7 +1083,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                 onClick={() => setActiveFilter('coffee_food')}
                 className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   activeFilter === 'coffee_food'
-                    ? 'bg-[#073161] text-white shadow-2xs'
+                    ? 'bg-brand-800 text-white shadow-2xs'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
@@ -1094,7 +1094,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                 onClick={() => setActiveFilter('transport')}
                 className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   activeFilter === 'transport'
-                    ? 'bg-[#073161] text-white shadow-2xs'
+                    ? 'bg-brand-800 text-white shadow-2xs'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
@@ -1105,7 +1105,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                 onClick={() => setActiveFilter('tour_photo')}
                 className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   activeFilter === 'tour_photo'
-                    ? 'bg-[#073161] text-white shadow-2xs'
+                    ? 'bg-brand-800 text-white shadow-2xs'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
@@ -1144,7 +1144,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                 onClick={() => setOnlyNearbyRadius((prev) => !prev)}
                 className={`px-2.5 py-1 rounded-xl text-xs font-bold border transition-all flex items-center gap-1 cursor-pointer ${
                   onlyNearbyRadius
-                    ? 'bg-[#073161] text-white border-[#073161] shadow-2xs'
+                    ? 'bg-brand-800 text-white border-brand-800 shadow-2xs'
                     : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                 }`}
               >
@@ -1159,7 +1159,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   onClick={() => setMapStyle('osm')}
                   className={`px-2 py-0.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     mapStyle === 'osm'
-                      ? 'bg-[#073161] text-white shadow-2xs'
+                      ? 'bg-brand-800 text-white shadow-2xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -1170,7 +1170,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   onClick={() => setMapStyle('topo')}
                   className={`px-2 py-0.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     mapStyle === 'topo'
-                      ? 'bg-[#073161] text-white shadow-2xs'
+                      ? 'bg-brand-800 text-white shadow-2xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -1181,7 +1181,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   onClick={() => setMapStyle('dark')}
                   className={`px-2 py-0.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     mapStyle === 'dark'
-                      ? 'bg-[#073161] text-white shadow-2xs'
+                      ? 'bg-brand-800 text-white shadow-2xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -1207,7 +1207,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
               />
 
               {/* Top-Right Active Status Pill on Map */}
-              <div className="absolute top-3.5 right-3.5 z-20 bg-white/95 backdrop-blur-md border border-slate-200 rounded-full px-3.5 py-1.5 text-[11px] font-bold text-[#073161] shadow-md flex items-center gap-2">
+              <div className="absolute top-3.5 right-3.5 z-20 bg-white/95 backdrop-blur-md border border-slate-200 rounded-full px-3.5 py-1.5 text-xs font-bold text-brand-800 shadow-md flex items-center gap-2">
                 <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span>
                   Đang hiển thị:{' '}
@@ -1220,8 +1220,8 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
               </div>
 
               {/* Floating Map Legend */}
-              <div className="absolute bottom-3.5 left-3.5 z-20 bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl p-3 text-[11px] text-slate-700 shadow-lg pointer-events-none space-y-1 max-w-xs">
-                <div className="font-extrabold text-[#073161] mb-1">
+              <div className="absolute bottom-3.5 left-3.5 z-20 bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl p-3 text-xs text-slate-700 shadow-lg pointer-events-none space-y-1 max-w-xs">
+                <div className="font-extrabold text-brand-800 mb-1">
                   Chú giải bản đồ Tà Xùa (Đã tách chồng ghim):
                 </div>
                 <div className="flex items-center gap-2">
@@ -1252,14 +1252,14 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                     onClick={() => handleFlyToLandmark(spot)}
                     className={`text-left p-3.5 rounded-2xl border transition-all cursor-pointer ${
                       isSelected
-                        ? 'bg-[#073161] text-white border-[#073161] shadow-md'
+                        ? 'bg-brand-800 text-white border-brand-800 shadow-md'
                         : isTarget
                         ? 'bg-teal-50 border-teal-500 text-slate-900'
-                        : 'bg-white border-slate-200 hover:border-[#073161]/40 text-slate-800'
+                        : 'bg-white border-slate-200 hover:border-brand-800/40 text-slate-800'
                     }`}
                   >
                     <div
-                      className={`flex items-center justify-between text-[11px] font-bold mb-1 ${
+                      className={`flex items-center justify-between text-xs font-bold mb-1 ${
                         isSelected ? 'text-teal-200' : 'text-teal-700'
                       }`}
                     >
@@ -1268,13 +1268,13 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                     </div>
                     <div
                       className={`text-xs font-extrabold line-clamp-1 ${
-                        isSelected ? 'text-white' : 'text-[#073161]'
+                        isSelected ? 'text-white' : 'text-brand-800'
                       }`}
                     >
                       {spot.area}
                     </div>
                     <div
-                      className={`text-[11px] line-clamp-1 mt-0.5 ${
+                      className={`text-xs line-clamp-1 mt-0.5 ${
                         isSelected ? 'text-slate-200' : 'text-slate-500'
                       }`}
                     >
@@ -1300,11 +1300,11 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
                   <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-1.5">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#073161] text-white">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-brand-800 text-white">
                         📍 {selectedMapListing.area}
                       </span>
                       {selectedMapListing.hasCloudView && (
-                        <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-teal-600 text-white">
+                        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-teal-600 text-white">
                           ☁️ View Biển Mây
                         </span>
                       )}
@@ -1319,7 +1319,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                     </button>
                   </div>
                   <div className="absolute bottom-3 left-3.5 right-3.5 text-white">
-                    <div className="text-[11px] text-teal-200 font-bold mb-0.5">
+                    <div className="text-xs text-teal-200 font-bold mb-0.5">
                       {getCategoryEmoji(selectedMapListing.category)}{' '}
                       {getCategoryLabel(selectedMapListing.category)} · ⭐{' '}
                       {selectedMapListing.rating} ({selectedMapListing.reviewCount} đánh giá)
@@ -1336,12 +1336,12 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                 <div className="p-4 sm:p-5 space-y-3.5">
                   {/* Distance Matrix to All Cloud Landmarks */}
                   <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-3 space-y-2">
-                    <div className="flex items-center justify-between text-xs font-extrabold text-[#073161]">
+                    <div className="flex items-center justify-between text-xs font-extrabold text-brand-800">
                       <span className="flex items-center gap-1.5">
                         <Route className="w-4 h-4 text-teal-700" />
                         <span>Khoảng cách tới 5 tọa độ săn mây:</span>
                       </span>
-                      <span className="text-[10px] font-normal text-slate-500">
+                      <span className="text-xs font-normal text-slate-500">
                         Bấm để vẽ đường nối
                       </span>
                     </div>
@@ -1361,12 +1361,12 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                             onClick={() => setTargetCloudSpotId(lm.id)}
                             className={`text-left p-2 rounded-xl border cursor-pointer transition-all ${
                               isTarget
-                                ? 'bg-[#073161] border-[#073161] text-white shadow-2xs'
+                                ? 'bg-brand-800 border-brand-800 text-white shadow-2xs'
                                 : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                             }`}
                           >
                             <div
-                              className={`text-[10px] font-bold truncate ${
+                              className={`text-xs font-bold truncate ${
                                 isTarget ? 'text-teal-200' : 'text-slate-500'
                               }`}
                             >
@@ -1375,7 +1375,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                             <div className="font-extrabold text-xs sm:text-sm tabular-nums mt-0.5">
                               {distKm} km{' '}
                               <span
-                                className={`text-[10px] font-semibold ${
+                                className={`text-xs font-semibold ${
                                   isTarget ? 'text-slate-200' : 'text-teal-700'
                                 }`}
                               >
@@ -1391,10 +1391,10 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   {/* Price & Public Phone */}
                   <div className="flex items-center justify-between text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
                     <div>
-                      <span className="text-slate-500 block text-[10px]">
+                      <span className="text-slate-500 block text-xs">
                         Giá niêm yết tham khảo:
                       </span>
-                      <span className="text-sm font-extrabold text-[#073161] tabular-nums">
+                      <span className="text-sm font-extrabold text-brand-800 tabular-nums">
                         {selectedMapListing.minPrice > 0
                           ? formatVND(selectedMapListing.minPrice)
                           : 'Hỗ trợ 24/7'}
@@ -1417,7 +1417,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                       </a>
                       <a
                         href={`tel:${selectedMapListing.phone.replace(/\s+/g, '')}`}
-                        className="flex items-center gap-1 bg-white hover:bg-slate-100 text-[#073161] font-bold px-2.5 py-1.5 rounded-full border border-slate-200"
+                        className="flex items-center gap-1 bg-white hover:bg-slate-100 text-brand-800 font-bold px-2.5 py-1.5 rounded-full border border-slate-200"
                       >
                         <Phone className="w-3.5 h-3.5 text-teal-700" />
                         <span>Gọi</span>
@@ -1428,7 +1428,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   <button
                     type="button"
                     onClick={() => onSelectListing(selectedMapListing)}
-                    className="w-full bg-[#073161] hover:bg-[#0a3f7c] text-white font-bold py-3 rounded-full text-xs shadow-sm transition-all cursor-pointer"
+                    className="w-full bg-brand-800 hover:bg-brand-700 text-white font-bold py-3 rounded-full text-xs shadow-sm transition-all cursor-pointer"
                   >
                     Xem hồ sơ chi tiết & Đặt dịch vụ →
                   </button>
@@ -1445,7 +1445,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute top-3 left-3 flex items-center gap-2">
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#073161] text-white">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-brand-800 text-white">
                       ⛰️ Độ cao {selectedLandmark.altitude}
                     </span>
                     <span className="px-3 py-1 rounded-full text-xs font-bold bg-teal-700 text-white">
@@ -1468,7 +1468,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <span className="text-slate-500">Khung giờ vàng săn mây:</span>
-                      <span className="text-[#073161] font-bold">
+                      <span className="text-brand-800 font-bold">
                         {selectedLandmark.bestTime}
                       </span>
                     </div>
@@ -1489,7 +1489,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   </div>
 
                   <div className="bg-teal-50/70 border border-teal-200 rounded-2xl p-3 text-slate-700">
-                    <strong className="text-[#073161] block mb-0.5">
+                    <strong className="text-brand-800 block mb-0.5">
                       Đường vào đã thẩm định thực tế:
                     </strong>
                     {selectedLandmark.roadCondition}
@@ -1501,8 +1501,8 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                       onClick={() => setOnlyNearbyRadius((prev) => !prev)}
                       className={`py-2.5 px-3 rounded-xl font-bold text-xs border transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                         onlyNearbyRadius
-                          ? 'bg-[#073161] text-white border-[#073161]'
-                          : 'bg-slate-100 hover:bg-slate-200 text-[#073161] border-slate-200'
+                          ? 'bg-brand-800 text-white border-brand-800'
+                          : 'bg-slate-100 hover:bg-slate-200 text-brand-800 border-slate-200'
                       }`}
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
@@ -1533,10 +1533,10 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
             <div className="bg-white border border-slate-200 rounded-3xl p-4 flex-1 shadow-2xs">
               <div className="flex items-center justify-between gap-2 mb-2.5">
                 <div>
-                  <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#073161]">
+                  <h4 className="text-xs font-extrabold uppercase tracking-wider text-brand-800">
                     Cơ sở đang hiển thị ({filteredListings.length})
                   </h4>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-xs text-slate-500">
                     Sắp xếp theo khoảng cách tới{' '}
                     <strong className="text-teal-700">
                       {activeReferenceSpot?.area || 'Đỉnh Gió'}
@@ -1558,7 +1558,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                       setOnlyNearbyRadius(false);
                       setActiveCloudRouteId(null);
                     }}
-                    className="text-[11px] font-bold text-teal-700 hover:text-teal-900 underline cursor-pointer shrink-0"
+                    className="text-xs font-bold text-teal-700 hover:text-teal-900 underline cursor-pointer shrink-0"
                   >
                     Đặt lại lọc
                   </button>
@@ -1579,7 +1579,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                       setOnlyNearbyRadius(false);
                       setActiveCloudRouteId(null);
                     }}
-                    className="mt-2.5 px-3.5 py-1.5 rounded-full bg-[#073161] text-white text-xs font-bold cursor-pointer"
+                    className="mt-2.5 px-3.5 py-1.5 rounded-full bg-brand-800 text-white text-xs font-bold cursor-pointer"
                   >
                     Hiển thị lại toàn bộ 190 vị trí
                   </button>
@@ -1602,8 +1602,8 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                         onClick={() => handleFlyToListing(item)}
                         className={`w-full text-left p-2.5 rounded-2xl border transition-all flex items-center justify-between gap-2 cursor-pointer ${
                           isCurrent
-                            ? 'bg-[#073161] border-[#073161] text-white shadow-sm'
-                            : 'bg-slate-50/90 border-slate-200/80 hover:border-[#073161]/40 hover:bg-white text-slate-800'
+                            ? 'bg-brand-800 border-brand-800 text-white shadow-sm'
+                            : 'bg-slate-50/90 border-slate-200/80 hover:border-brand-800/40 hover:bg-white text-slate-800'
                         }`}
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
@@ -1614,14 +1614,14 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                             <div className="flex items-center gap-1.5">
                               <span
                                 className={`text-xs font-extrabold truncate ${
-                                  isCurrent ? 'text-white' : 'text-[#073161]'
+                                  isCurrent ? 'text-white' : 'text-brand-800'
                                 }`}
                               >
                                 {item.title}
                               </span>
                               {item.hasCloudView && (
                                 <span
-                                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold shrink-0 ${
+                                  className={`text-xs px-1.5 py-0.2 rounded-full font-bold shrink-0 ${
                                     isCurrent
                                       ? 'bg-teal-500/30 text-teal-200'
                                       : 'bg-teal-50 text-teal-700 border border-teal-200'
@@ -1632,7 +1632,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                               )}
                             </div>
                             <div
-                              className={`text-[10px] flex items-center gap-1.5 mt-0.5 ${
+                              className={`text-xs flex items-center gap-1.5 mt-0.5 ${
                                 isCurrent ? 'text-slate-200' : 'text-slate-500'
                               }`}
                             >
@@ -1656,7 +1656,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                         <div className="flex flex-col items-end shrink-0 gap-1">
                           <span
                             className={`text-xs font-extrabold tabular-nums ${
-                              isCurrent ? 'text-amber-300' : 'text-[#073161]'
+                              isCurrent ? 'text-amber-300' : 'text-brand-800'
                             }`}
                           >
                             {item.minPrice > 0
@@ -1669,9 +1669,9 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                               e.stopPropagation();
                               onSelectListing(item);
                             }}
-                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors cursor-pointer ${
+                            className={`text-xs font-bold px-2 py-0.5 rounded-full transition-colors cursor-pointer ${
                               isCurrent
-                                ? 'bg-white text-[#073161] hover:bg-slate-100'
+                                ? 'bg-white text-brand-800 hover:bg-slate-100'
                                 : 'bg-white text-teal-700 border border-slate-200 hover:border-teal-600'
                             }`}
                           >

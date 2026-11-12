@@ -241,14 +241,14 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                     >
                       <div className="flex items-center justify-between text-xs font-bold text-white mb-1">
                         <span className="text-sky-300">{trip.departureTime}</span>
-                        <span className="text-[10px] bg-slate-900 px-1.5 py-0.5 rounded text-slate-300">
+                        <span className="text-xs bg-slate-900 px-1.5 py-0.5 rounded text-slate-300">
                           {trip.busType.split(' ')[0]}
                         </span>
                       </div>
                       <div className="text-xs font-semibold text-slate-200 line-clamp-1">
                         {trip.operatorName}
                       </div>
-                      <div className="text-[11px] text-teal-400 font-bold mt-1">
+                      <div className="text-xs text-teal-400 font-bold mt-1">
                         {formatVND(trip.baseFare)}
                       </div>
                     </button>
@@ -288,7 +288,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                       ))}
                   </select>
                   {currentPickup.pickupNote && (
-                    <p className="text-[10px] text-amber-300 mt-1">
+                    <p className="text-xs text-amber-300 mt-1">
                       * {currentPickup.pickupNote}
                     </p>
                   )}
@@ -332,7 +332,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                   <Layers className="w-4 h-4" />
                   <span>3. Sơ Đồ Chọn Chỗ Ngồi ({selectedTrip.busType})</span>
                 </label>
-                <div className="flex items-center gap-3 text-[11px] text-slate-400">
+                <div className="flex items-center gap-3 text-xs text-slate-400">
                   <span className="flex items-center gap-1">
                     <span className="w-3 h-3 rounded bg-slate-700 inline-block" /> Trống
                   </span>
@@ -352,7 +352,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                     <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-750">
                       <div className="text-xs font-bold text-sky-300 mb-2.5 flex justify-between">
                         <span>TẦNG 1 (DƯỚI)</span>
-                        <span className="text-[10px] text-slate-400">Êm ái, ít rung lắc</span>
+                        <span className="text-xs text-slate-400">Êm ái, ít rung lắc</span>
                       </div>
                       <div className="grid grid-cols-4 gap-2">
                         {seatLayout.floor1.map((seat) => {
@@ -383,7 +383,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                     <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-750">
                       <div className="text-xs font-bold text-amber-300 mb-2.5 flex justify-between">
                         <span>TẦNG 2 (TRÊN)</span>
-                        <span className="text-[10px] text-slate-400">Ngắm đèo thoáng đãng</span>
+                        <span className="text-xs text-slate-400">Ngắm đèo thoáng đãng</span>
                       </div>
                       <div className="grid grid-cols-4 gap-2">
                         {seatLayout.floor2.map((seat) => {
@@ -437,7 +437,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                           >
                             <Armchair className="w-4 h-4 mb-0.5" />
                             <span>{seat.code}</span>
-                            {seat.isVip && <span className="text-[9px] text-amber-400 font-normal">VIP</span>}
+                            {seat.isVip && <span className="text-xs text-amber-400 font-normal">VIP</span>}
                           </button>
                         );
                       })}
@@ -464,7 +464,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                   <Bike className="w-4 h-4 text-sky-400" />
                   <span>ĐẶT COMBO THUÊ XE MÁY ĐI KÈM (GIẢM 10% TỔNG TIỀN)</span>
                 </label>
-                <span className="text-[10px] bg-sky-500/20 text-sky-300 font-bold px-2 py-0.5 rounded-full border border-sky-500/30">
+                <span className="text-xs bg-sky-500/20 text-sky-300 font-bold px-2 py-0.5 rounded-full border border-sky-500/30">
                   Nhận xe ngay khi xuống xe khách
                 </span>
               </div>
@@ -473,7 +473,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                 <div className="space-y-3 pt-2 border-t border-slate-800 text-xs">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Số lượng xe máy</label>
+                      <label className="text-xs text-slate-300 block mb-1">Số lượng xe máy</label>
                       <select
                         value={bikeCount}
                         onChange={(e) => setBikeCount(Number(e.target.value))}
@@ -486,7 +486,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                     </div>
 
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Ngày nhận xe</label>
+                      <label className="text-xs text-slate-300 block mb-1">Ngày nhận xe</label>
                       <input
                         type="date"
                         value={bikePickupDate}
@@ -496,7 +496,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                     </div>
 
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Giờ nhận xe</label>
+                      <label className="text-xs text-slate-300 block mb-1">Giờ nhận xe</label>
                       <input
                         type="time"
                         value={bikePickupTime}
@@ -508,7 +508,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Ngày trả xe</label>
+                      <label className="text-xs text-slate-300 block mb-1">Ngày trả xe</label>
                       <input
                         type="date"
                         value={bikeReturnDate}
@@ -518,7 +518,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                     </div>
 
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">
+                      <label className="text-xs text-slate-300 block mb-1">
                         Giờ trả xe (Mốc trước 12h trưa)
                       </label>
                       <input
@@ -533,13 +533,13 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                   {/* Giải thích cách tính tiền theo mốc 12h trưa */}
                   <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-750 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
-                      <span className="text-slate-400 block text-[11px]">Công thức tính ngày thuê xe:</span>
+                      <span className="text-slate-400 block text-xs">Công thức tính ngày thuê xe:</span>
                       <span className="text-sky-300 font-bold">
                         {motorbikeCalc.breakdown}
                       </span>
                     </div>
                     {motorbikeCalc.isHalfDayReturn && (
-                      <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-lg font-bold border border-emerald-500/30 shrink-0">
+                      <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-lg font-bold border border-emerald-500/30 shrink-0">
                         ✓ Trả trước 12:00: Tính nửa ngày
                       </span>
                     )}
@@ -612,9 +612,9 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                     <ShieldCheck className="w-4 h-4 text-emerald-400" />
                     <span>Nộp Ảnh Biên Lai Chuyển Khoản (Cọc 30%)</span>
                   </span>
-                  <span className="text-[10px] text-slate-400">Tùy chọn</span>
+                  <span className="text-xs text-slate-400">Tùy chọn</span>
                 </div>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-xs text-slate-400">
                   Tải ảnh chuyển khoản giúp nhà xe xác nhận giữ chỗ ưu tiên và làm bằng chứng đối soát minh bạch.
                 </p>
 
@@ -671,7 +671,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                   <span className="text-white">Tổng thanh toán:</span>
                   <span className="text-teal-400 text-lg">{formatVND(comboResult.finalTotal)}</span>
                 </div>
-                <div className="text-[11px] text-slate-400 text-right">
+                <div className="text-xs text-slate-400 text-right">
                   Cọc trước 30%: <strong className="text-amber-300">{formatVND(Math.round(comboResult.finalTotal * 0.3))}</strong>
                 </div>
               </div>
@@ -692,7 +692,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                 )}
               </button>
 
-              <div className="text-[11px] text-center text-slate-400">
+              <div className="text-xs text-center text-slate-400">
                 📞 Hotline nhà xe: <a href={`tel:${selectedTrip.phone.replace(/\s+/g, '')}`} className="text-sky-400 font-bold">{selectedTrip.phone}</a>
               </div>
             </form>

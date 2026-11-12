@@ -59,7 +59,7 @@ export const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
             alt="Mã QR Check-in"
             className="w-full h-auto object-contain"
           />
-          <div className="text-[10px] text-slate-800 font-mono font-bold mt-1 text-center">
+          <div className="text-xs text-slate-800 font-mono font-bold mt-1 text-center">
             {booking.id}
           </div>
         </div>

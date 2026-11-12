@@ -1186,7 +1186,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
     <div className={isPopupModal ? 'p-4 sm:p-6 text-slate-900 space-y-6' : 'bg-[#f8fafc] py-10 px-4 sm:px-6 lg:px-8 text-slate-900'}>
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Top Hero Banner + Live Online Members Bar */}
-        <div className="bg-gradient-to-br from-[#04244d] via-[#073161] to-[#0a5c66] rounded-3xl p-5 sm:p-8 text-white shadow-xl relative">
+        <div className="bg-gradient-to-br from-brand-900 via-brand-800 to-[#0a5c66] rounded-3xl p-5 sm:p-8 text-white shadow-xl relative">
           {isPopupModal && onClosePopup && (
             <button
               type="button"
@@ -1213,35 +1213,35 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
 
             <div className="grid grid-cols-3 gap-2.5 shrink-0 text-left">
               <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-2xl p-3">
-                <div className="text-[10px] text-emerald-300 font-bold uppercase flex items-center gap-1">
+                <div className="text-xs text-emerald-300 font-bold uppercase flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-400" />
                   <span>Đang Online</span>
                 </div>
                 <div className="text-lg sm:text-xl font-black text-white mt-0.5 tabular-nums">
                   {totalOnlineInSpaces}
                 </div>
-                <div className="text-[10px] text-slate-300">Trong 9 phòng chat</div>
+                <div className="text-xs text-slate-300">Trong 9 phòng chat</div>
               </div>
               <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-2xl p-3">
-                <div className="text-[10px] text-amber-300 font-bold uppercase">Thổ Địa Trực</div>
+                <div className="text-xs text-amber-300 font-bold uppercase">Thổ Địa Trực</div>
                 <div className="text-lg sm:text-xl font-black text-white mt-0.5 tabular-nums">
                   12 người
                 </div>
-                <div className="text-[10px] text-slate-300">Đỉnh Gió & Sống Lưng</div>
+                <div className="text-xs text-slate-300">Đỉnh Gió & Sống Lưng</div>
               </div>
               <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-2xl p-3">
-                <div className="text-[10px] text-teal-200 font-bold uppercase">Kèo Đang Mở</div>
+                <div className="text-xs text-teal-200 font-bold uppercase">Kèo Đang Mở</div>
                 <div className="text-lg sm:text-xl font-black text-white mt-0.5 tabular-nums">
                   {shareDeals.length} kèo
                 </div>
-                <div className="text-[10px] text-slate-300">Ghép xe, phòng & tour</div>
+                <div className="text-xs text-slate-300">Ghép xe, phòng & tour</div>
               </div>
             </div>
           </div>
 
           {/* Live Online Members Presence Strip */}
           <div className="mt-4 pt-4 border-t border-white/15 flex items-center gap-2.5 overflow-x-auto no-scrollbar">
-            <span className="text-[11px] font-extrabold text-teal-200 whitespace-nowrap shrink-0">
+            <span className="text-xs font-extrabold text-teal-200 whitespace-nowrap shrink-0">
               🟢 Đang trực tuyến:
             </span>
             {ONLINE_MEMBERS_LIVE.map((member) => (
@@ -1255,14 +1255,14 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     alt={member.name}
                     className="w-6 h-6 rounded-full object-cover"
                   />
-                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#073161]" />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-brand-800" />
                 </div>
                 <div className="leading-tight">
-                  <div className="font-extrabold text-white text-[11px]">
+                  <div className="font-extrabold text-white text-xs">
                     {member.name}{' '}
                     <span className="text-teal-200 font-normal">({member.area})</span>
                   </div>
-                  <div className="text-[10px] text-amber-200">{member.statusText}</div>
+                  <div className="text-xs text-amber-200">{member.statusText}</div>
                 </div>
               </div>
             ))}
@@ -1275,7 +1275,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
               onClick={() => setActiveMainTab('chat_spaces')}
               className={`p-3 rounded-2xl text-left transition-all cursor-pointer border ${
                 activeMainTab === 'chat_spaces'
-                  ? 'bg-white text-[#073161] border-white shadow-md font-extrabold'
+                  ? 'bg-white text-brand-800 border-white shadow-md font-extrabold'
                   : 'bg-white/10 text-white border-white/15 hover:bg-white/15 font-semibold'
               }`}
             >
@@ -1284,11 +1284,11 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   <MessageCircle className="w-4 h-4" />
                   <span>1. Hệ Thống Chat (9 Không Gian)</span>
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-600 text-white font-bold">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-600 text-white font-bold">
                   {totalOnlineInSpaces} online
                 </span>
               </div>
-              <p className={`text-[11px] ${activeMainTab === 'chat_spaces' ? 'text-slate-600' : 'text-slate-300'}`}>
+              <p className={`text-xs ${activeMainTab === 'chat_spaces' ? 'text-slate-600' : 'text-slate-300'}`}>
                 7 Nhóm Tương Tác & 2 Phòng Bằng Chứng
               </p>
             </button>
@@ -1298,7 +1298,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
               onClick={() => setActiveMainTab('share_deals')}
               className={`p-3 rounded-2xl text-left transition-all cursor-pointer border ${
                 activeMainTab === 'share_deals'
-                  ? 'bg-white text-[#073161] border-white shadow-md font-extrabold'
+                  ? 'bg-white text-brand-800 border-white shadow-md font-extrabold'
                   : 'bg-white/10 text-white border-white/15 hover:bg-white/15 font-semibold'
               }`}
             >
@@ -1307,11 +1307,11 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   <Users className="w-4 h-4" />
                   <span>2. Kèo Ghép Đi Chung An Toàn</span>
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold">
                   {shareDeals.length} kèo mở
                 </span>
               </div>
-              <p className={`text-[11px] ${activeMainTab === 'share_deals' ? 'text-slate-600' : 'text-slate-300'}`}>
+              <p className={`text-xs ${activeMainTab === 'share_deals' ? 'text-slate-600' : 'text-slate-300'}`}>
                 Ghép xe, phòng, tour, ảnh · Tự tính chia tiền
               </p>
             </button>
@@ -1321,7 +1321,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
               onClick={() => setActiveMainTab('live_cloud_forum')}
               className={`p-3 rounded-2xl text-left transition-all cursor-pointer border ${
                 activeMainTab === 'live_cloud_forum'
-                  ? 'bg-white text-[#073161] border-white shadow-md font-extrabold'
+                  ? 'bg-white text-brand-800 border-white shadow-md font-extrabold'
                   : 'bg-white/10 text-white border-white/15 hover:bg-white/15 font-semibold'
               }`}
             >
@@ -1330,11 +1330,11 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   <Camera className="w-4 h-4" />
                   <span>3. “Mây Hôm Nay” & Hỏi Đáp</span>
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-bold">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-bold">
                   Live 24h
                 </span>
               </div>
-              <p className={`text-[11px] ${activeMainTab === 'live_cloud_forum' ? 'text-slate-600' : 'text-slate-300'}`}>
+              <p className={`text-xs ${activeMainTab === 'live_cloud_forum' ? 'text-slate-600' : 'text-slate-300'}`}>
                 Ảnh/Video GPS thực địa & Thổ địa giải đáp
               </p>
             </button>
@@ -1344,7 +1344,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
               onClick={() => setActiveMainTab('omnichannel_funnel')}
               className={`p-3 rounded-2xl text-left transition-all cursor-pointer border ${
                 activeMainTab === 'omnichannel_funnel'
-                  ? 'bg-white text-[#073161] border-white shadow-md font-extrabold'
+                  ? 'bg-white text-brand-800 border-white shadow-md font-extrabold'
                   : 'bg-white/10 text-white border-white/15 hover:bg-white/15 font-semibold'
               }`}
             >
@@ -1353,11 +1353,11 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   <QrCode className="w-4 h-4" />
                   <span>4. Kênh Chính Thức & Quét QR</span>
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-400 text-slate-950 font-bold">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-sky-400 text-slate-950 font-bold">
                   {activeSocialChannels.length} Kênh
                 </span>
               </div>
-              <p className={`text-[11px] ${activeMainTab === 'omnichannel_funnel' ? 'text-slate-600' : 'text-slate-300'}`}>
+              <p className={`text-xs ${activeMainTab === 'omnichannel_funnel' ? 'text-slate-600' : 'text-slate-300'}`}>
                 TikTok · FB · Zalo OA · Hotline & Chia sẻ +30đ
               </p>
             </button>
@@ -1373,14 +1373,14 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
             <div className="lg:col-span-4 bg-white border border-slate-200 rounded-3xl p-4 sm:p-5 shadow-xs space-y-5">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#073161]">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-brand-800">
                     NHÓM CỘNG ĐỒNG TRẢI NGHIỆM (1 ➔ 7)
                   </span>
-                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
                     Đang sôi nổi
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 mb-2.5">
+                <p className="text-xs text-slate-500 mb-2.5">
                   Chọn đúng nhóm theo nhu cầu: Săn mây, ghép xe, ghép phòng, ẩm thực, thợ ảnh, cứu hộ.
                 </p>
                 <div className="space-y-1.5">
@@ -1394,7 +1394,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       }}
                       className={`w-full text-left p-2.5 sm:p-3 rounded-2xl border transition-all cursor-pointer ${
                         selectedSpaceId === space.id
-                          ? 'bg-[#073161] text-white border-[#073161] shadow-xs'
+                          ? 'bg-brand-800 text-white border-brand-800 shadow-xs'
                           : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
                       }`}
                     >
@@ -1402,12 +1402,12 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         <span className="truncate">{space.name}</span>
                         <div className="flex items-center gap-1.5 shrink-0">
                           {space.unreadCount > 0 && selectedSpaceId !== space.id && (
-                            <span className="px-1.5 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-black">
+                            <span className="px-1.5 py-0.5 rounded-full bg-rose-500 text-white text-xs font-black">
                               +{space.unreadCount}
                             </span>
                           )}
                           <span
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${
                               selectedSpaceId === space.id
                                 ? 'bg-emerald-500/25 text-emerald-200'
                                 : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
@@ -1419,7 +1419,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         </div>
                       </div>
                       <div
-                        className={`text-[11px] mt-0.5 line-clamp-1 ${
+                        className={`text-xs mt-0.5 line-clamp-1 ${
                           selectedSpaceId === space.id ? 'text-slate-200' : 'text-slate-500'
                         }`}
                       >
@@ -1431,10 +1431,10 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
               </div>
 
               <div className="pt-4 border-t border-slate-200">
-                <span className="text-[11px] font-extrabold uppercase tracking-wider text-teal-700 block">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-teal-700 block">
                   PHÒNG BẰNG CHỨNG & BẢO VỆ (8 ➔ 9)
                 </span>
-                <p className="text-[11px] text-slate-500 mb-2.5">
+                <p className="text-xs text-slate-500 mb-2.5">
                   Lưu trữ 3 năm (INSERT-ONLY), nối chuỗi Hash SHA-256, xuất PDF đối soát.
                 </p>
                 <div className="space-y-1.5">
@@ -1448,7 +1448,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       }}
                       className={`w-full text-left p-2.5 sm:p-3 rounded-2xl border transition-all cursor-pointer ${
                         selectedSpaceId === space.id
-                          ? 'bg-[#073161] text-white border-[#073161] shadow-xs'
+                          ? 'bg-brand-800 text-white border-brand-800 shadow-xs'
                           : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
                       }`}
                     >
@@ -1456,7 +1456,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         <span className="truncate">{space.name}</span>
                         <div className="flex items-center gap-1.5 shrink-0">
                           <span
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${
                               selectedSpaceId === space.id
                                 ? 'bg-amber-400/20 text-amber-200'
                                 : 'bg-amber-50 text-amber-800 border border-amber-200'
@@ -1468,7 +1468,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         </div>
                       </div>
                       <div
-                        className={`text-[11px] mt-0.5 line-clamp-1 ${
+                        className={`text-xs mt-0.5 line-clamp-1 ${
                           selectedSpaceId === space.id ? 'text-slate-200' : 'text-slate-500'
                         }`}
                       >
@@ -1487,9 +1487,9 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h2 className="text-lg font-extrabold text-[#073161]">{currentSpace.name}</h2>
+                      <h2 className="text-lg font-extrabold text-brand-800">{currentSpace.name}</h2>
                       <span
-                        className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full ${
+                        className={`text-xs font-extrabold px-2.5 py-0.5 rounded-full ${
                           currentSpace.tier === 'evidence'
                             ? 'bg-amber-100 text-amber-900 border border-amber-300'
                             : 'bg-teal-50 text-teal-800 border border-teal-200'
@@ -1498,7 +1498,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         {currentSpace.retentionLabel}
                       </span>
                       {currentSpace.legalHoldActive && (
-                        <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-300">
+                        <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-300">
                           ⚖️ Đang Khóa Pháp Lý (Legal Hold)
                         </span>
                       )}
@@ -1515,7 +1515,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       <button
                         type="button"
                         onClick={handleVerifyHashChain}
-                        className="bg-slate-100 hover:bg-slate-200 text-[#073161] font-extrabold text-xs px-3 py-2 rounded-xl inline-flex items-center gap-1.5 cursor-pointer"
+                        className="bg-slate-100 hover:bg-slate-200 text-brand-800 font-extrabold text-xs px-3 py-2 rounded-xl inline-flex items-center gap-1.5 cursor-pointer"
                       >
                         <Hash className="w-3.5 h-3.5 text-teal-700" />
                         <span>Kiểm tra Chuỗi Hash</span>
@@ -1523,7 +1523,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       <button
                         type="button"
                         onClick={handleExportEvidencePdf}
-                        className="bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs px-3 py-2 rounded-xl inline-flex items-center gap-1.5 cursor-pointer"
+                        className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-3 py-2 rounded-xl inline-flex items-center gap-1.5 cursor-pointer"
                       >
                         <FileText className="w-3.5 h-3.5" />
                         <span>Xuất PDF Bằng Chứng</span>
@@ -1552,7 +1552,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         onClick={() => setActorRole(r.id)}
                         className={`px-3 py-1 rounded-xl font-bold cursor-pointer transition-all ${
                           actorRole === r.id
-                            ? 'bg-[#073161] text-white'
+                            ? 'bg-brand-800 text-white'
                             : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
                         }`}
                       >
@@ -1589,7 +1589,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         In / Lưu PDF ngay
                       </button>
                     </div>
-                    <p className="text-[11px] text-amber-900">
+                    <p className="text-xs text-amber-900">
                       Bản xuất bao gồm đầy đủ chuỗi băm `prev_hash` ➔ `hash`, timestamp máy chủ và chữ ký xác thực đối chiếu với dữ liệu gốc trong PostgreSQL.
                     </p>
                   </div>
@@ -1611,45 +1611,45 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
                       <div className="flex items-center gap-2">
-                        <span className="font-extrabold text-xs text-[#073161]">
+                        <span className="font-extrabold text-xs text-brand-800">
                           {msg.senderName}
                         </span>
                         {(() => {
                           const badge = msg.senderBadge || '';
                           if (badge.includes('Homestay') || badge.includes('Lưu Trú') || badge.includes('Mẩy') || badge.includes('Chủ')) {
                             return (
-                              <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 border border-blue-300">
+                              <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 border border-blue-300">
                                 [LƯU TRÚ] {badge}
                               </span>
                             );
                           }
                           if (badge.includes('Xe') || badge.includes('Taxi') || badge.includes('Di Chuyển') || badge.includes('Limousine') || badge.includes('Bác tài')) {
                             return (
-                              <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-900 border border-teal-300">
+                              <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-900 border border-teal-300">
                                 [DI CHUYỂN] {badge}
                               </span>
                             );
                           }
                           if (badge.includes('Tour') || badge.includes('Photo') || badge.includes('Trang Phục') || badge.includes('Máy Ảnh') || badge.includes('Cứu hộ') || badge.includes('Đối Tác')) {
                             return (
-                              <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-900 border border-purple-300">
+                              <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-900 border border-purple-300">
                                 [DỊCH VỤ KHÁC] {badge}
                               </span>
                             );
                           }
                           return (
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-700">
+                            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-700">
                               {badge}
                             </span>
                           );
                         })()}
                         {msg.pinned && (
-                          <span className="text-[10px] font-extrabold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+                          <span className="text-xs font-extrabold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
                             📌 Đã ghim
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 text-[11px] text-slate-500 font-mono">
+                      <div className="flex items-center gap-2 text-xs text-slate-500 font-mono">
                         <span>seq #{msg.seq}</span>
                         <span>·</span>
                         <span>{msg.createdAt}</span>
@@ -1669,7 +1669,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                           <button
                             type="button"
                             onClick={() => handleSaveEditMessage(msg.id)}
-                            className="bg-[#073161] text-white text-xs font-bold px-3 py-1 rounded-lg cursor-pointer"
+                            className="bg-brand-800 text-white text-xs font-bold px-3 py-1 rounded-lg cursor-pointer"
                           >
                             Lưu bản sửa
                           </button>
@@ -1698,9 +1698,9 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         </div>
                         <div className="text-xs text-slate-600">
                           Ngày: {msg.quoteCard.dates} · Giá chốt:{' '}
-                          <strong className="text-[#073161]">{msg.quoteCard.price}</strong>
+                          <strong className="text-brand-800">{msg.quoteCard.price}</strong>
                         </div>
-                        <div className="text-[11px] text-emerald-700 font-bold">
+                        <div className="text-xs text-emerald-700 font-bold">
                           ✓ Giá chốt trong thẻ này có giá trị ràng buộc pháp lý và khớp 100% với đơn booking.
                         </div>
                       </div>
@@ -1708,7 +1708,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
 
                     {/* AI Layer-1 Moderation Alert */}
                     {msg.aiModeration?.flagged && (
-                      <div className="mt-2.5 bg-rose-100 border border-rose-300 text-rose-900 rounded-xl p-2.5 text-[11px] font-semibold">
+                      <div className="mt-2.5 bg-rose-100 border border-rose-300 text-rose-900 rounded-xl p-2.5 text-xs font-semibold">
                         🤖 <strong>AI Kiểm Duyệt Lớp 1:</strong> {msg.aiModeration.reason}
                       </div>
                     )}
@@ -1717,7 +1717,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     {msg.versions &&
                       msg.versions.length > 0 &&
                       (actorRole === 'moderator' || actorRole === 'admin') && (
-                        <div className="mt-2 bg-slate-200/70 rounded-xl p-2.5 text-[11px] text-slate-700">
+                        <div className="mt-2 bg-slate-200/70 rounded-xl p-2.5 text-xs text-slate-700">
                           <strong>🕵️ Lịch sử sửa tin (`message_versions` chỉ Moderator/Admin thấy):</strong>
                           {msg.versions.map((v) => (
                             <div key={v.version} className="mt-0.5">
@@ -1728,7 +1728,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       )}
 
                     {/* Footer: Cryptographic Hash & Actions */}
-                    <div className="mt-2.5 pt-2 border-t border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+                    <div className="mt-2.5 pt-2 border-t border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
                       <span className="font-mono truncate max-w-md" title={`prev: ${msg.prevHash} -> hash: ${msg.hash}`}>
                         Hash: {msg.hash} (prev: {msg.prevHash.slice(0, 14)}...)
                       </span>
@@ -1739,7 +1739,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                             setEditingMsgId(msg.id);
                             setEditingBody(msg.body);
                           }}
-                          className="text-[#073161] font-bold hover:underline cursor-pointer"
+                          className="text-brand-800 font-bold hover:underline cursor-pointer"
                         >
                           {currentSpace.tier === 'evidence'
                             ? 'Thử sửa tin (Test chặn RLS)'
@@ -1770,13 +1770,13 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                 {/* 1-Tap Context Quick Prompts for Current Space */}
                 {currentSpace.quickPrompts && currentSpace.quickPrompts.length > 0 && (
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-[11px] font-bold text-slate-500 mr-1">💬 Hỏi nhanh 1 chạm:</span>
+                    <span className="text-xs font-bold text-slate-500 mr-1">💬 Hỏi nhanh 1 chạm:</span>
                     {currentSpace.quickPrompts.map((promptText, idx) => (
                       <button
                         key={idx}
                         type="button"
                         onClick={() => setNewMessageBody(promptText)}
-                        className="px-2.5 py-1 rounded-full bg-teal-50/80 hover:bg-teal-100 border border-teal-200 text-[11px] font-bold text-[#073161] transition-colors cursor-pointer"
+                        className="px-2.5 py-1 rounded-full bg-teal-50/80 hover:bg-teal-100 border border-teal-200 text-xs font-bold text-brand-800 transition-colors cursor-pointer"
                       >
                         + {promptText}
                       </button>
@@ -1790,18 +1790,18 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     value={newMessageBody}
                     onChange={(e) => setNewMessageBody(e.target.value)}
                     placeholder={`Nhắn tin vào ${currentSpace.name} (AI tự động lọc lừa đảo & che PII)...`}
-                    className="flex-1 bg-slate-50 border border-slate-300 rounded-2xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#073161]"
+                    className="flex-1 bg-slate-50 border border-slate-300 rounded-2xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
                   />
                   <button
                     type="submit"
-                    className="bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs px-5 py-2.5 rounded-2xl inline-flex items-center gap-1.5 cursor-pointer shrink-0"
+                    className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-5 py-2.5 rounded-2xl inline-flex items-center gap-1.5 cursor-pointer shrink-0"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Gửi tin</span>
                   </button>
                 </form>
 
-                <div className="flex flex-wrap items-center gap-2 text-[11px]">
+                <div className="flex flex-wrap items-center gap-2 text-xs">
                   <span className="text-slate-500 font-semibold">Thử nhanh bộ lọc AI Lớp 1:</span>
                   <button
                     type="button"
@@ -1852,7 +1852,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsCreatingDeal((prev) => !prev)}
-                  className="shrink-0 bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs px-4 py-3 rounded-2xl inline-flex items-center gap-2 shadow-md cursor-pointer self-start lg:self-auto"
+                  className="shrink-0 bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-4 py-3 rounded-2xl inline-flex items-center gap-2 shadow-md cursor-pointer self-start lg:self-auto"
                 >
                   <Plus className="w-4 h-4 text-amber-300" />
                   <span>{isCreatingDeal ? 'Đóng Form Đăng Kèo' : '+ Đăng Kèo Ghép Mới (+15 Điểm Mây)'}</span>
@@ -1877,7 +1877,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       onClick={() => setShareFilter(cat.id)}
                       className={`px-3.5 py-2 rounded-xl text-xs font-extrabold cursor-pointer transition-all ${
                         shareFilter === cat.id
-                          ? 'bg-[#073161] text-white shadow-xs'
+                          ? 'bg-brand-800 text-white shadow-xs'
                           : 'bg-white hover:bg-amber-100/60 border border-amber-300 text-slate-700'
                       }`}
                     >
@@ -1903,7 +1903,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       type="checkbox"
                       checked={onlyAvailableDeals}
                       onChange={(e) => setOnlyAvailableDeals(e.target.checked)}
-                      className="accent-[#073161]"
+                      className="accent-brand-800"
                     />
                     <span>Chỉ hiện kèo còn slot</span>
                   </label>
@@ -1915,14 +1915,14 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
             {isCreatingDeal && (
               <form
                 onSubmit={handleCreateShareDeal}
-                className="bg-white border-2 border-[#073161] rounded-3xl p-6 shadow-lg space-y-4"
+                className="bg-white border-2 border-brand-800 rounded-3xl p-6 shadow-lg space-y-4"
               >
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div>
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-teal-700 block">
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-teal-700 block">
                       TẠO KÈO GHÉP MỚI · TỰ ĐỘNG ĐỒNG BỘ VÀO PHÒNG CHAT TƯƠNG ỨNG
                     </span>
-                    <h3 className="text-base sm:text-lg font-extrabold text-[#073161]">
+                    <h3 className="text-base sm:text-lg font-extrabold text-brand-800">
                       Đăng Kèo Ghép Đi Chung Minh Bạch & Tính Chi Phí Chia Đầu Người
                     </h3>
                   </div>
@@ -1933,13 +1933,13 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                    <label className="text-xs font-bold text-slate-700 block mb-1">
                       1. Chọn danh mục kèo ghép *
                     </label>
                     <select
                       value={newDealCategory}
                       onChange={(e) => setNewDealCategory(e.target.value as any)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-[#073161]"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-brand-800"
                     >
                       <option value="transport">🚗 Ghép Xe Khách / Taxi Hà Nội ↔ Tà Xùa</option>
                       <option value="room">🏡 Ghép Phòng Homestay / Villa</option>
@@ -1949,7 +1949,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                    <label className="text-xs font-bold text-slate-700 block mb-1">
                       2. Chọn Cơ sở / Nhà xe đã thẩm định trong hệ thống (179 cơ sở)
                     </label>
                     <select
@@ -1979,7 +1979,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="sm:col-span-2">
-                    <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                    <label className="text-xs font-bold text-slate-700 block mb-1">
                       3. Tiêu đề kèo ghép *
                     </label>
                     <input
@@ -1992,7 +1992,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                    <label className="text-xs font-bold text-slate-700 block mb-1">
                       4. Thời gian / Ngày đi *
                     </label>
                     <input
@@ -2009,7 +2009,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                 {/* Auto Cost-Split Calculator Box */}
                 <div className="bg-teal-50/70 border border-teal-200 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-4 gap-3 items-center">
                   <div>
-                    <label className="text-[11px] font-bold text-teal-900 block mb-1">
+                    <label className="text-xs font-bold text-teal-900 block mb-1">
                       Tổng số người của kèo
                     </label>
                     <input
@@ -2018,11 +2018,11 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       max={16}
                       value={newDealTotalSlots}
                       onChange={(e) => setNewDealTotalSlots(Math.max(2, Number(e.target.value) || 2))}
-                      className="w-full bg-white border border-teal-300 rounded-xl px-3 py-1.5 text-xs font-extrabold text-[#073161]"
+                      className="w-full bg-white border border-teal-300 rounded-xl px-3 py-1.5 text-xs font-extrabold text-brand-800"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-teal-900 block mb-1">
+                    <label className="text-xs font-bold text-teal-900 block mb-1">
                       Số chỗ còn trống cần tìm
                     </label>
                     <input
@@ -2035,7 +2035,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-teal-900 block mb-1">
+                    <label className="text-xs font-bold text-teal-900 block mb-1">
                       Tổng chi phí chuyến/phòng (VNĐ)
                     </label>
                     <input
@@ -2043,11 +2043,11 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       step={50000}
                       value={newDealTotalCostVnd}
                       onChange={(e) => setNewDealTotalCostVnd(Math.max(0, Number(e.target.value) || 0))}
-                      className="w-full bg-white border border-teal-300 rounded-xl px-3 py-1.5 text-xs font-extrabold text-[#073161]"
+                      className="w-full bg-white border border-teal-300 rounded-xl px-3 py-1.5 text-xs font-extrabold text-brand-800"
                     />
                   </div>
                   <div className="bg-white border border-teal-300 rounded-xl p-2.5 text-xs">
-                    <span className="text-[10px] text-slate-500 block font-bold uppercase">
+                    <span className="text-xs text-slate-500 block font-bold uppercase">
                       Tự tính chia đầu người:
                     </span>
                     <span className="text-sm font-black text-emerald-700">
@@ -2058,7 +2058,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                    <label className="text-xs font-bold text-slate-700 block mb-1">
                       Khu vực / Lộ trình
                     </label>
                     <input
@@ -2070,7 +2070,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                    <label className="text-xs font-bold text-slate-700 block mb-1">
                       Tên chủ kèo (Đã xác minh)
                     </label>
                     <input
@@ -2082,7 +2082,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                    <label className="text-xs font-bold text-slate-700 block mb-1">
                       SĐT (Tự động ẩn cho tới khi Duyệt)
                     </label>
                     <input
@@ -2160,7 +2160,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                               </span>
                             )}
                           </div>
-                          <h3 className="text-lg font-extrabold text-[#073161] mt-1">{deal.title}</h3>
+                          <h3 className="text-lg font-extrabold text-brand-800 mt-1">{deal.title}</h3>
                           {deal.targetListingTitle && (
                             <div className="text-xs font-bold text-teal-700 flex items-center gap-1">
                               <ShieldCheck className="w-3.5 h-3.5" />
@@ -2172,7 +2172,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
 
                         {/* Owner Trust Profile Badge */}
                         <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs shrink-0 space-y-1">
-                          <div className="font-extrabold text-[#073161] flex items-center gap-1.5">
+                          <div className="font-extrabold text-brand-800 flex items-center gap-1.5">
                             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                             <span>Chủ kèo: {deal.ownerName}</span>
                           </div>
@@ -2180,7 +2180,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                             Điểm tin cậy: <strong className="text-emerald-700">{deal.ownerTrustScore}/100</strong> ·{' '}
                             {deal.ownerVerifiedTrips} chuyến hoàn tất
                           </div>
-                          <div className="text-[11px] font-bold text-slate-700">
+                          <div className="text-xs font-bold text-slate-700">
                             SĐT liên hệ:{' '}
                             {hasApprovedApplicant ? (
                               <span className="text-emerald-700 font-mono">{deal.ownerPhone} (Đã mở sau khi duyệt)</span>
@@ -2210,7 +2210,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       {/* Applicants & Trust Profile Approval Queue */}
                       <div className="space-y-2.5">
                         <div className="flex flex-wrap items-center justify-between gap-2">
-                          <span className="text-xs font-extrabold text-[#073161]">
+                          <span className="text-xs font-extrabold text-brand-800">
                             Danh sách thành viên Xin Ghép & Hồ sơ tin cậy ({deal.applicants.length}):
                           </span>
                           <div className="flex items-center gap-2">
@@ -2218,7 +2218,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                               type="button"
                               onClick={() => handleRequestJoinDeal(deal.id)}
                               disabled={joinedDealIds.includes(deal.id)}
-                              className="bg-[#073161] hover:bg-[#0a3f7c] disabled:opacity-60 text-white font-extrabold text-xs px-4 py-2 rounded-xl cursor-pointer"
+                              className="bg-brand-800 hover:bg-brand-700 disabled:opacity-60 text-white font-extrabold text-xs px-4 py-2 rounded-xl cursor-pointer"
                             >
                               {joinedDealIds.includes(deal.id)
                                 ? '✓ Đã gửi yêu cầu Xin Ghép'
@@ -2249,17 +2249,17 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                                 className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 flex items-center justify-between gap-3 text-xs"
                               >
                                 <div className="space-y-0.5">
-                                  <div className="font-extrabold text-[#073161] flex items-center gap-1.5">
+                                  <div className="font-extrabold text-brand-800 flex items-center gap-1.5">
                                     <span>{app.name}</span>
-                                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                                    <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
                                       Trust {app.trustScore}/100
                                     </span>
                                   </div>
-                                  <div className="text-[11px] text-slate-600">{app.badge}</div>
-                                  <div className="text-[11px] text-slate-600">
+                                  <div className="text-xs text-slate-600">{app.badge}</div>
+                                  <div className="text-xs text-slate-600">
                                     Đã đi {app.completedTrips} chuyến · {app.verifiedReviews} review xác thực
                                   </div>
-                                  <div className="text-[11px] font-bold">
+                                  <div className="text-xs font-bold">
                                     SĐT:{' '}
                                     {app.status === 'approved' ? (
                                       <span className="text-emerald-700 font-mono">{app.privatePhone}</span>
@@ -2306,14 +2306,14 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   <span className="text-xs font-extrabold uppercase tracking-wider text-teal-700 block">
                     THÔNG TIN THỜI GIAN THỰC · TỰ HẾT HẠN SAU 24 GIỜ · XÁC THỰC TỌA ĐỘ GPS
                   </span>
-                  <h2 className="text-xl font-extrabold text-[#073161]">
+                  <h2 className="text-xl font-extrabold text-brand-800">
                     Bảng Tin “Mây Hôm Nay” Do Khách Tại Chỗ & Thổ Địa Trực Chiến Báo Cáo
                   </h2>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsCreatingCloudReport((prev) => !prev)}
-                  className="bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-1.5 cursor-pointer shadow-sm"
+                  className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-1.5 cursor-pointer shadow-sm"
                 >
                   <Camera className="w-4 h-4 text-amber-300" />
                   <span>
@@ -2351,17 +2351,17 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   className="bg-teal-50/60 border-2 border-teal-600 rounded-2xl p-5 space-y-4"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold text-[#073161] uppercase">
+                    <span className="text-xs font-extrabold text-brand-800 uppercase">
                       📸 Gửi Báo Cáo Biển Mây & Tình Trạng Đường Đèo Thực Tế (Nhận +20 Điểm Mây)
                     </span>
-                    <span className="text-[11px] font-bold text-emerald-700 bg-white px-2.5 py-1 rounded-full border border-emerald-200">
+                    <span className="text-xs font-bold text-emerald-700 bg-white px-2.5 py-1 rounded-full border border-emerald-200">
                       ✓ Tự động gắn nhãn GPS
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      <label className="text-xs font-bold text-slate-700 block mb-1">
                         Khu vực săn mây *
                       </label>
                       <select
@@ -2371,7 +2371,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                           setNewReportArea(val);
                           setNewReportSpotDetail(`${val} (Góc quan sát thực tế)`);
                         }}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-[#073161]"
+                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-brand-800"
                       >
                         <option value="Đỉnh Gió">Đỉnh Gió</option>
                         <option value="Sống Lưng Khủng Long">Sống Lưng Khủng Long</option>
@@ -2381,7 +2381,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       </select>
                     </div>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      <label className="text-xs font-bold text-slate-700 block mb-1">
                         Vị trí cụ thể
                       </label>
                       <input
@@ -2392,7 +2392,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      <label className="text-xs font-bold text-slate-700 block mb-1">
                         Mật độ mây hiện tại
                       </label>
                       <select
@@ -2407,7 +2407,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       </select>
                     </div>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      <label className="text-xs font-bold text-slate-700 block mb-1">
                         Nhiệt độ ngoài trời (°C)
                       </label>
                       <input
@@ -2421,7 +2421,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      <label className="text-xs font-bold text-slate-700 block mb-1">
                         Link ảnh chụp thực tế (hoặc chọn ảnh mẫu săn mây)
                       </label>
                       <input
@@ -2433,7 +2433,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      <label className="text-xs font-bold text-slate-700 block mb-1">
                         Link Video TikTok / Facebook Reels vừa quay (Tùy chọn)
                       </label>
                       <input
@@ -2456,7 +2456,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     />
                     <button
                       type="submit"
-                      className="bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs px-5 py-2.5 rounded-xl cursor-pointer shrink-0"
+                      className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl cursor-pointer shrink-0"
                     >
                       Đăng Báo Mây Ngay (+20đ)
                     </button>
@@ -2479,26 +2479,26 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                             alt={rep.spotName}
                             className="w-full h-full object-cover"
                           />
-                          <div className="absolute top-3 left-3 bg-slate-950/80 text-white text-[11px] font-bold px-3 py-1 rounded-full">
+                          <div className="absolute top-3 left-3 bg-slate-950/80 text-white text-xs font-bold px-3 py-1 rounded-full">
                             📍 {rep.spotName}
                           </div>
                           {rep.tempCelsius !== undefined && (
-                            <div className="absolute top-3 right-3 bg-sky-900/90 text-sky-100 text-[11px] font-black px-2.5 py-1 rounded-full">
+                            <div className="absolute top-3 right-3 bg-sky-900/90 text-sky-100 text-xs font-black px-2.5 py-1 rounded-full">
                               🌡️ {rep.tempCelsius}°C
                             </div>
                           )}
-                          <div className="absolute bottom-3 right-3 bg-emerald-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full">
+                          <div className="absolute bottom-3 right-3 bg-emerald-600 text-white text-xs font-extrabold px-2.5 py-1 rounded-full">
                             ✓ Xác Thực Tọa Độ GPS
                           </div>
                         </div>
                         <div className="p-4 space-y-2.5">
                           <div className="flex items-center justify-between text-xs">
-                            <span className="font-extrabold text-[#073161]">
+                            <span className="font-extrabold text-brand-800">
                               {rep.reporterName}
                             </span>
-                            <span className="text-teal-700 font-bold text-[11px]">{rep.reportedAt}</span>
+                            <span className="text-teal-700 font-bold text-xs">{rep.reportedAt}</span>
                           </div>
-                          <div className="text-[11px] text-slate-500 font-semibold">
+                          <div className="text-xs text-slate-500 font-semibold">
                             Vai trò: {rep.reporterRole}
                           </div>
                           <div className="text-xs font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
@@ -2528,7 +2528,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                               href={rep.videoUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-[11px]"
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs"
                             >
                               <Video className="w-3.5 h-3.5" />
                               <span>Xem Clip</span>
@@ -2540,7 +2540,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                               setSelectedSpaceId('space-san-may-24h');
                               setActiveMainTab('chat_spaces');
                             }}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 font-bold text-[11px] cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 font-bold text-xs cursor-pointer"
                           >
                             <span>Phòng #1 →</span>
                           </button>
@@ -2558,7 +2558,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   <span className="text-xs font-extrabold uppercase tracking-wider text-teal-700 block">
                     DIỄN ĐÀN HỎI ĐÁP SEO · CÓ PHẢN HỒI XÁC THỰC TỪ THỔ ĐỊA & CHỦ CƠ SỞ
                   </span>
-                  <h3 className="text-lg font-extrabold text-[#073161]">
+                  <h3 className="text-lg font-extrabold text-brand-800">
                     Hỏi Đáp Kinh Nghiệm Đường Đèo, Săn Mây & Review Thực Tế
                   </h3>
                   <p className="text-xs text-slate-600">
@@ -2593,7 +2593,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       onClick={() => setFilter(tab.id)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-colors ${
                         filter === tab.id
-                          ? 'bg-[#073161] text-white'
+                          ? 'bg-brand-800 text-white'
                           : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
                       }`}
                     >
@@ -2665,7 +2665,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   />
                   <button
                     type="submit"
-                    className="bg-[#073161] text-white font-extrabold text-xs px-5 py-2 rounded-xl cursor-pointer"
+                    className="bg-brand-800 text-white font-extrabold text-xs px-5 py-2 rounded-xl cursor-pointer"
                   >
                     Đăng lên diễn đàn
                   </button>
@@ -2683,8 +2683,8 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                         <div className="flex items-center gap-2">
-                          <span className="font-extrabold text-[#073161]">{post.authorName}</span>
-                          <span className="px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-[10px] font-bold text-teal-800">
+                          <span className="font-extrabold text-brand-800">{post.authorName}</span>
+                          <span className="px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-xs font-bold text-teal-800">
                             {post.type === 'road_alert'
                               ? '#đường-đèo'
                               : post.type === 'share_room'
@@ -2709,9 +2709,9 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                             >
                               <div className="flex flex-wrap items-center justify-between gap-2">
                                 <div className="flex items-center gap-1.5">
-                                  <span className="font-extrabold text-[#073161]">{rep.authorName}</span>
+                                  <span className="font-extrabold text-brand-800">{rep.authorName}</span>
                                   <span
-                                    className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                                    className={`text-xs font-extrabold px-2 py-0.5 rounded-full ${
                                       rep.isOfficialVerified
                                         ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
                                         : 'bg-slate-100 text-slate-700'
@@ -2720,7 +2720,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                                     {rep.isOfficialVerified ? `✅ ${rep.authorRole} Xác Thực` : rep.authorRole}
                                   </span>
                                 </div>
-                                <span className="text-[11px] text-slate-400">{rep.createdAt}</span>
+                                <span className="text-xs text-slate-400">{rep.createdAt}</span>
                               </div>
                               <p className="text-xs text-slate-700 leading-relaxed">{rep.body}</p>
                             </div>
@@ -2732,7 +2732,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         <button
                           type="button"
                           onClick={() => setActiveReplyPostId(isReplying ? null : post.id)}
-                          className="text-xs font-extrabold text-teal-800 hover:text-[#073161] cursor-pointer"
+                          className="text-xs font-extrabold text-teal-800 hover:text-brand-800 cursor-pointer"
                         >
                           {isReplying
                             ? '✕ Đóng khung trả lời'
@@ -2756,9 +2756,9 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                                 key={r}
                                 type="button"
                                 onClick={() => setReplyAuthorRole(r)}
-                                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold cursor-pointer ${
+                                className={`px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${
                                   replyAuthorRole === r
-                                    ? 'bg-[#073161] text-white'
+                                    ? 'bg-brand-800 text-white'
                                     : 'bg-slate-100 text-slate-700'
                                 }`}
                               >
@@ -2805,7 +2805,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   <span className="text-xs font-extrabold uppercase tracking-wider text-teal-700 block">
                     DANH BẠ KÊNH CHÍNH CHỦ ĐÃ XÁC THỰC · ĐỒNG BỘ TỪ HỆ THỐNG ADMIN
                   </span>
-                  <h2 className="text-xl font-extrabold text-[#073161] mt-0.5">
+                  <h2 className="text-xl font-extrabold text-brand-800 mt-0.5">
                     Bản Đồ Kênh Chính Thức Tà Xùa Trip (TikTok · Facebook · Zalo OA · Hotline 24/7)
                   </h2>
                   <p className="text-xs text-slate-600 mt-1 max-w-3xl">
@@ -2830,7 +2830,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       onClick={() => setSocialPlatformFilter(f.id)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-extrabold cursor-pointer transition-all ${
                         socialPlatformFilter === f.id
-                          ? 'bg-[#073161] text-white'
+                          ? 'bg-brand-800 text-white'
                           : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                       }`}
                     >
@@ -2912,30 +2912,30 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     return (
                       <div
                         key={channel.id}
-                        className="bg-slate-50 border border-slate-200 hover:border-[#073161]/40 rounded-2xl p-5 flex flex-col justify-between gap-4 transition-all"
+                        className="bg-slate-50 border border-slate-200 hover:border-brand-800/40 rounded-2xl p-5 flex flex-col justify-between gap-4 transition-all"
                       >
                         <div className="space-y-2">
                           <div className="flex flex-wrap items-center justify-between gap-2">
                             <span
-                              className={`text-[11px] font-extrabold px-2.5 py-1 rounded-full border ${meta.badgeClass}`}
+                              className={`text-xs font-extrabold px-2.5 py-1 rounded-full border ${meta.badgeClass}`}
                             >
                               {meta.iconLabel}
                             </span>
                             <div className="flex items-center gap-1.5">
                               {channel.memberOrFollowerCount && (
-                                <span className="text-[11px] font-bold text-slate-600 bg-white px-2.5 py-0.5 rounded-full border border-slate-200">
+                                <span className="text-xs font-bold text-slate-600 bg-white px-2.5 py-0.5 rounded-full border border-slate-200">
                                   {channel.memberOrFollowerCount}
                                 </span>
                               )}
                               {channel.isVerifiedOfficial && (
-                                <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                                <span className="text-xs font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
                                   ✓ Chính chủ
                                 </span>
                               )}
                             </div>
                           </div>
 
-                          <h3 className="text-sm sm:text-base font-extrabold text-[#073161]">
+                          <h3 className="text-sm sm:text-base font-extrabold text-brand-800">
                             {channel.title}
                           </h3>
                           <div className="text-xs font-mono font-bold text-teal-800">
@@ -2950,7 +2950,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                               href={channel.url}
                               target={channel.url.startsWith('tel:') ? undefined : '_blank'}
                               rel="noopener noreferrer"
-                              className="bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl inline-flex items-center gap-1.5"
+                              className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl inline-flex items-center gap-1.5"
                             >
                               <span>{meta.btnLabel}</span>
                               <ExternalLink className="w-3.5 h-3.5" />
@@ -3003,7 +3003,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                               className="w-24 h-24 rounded-xl border border-slate-200 shrink-0"
                             />
                             <div className="space-y-1 text-xs">
-                              <div className="font-extrabold text-[#073161]">
+                              <div className="font-extrabold text-brand-800">
                                 Quét Mã QR Mở Nhanh Trên Điện Thoại
                               </div>
                               <p className="text-slate-600">
@@ -3042,13 +3042,13 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                 </ul>
               </div>
 
-              <div className="lg:col-span-6 bg-gradient-to-br from-[#073161] to-teal-900 text-white rounded-3xl p-6 space-y-4">
+              <div className="lg:col-span-6 bg-gradient-to-br from-brand-800 to-teal-900 text-white rounded-3xl p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
                     <Award className="w-4 h-4" />
                     <span>CHIA SẺ CỘNG ĐỒNG · NHẬN NGAY +30 ĐIỂM MÂY</span>
                   </span>
-                  <span className="text-[11px] font-bold bg-white/15 px-2.5 py-0.5 rounded-full">
+                  <span className="text-xs font-bold bg-white/15 px-2.5 py-0.5 rounded-full">
                     Đổi Voucher 179 Cơ sở
                   </span>
                 </div>
@@ -3083,7 +3083,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                 </div>
 
                 <div className="bg-slate-950/50 border border-white/15 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <span className="font-mono text-[11px] text-teal-200 truncate">
+                  <span className="font-mono text-xs text-teal-200 truncate">
                     {referralShareUrl}
                   </span>
                   <button

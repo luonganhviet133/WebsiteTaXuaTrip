@@ -74,9 +74,9 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
     >
       <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="bg-[#073161] text-white p-5 flex items-start justify-between gap-4 shrink-0">
+        <div className="bg-brand-800 text-white p-5 flex items-start justify-between gap-4 shrink-0">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-extrabold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-extrabold uppercase tracking-wider mb-2">
               <Sparkles className="w-3 h-3" />
               <span>Đánh Giá Dịch Vụ Thực Tế</span>
             </div>
@@ -105,7 +105,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                 <CheckCircle2 className="w-9 h-9" />
               </div>
               <div>
-                <h4 className="text-lg font-black text-[#073161]">
+                <h4 className="text-lg font-black text-brand-800">
                   Cảm Ơn Đánh Giá Của Bạn!
                 </h4>
                 <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto mt-1 leading-relaxed">
@@ -118,7 +118,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full py-3 bg-[#073161] text-white text-xs font-bold rounded-2xl hover:bg-[#0a3f7c] cursor-pointer"
+                className="w-full py-3 bg-brand-800 text-white text-xs font-bold rounded-2xl hover:bg-brand-700 cursor-pointer"
               >
                 Đóng
               </button>
@@ -195,7 +195,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   placeholder="Chia sẻ về tầm nhìn view mây, chất lượng phòng, thái độ của chủ cơ sở, đồ ăn và đường đi..."
-                  className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161] text-slate-800"
+                  className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                 />
               </div>
 
@@ -209,7 +209,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                   required
                   value={reviewerName}
                   onChange={(e) => setReviewerName(e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161] text-slate-800"
+                  className="w-full px-3.5 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                 />
               </div>
 
@@ -223,7 +223,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-[#073161] hover:bg-[#0a3f7c] text-white text-xs font-extrabold rounded-2xl shadow-md transition-all cursor-pointer"
+                  className="px-6 py-2.5 bg-brand-800 hover:bg-brand-700 text-white text-xs font-extrabold rounded-2xl shadow-md transition-all cursor-pointer"
                 >
                   Gửi Đánh Giá & Nhận Điểm
                 </button>

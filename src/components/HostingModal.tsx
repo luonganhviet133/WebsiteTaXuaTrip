@@ -219,7 +219,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>ĐÃ KẾT NỐI HOSTING TRỰC TIẾP · ONLINE 24/7</span>
           </div>
-          <h2 id="hosting-modal-title" className="text-2xl font-extrabold text-[#073161]">
+          <h2 id="hosting-modal-title" className="text-2xl font-extrabold text-brand-800">
             Trung Tâm Kết Nối Hosting & Link Chạy Trực Tiếp
           </h2>
           <p className="text-xs sm:text-sm text-slate-600">
@@ -234,7 +234,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
             onClick={() => setActiveTab('live')}
             className={`py-2.5 px-3 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
               activeTab === 'live'
-                ? 'bg-[#073161] text-white shadow-xs'
+                ? 'bg-brand-800 text-white shadow-xs'
                 : 'text-slate-700 hover:bg-white/60'
             }`}
           >
@@ -246,7 +246,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
             onClick={() => setActiveTab('deploy')}
             className={`py-2.5 px-3 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
               activeTab === 'deploy'
-                ? 'bg-[#073161] text-white shadow-xs'
+                ? 'bg-brand-800 text-white shadow-xs'
                 : 'text-slate-700 hover:bg-white/60'
             }`}
           >
@@ -258,7 +258,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
             onClick={() => setActiveTab('download')}
             className={`py-2.5 px-3 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
               activeTab === 'download'
-                ? 'bg-[#073161] text-white shadow-xs'
+                ? 'bg-brand-800 text-white shadow-xs'
                 : 'text-slate-700 hover:bg-white/60'
             }`}
           >
@@ -275,12 +275,12 @@ export const HostingModal: React.FC<HostingModalProps> = ({
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <Server className="w-5 h-5 text-emerald-700" />
-                  <span className="font-extrabold text-sm text-[#073161]">
+                  <span className="font-extrabold text-sm text-brand-800">
                     Link Hosting Đang Hoạt Động (Google Cloud Run)
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-bold bg-emerald-700 text-white px-2.5 py-0.5 rounded-full">
+                  <span className="text-xs font-bold bg-emerald-700 text-white px-2.5 py-0.5 rounded-full">
                     SSL HTTPS · Đang Online ({pingLatency ?? 28}ms)
                   </span>
                   <button
@@ -300,14 +300,14 @@ export const HostingModal: React.FC<HostingModalProps> = ({
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-                <div className="flex-1 bg-white border border-emerald-300 rounded-xl px-3.5 py-2.5 font-mono text-[11px] sm:text-xs text-[#073161] font-bold select-all break-all">
+                <div className="flex-1 bg-white border border-emerald-300 rounded-xl px-3.5 py-2.5 font-mono text-xs text-brand-800 font-bold select-all break-all">
                   {primaryLiveUrl}
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     type="button"
                     onClick={() => handleCopy(primaryLiveUrl, 'primary')}
-                    className="bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-1.5 cursor-pointer"
+                    className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-1.5 cursor-pointer"
                   >
                     {copiedUrl === 'primary' ? (
                       <>
@@ -356,7 +356,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                     href="/ta-xua-trip-chay-ngay.html"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#073161] font-extrabold hover:underline inline-flex items-center gap-1"
+                    className="text-brand-800 font-extrabold hover:underline inline-flex items-center gap-1"
                   >
                     <span>Mở bản độc lập</span>
                     <ExternalLink className="w-3 h-3" />
@@ -368,12 +368,12 @@ export const HostingModal: React.FC<HostingModalProps> = ({
             {/* Technical Connection Details & Mobile Access */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-1">
-                <div className="text-[11px] font-bold text-slate-500 uppercase">Hạ tầng Máy chủ</div>
-                <div className="text-sm font-extrabold text-[#073161]">Google Cloud Run</div>
+                <div className="text-xs font-bold text-slate-500 uppercase">Hạ tầng Máy chủ</div>
+                <div className="text-sm font-extrabold text-brand-800">Google Cloud Run</div>
                 <div className="text-xs text-slate-600">Khu vực: Châu Á (asia-east1)</div>
               </div>
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-1">
-                <div className="text-[11px] font-bold text-slate-500 uppercase">Bảo mật & Giao thức</div>
+                <div className="text-xs font-bold text-slate-500 uppercase">Bảo mật & Giao thức</div>
                 <div className="text-sm font-extrabold text-emerald-700 flex items-center gap-1">
                   <ShieldCheck className="w-4 h-4" />
                   <span>SSL Tự Động (HTTPS)</span>
@@ -381,8 +381,8 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                 <div className="text-xs text-slate-600">Không bị chặn CORS trên trình duyệt</div>
               </div>
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-1">
-                <div className="text-[11px] font-bold text-slate-500 uppercase">Origin Hiện Tại</div>
-                <div className="text-xs font-mono font-bold text-[#073161] truncate" title={currentOrigin}>
+                <div className="text-xs font-bold text-slate-500 uppercase">Origin Hiện Tại</div>
+                <div className="text-xs font-mono font-bold text-brand-800 truncate" title={currentOrigin}>
                   {currentOrigin}
                 </div>
                 <button
@@ -403,7 +403,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h3 className="font-extrabold text-sm text-[#073161]">
+                  <h3 className="font-extrabold text-sm text-brand-800">
                     Kết Nối API & Đẩy Trực Tiếp Lên Hosting Riêng (Vercel / Netlify)
                   </h3>
                   <p className="text-xs text-slate-600 mt-0.5">
@@ -485,7 +485,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                           ? 'Dán token từ vercel.com/account/tokens...'
                           : 'Dán token từ app.netlify.com...'
                       }
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#073161]"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
                     />
                   </div>
                 </div>
@@ -508,7 +508,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                         href={deployedUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-mono text-xs font-extrabold text-[#073161] hover:underline break-all"
+                        className="font-mono text-xs font-extrabold text-brand-800 hover:underline break-all"
                       >
                         {deployedUrl}
                       </a>
@@ -554,7 +554,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                   <button
                     type="submit"
                     disabled={isDeploying}
-                    className="bg-[#073161] hover:bg-[#0a3f7c] disabled:opacity-60 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl inline-flex items-center gap-2 cursor-pointer shadow-xs"
+                    className="bg-brand-800 hover:bg-brand-700 disabled:opacity-60 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl inline-flex items-center gap-2 cursor-pointer shadow-xs"
                   >
                     <Rocket className="w-4 h-4" />
                     <span>
@@ -610,7 +610,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <FileCode className="w-5 h-5 text-teal-700" />
-                  <span className="font-extrabold text-sm text-[#073161]">
+                  <span className="font-extrabold text-sm text-brand-800">
                     1. Bản Đóng Gói 1 File Duy Nhất (ta-xua-trip-chay-ngay.html)
                   </span>
                 </div>
@@ -628,7 +628,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                     'text/html;charset=utf-8'
                   )
                 }
-                className="shrink-0 bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-2 cursor-pointer"
+                className="shrink-0 bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-2 cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 <span>
@@ -643,8 +643,8 @@ export const HostingModal: React.FC<HostingModalProps> = ({
             <div className="bg-[#f8fafc] border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <FolderArchive className="w-5 h-5 text-[#073161]" />
-                  <span className="font-extrabold text-sm text-[#073161]">
+                  <FolderArchive className="w-5 h-5 text-brand-800" />
+                  <span className="font-extrabold text-sm text-brand-800">
                     2. Gói Bản Build Đã Sửa Lỗi CORS (ta-xua-trip-build.zip)
                   </span>
                 </div>
@@ -662,7 +662,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                     'application/zip'
                   )
                 }
-                className="shrink-0 bg-white hover:bg-slate-100 text-[#073161] border border-slate-300 font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-2 cursor-pointer"
+                className="shrink-0 bg-white hover:bg-slate-100 text-brand-800 border border-slate-300 font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-2 cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 <span>Tải Bản Build (.ZIP)</span>
@@ -674,7 +674,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <FolderArchive className="w-5 h-5 text-slate-700" />
-                  <span className="font-extrabold text-sm text-[#073161]">
+                  <span className="font-extrabold text-sm text-brand-800">
                     3. Gói Mã Nguồn React + Vite (ta-xua-trip-source.zip)
                   </span>
                 </div>
@@ -692,7 +692,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                     'application/zip'
                   )
                 }
-                className="shrink-0 bg-white hover:bg-slate-100 text-[#073161] border border-slate-300 font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-2 cursor-pointer"
+                className="shrink-0 bg-white hover:bg-slate-100 text-brand-800 border border-slate-300 font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-2 cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 <span>Tải Mã Nguồn (.ZIP)</span>

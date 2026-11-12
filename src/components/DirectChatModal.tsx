@@ -107,7 +107,7 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
     >
       <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border border-slate-200 flex flex-col h-[600px] max-h-[92vh]">
         {/* Header */}
-        <div className="bg-[#073161] text-white p-4 flex items-center justify-between gap-3 shadow-sm shrink-0">
+        <div className="bg-brand-800 text-white p-4 flex items-center justify-between gap-3 shadow-sm shrink-0">
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative">
               <img
@@ -119,7 +119,7 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <h3 className="font-extrabold text-sm truncate">{listing.title}</h3>
-                <span className="text-[11px] bg-amber-400/20 text-amber-200 border border-amber-300/40 px-2 py-0.5 rounded-full font-bold shrink-0">
+                <span className="text-xs bg-amber-400/20 text-amber-200 border border-amber-300/40 px-2 py-0.5 rounded-full font-bold shrink-0">
                   Bản demo
                 </span>
               </div>
@@ -199,7 +199,7 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 bg-[#073161] text-white text-xs font-bold rounded-xl hover:bg-[#0a3f7c] cursor-pointer"
+                  className="px-4 py-1.5 bg-brand-800 text-white text-xs font-bold rounded-xl hover:bg-brand-700 cursor-pointer"
                 >
                   Xác nhận thành viên
                 </button>
@@ -217,13 +217,13 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
                 key={msg.id}
                 className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
               >
-                <div className="text-[10px] text-slate-400 mb-1 font-medium px-1">
+                <div className="text-xs text-slate-400 mb-1 font-medium px-1">
                   {msg.senderName} · {msg.timestamp}
                 </div>
                 <div
                   className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs leading-relaxed shadow-xs ${
                     isMe
-                      ? 'bg-[#073161] text-white rounded-tr-none'
+                      ? 'bg-brand-800 text-white rounded-tr-none'
                       : 'bg-white text-slate-800 border border-slate-200/90 rounded-tl-none'
                   }`}
                 >
@@ -239,13 +239,13 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
 
         {/* Quick Suggestion Chips */}
         <div className="p-2 bg-slate-100/90 border-t border-slate-200/80 overflow-x-auto no-scrollbar flex items-center gap-1.5 shrink-0">
-          <span className="text-[10px] text-slate-500 font-bold shrink-0 ml-1">Gợi ý hỏi:</span>
+          <span className="text-xs text-slate-500 font-bold shrink-0 ml-1">Gợi ý hỏi:</span>
           {quickQuestions.map((q, idx) => (
             <button
               key={idx}
               type="button"
               onClick={() => handleSend(q)}
-              className="text-[11px] whitespace-nowrap bg-white hover:bg-teal-50 hover:text-teal-800 border border-slate-200 text-slate-700 px-2.5 py-1 rounded-full font-medium transition-colors cursor-pointer shrink-0"
+              className="text-xs whitespace-nowrap bg-white hover:bg-teal-50 hover:text-teal-800 border border-slate-200 text-slate-700 px-2.5 py-1 rounded-full font-medium transition-colors cursor-pointer shrink-0"
             >
               {q}
             </button>
@@ -269,14 +269,14 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
                 ? 'Nhập tin nhắn cho chủ cơ sở...'
                 : 'Đăng ký thành viên để gửi tin nhắn...'
             }
-            className="flex-1 px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-full text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#073161] focus:bg-white transition-all"
+            className="flex-1 px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-full text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-800 focus:bg-white transition-all"
           />
 
           <button
             type="button"
             onClick={() => handleSend()}
             disabled={!inputText.trim()}
-            className="w-10 h-10 rounded-full bg-[#073161] hover:bg-[#0a3f7c] text-white flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0 shadow-sm"
+            className="w-10 h-10 rounded-full bg-brand-800 hover:bg-brand-700 text-white flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0 shadow-sm"
           >
             <Send className="w-4 h-4" />
           </button>

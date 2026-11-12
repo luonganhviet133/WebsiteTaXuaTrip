@@ -1,6 +1,61 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
+/*
+ * Bộ token thiết kế (U1). Màu mới trong giao diện phải lấy từ đây.
+ * Chữ: dùng thang mặc định của Tailwind — text-xs 12px (tối thiểu cho nội dung đọc),
+ * text-sm 14px, text-base 16px (chữ thân, ô nhập). Khoảng cách: thang 4px mặc định.
+ */
+@theme {
+  --font-sans: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Thương hiệu: xanh đậm Tà Xùa (800 là màu chính đang dùng trong toàn site) */
+  --color-brand-50: #eef4fb;
+  --color-brand-100: #d6e4f5;
+  --color-brand-200: #adc8eb;
+  --color-brand-300: #7ea6dc;
+  --color-brand-400: #4b7fc6;
+  --color-brand-500: #2a5fa8;
+  --color-brand-600: #154a8f;
+  --color-brand-700: #0a3f7c;
+  --color-brand-800: #073161;
+  --color-brand-900: #04244d;
+  --color-brand-950: #021733;
+
+  --radius-control: 0.75rem;
+  --radius-card: 1rem;
+  --radius-modal: 1.5rem;
+}
+
+/* Màu phụ và màu trạng thái: tên theo ý nghĩa, giá trị lấy từ bảng màu Tailwind */
+@theme inline {
+  --color-accent-50: var(--color-teal-50);
+  --color-accent-100: var(--color-teal-100);
+  --color-accent-500: var(--color-teal-500);
+  --color-accent-600: var(--color-teal-600);
+  --color-accent-700: var(--color-teal-700);
+
+  --color-success-50: var(--color-emerald-50);
+  --color-success-200: var(--color-emerald-200);
+  --color-success-600: var(--color-emerald-600);
+  --color-success-700: var(--color-emerald-700);
+
+  --color-warning-50: var(--color-amber-50);
+  --color-warning-200: var(--color-amber-200);
+  --color-warning-600: var(--color-amber-600);
+  --color-warning-700: var(--color-amber-700);
+
+  --color-danger-50: var(--color-rose-50);
+  --color-danger-200: var(--color-rose-200);
+  --color-danger-600: var(--color-rose-600);
+  --color-danger-700: var(--color-rose-700);
+
+  --color-info-50: var(--color-sky-50);
+  --color-info-200: var(--color-sky-200);
+  --color-info-600: var(--color-sky-600);
+  --color-info-700: var(--color-sky-700);
+}
+
 @layer base {
   html, body {
     overflow-x: hidden;
@@ -9,9 +64,9 @@
   }
 
   body {
-    font-family: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: #f8fafc;
-    color: #0f172a;
+    font-family: var(--font-sans);
+    background-color: var(--color-slate-50);
+    color: var(--color-slate-900);
   }
 
   h1, h2, h3, h4, h5, h6 {

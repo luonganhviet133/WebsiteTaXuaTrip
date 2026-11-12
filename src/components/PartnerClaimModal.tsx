@@ -61,9 +61,9 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
     >
       <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#073161] to-[#04244d] text-white p-5 sm:p-6 flex items-start justify-between gap-4 shrink-0">
+        <div className="bg-gradient-to-r from-brand-800 to-brand-900 text-white p-5 sm:p-6 flex items-start justify-between gap-4 shrink-0">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-extrabold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-extrabold uppercase tracking-wider mb-2">
               <Award className="w-3 h-3" />
               <span>Chương trình Đối Tác Uy Tín</span>
             </div>
@@ -92,12 +92,12 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                 <CheckCircle2 className="w-9 h-9" />
               </div>
               <div>
-                <h4 className="text-lg font-black text-[#073161]">
+                <h4 className="text-lg font-black text-brand-800">
                   Đã Gửi Hồ Sơ Xác Thực Thành Công!
                 </h4>
                 <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto mt-1 leading-relaxed">
                   Cảm ơn bạn! Ban quản trị Tà Xùa Trip đã tiếp nhận yêu cầu xác nhận cơ sở{' '}
-                  <strong className="text-[#073161]">{listing.title}</strong>. Chúng tôi sẽ liên hệ số điện thoại{' '}
+                  <strong className="text-brand-800">{listing.title}</strong>. Chúng tôi sẽ liên hệ số điện thoại{' '}
                   <strong>{ownerPhone}</strong> trong vòng 2-4 giờ làm việc để hoàn tất cấp quyền quản lý cho bạn.
                 </p>
               </div>
@@ -118,7 +118,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full py-3 bg-[#073161] text-white text-xs font-bold rounded-2xl hover:bg-[#0a3f7c] transition-colors cursor-pointer"
+                className="w-full py-3 bg-brand-800 text-white text-xs font-bold rounded-2xl hover:bg-brand-700 transition-colors cursor-pointer"
               >
                 Đóng cửa sổ
               </button>
@@ -133,10 +133,10 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                   className="w-12 h-12 rounded-xl object-cover shrink-0"
                 />
                 <div className="min-w-0">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
+                  <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
                     Cơ sở đang yêu cầu xác nhận:
                   </div>
-                  <div className="text-sm font-extrabold text-[#073161] truncate">
+                  <div className="text-sm font-extrabold text-brand-800 truncate">
                     {listing.title}
                   </div>
                   <div className="text-xs text-slate-500">{listing.address}</div>
@@ -155,7 +155,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                     value={ownerName}
                     onChange={(e) => setOwnerName(e.target.value)}
                     placeholder="VD: Nguyễn Văn A (Chủ Homestay)"
-                    className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161] text-slate-800"
+                    className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                   />
                 </div>
 
@@ -170,7 +170,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                       value={ownerPhone}
                       onChange={(e) => setOwnerPhone(e.target.value)}
                       placeholder="0981 xxx xxx"
-                      className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161] text-slate-800"
+                      className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                     />
                   </div>
                   <div>
@@ -183,7 +183,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                       value={zalo}
                       onChange={(e) => setZalo(e.target.value)}
                       placeholder="0981 xxx xxx"
-                      className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161] text-slate-800"
+                      className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                     />
                   </div>
                 </div>
@@ -198,7 +198,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                     value={cccdOrTax}
                     onChange={(e) => setCccdOrTax(e.target.value)}
                     placeholder="VD: 014201xxxxxx hoặc MST Hộ kinh doanh"
-                    className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161] text-slate-800"
+                    className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                   />
                 </div>
 
@@ -211,7 +211,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                     value={proofNote}
                     onChange={(e) => setProofNote(e.target.value)}
                     placeholder="Mô tả giấy phép kinh doanh, hợp đồng thuê đất hoặc ảnh biển hiệu tại thực địa..."
-                    className="w-full px-3.5 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161] text-slate-800"
+                    className="w-full px-3.5 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                   />
                 </div>
 
@@ -222,7 +222,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                     required
                     checked={hasAgreedTerms}
                     onChange={(e) => setHasAgreedTerms(e.target.checked)}
-                    className="mt-0.5 rounded text-[#073161] focus:ring-[#073161]"
+                    className="mt-0.5 rounded text-brand-800 focus:ring-brand-800"
                   />
                   <span className="text-xs text-slate-600 leading-snug">
                     Tôi cam kết là chủ sở hữu / người đại diện hợp pháp của cơ sở này, cung cấp thông tin phòng và giá thật, không chặt chém và bảo vệ quyền lợi của du khách.
@@ -242,7 +242,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                 <button
                   type="submit"
                   disabled={!hasAgreedTerms}
-                  className="px-6 py-2.5 bg-[#073161] hover:bg-[#0a3f7c] text-white text-xs font-extrabold rounded-2xl shadow-md transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="px-6 py-2.5 bg-brand-800 hover:bg-brand-700 text-white text-xs font-extrabold rounded-2xl shadow-md transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
                   Xác Nhận & Gửi Hồ Sơ
                 </button>

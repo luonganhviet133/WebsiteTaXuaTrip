@@ -155,35 +155,35 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
     switch (status) {
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900">
             <Clock className="w-3 h-3" />
             <span>Giữ chỗ 30 phút · Chờ cọc</span>
           </span>
         );
       case 'confirmed':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-teal-100 text-teal-900">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-teal-100 text-teal-900">
             <CheckCircle2 className="w-3 h-3" />
             <span>Đã xác nhận giữ phòng</span>
           </span>
         );
       case 'checked_in':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-100 text-indigo-900">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-900">
             <ShieldCheck className="w-3 h-3" />
             <span>Đã Check-in tại cơ sở</span>
           </span>
         );
       case 'completed':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-900">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900">
             <CheckCircle2 className="w-3 h-3" />
             <span>Đã hoàn tất chuyến đi</span>
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
             Đã hủy
           </span>
         );
@@ -209,7 +209,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
     >
       <div className="bg-white border border-slate-200 rounded-t-3xl sm:rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl sm:my-auto max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#04244d] via-[#073161] to-[#0a6b6e] text-white px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between shrink-0">
+        <div className="bg-gradient-to-r from-brand-900 via-brand-800 to-[#0a6b6e] text-white px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white/15 flex items-center justify-center shrink-0">
               <CalendarCheck className="w-5 h-5 text-teal-300" />
@@ -218,7 +218,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               <h2 className="text-base sm:text-xl font-extrabold truncate">
                 Chuyến Đi & Đơn Đặt Của Tôi ({activeBookings.length})
               </h2>
-              <p className="text-[11px] sm:text-xs text-slate-200 line-clamp-1">
+              <p className="text-xs text-slate-200 line-clamp-1">
                 Tra cứu mã giữ chỗ, quét mã VietQR đặt cọc tự động, mở Phiếu nhận phòng E-Voucher
               </p>
             </div>
@@ -243,10 +243,10 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               onChange={(e) => setLookupQuery(e.target.value)}
               placeholder="Nhập mã đặt chỗ (VD: bk-101), tên homestay hoặc SĐT..."
               aria-label="Tìm kiếm mã đặt chỗ hoặc số điện thoại"
-              className="w-full bg-white border border-slate-200 rounded-2xl pl-9 pr-4 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#073161]"
+              className="w-full bg-white border border-slate-200 rounded-2xl pl-9 pr-4 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-brand-800"
             />
           </div>
-          <div className="text-[11px] font-bold text-slate-500">
+          <div className="text-xs font-bold text-slate-500">
             Hiển thị {filteredBookings.length}/{activeBookings.length} đơn đặt {serverBookings !== null && '(Đã đồng bộ tài khoản)'}
           </div>
         </div>
@@ -256,11 +256,11 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
           {/* Unauthenticated State (S6) */}
           {fetchStatus === 'unauthenticated' && (
             <div className="p-12 text-center flex flex-col items-center justify-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-[#073161]">
-                <LogIn className="w-8 h-8 text-[#073161]" />
+              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-brand-800">
+                <LogIn className="w-8 h-8 text-brand-800" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-base font-extrabold text-[#073161]">Vui Lòng Đăng Nhập</h3>
+                <h3 className="text-base font-extrabold text-brand-800">Vui Lòng Đăng Nhập</h3>
                 <p className="text-xs text-slate-500 max-w-sm">
                   Để bảo vệ quyền riêng tư và dữ liệu cá nhân, bạn cần đăng nhập tài khoản để xem các đơn đặt và chuyến đi của mình.
                 </p>
@@ -272,7 +272,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                     onClose();
                     onRequireLogin();
                   }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#073161] hover:bg-[#0a4585] text-white text-xs font-bold shadow-md cursor-pointer transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-brand-800 hover:bg-[#0a4585] text-white text-xs font-bold shadow-md cursor-pointer transition-colors"
                 >
                   <LogIn className="w-4 h-4" />
                   <span>Đăng nhập ngay</span>
@@ -284,7 +284,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
           {/* Loading State */}
           {isLoadingBookings && (
             <div className="p-12 text-center text-slate-500 space-y-2">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#073161]"></div>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-800"></div>
               <p className="text-xs font-semibold">Đang tải lịch sử chuyến đi của bạn...</p>
             </div>
           )}
@@ -295,7 +295,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
                 <CalendarCheck className="w-8 h-8" />
               </div>
-              <h3 className="text-base font-extrabold text-[#073161]">
+              <h3 className="text-base font-extrabold text-brand-800">
                 {lookupQuery.trim() ? 'Không Tìm Thấy Đơn Đặt Phù Hợp' : 'Bạn Chưa Có Chuyến Đi Nào'}
               </h3>
               <p className="text-xs text-slate-500 max-w-sm">
@@ -329,11 +329,11 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <span className="px-2.5 py-1 rounded-lg bg-[#073161] text-white font-mono text-xs font-extrabold uppercase">
+                    <span className="px-2.5 py-1 rounded-lg bg-brand-800 text-white font-mono text-xs font-extrabold uppercase">
                       #{booking.id}
                     </span>
                     {getStatusBadge(booking.status)}
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${proofStatus.statusBadgeColor}`}>
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${proofStatus.statusBadgeColor}`}>
                       {proofStatus.statusLabel}
                     </span>
                     <span className="text-xs text-slate-500 font-medium">
@@ -341,8 +341,8 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="text-[11px] text-slate-500 block">Tổng chi phí ghi nhận</span>
-                    <span className="text-base font-extrabold text-[#073161] tabular-nums">
+                    <span className="text-xs text-slate-500 block">Tổng chi phí ghi nhận</span>
+                    <span className="text-base font-extrabold text-brand-800 tabular-nums">
                       {formatVND(booking.totalAmount)}
                     </span>
                   </div>
@@ -350,7 +350,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
                   <div className="md:col-span-7 space-y-1">
-                    <h3 className="text-base font-extrabold text-[#073161]">
+                    <h3 className="text-base font-extrabold text-brand-800">
                       {booking.listingTitle}
                     </h3>
                     {booking.roomName && (
@@ -376,7 +376,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                         <button
                           type="button"
                           onClick={() => setPreviewReceiptUrl(proofStatus.proofImageUrl!)}
-                          className="text-[11px] font-bold text-teal-800 bg-teal-50 hover:bg-teal-100 px-2.5 py-1 rounded-lg border border-teal-200 inline-flex items-center gap-1.5 cursor-pointer"
+                          className="text-xs font-bold text-teal-800 bg-teal-50 hover:bg-teal-100 px-2.5 py-1 rounded-lg border border-teal-200 inline-flex items-center gap-1.5 cursor-pointer"
                         >
                           <ImageIcon className="w-3.5 h-3.5 text-teal-700" />
                           <span>Xem Ảnh Biên Lai Đã Nộp</span>
@@ -396,7 +396,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                             };
                             setPreviewReceiptUrl(booking.paymentProof.imageUrl);
                           }}
-                          className="text-[11px] font-bold text-sky-800 bg-sky-50 hover:bg-sky-100 px-2.5 py-1 rounded-lg border border-sky-200 inline-flex items-center gap-1.5 cursor-pointer"
+                          className="text-xs font-bold text-sky-800 bg-sky-50 hover:bg-sky-100 px-2.5 py-1 rounded-lg border border-sky-200 inline-flex items-center gap-1.5 cursor-pointer"
                         >
                           <UploadCloud className="w-3.5 h-3.5 text-sky-700" />
                           <span>+ Tải Biên Lai Chuyển Khoản Bổ Sung</span>
@@ -404,7 +404,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                       ) : null}
 
                       {booking.paymentStatus === 'partner_confirmed' && (
-                        <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                        <span className="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                           ✓ Đối tác đã xác nhận đã nhận tiền
                         </span>
                       )}
@@ -422,8 +422,8 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                       }}
                       className={`px-3.5 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer border transition-colors ${
                         isVietQrOpen
-                          ? 'bg-[#073161] text-white border-[#073161]'
-                          : 'bg-slate-50 hover:bg-slate-100 text-[#073161] border-slate-200'
+                          ? 'bg-brand-800 text-white border-brand-800'
+                          : 'bg-slate-50 hover:bg-slate-100 text-brand-800 border-slate-200'
                       }`}
                     >
                       <CreditCard className="w-3.5 h-3.5" />
@@ -488,7 +488,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                       <button
                         type="button"
                         onClick={() => onSimulateCompleteBooking(booking.id)}
-                        className="px-3 py-1.5 rounded-xl text-[11px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 cursor-pointer"
                       >
                         ✓ Đánh dấu Hoàn tất lưu trú
                       </button>
@@ -505,36 +505,36 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                         alt={`Mã VietQR chuyển khoản ${vietQr.transferMemo}`}
                         className="w-40 h-40 object-contain rounded-lg"
                       />
-                      <span className="text-[10px] font-bold text-slate-500 mt-1.5">
+                      <span className="text-xs font-bold text-slate-500 mt-1.5">
                         Quét bằng App Ngân hàng bất kỳ (Napas 247)
                       </span>
                     </div>
 
                     <div className="sm:col-span-8 space-y-2.5 text-xs">
-                      <div className="inline-flex items-center gap-1.5 text-teal-800 font-extrabold bg-teal-100/80 px-3 py-1 rounded-full text-[11px]">
+                      <div className="inline-flex items-center gap-1.5 text-teal-800 font-extrabold bg-teal-100/80 px-3 py-1 rounded-full text-xs">
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>Thanh toán Cọc Bảo Đảm 50% qua VietQR tự động</span>
                       </div>
 
                       <div className="grid grid-cols-2 gap-2.5 bg-white p-3 rounded-xl border border-slate-200">
                         <div>
-                          <span className="text-slate-500 block text-[11px]">Ngân hàng thụ hưởng:</span>
-                          <span className="font-extrabold text-[#073161]">{vietQr.bankCode} Bank</span>
+                          <span className="text-slate-500 block text-xs">Ngân hàng thụ hưởng:</span>
+                          <span className="font-extrabold text-brand-800">{vietQr.bankCode} Bank</span>
                         </div>
                         <div>
-                          <span className="text-slate-500 block text-[11px]">Số tài khoản:</span>
-                          <span className="font-mono font-extrabold text-[#073161]">
+                          <span className="text-slate-500 block text-xs">Số tài khoản:</span>
+                          <span className="font-mono font-extrabold text-brand-800">
                             {vietQr.accountNumber}
                           </span>
                         </div>
                         <div>
-                          <span className="text-slate-500 block text-[11px]">Số tiền đặt cọc (50%):</span>
+                          <span className="text-slate-500 block text-xs">Số tiền đặt cọc (50%):</span>
                           <span className="font-extrabold text-emerald-700 text-sm">
                             {formatVND(vietQr.depositAmount)}
                           </span>
                         </div>
                         <div>
-                          <span className="text-slate-500 block text-[11px]">Thanh toán khi nhận phòng:</span>
+                          <span className="text-slate-500 block text-xs">Thanh toán khi nhận phòng:</span>
                           <span className="font-bold text-slate-700">
                             {formatVND(vietQr.remainingAmount)}
                           </span>
@@ -543,17 +543,17 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
 
                       <div className="flex items-center justify-between bg-white px-3.5 py-2.5 rounded-xl border border-slate-200">
                         <div>
-                          <span className="text-[10px] text-slate-500 block">
+                          <span className="text-xs text-slate-500 block">
                             Nội dung chuyển khoản tự động:
                           </span>
-                          <span className="font-mono font-extrabold text-[#073161]">
+                          <span className="font-mono font-extrabold text-brand-800">
                             {vietQr.transferMemo}
                           </span>
                         </div>
                         <button
                           type="button"
                           onClick={() => handleCopyText(vietQr.transferMemo, booking.id)}
-                          className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[#073161] font-bold text-[11px] inline-flex items-center gap-1 cursor-pointer"
+                          className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-brand-800 font-bold text-xs inline-flex items-center gap-1 cursor-pointer"
                         >
                           {copiedMemoId === booking.id ? (
                             <>
@@ -573,7 +573,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                         <button
                           type="button"
                           onClick={() => onConfirmDepositPaid(booking.id)}
-                          className="w-full bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs py-2.5 rounded-xl cursor-pointer transition-colors"
+                          className="w-full bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs py-2.5 rounded-xl cursor-pointer transition-colors"
                         >
                           Xác nhận đã chuyển khoản cọc → Chuyển sang Đã giữ phòng
                         </button>
@@ -584,9 +584,9 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
 
                 {/* Expandable Panel 2: Digital Check-in E-Voucher */}
                 {isVoucherOpen && (
-                  <div className="bg-gradient-to-br from-[#04244d] to-[#073161] text-white rounded-2xl p-5 grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
+                  <div className="bg-gradient-to-br from-brand-900 to-brand-800 text-white rounded-2xl p-5 grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
                     <div className="sm:col-span-8 space-y-2">
-                      <div className="text-[10px] font-extrabold uppercase tracking-widest text-teal-300">
+                      <div className="text-xs font-extrabold uppercase tracking-widest text-teal-300">
                         PHIẾU NHẬN PHÒNG ĐIỆN TỬ · TÀ XÙA TRIP E-VOUCHER
                       </div>
                       <div className="text-base font-extrabold">{booking.listingTitle}</div>
@@ -595,16 +595,16 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                       </div>
                       <div className="grid grid-cols-2 gap-2 pt-2 text-xs">
                         <div className="bg-white/10 rounded-xl p-2.5">
-                          <span className="text-[10px] text-slate-300 block">NHẬN PHÒNG (từ 14:00)</span>
+                          <span className="text-xs text-slate-300 block">NHẬN PHÒNG (từ 14:00)</span>
                           <span className="font-extrabold">{booking.checkInDate}</span>
                         </div>
                         <div className="bg-white/10 rounded-xl p-2.5">
-                          <span className="text-[10px] text-slate-300 block">TRẢ PHÒNG (trước 12:00)</span>
+                          <span className="text-xs text-slate-300 block">TRẢ PHÒNG (trước 12:00)</span>
                           <span className="font-extrabold">{booking.checkOutDate}</span>
                         </div>
                       </div>
                       {matchedListing && (
-                        <div className="text-[11px] text-teal-200 pt-1 flex items-center gap-1.5">
+                        <div className="text-xs text-teal-200 pt-1 flex items-center gap-1.5">
                           <MapPin className="w-3.5 h-3.5 shrink-0" />
                           <span>
                             Khu vực: {matchedListing.area} · SĐT Chủ nhà: {matchedListing.phone} (Lưu sẵn khi mất sóng)
@@ -615,12 +615,12 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
 
                     <div className="sm:col-span-4 bg-white text-slate-900 rounded-2xl p-4 flex flex-col items-center text-center">
                       <div className="w-24 h-24 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center mb-2">
-                        <QrCode className="w-16 h-16 text-[#073161]" />
+                        <QrCode className="w-16 h-16 text-brand-800" />
                       </div>
-                      <div className="font-mono text-xs font-extrabold text-[#073161]">
+                      <div className="font-mono text-xs font-extrabold text-brand-800">
                         {booking.id.toUpperCase()}
                       </div>
-                      <div className="text-[10px] text-slate-500">
+                      <div className="text-xs text-slate-500">
                         Đưa mã này cho chủ cơ sở khi nhận phòng
                       </div>
                     </div>
@@ -636,7 +636,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
           <div className="fixed inset-0 z-60 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
             <div className="bg-white rounded-3xl p-5 max-w-md w-full space-y-3 shadow-2xl">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                <h4 className="text-sm font-extrabold text-[#073161] flex items-center gap-2">
+                <h4 className="text-sm font-extrabold text-brand-800 flex items-center gap-2">
                   <ImageIcon className="w-4 h-4 text-teal-700" />
                   <span>Biên Lai Chuyển Khoản Đã Lưu Trữ</span>
                 </h4>
@@ -660,7 +660,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setPreviewReceiptUrl(null)}
-                  className="bg-[#073161] text-white font-bold px-4 py-1.5 rounded-xl cursor-pointer"
+                  className="bg-brand-800 text-white font-bold px-4 py-1.5 rounded-xl cursor-pointer"
                 >
                   Đóng
                 </button>

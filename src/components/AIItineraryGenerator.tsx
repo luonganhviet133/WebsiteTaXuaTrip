@@ -474,7 +474,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
   return (
     <div className="bg-[#f8fafc] pb-16">
       {/* 1. HERO HEADER (Synchronized Light OTA Design System) */}
-      <div className="bg-gradient-to-br from-[#04244d] via-[#06366d] to-[#0a6b6e] text-white pt-8 pb-10 px-4 sm:px-6 lg:px-8">
+      <div className="bg-gradient-to-br from-brand-900 via-[#06366d] to-[#0a6b6e] text-white pt-8 pb-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto space-y-6">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
             <div>
@@ -500,7 +500,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
               <button
                 type="button"
                 onClick={handleDownloadOfflineHtmlFile}
-                className="px-4 py-2.5 rounded-full bg-white hover:bg-teal-50 text-[#073161] font-extrabold text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2.5 rounded-full bg-white hover:bg-teal-50 text-brand-800 font-extrabold text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <FileDown className="w-4 h-4 text-teal-700" />
                 <span>Tải File Lịch Trình Offline (.HTML)</span>
@@ -513,7 +513,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               {/* Control 1: Duration */}
               <div>
-                <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
+                <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">
                   1. Thời lượng chuyến đi
                 </label>
                 <div className="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
@@ -530,7 +530,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                       onClick={() => setDuration(d.id)}
                       className={`py-1.5 px-2 rounded-lg text-xs font-extrabold cursor-pointer transition-colors ${
                         duration === d.id
-                          ? 'bg-[#073161] text-white shadow-2xs'
+                          ? 'bg-brand-800 text-white shadow-2xs'
                           : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
@@ -542,13 +542,13 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
 
               {/* Control 2: Vibe / Style */}
               <div>
-                <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
+                <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">
                   2. Phong cách trải nghiệm
                 </label>
                 <select
                   value={vibe}
                   onChange={(e) => setVibe(e.target.value as any)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-[#073161] focus:outline-none focus:border-[#073161]"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                 >
                   <option value="chill">☁️ Săn mây & Cafe Chill</option>
                   <option value="trekking">🥾 Trekking Sống Lưng & Rừng</option>
@@ -559,13 +559,13 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
 
               {/* Control 3: Preferred Stay Area */}
               <div>
-                <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
+                <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">
                   3. Khu vực lưu trú ưu tiên
                 </label>
                 <select
                   value={preferredArea}
                   onChange={(e) => setPreferredArea(e.target.value as LocationArea)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-[#073161] focus:outline-none focus:border-[#073161]"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                 >
                   <option value="Đỉnh Gió">📍 Đỉnh Gió (Trung tâm săn mây)</option>
                   <option value="Sống Lưng Khủng Long">🦖 Sống Lưng Khủng Long</option>
@@ -576,13 +576,13 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
 
               {/* Control 4: Transport Mode */}
               <div>
-                <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
+                <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">
                   4. Phương tiện di chuyển
                 </label>
                 <select
                   value={transport}
                   onChange={(e) => setTransport(e.target.value as any)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-[#073161] focus:outline-none focus:border-[#073161]"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                 >
                   <option value="limo_bike">🚌 Xe Cabin/Limo + Thuê xe máy</option>
                   <option value="private_car">🚗 Ô tô cá nhân tự lái</option>
@@ -591,13 +591,13 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
 
               {/* Control 5: Group Size */}
               <div>
-                <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
+                <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">
                   5. Quy mô đoàn khách
                 </label>
                 <select
                   value={groupSize}
                   onChange={(e) => setGroupSize(Number(e.target.value) || 2)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-[#073161] focus:outline-none focus:border-[#073161]"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                 >
                   <option value={1}>👤 1 khách (Độc hành / Ghép đoàn)</option>
                   <option value={2}>👥 2 khách (Cặp đôi / Đôi bạn)</option>
@@ -613,7 +613,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                 <div className="inline-flex items-center gap-2 bg-teal-50 border border-teal-200 px-3.5 py-2 rounded-xl">
                   <Wallet className="w-4 h-4 text-teal-700" />
                   <span className="text-xs font-bold text-slate-700">Dự toán chi phí / 1 người:</span>
-                  <span className="text-base font-black text-[#073161] tabular-nums">
+                  <span className="text-base font-black text-brand-800 tabular-nums">
                     ~{formatVND(totalEstimatedPerPerson)}
                   </span>
                 </div>
@@ -639,7 +639,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                   className={`px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5 cursor-pointer transition-colors ${
                     isOfflineSaved
                       ? 'bg-emerald-600 text-white'
-                      : 'bg-[#073161] hover:bg-[#0a3f7c] text-white'
+                      : 'bg-brand-800 hover:bg-brand-700 text-white'
                   }`}
                 >
                   {isOfflineSaved ? <Check className="w-4 h-4" /> : <Download className="w-4 h-4" />}
@@ -652,7 +652,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#073161] border border-slate-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
+                  className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-brand-800 border border-slate-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
                 >
                   <Printer className="w-4 h-4" />
                   <span>In / Xuất PDF</span>
@@ -678,7 +678,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                     <Calendar className="w-3.5 h-3.5" />
                     <span>Lộ trình Ngày {day.dayNumber} · Đã đồng bộ giờ vàng săn mây</span>
                   </div>
-                  <h2 className="text-lg sm:text-xl font-black text-[#073161]">{day.dayTitle}</h2>
+                  <h2 className="text-lg sm:text-xl font-black text-brand-800">{day.dayTitle}</h2>
                   <p className="text-xs sm:text-sm text-slate-600 mt-0.5">{day.theme}</p>
                 </div>
 
@@ -692,10 +692,10 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                     return (
                       <div
                         key={step.stepKey}
-                        className="bg-[#f8fafc] border border-slate-200/90 hover:border-[#073161]/40 rounded-2xl p-4 sm:p-5 space-y-3 transition-all"
+                        className="bg-[#f8fafc] border border-slate-200/90 hover:border-brand-800/40 rounded-2xl p-4 sm:p-5 space-y-3 transition-all"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2">
-                          <span className="inline-flex items-center gap-1.5 text-xs font-black text-[#073161] bg-amber-100 border border-amber-300/80 px-3 py-1 rounded-lg tabular-nums">
+                          <span className="inline-flex items-center gap-1.5 text-xs font-black text-brand-800 bg-amber-100 border border-amber-300/80 px-3 py-1 rounded-lg tabular-nums">
                             <Clock className="w-3.5 h-3.5 text-amber-800" />
                             <span>{step.time}</span>
                           </span>
@@ -706,7 +706,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                         </div>
 
                         <div>
-                          <h3 className="text-sm sm:text-base font-extrabold text-[#073161]">
+                          <h3 className="text-sm sm:text-base font-extrabold text-brand-800">
                             {step.title}
                           </h3>
                           <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
@@ -730,18 +730,18 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                                 />
                                 <div>
                                   <div className="flex flex-wrap items-center gap-1.5">
-                                    <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-[#073161]">
+                                    <span className="text-xs font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-brand-800">
                                       Cơ sở đề xuất cho chặng này
                                     </span>
-                                    <span className="text-[11px] font-bold text-amber-700 flex items-center gap-0.5">
+                                    <span className="text-xs font-bold text-amber-700 flex items-center gap-0.5">
                                       <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                                       <span>{resolvedListing.rating}</span>
                                     </span>
                                   </div>
-                                  <h4 className="font-extrabold text-sm text-[#073161] mt-0.5">
+                                  <h4 className="font-extrabold text-sm text-brand-800 mt-0.5">
                                     {resolvedListing.title}
                                   </h4>
-                                  <div className="text-[11px] text-slate-500">
+                                  <div className="text-xs text-slate-500">
                                     📍 {resolvedListing.area} · SĐT chính chủ:{' '}
                                     <strong className="text-slate-700 tabular-nums">
                                       {resolvedListing.phone}
@@ -752,7 +752,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
 
                               <div className="flex flex-wrap items-center gap-2 sm:justify-end shrink-0">
                                 <div className="text-left sm:text-right mr-1">
-                                  <span className="text-[10px] text-slate-400 block">Dự toán/người</span>
+                                  <span className="text-xs text-slate-400 block">Dự toán/người</span>
                                   <span className="text-sm font-black text-emerald-700 tabular-nums">
                                     ~{formatVND(stepCost)}
                                   </span>
@@ -774,7 +774,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => onSelectListing && onSelectListing(resolvedListing)}
-                                  className="px-3.5 py-1.5 rounded-xl bg-[#073161] hover:bg-[#0a3f7c] text-white text-xs font-extrabold flex items-center gap-1 cursor-pointer transition-colors"
+                                  className="px-3.5 py-1.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-extrabold flex items-center gap-1 cursor-pointer transition-colors"
                                 >
                                   <span>Xem & Đặt</span>
                                   <ArrowRight className="w-3.5 h-3.5" />
@@ -785,7 +785,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                             {/* Inline Dropdown / Picker to Swap Establishment */}
                             {isSwapping && (
                               <div className="pt-3 border-t border-slate-100 space-y-2">
-                                <div className="text-xs font-bold text-[#073161]">
+                                <div className="text-xs font-bold text-brand-800">
                                   Chọn cơ sở đã thẩm định khác cho chặng "{step.title}":
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-52 overflow-y-auto pr-1">
@@ -804,13 +804,13 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                                         }}
                                         className={`text-left p-2.5 rounded-xl border text-xs transition-all cursor-pointer flex items-center justify-between gap-2 ${
                                           isCurrent
-                                            ? 'bg-teal-50 border-teal-600 font-bold text-[#073161]'
+                                            ? 'bg-teal-50 border-teal-600 font-bold text-brand-800'
                                             : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
                                         }`}
                                       >
                                         <div className="truncate">
                                           <div className="font-bold truncate">{cand.title}</div>
-                                          <div className="text-[11px] text-slate-500">
+                                          <div className="text-xs text-slate-500">
                                             {cand.area} · ★ {cand.rating}
                                           </div>
                                         </div>
@@ -836,13 +836,13 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
           {/* RIGHT 4 COLS: TRUE OFFLINE SURVIVAL PACK & AUTO-EXTRACTED TRIP CONTACTS */}
           <aside className="lg:col-span-4 space-y-5 lg:sticky lg:top-20">
             {/* Card 1: Auto-Extracted Contacts for THIS Trip */}
-            <div className="bg-white border-2 border-[#073161] rounded-3xl p-5 shadow-md space-y-4">
+            <div className="bg-white border-2 border-brand-800 rounded-3xl p-5 shadow-md space-y-4">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 border border-amber-300 flex items-center justify-center shrink-0">
                   <WifiOff className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm sm:text-base font-black text-[#073161]">
+                  <h3 className="text-sm sm:text-base font-black text-brand-800">
                     Danh Bạ Offline Của Chuyến Đi Này
                   </h3>
                   <p className="text-xs text-slate-600 mt-0.5">
@@ -858,14 +858,14 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                     className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 flex items-center justify-between gap-2 text-xs"
                   >
                     <div className="min-w-0">
-                      <div className="font-extrabold text-[#073161] truncate">{item.title}</div>
-                      <div className="text-[11px] text-slate-500">
+                      <div className="font-extrabold text-brand-800 truncate">{item.title}</div>
+                      <div className="text-xs text-slate-500">
                         {item.area} · <span className="font-mono font-bold text-slate-700">{item.phone}</span>
                       </div>
                     </div>
                     <a
                       href={`tel:${item.phone.replace(/\s+/g, '')}`}
-                      className="shrink-0 px-2.5 py-1.5 rounded-lg bg-teal-700 hover:bg-teal-600 text-white text-[11px] font-extrabold flex items-center gap-1"
+                      className="shrink-0 px-2.5 py-1.5 rounded-lg bg-teal-700 hover:bg-teal-600 text-white text-xs font-extrabold flex items-center gap-1"
                     >
                       <PhoneCall className="w-3 h-3" />
                       <span>Gọi</span>
@@ -907,22 +907,22 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
 
             {/* Card 2: Offline Mountain Route & Fuel / Parking Cheat-Sheet */}
             <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-2xs space-y-3.5 text-xs">
-              <div className="flex items-center gap-2 font-black text-[#073161] text-sm">
+              <div className="flex items-center gap-2 font-black text-brand-800 text-sm">
                 <Compass className="w-4 h-4 text-teal-700" />
                 <span>Sơ Đồ Mốc Đường Đèo & Lưu Ý Sống Còn</span>
               </div>
 
               <div className="space-y-2 text-slate-700">
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
-                  <strong className="text-[#073161] block">⛽ Cây xăng cuối cùng:</strong>
+                  <strong className="text-brand-800 block">⛽ Cây xăng cuối cùng:</strong>
                   Đổ đầy bình tại <strong>Thị trấn Bắc Yên</strong> hoặc cây xăng trung tâm xã Tà Xùa trước khi đi Sống Lưng Khủng Long (13km đường đèo không có trạm xăng lớn).
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
-                  <strong className="text-[#073161] block">🅿️ Điểm gửi xe Sống Lưng Khủng Long:</strong>
+                  <strong className="text-brand-800 block">🅿️ Điểm gửi xe Sống Lưng Khủng Long:</strong>
                   Ô tô gầm thấp và tay lái yếu nên gửi xe tại bãi đỉnh dốc Háng Đồng, đi bộ hoặc thuê xe ôm bản địa (40k–50k) xuống sống lưng.
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
-                  <strong className="text-[#073161] block">🌫️ Khung giờ sương mù dày:</strong>
+                  <strong className="text-brand-800 block">🌫️ Khung giờ sương mù dày:</strong>
                   Từ <strong>17:30 tối đến 06:00 sáng</strong> đoạn Đèo Chẹn và Đỉnh Gió thường có sương mù tầm nhìn dưới 10m — hạn chế tự lái xe ban đêm nếu chưa quen đèo.
                 </div>
               </div>
@@ -930,7 +930,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
               <button
                 type="button"
                 onClick={handleDownloadOfflineHtmlFile}
-                className="w-full py-2.5 px-4 rounded-xl bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                className="w-full py-2.5 px-4 rounded-xl bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
               >
                 <FileDown className="w-4 h-4" />
                 <span>Tải Trọn Bộ Lịch Trình & Sơ Đồ Về Máy</span>

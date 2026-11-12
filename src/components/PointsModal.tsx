@@ -73,7 +73,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-black text-white">{profile.name}</h2>
-              <span className="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-bold">
+              <span className="text-xs bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-bold">
                 {profile.membershipTier}
               </span>
             </div>
@@ -115,7 +115,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
                   <div className="text-2xl">{rew.icon}</div>
                   <div>
                     <h4 className="font-bold text-xs text-white">{rew.title}</h4>
-                    <span className="text-[10px] text-slate-400">{rew.category}</span>
+                    <span className="text-xs text-slate-400">{rew.category}</span>
                   </div>
                 </div>
 
@@ -138,7 +138,7 @@ export const PointsModal: React.FC<PointsModalProps> = ({
         </div>
 
         {/* Anti-fraud transparency note (from PDF Section 6 & 11) */}
-        <div className="bg-slate-800/60 rounded-xl p-3 text-[11px] text-slate-400 border border-slate-750 flex items-start gap-2">
+        <div className="bg-slate-800/60 rounded-xl p-3 text-xs text-slate-400 border border-slate-750 flex items-start gap-2">
           <HelpCircle className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
           <span>
             Điểm Mây chỉ được cộng khi khách thực tế đến check-in và hoàn tất dịch vụ. Ngăn chặn tự đặt phòng ảo và hành vi gian lận.

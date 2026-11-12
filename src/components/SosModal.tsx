@@ -189,7 +189,7 @@ export const SosModal: React.FC<SosModalProps> = ({ onClose, siteContent }) => {
             <button
               type="button"
               onClick={handleDetectGps}
-              className="px-3 py-1.5 rounded-xl bg-rose-600/25 hover:bg-rose-600/40 border border-rose-500/40 text-rose-200 text-[11px] font-extrabold flex items-center gap-1.5 cursor-pointer transition-colors"
+              className="px-3 py-1.5 rounded-xl bg-rose-600/25 hover:bg-rose-600/40 border border-rose-500/40 text-rose-200 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer transition-colors"
             >
               <Navigation className="w-3.5 h-3.5 text-rose-400" />
               <span>{gpsLoading ? 'Đang lấy tọa độ...' : gpsCoords ? `GPS: ${gpsCoords}` : 'Lấy tọa độ GPS hiện tại'}</span>
@@ -198,7 +198,7 @@ export const SosModal: React.FC<SosModalProps> = ({ onClose, siteContent }) => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
-              <label className="text-[11px] font-bold text-slate-300 block mb-1">
+              <label className="text-xs font-bold text-slate-300 block mb-1">
                 Khu vực / Mốc đèo gần nhất:
               </label>
               <select
@@ -215,7 +215,7 @@ export const SosModal: React.FC<SosModalProps> = ({ onClose, siteContent }) => {
             </div>
 
             <div>
-              <label className="text-[11px] font-bold text-slate-300 block mb-1">
+              <label className="text-xs font-bold text-slate-300 block mb-1">
                 Sự cố đang gặp phải:
               </label>
               <select
@@ -232,7 +232,7 @@ export const SosModal: React.FC<SosModalProps> = ({ onClose, siteContent }) => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-[11px] text-emerald-300 bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-700/80">
+          <div className="flex items-center gap-2 text-xs text-emerald-300 bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-700/80">
             <Clock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             <span>
               <strong>Thời gian tiếp cận dự kiến:</strong> {selectedSpot.eta} · Tọa độ mốc: {gpsCoords || selectedSpot.coords}
@@ -241,7 +241,7 @@ export const SosModal: React.FC<SosModalProps> = ({ onClose, siteContent }) => {
 
           {/* Generated SOS Message & 1-Click Actions */}
           <div className="bg-slate-950 border border-rose-500/40 rounded-xl p-3 space-y-2">
-            <div className="text-[11px] text-slate-300 leading-relaxed font-medium">
+            <div className="text-xs text-slate-300 leading-relaxed font-medium">
               {sosMessageText}
             </div>
             <div className="flex flex-wrap items-center gap-2 pt-1">
@@ -297,7 +297,7 @@ export const SosModal: React.FC<SosModalProps> = ({ onClose, siteContent }) => {
                       {contact.title}
                     </h3>
                     <span
-                      className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      className={`shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${
                         contact.isPrimary
                           ? 'bg-rose-600 text-white'
                           : 'bg-slate-700 text-slate-300'
@@ -306,7 +306,7 @@ export const SosModal: React.FC<SosModalProps> = ({ onClose, siteContent }) => {
                       {contact.badge}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-300 leading-relaxed mb-3">
+                  <p className="text-xs text-slate-300 leading-relaxed mb-3">
                     {contact.category}
                   </p>
                 </div>

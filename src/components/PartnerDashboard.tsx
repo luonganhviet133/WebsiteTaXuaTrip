@@ -828,12 +828,12 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                 <ShieldCheck className="w-4 h-4 text-teal-400" />
                 <span>Cơ Sở Của Bạn: Chuyển Đổi Quản Trị Giữa Các Điểm Kinh Doanh Sở Hữu</span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-400 mt-0.5">
                 Bạn sở hữu {accessibleListings.length} cơ sở đã được hệ thống phê duyệt. Chọn cơ sở cần quản trị bên cạnh:
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <label className="text-[11px] font-bold text-slate-300 whitespace-nowrap">Cơ sở đang chọn:</label>
+              <label className="text-xs font-bold text-slate-300 whitespace-nowrap">Cơ sở đang chọn:</label>
               <select
                 value={partnerListing.id}
                 onChange={(e) => onSelectPartnerListing(e.target.value)}
@@ -862,10 +862,10 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                 <span className="text-xs font-black uppercase tracking-wider text-teal-400">
                   {getCategoryDisplayLabel(partnerListing.category)}
                 </span>
-                <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30 font-bold">
+                <span className="text-xs bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30 font-bold">
                   Huy hiệu Cấp {partnerListing.verificationTier} (Đã xác minh)
                 </span>
-                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold border border-emerald-500/30">
+                <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold border border-emerald-500/30">
                   Khóa quyền ngành: {partnerListing.category.toUpperCase()}
                 </span>
               </div>
@@ -883,7 +883,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
           {/* Quick Metrics */}
           <div className="flex items-center gap-3 bg-slate-900/90 border border-slate-750 p-3.5 rounded-2xl shrink-0">
             <div className="text-right">
-              <span className="text-[11px] text-slate-400 block">Số dư ví trả trước:</span>
+              <span className="text-xs text-slate-400 block">Số dư ví trả trước:</span>
               <span className="text-lg font-black text-teal-400">
                 {formatVND(wallet.balance)}
               </span>
@@ -962,7 +962,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="sm:col-span-2">
-                      <label className="text-[11px] text-slate-300 block mb-1">Tên hạng phòng *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Tên hạng phòng *</label>
                       <input
                         type="text"
                         value={newRoomData.name}
@@ -973,7 +973,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Sức chứa tối đa (người) *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Sức chứa tối đa (người) *</label>
                       <input
                         type="number"
                         min="1"
@@ -987,7 +987,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Giá ngày thường (VNĐ) *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Giá ngày thường (VNĐ) *</label>
                       <input
                         type="number"
                         step="50000"
@@ -997,7 +997,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Giá cuối tuần T6-CN (VNĐ) *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Giá cuối tuần T6-CN (VNĐ) *</label>
                       <input
                         type="number"
                         step="50000"
@@ -1007,7 +1007,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Tổng số phòng loại này *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Tổng số phòng loại này *</label>
                       <input
                         type="number"
                         min="1"
@@ -1017,7 +1017,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Số phòng đang còn trống *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Số phòng đang còn trống *</label>
                       <input
                         type="number"
                         min="0"
@@ -1029,7 +1029,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Mô tả View nhìn tới đâu *</label>
+                    <label className="text-xs text-slate-300 block mb-1">Mô tả View nhìn tới đâu *</label>
                     <input
                       type="text"
                       value={newRoomData.viewDescription}
@@ -1146,7 +1146,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                         {/* View Description */}
                         <div className="bg-slate-850 p-2.5 rounded-xl border border-slate-750 text-xs">
-                          <span className="text-slate-400 block text-[11px]">Hướng nhìn (View):</span>
+                          <span className="text-slate-400 block text-xs">Hướng nhìn (View):</span>
                           <span className="text-sky-300 font-semibold">{summary.viewText}</span>
                         </div>
 
@@ -1155,7 +1155,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                           {summary.features.map((feat, idx) => (
                             <span
                               key={idx}
-                              className="text-[10px] bg-slate-800 text-teal-300 border border-teal-500/20 px-2 py-0.5 rounded-md font-medium"
+                              className="text-xs bg-slate-800 text-teal-300 border border-teal-500/20 px-2 py-0.5 rounded-md font-medium"
                             >
                               ✓ {feat}
                             </span>
@@ -1218,11 +1218,11 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       <Sliders className="w-4 h-4 text-sky-400" />
                       <span>Cập Nhật Lịch Qua Tin Nhắn Zalo OA</span>
                     </span>
-                    <span className="text-[10px] bg-sky-500/20 px-2 py-0.5 rounded-full text-sky-300 font-bold">
+                    <span className="text-xs bg-sky-500/20 px-2 py-0.5 rounded-full text-sky-300 font-bold">
                       Không cần mở web
                     </span>
                   </div>
-                  <p className="text-slate-300 text-[11px]">
+                  <p className="text-slate-300 text-xs">
                     Chủ cơ sở chỉ cần gửi tin nhắn câu tự nhiên cho Zalo OA, bot tự động nhận diện và cập nhật:
                   </p>
                   <form
@@ -1261,7 +1261,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                     </button>
                   </form>
                   {zaloCommandFeedback && (
-                    <div className="text-[11px] font-bold text-emerald-300 bg-slate-900/80 p-2.5 rounded-xl border border-emerald-500/30">
+                    <div className="text-xs font-bold text-emerald-300 bg-slate-900/80 p-2.5 rounded-xl border border-emerald-500/30">
                       {zaloCommandFeedback}
                     </div>
                   )}
@@ -1273,9 +1273,9 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       <span className="font-extrabold text-teal-300">
                         Đồng Bộ iCal 2 Chiều & Giữ Chỗ 30 Phút
                       </span>
-                      <span className="text-[10px] text-emerald-400 font-bold">{icalSyncedAt}</span>
+                      <span className="text-xs text-emerald-400 font-bold">{icalSyncedAt}</span>
                     </div>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-xs text-slate-400">
                       Chống trùng phòng chéo giữa nền tảng và Booking.com / Airbnb. Khi bật chế độ tự động, AI tự giữ chỗ 30 phút chờ cọc.
                     </p>
                   </div>
@@ -1356,11 +1356,11 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                     >
                       <div className="text-xs font-bold text-white flex items-center gap-2">
                         <span>{veh.vehicleName}</span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-750 text-sky-300">
+                        <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-750 text-sky-300">
                           {veh.licensePlate}
                         </span>
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-1">
+                      <div className="text-xs text-slate-400 mt-1">
                         Loại: <span className="text-teal-300 font-medium">
                           {veh.busType === 'cabin_double_deck' ? 'Cabin Đôi 2 Tầng' : veh.busType === 'sleeper_double_deck' ? 'Giường Nằm 2 Tầng' : 'Limousine VIP'}
                         </span> • Còn trống: <span className="text-emerald-400 font-bold">{layout.availableSeatsCount}/{veh.totalSeats} chỗ</span>
@@ -1388,7 +1388,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Tên xe / Chuyến xe *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Tên xe / Chuyến xe *</label>
                       <input
                         type="text"
                         value={newVehicleData.vehicleName}
@@ -1399,7 +1399,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Loại xe (Dòng xe) *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Loại xe (Dòng xe) *</label>
                       <select
                         value={newVehicleData.busType}
                         onChange={(e) => {
@@ -1420,7 +1420,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       </select>
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Biển số xe *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Biển số xe *</label>
                       <input
                         type="text"
                         value={newVehicleData.licensePlate}
@@ -1433,7 +1433,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Số lượng chỗ ngồi *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Số lượng chỗ ngồi *</label>
                       <input
                         type="number"
                         min="7"
@@ -1444,7 +1444,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Giá vé cơ bản (VNĐ) *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Giá vé cơ bản (VNĐ) *</label>
                       <input
                         type="number"
                         step="10000"
@@ -1454,7 +1454,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Giờ xuất phát dự kiến *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Giờ xuất phát dự kiến *</label>
                       <input
                         type="time"
                         value={newVehicleData.departureTime}
@@ -1490,7 +1490,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       <Layers className="w-4 h-4 text-sky-400" />
                       <span>Sơ Đồ Ghế Xe: {currentVehicle.vehicleName} ({currentVehicle.licensePlate})</span>
                     </h4>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-xs text-slate-400">
                       Chạm vào từng vị trí để đổi nhanh trạng thái: <span className="text-emerald-400 font-bold">Còn trống</span> (xanh) hoặc <span className="text-rose-400 font-bold">Đã giữ chỗ</span> (đỏ).
                     </p>
                   </div>
@@ -1521,7 +1521,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                     <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-3">
                       <div className="flex items-center justify-between text-xs font-bold text-sky-300">
                         <span>TẦNG 1 (DƯỚI) - Thuận tiện lên xuống</span>
-                        <span className="text-[10px] text-slate-400">{seatLayout.floor1.length} vị trí</span>
+                        <span className="text-xs text-slate-400">{seatLayout.floor1.length} vị trí</span>
                       </div>
                       <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                         {seatLayout.floor1.map((seat) => (
@@ -1537,7 +1537,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                             title={seat.isBooked ? 'Bấm để mở trống' : 'Bấm để đánh dấu đã đặt'}
                           >
                             <span className="block">{seat.code}</span>
-                            <span className="text-[9px] font-normal block opacity-75">
+                            <span className="text-xs font-normal block opacity-75">
                               {seat.isBooked ? 'Đã đặt' : 'Trống'}
                             </span>
                           </button>
@@ -1549,7 +1549,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                     <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-3">
                       <div className="flex items-center justify-between text-xs font-bold text-amber-300">
                         <span>TẦNG 2 (TRÊN) - Ngắm cảnh thoáng mát</span>
-                        <span className="text-[10px] text-slate-400">{seatLayout.floor2.length} vị trí</span>
+                        <span className="text-xs text-slate-400">{seatLayout.floor2.length} vị trí</span>
                       </div>
                       <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                         {seatLayout.floor2.map((seat) => (
@@ -1565,7 +1565,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                             title={seat.isBooked ? 'Bấm để mở trống' : 'Bấm để đánh dấu đã đặt'}
                           >
                             <span className="block">{seat.code}</span>
-                            <span className="text-[9px] font-normal block opacity-75">
+                            <span className="text-xs font-normal block opacity-75">
                               {seat.isBooked ? 'Đã đặt' : 'Trống'}
                             </span>
                           </button>
@@ -1578,7 +1578,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-3">
                     <div className="flex items-center justify-between text-xs font-bold text-teal-300">
                       <span>KHOANG HÀNH KHÁCH LIMOUSINE VIP</span>
-                      <span className="text-[10px] text-slate-400">{seatLayout.floor1.length} ghế</span>
+                      <span className="text-xs text-slate-400">{seatLayout.floor1.length} ghế</span>
                     </div>
                     <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 max-w-2xl mx-auto py-2">
                       {seatLayout.floor1.map((seat) => (
@@ -1595,7 +1595,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                           }`}
                         >
                           <span className="block text-sm">{seat.code}</span>
-                          <span className="text-[10px] font-medium block mt-0.5">
+                          <span className="text-xs font-medium block mt-0.5">
                             {seat.isBooked ? 'Đã đặt' : seat.isVip ? 'Ghế VIP' : 'Trống'}
                           </span>
                         </button>
@@ -1613,7 +1613,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       <MapPin className="w-4 h-4 text-emerald-400" />
                       <span>Lộ Trình & Điểm Đón/Trả Khách Của Chuyến Xe</span>
                     </h4>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-xs text-slate-400">
                       Thêm các điểm đón trên lộ trình giúp khách hàng chọn trạm gần nhất và tính phụ thu tự động.
                     </p>
                   </div>
@@ -1631,7 +1631,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   <form onSubmit={handleAddStop} className="bg-slate-850 p-4 rounded-xl border border-teal-500/30 space-y-3">
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                       <div className="sm:col-span-2">
-                        <label className="text-[11px] text-slate-300 block mb-1">Tên điểm đón/trả *</label>
+                        <label className="text-xs text-slate-300 block mb-1">Tên điểm đón/trả *</label>
                         <input
                           type="text"
                           value={newStopData.name}
@@ -1642,7 +1642,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Phút sau khi xe chạy</label>
+                        <label className="text-xs text-slate-300 block mb-1">Phút sau khi xe chạy</label>
                         <input
                           type="number"
                           value={newStopData.minuteOffset}
@@ -1651,7 +1651,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Phụ thu (nếu có, VNĐ)</label>
+                        <label className="text-xs text-slate-300 block mb-1">Phụ thu (nếu có, VNĐ)</label>
                         <input
                           type="number"
                           value={newStopData.fareModifier}
@@ -1662,7 +1662,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       </div>
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Ghi chú đón khách</label>
+                      <label className="text-xs text-slate-300 block mb-1">Ghi chú đón khách</label>
                       <input
                         type="text"
                         value={newStopData.pickupNote}
@@ -1697,12 +1697,12 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       className="bg-slate-850 p-3 rounded-xl border border-slate-750 flex items-center justify-between gap-3 text-xs"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-300 flex items-center justify-center font-bold text-[11px]">
+                        <span className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-300 flex items-center justify-center font-bold text-xs">
                           {index + 1}
                         </span>
                         <div>
                           <span className="font-bold text-white text-sm">{stop.name}</span>
-                          <div className="text-[11px] text-slate-400 mt-0.5">
+                          <div className="text-xs text-slate-400 mt-0.5">
                             Loại: {stop.type === 'pickup' ? 'Đón khách' : stop.type === 'dropoff' ? 'Trả khách' : 'Đón & Trả'} • Sau {stop.minuteOffset} phút
                             {stop.fareModifier !== 0 && (
                               <span className="ml-2 text-amber-300 font-semibold">
@@ -1711,7 +1711,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                             )}
                           </div>
                           {stop.pickupNote && (
-                            <div className="text-[10px] text-sky-300 italic mt-0.5">* {stop.pickupNote}</div>
+                            <div className="text-xs text-sky-300 italic mt-0.5">* {stop.pickupNote}</div>
                           )}
                         </div>
                       </div>
@@ -1737,7 +1737,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       <Bike className="w-4 h-4 text-sky-400" />
                       <span>Kho Xe Máy Đi Kèm & Cấu Hình Combo Tiết Kiệm</span>
                     </h4>
-                    <p className="text-[11px] text-slate-300">
+                    <p className="text-xs text-slate-300">
                       Tự động trừ số lượng khi khách đặt combo trên website. Nhà xe cập nhật số lượng cho thuê bên ngoài để đồng bộ chính xác.
                     </p>
                   </div>
@@ -1757,7 +1757,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {/* Thẻ 1: Cấu hình ban đầu */}
                     <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-2">
-                      <span className="text-[11px] text-slate-400 block">Cấu hình kho xe ban đầu:</span>
+                      <span className="text-xs text-slate-400 block">Cấu hình kho xe ban đầu:</span>
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-slate-300">Tổng xe hiện có:</span>
                         <input
@@ -1782,7 +1782,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                     {/* Thẻ 2: Cụm xác nhận cho thuê thêm bên ngoài (Theo đúng yêu cầu) */}
                     <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-2">
-                      <span className="text-[11px] text-slate-400 block">Xe đã cho thuê trực tiếp bên ngoài:</span>
+                      <span className="text-xs text-slate-400 block">Xe đã cho thuê trực tiếp bên ngoài:</span>
                       <div className="flex items-center justify-between pt-1">
                         <span className="text-base font-black text-amber-400">
                           {motorbikeFleet.rentedOfflineCount} xe
@@ -1806,7 +1806,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                           </button>
                         </div>
                       </div>
-                      <p className="text-[10px] text-slate-400 italic">
+                      <p className="text-xs text-slate-400 italic">
                         Bấm (+) khi có khách thuê vãng lai, (-) khi nhận lại xe.
                       </p>
                     </div>
@@ -1814,12 +1814,12 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                     {/* Thẻ 3: Tình trạng khả dụng cho khách trên web */}
                     <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-2 flex flex-col justify-between">
                       <div>
-                        <span className="text-[11px] text-slate-400 block">Số xe còn lại cho khách đặt Web:</span>
+                        <span className="text-xs text-slate-400 block">Số xe còn lại cho khách đặt Web:</span>
                         <div className="text-2xl font-black text-emerald-400 mt-1">
                           {motorbikeStats.availableBikes} xe trống
                         </div>
                       </div>
-                      <div className="text-[10px] text-slate-400 border-t border-slate-800 pt-1.5 space-y-0.5">
+                      <div className="text-xs text-slate-400 border-t border-slate-800 pt-1.5 space-y-0.5">
                         <div>Đã đặt qua web: <strong className="text-sky-300">{motorbikeStats.activeWebBookingsCount} xe</strong></div>
                         <div>Tỷ lệ thuê: <strong className="text-slate-200">{motorbikeFleet.totalBikes > 0 ? Math.round(((motorbikeFleet.totalBikes - motorbikeStats.availableBikes) / motorbikeFleet.totalBikes) * 100) : 0}%</strong></div>
                       </div>
@@ -1866,14 +1866,14 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                     <Clock className="w-4 h-4 text-teal-400" />
                     <span>Thời Gian Mở Cửa & Đóng Cửa Cơ Sở</span>
                   </span>
-                  <span className="text-[10px] text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  <span className="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                     Đang mở cửa đón khách
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="text-[11px] text-slate-400 block mb-1">Giờ mở cửa buổi sáng</label>
+                    <label className="text-xs text-slate-400 block mb-1">Giờ mở cửa buổi sáng</label>
                     <input
                       type="time"
                       value={openingHours.openTime}
@@ -1882,7 +1882,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] text-slate-400 block mb-1">Giờ đóng cửa buổi tối</label>
+                    <label className="text-xs text-slate-400 block mb-1">Giờ đóng cửa buổi tối</label>
                     <input
                       type="time"
                       value={openingHours.closeTime}
@@ -1891,7 +1891,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] text-slate-400 block mb-1">Lịch nghỉ (nếu có)</label>
+                    <label className="text-xs text-slate-400 block mb-1">Lịch nghỉ (nếu có)</label>
                     <input
                       type="text"
                       value={openingHours.closedDaysNote || ''}
@@ -1903,7 +1903,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">Ghi chú dịch vụ ẩm thực (Hiển thị cho khách & AI)</label>
+                  <label className="text-xs text-slate-400 block mb-1">Ghi chú dịch vụ ẩm thực (Hiển thị cho khách & AI)</label>
                   <input
                     type="text"
                     value={openingHours.serviceNote || ''}
@@ -1932,7 +1932,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                     <div className="sm:col-span-2">
-                      <label className="text-[11px] text-slate-300 block mb-1">Tên món ăn / đồ uống *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Tên món ăn / đồ uống *</label>
                       <input
                         type="text"
                         value={newMenuItem.name}
@@ -1943,7 +1943,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Phân loại món *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Phân loại món *</label>
                       <select
                         value={newMenuItem.category}
                         onChange={(e) => setNewMenuItem({ ...newMenuItem, category: e.target.value })}
@@ -1956,7 +1956,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       </select>
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Đơn vị tính *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Đơn vị tính *</label>
                       <input
                         type="text"
                         value={newMenuItem.unit}
@@ -1969,7 +1969,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Đơn giá (VNĐ) *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Đơn giá (VNĐ) *</label>
                       <input
                         type="number"
                         step="5000"
@@ -1979,7 +1979,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <label className="text-[11px] text-slate-300 block mb-1">Mô tả nguyên liệu / hương vị</label>
+                      <label className="text-xs text-slate-300 block mb-1">Mô tả nguyên liệu / hương vị</label>
                       <input
                         type="text"
                         value={newMenuItem.description || ''}
@@ -2031,7 +2031,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-white text-sm">{item.name}</span>
                         {item.isBestSeller && (
-                          <span className="text-[9px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30 font-bold">
+                          <span className="text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30 font-bold">
                             ⭐ Best Seller
                           </span>
                         )}
@@ -2040,7 +2040,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                         Nhóm: {item.category} • Đơn vị: {item.unit}
                       </div>
                       {item.description && (
-                        <p className="text-[11px] text-slate-300 italic">{item.description}</p>
+                        <p className="text-xs text-slate-300 italic">{item.description}</p>
                       )}
                       <div className="text-sm font-black text-teal-400 pt-1">
                         {formatVND(item.price)}
@@ -2055,7 +2055,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                             prev.map((m) => (m.id === item.id ? { ...m, isAvailable: !m.isAvailable } : m))
                           );
                         }}
-                        className={`text-[10px] font-bold px-2.5 py-1 rounded-full cursor-pointer transition-colors ${
+                        className={`text-xs font-bold px-2.5 py-1 rounded-full cursor-pointer transition-colors ${
                           item.isAvailable
                             ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                             : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
@@ -2145,7 +2145,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div className="sm:col-span-2">
-                        <label className="text-[11px] text-slate-300 block mb-1">Tên gói dịch vụ / dòng xe *</label>
+                        <label className="text-xs text-slate-300 block mb-1">Tên gói dịch vụ / dòng xe *</label>
                         <input
                           type="text"
                           value={newPackageData.name || ''}
@@ -2156,7 +2156,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Đơn vị tính *</label>
+                        <label className="text-xs text-slate-300 block mb-1">Đơn vị tính *</label>
                         <input
                           type="text"
                           value={newPackageData.unit || ''}
@@ -2169,7 +2169,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Đơn giá (VNĐ) *</label>
+                        <label className="text-xs text-slate-300 block mb-1">Đơn giá (VNĐ) *</label>
                         <input
                           type="number"
                           step="10000"
@@ -2180,7 +2180,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       </div>
                       {partnerListing.category === 'motorbike' && (
                         <div>
-                          <label className="text-[11px] text-slate-300 block mb-1">Giá nửa ngày (&lt;12h trưa)</label>
+                          <label className="text-xs text-slate-300 block mb-1">Giá nửa ngày (&lt;12h trưa)</label>
                           <input
                             type="number"
                             step="5000"
@@ -2191,7 +2191,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                         </div>
                       )}
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Tổng số lượng</label>
+                        <label className="text-xs text-slate-300 block mb-1">Tổng số lượng</label>
                         <input
                           type="number"
                           min="1"
@@ -2201,7 +2201,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Đang còn trống</label>
+                        <label className="text-xs text-slate-300 block mb-1">Đang còn trống</label>
                         <input
                           type="number"
                           min="0"
@@ -2213,7 +2213,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                     </div>
 
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Mô tả chi tiết gói / quyền lợi đi kèm</label>
+                      <label className="text-xs text-slate-300 block mb-1">Mô tả chi tiết gói / quyền lợi đi kèm</label>
                       <input
                         type="text"
                         value={newPackageData.description || ''}
@@ -2368,7 +2368,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[11px] text-slate-300 block mb-1">Tên cơ sở hiển thị *</label>
+                  <label className="text-xs text-slate-300 block mb-1">Tên cơ sở hiển thị *</label>
                   <input
                     type="text"
                     value={profileForm.title}
@@ -2377,7 +2377,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] text-slate-300 block mb-1">Địa chỉ chi tiết *</label>
+                  <label className="text-xs text-slate-300 block mb-1">Địa chỉ chi tiết *</label>
                   <input
                     type="text"
                     value={profileForm.address}
@@ -2386,7 +2386,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] text-slate-300 block mb-1">Số điện thoại / Zalo liên hệ *</label>
+                  <label className="text-xs text-slate-300 block mb-1">Số điện thoại / Zalo liên hệ *</label>
                   <input
                     type="text"
                     value={profileForm.phone}
@@ -2395,7 +2395,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] text-slate-300 block mb-1">Giá thấp nhất hiển thị (VNĐ) *</label>
+                  <label className="text-xs text-slate-300 block mb-1">Giá thấp nhất hiển thị (VNĐ) *</label>
                   <input
                     type="number"
                     step="10000"
@@ -2407,7 +2407,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
               </div>
 
               <div>
-                <label className="text-[11px] text-slate-300 block mb-1">Ghi chú giá & ưu đãi đi kèm</label>
+                <label className="text-xs text-slate-300 block mb-1">Ghi chú giá & ưu đãi đi kèm</label>
                 <input
                   type="text"
                   value={profileForm.priceNote}
@@ -2417,7 +2417,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
               </div>
 
               <div>
-                <label className="text-[11px] text-slate-300 block mb-1">Mô tả chi tiết cơ sở</label>
+                <label className="text-xs text-slate-300 block mb-1">Mô tả chi tiết cơ sở</label>
                 <textarea
                   rows={3}
                   value={profileForm.description}
@@ -2482,7 +2482,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                             images: profileForm.images.filter((_, i) => i !== idx)
                           })
                         }
-                        className="absolute top-1.5 right-1.5 bg-rose-600/90 hover:bg-rose-500 text-white p-1 rounded-lg text-[10px] font-bold cursor-pointer"
+                        className="absolute top-1.5 right-1.5 bg-rose-600/90 hover:bg-rose-500 text-white p-1 rounded-lg text-xs font-bold cursor-pointer"
                         title="Xóa ảnh này"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -2530,10 +2530,10 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       <div className="space-y-2 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="font-mono text-xs font-black text-sky-400">{b.id}</span>
-                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${proofStatus.statusBadgeColor}`}>
+                          <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${proofStatus.statusBadgeColor}`}>
                             {proofStatus.statusLabel}
                           </span>
-                          <span className="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
+                          <span className="text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
                             Tạo: {new Date(b.createdAt).toLocaleDateString('vi-VN')}
                           </span>
                         </div>
@@ -2549,7 +2549,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                         </div>
 
                         {b.notes && (
-                          <p className="text-[11px] text-amber-300 italic bg-amber-950/20 p-2 rounded-lg border border-amber-500/20">
+                          <p className="text-xs text-amber-300 italic bg-amber-950/20 p-2 rounded-lg border border-amber-500/20">
                             * Ghi chú khách: {b.notes}
                           </p>
                         )}
@@ -2571,14 +2571,14 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                             </div>
 
                             <div className="text-xs">
-                              <span className="text-slate-400 block text-[10px]">Ảnh biên lai khách nộp:</span>
+                              <span className="text-slate-400 block text-xs">Ảnh biên lai khách nộp:</span>
                               <span className="text-emerald-400 font-bold block">
                                 Đã chuyển cọc {formatVND(b.totalAmount * 0.3)}
                               </span>
                               <button
                                 type="button"
                                 onClick={() => setPreviewImageUrl(proofStatus.proofImageUrl!)}
-                                className="text-[11px] text-sky-400 hover:underline flex items-center gap-1 mt-0.5 cursor-pointer"
+                                className="text-xs text-sky-400 hover:underline flex items-center gap-1 mt-0.5 cursor-pointer"
                               >
                                 <span>Phóng to xem ảnh</span>
                                 <ExternalLink className="w-3 h-3" />
@@ -2610,7 +2610,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                             </button>
                           )}
 
-                          <div className="text-right text-[11px] text-slate-400">
+                          <div className="text-right text-xs text-slate-400">
                             Tổng bill: <strong className="text-teal-300">{formatVND(b.totalAmount)}</strong>
                           </div>
                         </div>
@@ -2661,7 +2661,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   </span>
 
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Ngân hàng thụ hưởng *</label>
+                    <label className="text-xs text-slate-300 block mb-1">Ngân hàng thụ hưởng *</label>
                     <select
                       value={bankAccount.bankName}
                       onChange={(e) => setBankAccount({ ...bankAccount, bankName: e.target.value })}
@@ -2677,7 +2677,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Số tài khoản ngân hàng *</label>
+                    <label className="text-xs text-slate-300 block mb-1">Số tài khoản ngân hàng *</label>
                     <input
                       type="text"
                       value={bankAccount.accountNumber}
@@ -2688,7 +2688,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Tên chủ tài khoản (In hoa không dấu) *</label>
+                    <label className="text-xs text-slate-300 block mb-1">Tên chủ tài khoản (In hoa không dấu) *</label>
                     <input
                       type="text"
                       value={bankAccount.accountHolder}
@@ -2699,7 +2699,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Lời nhắn thanh toán gợi ý</label>
+                    <label className="text-xs text-slate-300 block mb-1">Lời nhắn thanh toán gợi ý</label>
                     <input
                       type="text"
                       value={bankAccount.qrPromptMessage || ''}
@@ -2736,7 +2736,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   <div className="text-xs space-y-1">
                     <div className="font-extrabold text-white text-sm">{bankAccount.accountHolder}</div>
                     <div className="text-teal-400 font-mono font-bold">{bankAccount.accountNumber} ({bankAccount.bankName})</div>
-                    <div className="text-[11px] text-slate-400">Nội dung chuyển khoản tự động gắn mã Booking: <strong>TX-XXXX</strong></div>
+                    <div className="text-xs text-slate-400">Nội dung chuyển khoản tự động gắn mã Booking: <strong>TX-XXXX</strong></div>
                   </div>
                 </div>
               </div>
@@ -2788,7 +2788,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                 <div className="bg-slate-900 border border-slate-750 p-4 rounded-2xl">
                   <span className="text-xs text-slate-400">Số đơn hoàn tất thành công:</span>
                   <div className="text-xl font-black text-white mt-1">{wallet.completedBookingsCount} đơn</div>
-                  <span className="text-[11px] text-emerald-400">Khách đã đến & check-in thực tế</span>
+                  <span className="text-xs text-emerald-400">Khách đã đến & check-in thực tế</span>
                 </div>
 
                 <div className="bg-slate-900 border border-slate-750 p-4 rounded-2xl">
@@ -2796,7 +2796,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   <div className="text-xl font-black text-amber-400 mt-1">
                     {formatVND(wallet.completedBookingsCount * 50000)}
                   </div>
-                  <span className="text-[11px] text-slate-400">Chỉ trừ tiền thực tế khi bật cờ thu</span>
+                  <span className="text-xs text-slate-400">Chỉ trừ tiền thực tế khi bật cờ thu</span>
                 </div>
               </div>
 
