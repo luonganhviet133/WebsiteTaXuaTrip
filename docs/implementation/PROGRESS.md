@@ -16,6 +16,51 @@
 
 ---
 
+## N05.1 — Tồn phòng theo đêm (13/11/2026, nhánh `dot/N05.1`)
+
+**Trạng thái: ĐẠT, chờ chủ dự án "gộp N05.1".** Gộp sẽ chạy migration 0005 trên D1 production.
+
+### Đã làm
+- `src/server/inventory/availability.ts`: phòng trống(đêm) = tổng phòng − phòng chủ khóa − phòng đang giữ/đã đặt; cả khoảng = đêm ít phòng nhất; đêm của ngày trả phòng không tính. Giữ tồn: `held` còn hạn, `confirmed`, `checked_in`; `held` hết hạn tự hết tác dụng theo thời gian (không cần tác vụ dọn hay tab trình duyệt), `released` không giữ.
+- `migrations_d1/0005_room_inventory.sql`: `room_night_closures` (chủ khóa phòng theo đêm), `room_night_allocations` (một dòng mỗi đêm cho giữ chỗ/đơn, `UNIQUE(source_id, room_type_id, date)`; N05.2 sẽ ghi).
+- API: `GET /api/listings/:id/availability`, `GET /api/availability` (một lần gọi cho cả danh sách tìm kiếm), `PUT /api/partner/listings/:id/inventory` (chủ sở hữu/admin đặt "còn N phòng" cho ≤ 90 đêm; không mở quá số phòng đã có người giữ/đặt → 409; ghi `audit_log`).
+- Báo giá N04 dùng cùng nguồn tồn: xin quá số phòng trống → `NOT_ENOUGH_ROOMS` ("đã hết phòng"/"chỉ còn N phòng").
+- Giao diện: App tải bảng tồn theo ngày khách chọn và ghi vào `availableRooms` của từng hạng phòng (`applyAvailability`) → bộ lọc, thẻ, chi tiết, sắp xếp "nhiều phòng trống nhất" đọc một nguồn; không trừ thêm đơn lưu trong trình duyệt.
+- **Sửa lỗi:** bộ lọc sức chứa dùng `Math.max(1, availableRooms || 1)` nên phòng còn 0 bị đếm thành 1.
+- Dashboard đối tác: ô "Đêm áp dụng", số phòng trống thật từ server, +/− và lệnh Zalo lưu qua API, báo lỗi nếu vượt số phòng đã có khách. Bỏ 2 hạng phòng mẫu hiện như của cơ sở khi cơ sở chưa có hạng phòng.
+- Trang chi tiết: phòng trống theo ngày chọn (kể cả khi mở thẳng link); 0 phòng → "Hết phòng các đêm đã chọn".
+- README: `db:bootstrap` chỉ ghi SQLite local; thêm lệnh `wrangler d1 execute` để nâng quyền admin trên D1.
+
+### Test mới
+- `src/server/inventory/availability.test.ts` (6): ca plan (2 phòng, đơn đêm đầu + đơn đêm sau → còn 1), ngày trả phòng không tính, số lượng phòng trong một đơn, hết phòng là 0, trạng thái giữ tồn, "còn N phòng" → số phòng khóa.
+- `src/server/inventory/inventory.api.test.ts` (9): đủ phòng khi chưa có đơn; ca plan qua DB thật; held hết hạn/released/held còn hạn; báo giá chặn khi không đủ phòng; chủ đặt "còn 0" và không mở quá số đã đặt; quyền (chủ khác/khách/chưa đăng nhập 403/401, admin được); đầu vào sai; bảng tồn tìm kiếm; 404.
+- `src/api/listingsApi.test.ts`: `applyAvailability`.
+- Hợp đồng Express + Worker: `/api/availability` và `/api/listings/:id/availability` chạy trên D1 (workerd).
+
+### Lệnh đã chạy
+- `npm run typecheck`: 0 lỗi. `npm run build`: đạt. `npm test`: **205/205**. `npm run worker:dry-run`: đạt.
+- Workers Builds preview `dot-n05-1`: thành công, migration 0005 chạy trên D1 preview.
+
+### Kiểm tra trên preview (dữ liệu thử chỉ trên D1 preview, `tx-stay-7` có 3 phòng đôi)
+- Phân bổ thử: đêm 19/11 đã đặt 2 phòng; đêm 20/11 đã đặt 1 phòng + một giữ chỗ 2 phòng **đã hết hạn**.
+- API: 19/11 còn 1, 20/11 còn 2 (giữ chỗ hết hạn không tính), cả khoảng 19→21 còn 1.
+- Trang chi tiết (mở thẳng link): khoảng 19→21 "Còn 1 phòng trống"; đổi sang 20→21 "Còn 2"; 22→23 "Còn 3". Chọn 2 phòng → "Hạng phòng này chỉ còn 1 phòng trống cho các đêm đã chọn.", nút đặt khóa.
+- Thẻ trong `/luu-tru` (375px, sắp xếp nhiều phòng trống nhất): "Còn 1 phòng trống (19/11 – 21/11)"; 1280px với 20→21: "Còn 2 phòng trống".
+- Khóa nốt phòng còn lại đêm 19/11: cơ sở biến khỏi danh sách lọc theo ngày; chi tiết báo "Hạng phòng này đã hết phòng cho các đêm đã chọn.", nút đặt khóa.
+- Bố cục danh sách và chi tiết ở 375/768/1280px: 0 chữ < 12px, không tràn ngang, không chữ bị cắt.
+
+### Chưa làm / chưa kiểm chứng
+- Dashboard đối tác **chưa xem bằng mắt** (D1 preview chưa có tài khoản partner); luồng cập nhật tồn đã kiểm bằng test API.
+- Chưa có màn lịch nhiều ngày cho đối tác (mới chỉnh từng đêm); làm ở U5.
+- Đơn đặt vẫn lưu trong trình duyệt và chưa trừ tồn; N05.2 tạo giữ chỗ ghi vào `room_night_allocations`.
+- Hạng phòng chỉ mở lịch khi đã có trong hồ sơ được duyệt; hạng phòng mới trong bản nháp chưa chỉnh tồn được.
+- Dữ liệu thử trên D1 preview (`tx-stay-7`: phân bổ `t1`, `t2`, `t3`, khóa đêm 19/11) để lại cho các lần thử sau.
+
+### Đợt tiếp theo
+- **N05.2** (giữ chỗ 30 phút nguyên tử, chống đặt trùng, retry không tạo thêm đơn).
+
+---
+
 ## N04 — Tìm kiếm xuyên suốt, báo giá và voucher (13/11/2026, nhánh `dot/N04`)
 
 **Trạng thái: ĐẠT, chờ chủ dự án "gộp N04".** Gộp sẽ chạy migration 0004 (bảng `quotes`, `vouchers`) trên D1 production.

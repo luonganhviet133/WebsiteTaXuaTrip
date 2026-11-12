@@ -18,6 +18,13 @@
 
 ---
 
+### D-N05-01: Quy tắc tồn phòng (13/11/2026)
+
+- Tồn tính theo từng đêm, từng hạng phòng. Phòng trống của một khoảng ngày là đêm ít phòng nhất; đêm của ngày trả phòng không tính.
+- Giữ tồn: `held` còn hạn, `confirmed`, `checked_in`. Không giữ: `held` hết hạn (tự hết tác dụng theo `expires_at`), `released` (hủy, hết hạn đã dọn, không đến).
+- Chủ cơ sở đặt "còn N phòng" cho từng đêm; hệ thống lưu số phòng khóa = (tổng − đã giữ/đặt) − N và không cho mở quá số phòng đã có khách.
+- Tổng phòng của hạng phòng lấy từ hồ sơ đã duyệt; sửa tổng phòng phải qua duyệt như các thông tin khác.
+
 ### D-N04-01: Cách tính báo giá và lựa chọn tìm kiếm (13/11/2026)
 
 - Ngày tính theo giờ Việt Nam (UTC+7). Ngày mặc định: nhận phòng ngày mai, 1 đêm. Tối đa 30 đêm mỗi lần đặt.
