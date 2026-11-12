@@ -73,7 +73,8 @@ import {
   QUICK_SUGGESTIONS,
   matchesQuickSuggestion,
   QuickSuggestionId,
-  isHomestayAvailableInDateRange
+  isHomestayAvailableInDateRange,
+  hiddenByDateFilter
 } from './utils/rules.ts';
 import {
   Bus,
@@ -918,13 +919,7 @@ export default function App() {
 
       // 7. Date Range Availability Filter
       if (stayFilterByAvailableDates) {
-        const availability = isHomestayAvailableInDateRange(
-          item,
-          stayCheckIn,
-          stayCheckOut,
-          bookings
-        );
-        if (!availability.available) return false;
+        if (hiddenByDateFilter(item, stayCheckIn, stayCheckOut, bookings)) return false;
       } else if (onlyAvailable && item.roomTypes) {
         const hasFreeRooms = item.roomTypes.some((r) => r.availableRooms > 0);
         if (!hasFreeRooms) return false;
@@ -2893,7 +2888,7 @@ export default function App() {
                               onClaimListing={(l) => setActiveClaimListing(l)}
                               layoutMode={stayViewMode === 'list' ? 'horizontal' : 'grid'}
                               stayAvailabilityBadge={
-                                stayFilterByAvailableDates
+                                stayFilterByAvailableDates && listing.roomTypes && listing.roomTypes.length > 0
                                   ? {
                                       availableRoomsCount: dateCheck.availableRoomsCount,
                                       dateLabel: `${shortInGlobal} – ${shortOutGlobal}`,
