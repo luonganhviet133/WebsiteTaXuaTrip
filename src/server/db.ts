@@ -10,7 +10,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createD1Database } from './d1.ts';
+import { createD1Database, type NodeSQLiteD1Database } from './d1.ts';
 import type { D1Database } from './d1.ts';
 
 // Chỉ gọi khi chạy trên Node (dev, CLI, test). Không tính ở cấp module vì trên Cloudflare Worker
@@ -120,6 +120,22 @@ export interface DatabaseEngineOptions {
   inMemoryOnly?: boolean;
 }
 
+function applyMigrationsSync(local: NodeSQLiteD1Database): void {
+  const dir = path.resolve(resolveProjectRoot(), 'migrations_d1');
+  const files = fs.readdirSync(dir).filter((f) => /^\d{4}_.+\.sql$/.test(f)).sort();
+  try {
+    local.execSync('CREATE TABLE IF NOT EXISTS schema_migrations (version TEXT PRIMARY KEY, applied_at TEXT NOT NULL);');
+    const applied = new Set(local.allSync<{ version: string }>('SELECT version FROM schema_migrations').map((r) => r.version));
+    for (const file of files) {
+      if (applied.has(file)) continue;
+      local.execSync(fs.readFileSync(path.join(dir, file), 'utf8'));
+      local.execSync(`INSERT INTO schema_migrations (version, applied_at) VALUES ('${file}', '${new Date().toISOString()}')`);
+    }
+  } catch (err: any) {
+    throw new Error(`Database Initialization Error: ${err.message}`);
+  }
+}
+
 export class DatabaseEngine {
   public readonly d1: D1Database;
   public readonly isTestInstance: boolean;
@@ -135,107 +151,14 @@ export class DatabaseEngine {
       return;
     }
 
-    if (options.inMemoryOnly) {
-      this.d1 = createD1Database(':memory:');
-    } else {
-      const defaultSqlitePath = options.sqlitePath || process.env.DATABASE_SQLITE_PATH || path.resolve(resolveProjectRoot(), '.data', 'taxua_trip.sqlite');
-      this.d1 = createD1Database(defaultSqlitePath);
-    }
+    const local = options.inMemoryOnly
+      ? createD1Database(':memory:')
+      : createD1Database(options.sqlitePath || process.env.DATABASE_SQLITE_PATH || path.resolve(resolveProjectRoot(), '.data', 'taxua_trip.sqlite'));
+    this.d1 = local;
 
-    // SQLite trên Node (dev, CLI, test): tự tạo bảng nếu chưa có.
-    this.initSchemaSync();
-  }
-
-  private initSchemaSync(): void {
-    try {
-      this.d1.exec(`
-        CREATE TABLE IF NOT EXISTS schema_migrations (
-          version TEXT PRIMARY KEY,
-          applied_at TEXT NOT NULL
-        );
-
-        CREATE TABLE IF NOT EXISTS profiles (
-          id TEXT PRIMARY KEY,
-          email TEXT NOT NULL UNIQUE,
-          phone TEXT DEFAULT '',
-          password_hash TEXT NOT NULL,
-          full_name TEXT NOT NULL,
-          role TEXT NOT NULL CHECK(role IN ('traveler', 'partner', 'admin')) DEFAULT 'traveler',
-          avatar_url TEXT DEFAULT '',
-          is_verified INTEGER NOT NULL DEFAULT 0,
-          created_at TEXT NOT NULL,
-          updated_at TEXT NOT NULL
-        );
-
-        CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
-        CREATE INDEX IF NOT EXISTS idx_profiles_phone ON profiles(phone);
-
-        CREATE TABLE IF NOT EXISTS providers (
-          id TEXT PRIMARY KEY,
-          user_id TEXT NOT NULL UNIQUE REFERENCES profiles(id) ON DELETE CASCADE,
-          business_name TEXT NOT NULL,
-          phone TEXT NOT NULL,
-          tax_or_cccd TEXT DEFAULT '',
-          verification_status TEXT NOT NULL CHECK(verification_status IN ('unverified', 'pending', 'verified', 'rejected')) DEFAULT 'unverified',
-          verified_at TEXT,
-          verified_by TEXT REFERENCES profiles(id),
-          created_at TEXT NOT NULL,
-          updated_at TEXT NOT NULL
-        );
-
-        CREATE INDEX IF NOT EXISTS idx_providers_user_id ON providers(user_id);
-
-        CREATE TABLE IF NOT EXISTS provider_listings (
-          id TEXT PRIMARY KEY,
-          provider_id TEXT NOT NULL REFERENCES providers(id) ON DELETE CASCADE,
-          listing_id TEXT NOT NULL,
-          is_primary_owner INTEGER NOT NULL DEFAULT 1,
-          created_at TEXT NOT NULL,
-          UNIQUE(provider_id, listing_id)
-        );
-
-        CREATE INDEX IF NOT EXISTS idx_provider_listings_provider ON provider_listings(provider_id);
-        CREATE INDEX IF NOT EXISTS idx_provider_listings_listing ON provider_listings(listing_id);
-
-        CREATE TABLE IF NOT EXISTS user_sessions (
-          id TEXT PRIMARY KEY,
-          user_id TEXT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
-          token_hash TEXT NOT NULL UNIQUE,
-          role TEXT NOT NULL CHECK(role IN ('traveler', 'partner', 'admin')),
-          expires_at TEXT NOT NULL,
-          created_at TEXT NOT NULL,
-          revoked_at TEXT
-        );
-
-        CREATE INDEX IF NOT EXISTS idx_user_sessions_token_hash ON user_sessions(token_hash);
-        CREATE INDEX IF NOT EXISTS idx_user_sessions_user_id ON user_sessions(user_id);
-
-        CREATE TABLE IF NOT EXISTS bookings (
-          id TEXT PRIMARY KEY,
-          booking_code TEXT NOT NULL UNIQUE,
-          user_id TEXT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
-          listing_id TEXT NOT NULL,
-          listing_title TEXT NOT NULL,
-          provider_id TEXT REFERENCES providers(id),
-          guest_name TEXT NOT NULL,
-          guest_phone TEXT NOT NULL,
-          check_in_date TEXT NOT NULL,
-          check_out_date TEXT NOT NULL,
-          total_amount INTEGER NOT NULL DEFAULT 0,
-          deposit_amount INTEGER NOT NULL DEFAULT 0,
-          status TEXT NOT NULL CHECK(status IN ('draft', 'pending', 'confirmed', 'completed', 'cancelled')) DEFAULT 'pending',
-          created_at TEXT NOT NULL,
-          updated_at TEXT NOT NULL
-        );
-
-        CREATE INDEX IF NOT EXISTS idx_bookings_user_id ON bookings(user_id);
-        CREATE INDEX IF NOT EXISTS idx_bookings_provider_id ON bookings(provider_id);
-        CREATE INDEX IF NOT EXISTS idx_bookings_listing_id ON bookings(listing_id);
-        CREATE INDEX IF NOT EXISTS idx_bookings_status ON bookings(status);
-      `);
-    } catch (err: any) {
-      throw new Error(`Database Initialization Error: ${err.message}`);
-    }
+    // SQLite trên Node (dev, CLI, test): áp đúng các file migrations_d1 mà Cloudflare dùng,
+    // file nào đã áp thì ghi vào schema_migrations để không chạy lại.
+    applyMigrationsSync(local);
   }
 
   // --- Health Check (S4: Surfaces Real DB Status, No Masking) ---
@@ -679,6 +602,11 @@ export class DatabaseEngine {
     }
 
     await this.d1.exec(`
+      DELETE FROM audit_log;
+      DELETE FROM listing_claims;
+      DELETE FROM listing_versions;
+      DELETE FROM listings;
+      DELETE FROM site_content;
       DELETE FROM bookings;
       DELETE FROM user_sessions;
       DELETE FROM provider_listings;

@@ -25,7 +25,8 @@
     "worker:dev": "wrangler dev",
     "worker:dry-run": "wrangler deploy --dry-run",
     "deploy": "npm run db:migrate:remote && wrangler deploy",
-    "deploy:preview": "npm run db:migrate:preview && wrangler preview"
+    "deploy:preview": "npm run db:migrate:preview && wrangler preview",
+    "listings:import": "tsx scripts/import-listings.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
