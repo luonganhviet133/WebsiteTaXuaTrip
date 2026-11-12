@@ -129,6 +129,8 @@ export class NodeSQLiteD1Database implements D1Database {
     this.db = new DatabaseSync(databasePath);
     // Enable foreign keys for SQLite
     this.db.exec('PRAGMA foreign_keys = ON;');
+    // Hai tiến trình dev/CLI cùng mở một file: chờ tối đa 5 giây thay vì báo "database is locked" ngay.
+    this.db.exec('PRAGMA busy_timeout = 5000;');
   }
 
   public prepare(query: string): D1PreparedStatement {

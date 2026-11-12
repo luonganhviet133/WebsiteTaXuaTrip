@@ -213,6 +213,9 @@ test('F1 Verification: Real Subprocess execution of dist/server.js with NODE_ENV
   const childEnv = { ...process.env };
   delete childEnv.NODE_ENV; // Explicitly ensure NODE_ENV is unset!
   childEnv.PORT = String(testPort);
+  // Không chạm DB vận hành .data/taxua_trip.sqlite (tránh khóa file khi test khác chạy song song).
+  const childDbPath = path.resolve(projectRoot, 'tmp', `test_f1_${Date.now()}.sqlite`);
+  childEnv.DATABASE_SQLITE_PATH = childDbPath;
 
   let serverOutput = '';
   const child = spawn(process.execPath, [serverJsPath], {
@@ -269,5 +272,8 @@ test('F1 Verification: Real Subprocess execution of dist/server.js with NODE_ENV
     assert.match(resApi.headers.get('content-type') || '', /application\/json/);
   } finally {
     child.kill('SIGTERM');
+    try {
+      fs.rmSync(childDbPath, { force: true });
+    } catch {}
   }
 });

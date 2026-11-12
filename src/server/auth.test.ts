@@ -483,11 +483,9 @@ test('N02: Real Database, Authentication & Multi-Tenant Authorization Test Suite
 
   // 13. S1: SENTINEL ISOLATION GUARANTEE
   await t.test('S1: Operational database is protected and never modified by test suite', async () => {
-    const opDbPath = path.resolve(projectRoot, '.data', 'taxua_trip.sqlite');
-    if (fs.existsSync(opDbPath)) {
-      const stats = fs.statSync(opDbPath);
-      assert.ok(stats.size >= 0);
-    }
+    // Một DB vận hành (isTest: false) đặt ở thư mục tmp: kiểm tra đúng cơ chế chặn,
+    // không mở file .data thật (tiến trình khác có thể đang ghi → "database is locked").
+    const opDbPath = path.resolve(projectRoot, 'tmp', `test_opdb_${Date.now()}.sqlite`);
     const opDb = new DatabaseEngine({ sqlitePath: opDbPath, isTest: false });
     await assert.rejects(
       async () => {
@@ -495,6 +493,7 @@ test('N02: Real Database, Authentication & Multi-Tenant Authorization Test Suite
       },
       /CRITICAL_SECURITY_VIOLATION/
     );
+    fs.rmSync(opDbPath, { force: true });
   });
 
   // 14. N02.5: TURNSTILE VERIFICATION TESTS
