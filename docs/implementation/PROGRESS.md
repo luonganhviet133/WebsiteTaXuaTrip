@@ -7,9 +7,34 @@
 | **N01.1** | Sửa build/start server production, type-only imports, Express app testable, CI pipeline, README (Đã sửa & nghiệm thu F1, F2, F3) | **ĐẠT NGHIỆM THU** | 2026-11-12 |
 | **N02** | Sửa S1–S6 và chuyển kiến trúc đích sang D1/Workers; auth/bootstrap/ownership/anti-abuse theo Cloudflare plan | **ĐẠT NGHIỆM THU (LOCAL D1 & WORKERD)** *(Cloud staging chờ kiểm chứng)* | 2026-11-12 |
 | **G0.1** | Git và dọn kho; cấu hình Worker `websitetaxuatrip` với D1/R2 thật (xem mục G0.1 bên dưới) | **CODE XONG, CHỜ KIỂM CHỨNG DEPLOY** | 2026-11-12 |
+| **G0.2** | CI GitHub Actions chạy Node 22 (typecheck, build, test), bỏ deploy GitHub Pages | **CODE XONG, CHỜ CI XANH TRÊN GITHUB** | 2026-11-12 |
+| **G0.3** | Turnstile thật: widget ở form đăng nhập/đăng ký, Worker đọc secret từ env, chặn khi production thiếu secret, bỏ lỗ vượt qua bằng token test | **CODE XONG, CHỜ KIỂM CHỨNG TRÊN WORKERS.DEV** | 2026-11-12 |
 | **N03** | Dữ liệu danh bạ, CMS và thẩm định thực tế | *SẴN SÀNG TRIỂN KHAI* | — |
 
 ---
+
+## G0.2 + G0.3 — CI Node 22 và Turnstile thật (12/11/2026)
+
+**G0.2 — CI**
+- `.github/workflows/deploy.yml` → `ci.yml`: chạy `npm ci`, typecheck, build, test trên Node 22; bỏ bước deploy GitHub Pages (deploy do Cloudflare Workers Builds làm). Nguyên nhân lỗi cũ: Node 20 không có `node:sqlite`, 2 bộ test `auth.test.ts`, `server.test.ts` lỗi `ERR_UNKNOWN_BUILTIN_MODULE`.
+- `package.json` thêm `engines.node >= 22.12.0`; README sửa yêu cầu Node, bỏ cờ `--legacy-peer-deps` (đã nằm trong `.npmrc`), cập nhật số test.
+
+**G0.3 — Turnstile**
+- Lỗ hổng tìm thấy khi rà `antiAbuse.ts`: client gửi token `1x0000000000000000000000000000000AA` (token test công khai của Cloudflare) thì luôn được cho qua kể cả khi đã có secret thật. Ngoài ra Worker đọc secret qua `process.env`; với `compatibility_date = 2024-09-23` biến này trống nên Worker luôn rơi về secret test.
+- `verifyTurnstileToken` nhận secret qua tham số; thiếu secret → `TURNSTILE_NOT_CONFIGURED`; chế độ giả lập chỉ bật khi secret là secret test; bỏ nhánh vượt qua theo token.
+- Worker: secret lấy từ `env.TURNSTILE_SECRET_KEY`; `NODE_ENV=production` mà thiếu secret → 503; kiểm tra hostname khớp tên miền của request.
+- Express (chỉ còn dùng chạy local): giữ hành vi cũ (chỉ kiểm khi có token), secret = `process.env.TURNSTILE_SECRET_KEY` hoặc secret test. Sẽ gộp về một backend ở G0.4.
+- Giao diện: `TurnstileWidget` (tải script Cloudflare khi mở form, action `login`/`register`, tiếng Việt, làm mới sau mỗi lần gửi lỗi); `AuthModal` chặn gửi khi chưa có token. Site key ở `src/config/turnstile.ts`: bản build production dùng key thật, dev dùng site key test; ghi đè được bằng `VITE_TURNSTILE_SITE_KEY`.
+
+**Kiểm chứng (bản sạch, xóa `node_modules` và `dist`)**
+- `src/server/antiAbuse.test.ts` (6 test): đạt; đưa lại nhánh vượt qua cũ vào thì test "token test công khai" lỗi đúng như mong đợi.
+- `src/server/worker.test.ts`: thêm bước gọi `/api/auth/register` và `/api/auth/login` kèm token test trên Worker production không có secret → 503 `TURNSTILE_NOT_CONFIGURED`. Trước khi sửa: register trả 400 (qua được Turnstile). Sau khi sửa: đạt.
+- `npm ci` exit 0, typecheck exit 0, build exit 0, `npm test` 75/75, `wrangler deploy --dry-run` exit 0.
+
+**Chưa kiểm chứng / còn lại**
+- CI trên GitHub với Node 22 và đăng ký/đăng nhập thật có widget trên workers.dev: kiểm tra sau khi đẩy.
+- Widget dùng key thật chỉ chạy trên hostname đã khai báo trong Turnstile; `wrangler dev` trên localhost với bản build production sẽ không qua được widget.
+- Giới hạn tần suất vẫn đếm trong bộ nhớ từng isolate của Worker, chưa dùng chung; xử lý theo kế hoạch chống abuse sau.
 
 ## G0.1 — Git, dọn kho và cấu hình Worker thật (12/11/2026)
 

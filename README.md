@@ -6,7 +6,7 @@ Cổng thông tin và đặt dịch vụ du lịch Tà Xùa (179+ homestay & đi
 
 ## 1. Yêu Cầu Môi Trường
 
-- **Node.js**: `^20.19.0` hoặc `>= 22.12.0` (theo đặc tả engine của Vite & Rollup)
+- **Node.js**: `>= 22.12.0` (dev/test dùng `node:sqlite`, Node 20 không có; Vite 8 cũng yêu cầu bản này)
 - **NPM**: `>= 10.x`
 - **Wrangler**: `^4.x` (đã có trong `devDependencies`)
 - Hệ điều hành: Linux / macOS / Windows
@@ -16,10 +16,10 @@ Cổng thông tin và đặt dịch vụ du lịch Tà Xùa (179+ homestay & đi
 Cài đặt chính xác theo `package-lock.json` để đồng nhất phiên bản dependency:
 
 ```bash
-npm ci --legacy-peer-deps
+npm ci
 ```
 
-*(Lưu ý: Nếu sử dụng Windows PowerShell khi script execution bị hạn chế, sử dụng `npm.cmd ci --legacy-peer-deps`)*
+*(Lưu ý: Nếu sử dụng Windows PowerShell khi script execution bị hạn chế, sử dụng `npm.cmd ci` (cờ `legacy-peer-deps` đã nằm trong `.npmrc`))*
 
 ## 3. Cấu Hình Môi Trường (.env) & Cơ Sở Dữ Liệu D1
 
@@ -54,7 +54,7 @@ npm run db:bootstrap -- --email admin@taxuatrip.vn --password "MatKhauBaoMat123!
 Pipeline chuẩn hóa theo đúng trình tự để đảm bảo tính tái lập:
 1. `npm run typecheck` (Kiểm tra kiểu TypeScript - 0 lỗi)
 2. `npm run build` (Tạo artifact frontend tại `dist/client` và backend tại `dist/server.js`)
-3. `npm test` (Chạy toàn bộ 68 test suites, sử dụng CSDL test cô lập hoàn toàn)
+3. `npm test` (75 test, dùng CSDL test cô lập; GitHub Actions `.github/workflows/ci.yml` chạy đúng 3 bước này trên Node 22, deploy do Cloudflare Workers Builds đảm nhận)
 
 ### Kiểm tra kiểu TypeScript (0 lỗi):
 ```bash
@@ -73,7 +73,9 @@ npm test
 *Bộ test bao gồm:
 - 34 unit tests nghiệp vụ bản địa Tà Xùa (`src/utils/rules.test.ts`)
 - 14 kiểm thử F1/F2/F3 và cô lập tài nguyên tĩnh Express (`src/server/server.test.ts`)
-- 20 kiểm thử xác thực, phân quyền multi-tenant, Turnstile, Rate limiting, D1 persistence, và cô lập kho vận hành S1 (`src/server/auth.test.ts`)*
+- 20 kiểm thử xác thực, phân quyền multi-tenant, Turnstile, Rate limiting, D1 persistence, và cô lập kho vận hành S1 (`src/server/auth.test.ts`)
+- 6 kiểm thử Turnstile phía server: thiếu secret, thiếu token, token test công khai, hostname, action (`src/server/antiAbuse.test.ts`)
+- 1 kiểm thử khởi động Worker trong workerd: `/api/health`, tải JS/CSS trang chủ, chặn đăng ký/đăng nhập khi production thiếu secret Turnstile (`src/server/worker.test.ts`)*
 
 ## 5. Chạy Môi Trường Phát Triển & Cloudflare Workers
 
