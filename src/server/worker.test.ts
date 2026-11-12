@@ -48,6 +48,13 @@ test('Worker khởi động được trong workerd và /api/health trả JSON', 
       await asset.arrayBuffer();
     }
 
+    // U2: tải lại / mở link chia sẻ ở đường dẫn của từng màn phải trả về trang (index.html).
+    for (const route of ['/co-so/tx-stay-5', '/luu-tru', '/chuyen-di-cua-toi', '/quan-tri']) {
+      const page = await worker.fetch(route, { headers: { Accept: 'text/html' } });
+      assert.equal(page.status, 200, `${route} trả ${page.status}`);
+      assert.match(await page.text(), /<div id="root">/, `${route} không trả index.html`);
+    }
+
     // G0.3: production (NODE_ENV=production trong wrangler.toml) chưa có TURNSTILE_SECRET_KEY
     // thì đăng ký/đăng nhập phải bị chặn, kể cả khi gửi token test công khai của Cloudflare.
     for (const route of ['/api/auth/register', '/api/auth/login']) {

@@ -76,7 +76,9 @@ export default {
       if (assetResponse.status === 404 && request.method === 'GET') {
         const accept = request.headers.get('accept') || '';
         if (accept.includes('text/html')) {
-          const indexUrl = new URL('/index.html', request.url);
+          // Lấy "/" chứ không lấy "/index.html": Assets chuyển hướng /index.html → / (307),
+          // khiến mọi đường dẫn như /co-so/:id bị đá về trang chủ khi tải lại.
+          const indexUrl = new URL('/', request.url);
           assetResponse = await env.ASSETS.fetch(new Request(indexUrl, request));
         }
       }
