@@ -1,3 +1,5 @@
+import { ONLINE_PAYMENT_ENABLED } from '../config/features';
+import { DemoNotice } from './DemoNotice';
 import React, { useState } from 'react';
 import {
   X,
@@ -304,6 +306,13 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
             </div>
           )}
 
+          {!ONLINE_PAYMENT_ENABLED && fetchStatus !== 'unauthenticated' && (
+            <DemoNotice>
+              Thanh toán trực tuyến chưa mở: website chưa nhận tiền cọc, chưa nhận biên lai và chưa
+              tự giữ phòng. Vui lòng liên hệ trực tiếp cơ sở (số điện thoại trên trang chi tiết) để đặt cọc và xác nhận.
+            </DemoNotice>
+          )}
+
           {/* Render Bookings */}
           {fetchStatus !== 'unauthenticated' && !isLoadingBookings && filteredBookings.map((booking) => {
             const matchedListing = listings.find((l) => l.id === booking.listingId);
@@ -373,7 +382,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                           <span>Xem Ảnh Biên Lai Đã Nộp</span>
                           <ExternalLink className="w-3 h-3 text-teal-600" />
                         </button>
-                      ) : (
+                      ) : ONLINE_PAYMENT_ENABLED ? (
                         <button
                           type="button"
                           onClick={() => {
@@ -392,7 +401,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                           <UploadCloud className="w-3.5 h-3.5 text-sky-700" />
                           <span>+ Tải Biên Lai Chuyển Khoản Bổ Sung</span>
                         </button>
-                      )}
+                      ) : null}
 
                       {booking.paymentStatus === 'partner_confirmed' && (
                         <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
@@ -404,6 +413,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
 
                   {/* Action Buttons */}
                   <div className="md:col-span-5 flex flex-wrap items-center justify-start md:justify-end gap-2">
+                    {ONLINE_PAYMENT_ENABLED && (
                     <button
                       type="button"
                       onClick={() => {
@@ -419,6 +429,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                       <CreditCard className="w-3.5 h-3.5" />
                       <span>Mã VietQR Cọc (50%)</span>
                     </button>
+                    )}
 
                     <button
                       type="button"
@@ -486,7 +497,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                 </div>
 
                 {/* Expandable Panel 1: Dynamic VietQR Payment */}
-                {isVietQrOpen && (
+                {ONLINE_PAYMENT_ENABLED && isVietQrOpen && (
                   <div className="bg-[#f8fafc] border border-teal-200 rounded-2xl p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
                     <div className="sm:col-span-4 flex flex-col items-center bg-white p-3 rounded-2xl border border-slate-200">
                       <img

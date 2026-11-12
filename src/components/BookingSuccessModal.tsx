@@ -1,4 +1,5 @@
 import React from 'react';
+import { DemoNotice } from './DemoNotice';
 import { 
   X, 
   CheckCircle2, 
@@ -44,11 +45,12 @@ export const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
         </div>
 
         <h2 className="text-xl sm:text-2xl font-black text-white mb-1">
-          Giữ Chỗ Thành Công!
+          Đã Tạo Phiếu Đặt Chỗ
         </h2>
-        <p className="text-xs text-slate-300 mb-6">
-          Mã đặt chỗ của bạn đã được gửi đến chủ cơ sở và lưu trên hệ thống Tà Xùa Trip.
-        </p>
+        <DemoNotice dark className="mb-6 text-left">
+          Phiếu này chỉ lưu trên trình duyệt của bạn, chưa gửi tới chủ cơ sở và chưa giữ phòng.
+          Vui lòng gọi hoặc nhắn Zalo cho cơ sở để xác nhận phòng và đặt cọc.
+        </DemoNotice>
 
         {/* QR Code Container */}
         <div className="bg-white p-4 rounded-2xl max-w-[200px] mx-auto mb-4 shadow-xl">
@@ -65,7 +67,7 @@ export const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
         {/* Cloud points earned alert */}
         <div className="bg-gradient-to-r from-teal-500/20 via-sky-500/20 to-indigo-500/20 border border-teal-500/30 rounded-2xl p-3 mb-6 flex items-center justify-center gap-2 text-xs font-bold text-teal-300">
           <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-          <span>Bạn đã tích lũy thành công <strong>+{pointsEarned} Điểm Mây</strong>!</span>
+          <span>Điểm Mây dự kiến: <strong>+{pointsEarned}</strong> (bản demo, chưa lưu lên hệ thống)</span>
         </div>
 
         {/* Booking Details Card */}

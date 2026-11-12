@@ -1,3 +1,4 @@
+import { buildOfflineStepHtml, buildOfflineDayHtml } from '../utils/offlineItineraryHtml.ts';
 import React, { useState, useMemo } from 'react';
 import {
   Sparkles,
@@ -425,20 +426,10 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
           .map((step) => {
             const listing = resolveStepListing(step);
             const cost = computeStepCostPerPerson(step, listing);
-            return `<div style="border:1px solid #cbd5e1;border-radius:12px;padding:12px;margin-bottom:10px;background:#fff;">
-              <div style="font-weight:800;color:#073161;font-size:14px;">🕒 ${step.time} — ${step.title}</div>
-              <div style="font-size:12px;color:#475569;margin:4px 0;">📍 ${step.location} · Dự toán: <strong>${formatVND(cost)}/người</strong></div>
-              <div style="font-size:13px;color:#1e293b;margin:4px 0;">${step.activity}</div>
-              <div style="font-size:12px;color:#0f766e;background:#f0fdfa;padding:6px 10px;border-radius:8px;">💡 Lưu ý: ${step.tip}</div>
-              ${
-                listing
-                  ? `<div style="margin-top:6px;font-size:12px;color:#073161;">🏡 Cơ sở đã chọn: <strong>${listing.title}</strong> (${listing.area}) — 📞 SĐT/Zalo: <strong>${listing.phone}</strong></div>`
-                  : ''
-              }
-            </div>`;
+            return buildOfflineStepHtml(step, listing, cost);
           })
           .join('');
-        return `<h2 style="color:#073161;font-size:17px;margin-top:20px;border-bottom:2px solid #073161;padding-bottom:6px;">${day.dayTitle}</h2>${stepsHtml}`;
+        return buildOfflineDayHtml(day.dayTitle, stepsHtml);
       })
       .join('');
 

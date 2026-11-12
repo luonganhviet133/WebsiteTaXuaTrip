@@ -376,8 +376,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </div>
         </div>
 
-        {/* Quick 1-Click Demo Login Card (Hidden for Admin in Production - R1) */}
-        {(!isProduction || selectedRole !== 'admin') && (
+        {/* Thẻ tài khoản mẫu: chỉ hiện khi chạy dev; production không có các tài khoản này và đăng nhập cần Turnstile */}
+        {!isProduction && (
           <div className="p-4 sm:p-5 pt-3">
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-4 mb-4">
               <div className="flex items-center justify-between gap-2 mb-2">
@@ -510,7 +510,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-xs font-bold text-slate-700">Mật khẩu:</label>
-                  {(!isProduction || selectedRole !== 'admin') && (
+                  {!isProduction && (
                     <button
                       type="button"
                       onClick={() => {

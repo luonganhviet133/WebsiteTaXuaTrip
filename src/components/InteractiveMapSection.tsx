@@ -1,3 +1,5 @@
+import { escapeHtml } from '../utils/escapeHtml.ts';
+import { buildLandmarkTooltipHtml, buildListingTooltipHtml } from '../utils/mapTooltipHtml.ts';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import {
@@ -492,7 +494,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
       lineCap: 'round',
       lineJoin: 'round'
     })
-      .bindTooltip(`${activeCloudRoute.title} (${activeCloudRoute.distanceLabel})`, {
+      .bindTooltip(escapeHtml(`${activeCloudRoute.title} (${activeCloudRoute.distanceLabel})`), {
         sticky: true
       })
       .addTo(routeLayer);
@@ -541,7 +543,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
           transition: all 0.2s ease;
         ">
           <span>☁️</span>
-          <span>${spot.area}</span>
+          <span>${escapeHtml(spot.area)}</span>
           <span style="
             background: rgba(16, 185, 129, 0.25);
             color: #6ee7b7;
@@ -565,11 +567,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
       });
 
       marker.bindTooltip(
-        `<div style="font-family:sans-serif;padding:2px 4px;">
-          <div style="font-weight:800;color:#073161;font-size:12px;">☁️ ${spot.name}</div>
-          <div style="font-size:11px;color:#0d7a74;font-weight:700;">Độ cao ${spot.altitude} · Tỷ lệ săn mây ${spot.cloudProbability}%</div>
-          <div style="font-size:10px;color:#475569;">Khung giờ vàng: ${spot.bestTime}</div>
-        </div>`,
+        buildLandmarkTooltipHtml(spot),
         { direction: 'top', offset: [0, -14] }
       );
 
@@ -640,7 +638,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
             transition: all 0.2s ease;
           ">
             <span>${emoji}</span>
-            <span>${isSelected ? `${shortTitle} · ${shortPrice}` : shortPrice}</span>
+            <span>${escapeHtml(isSelected ? `${shortTitle} · ${shortPrice}` : shortPrice)}</span>
           </div>
         `;
 
@@ -661,17 +659,11 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
           : null;
 
         marker.bindTooltip(
-          `<div style="font-family:sans-serif;padding:2px 4px;min-width:170px;">
-            <div style="font-weight:800;color:#073161;font-size:12px;">${emoji} ${item.title}</div>
-            <div style="font-size:11px;color:#334155;margin-top:2px;">
-              📍 ${item.area} · ⭐ ${item.rating} (${item.reviewCount})
-              ${item.hasCloudView ? ' · <span style="color:#0d7a74;font-weight:700;">☁️ View biển mây</span>' : ''}
-            </div>
-            <div style="font-size:11px;font-weight:800;color:#0d7a74;margin-top:2px;">
-              Giá từ: ${item.minPrice > 0 ? formatVND(item.minPrice) : 'Hỗ trợ 24/7'}
-              ${distToRef !== null && activeReferenceSpot ? ` · Cách ${activeReferenceSpot.area} ${distToRef}km` : ''}
-            </div>
-          </div>`,
+          buildListingTooltipHtml(
+            item,
+            emoji,
+            distToRef !== null && activeReferenceSpot ? { km: distToRef, area: activeReferenceSpot.area } : null
+          ),
           { direction: 'top', offset: [0, -12] }
         );
 
@@ -719,7 +711,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
         }
       )
         .bindTooltip(
-          `Khoảng cách tới ${activeCloudTarget.area}: ${distKm} km (~${mins} phút xe máy)`,
+          escapeHtml(`Khoảng cách tới ${activeCloudTarget.area}: ${distKm} km (~${mins} phút xe máy)`),
           { permanent: false, sticky: true }
         )
         .addTo(map);

@@ -1,3 +1,4 @@
+import { DemoNotice } from './DemoNotice';
 import React, { useState } from 'react';
 import {
   ShieldCheck,
@@ -431,7 +432,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       ...revidConfig,
       asyncJobs: [initialJob, ...revidConfig.asyncJobs]
     };
-    saveRevidConfig(nextWithProcessing, `🚀 Đã gửi Job ${jobId} lên POST ${revidConfig.baseUrl}/generate!`);
+    saveRevidConfig(nextWithProcessing, `Bản demo: job ${jobId} chỉ được mô phỏng trên trình duyệt, chưa gửi tới RevidAPI.`);
 
     setTimeout(() => {
       const sampleImages = [
@@ -468,7 +469,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         return updated;
       });
       setIsSubmittingMediaJob(false);
-      showAdminToast(`✅ Job ${jobId} (${mediaJobModel}) đã hoàn tất Polling GET /v1/jobs/${jobId}!`);
+      showAdminToast(`Bản demo: job ${jobId} trả về một ảnh mẫu có sẵn, không phải ảnh do ${mediaJobModel} tạo.`);
     }, 1800);
   };
 
@@ -6512,6 +6513,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       Gửi yêu cầu tạo ảnh/video Tà Xùa, tự động lấy `job_id` và Polling `GET /v1/jobs/{'{job_id}'}`. Có thể gắn trực tiếp ảnh vừa tạo làm Banner CMS!
                     </p>
                   </div>
+
+                  <DemoNotice dark>
+                    Chưa gửi yêu cầu tới RevidAPI. Job chỉ được mô phỏng trên trình duyệt, kết quả là ảnh mẫu có sẵn
+                    và số credit trừ đi không phải số liệu thật.
+                  </DemoNotice>
 
                   <form onSubmit={handleSubmitAsyncMediaJob} className="space-y-3 text-xs">
                     <div className="grid grid-cols-3 gap-2">

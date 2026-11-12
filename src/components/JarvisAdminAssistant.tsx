@@ -1,3 +1,4 @@
+import { DemoNotice } from './DemoNotice';
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Bot,
@@ -153,10 +154,7 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
   revidConfig,
   isModalOverlay = false,
   onCloseOverlay,
-  onUpdateTier,
   onUpdateListing,
-  onApproveClaim,
-  onResolveDispute,
   onUpdateSiteContent,
   onUpdateForecasts,
   onAddVoucher,
@@ -312,50 +310,27 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
   const executeJarvisAction = (action: JarvisProposedAction) => {
     switch (action.actionType) {
       case 'FULL_DIAGNOSTIC_SCAN': {
-        const summaryMsg = `Đã hoàn tất quét sâu 8 phân hệ: 179/179 cơ sở hiển thị chuẩn xác (91 Homestay, 28 Cafe, 16 Nhà xe, 15 Nhà hàng, 13 Photo, 9 Tour, 3 Trang phục, 1 Xe máy, 1 Taxi, 1 Máy ảnh, 1 Cứu hộ). Ví RevidAPI còn ${revidConfig.creditWallet.balanceCredits} Credits.`;
-        showNotice(`✅ [J.A.R.V.I.S. Diagnostic]: ${summaryMsg}`);
+        const summaryMsg = `Bản demo: chưa có quét hệ thống thật. Danh mục đang hiển thị ${listings.length} cơ sở (dữ liệu mẫu), ${pendingClaims.length} hồ sơ chính chủ và ${pendingDisputes.length} khiếu nại đang chờ.`;
+        showNotice(`ℹ️ [J.A.R.V.I.S.]: ${summaryMsg}`);
         speakJarvisText(summaryMsg);
         break;
       }
 
+      // Duyệt hồ sơ chính chủ và kết luận khiếu nại phải do người phụ trách xem từng hồ sơ.
+      // Trợ lý không đối chiếu biên lai hay chuỗi băm nên không được tự duyệt/đóng hàng loạt.
       case 'APPROVE_ALL_PENDING_CLAIMS': {
-        if (onApproveClaim && pendingClaims.length > 0) {
-          pendingClaims.forEach((c) => onApproveClaim(c.id));
-          showNotice(`✅ J.A.R.V.I.S. đã duyệt thành công ${pendingClaims.length} hồ sơ xác nhận chính chủ!`);
-          speakJarvisText(`Đã phê duyệt toàn bộ ${pendingClaims.length} hồ sơ chính chủ.`);
-        } else {
-          showNotice('ℹ️ Hiện không còn hồ sơ chính chủ nào tồn đọng.');
-        }
-        break;
+        showNotice('⛔ Đã tắt duyệt hàng loạt: mỗi hồ sơ chính chủ cần người phụ trách xem bằng chứng và duyệt riêng trong mục Hồ sơ.');
+        return;
       }
 
       case 'RESOLVE_PENDING_DISPUTES': {
-        if (onResolveDispute && pendingDisputes.length > 0) {
-          pendingDisputes.forEach((d) =>
-            onResolveDispute(
-              d.id,
-              'resolved',
-              'Xác nhận tự động bởi Siêu trợ lý J.A.R.V.I.S. sau khi đối chiếu biên lai VietQR và chuỗi băm SHA-256.'
-            )
-          );
-          showNotice(`⚖️ J.A.R.V.I.S. đã xử lý hoàn tất ${pendingDisputes.length} ca khiếu nại tồn đọng!`);
-          speakJarvisText(`Đã phán quyết và đóng ${pendingDisputes.length} hồ sơ khiếu nại.`);
-        } else {
-          showNotice('ℹ️ Hiện không có ca khiếu nại nào đang chờ xử lý.');
-        }
-        break;
+        showNotice('⛔ Đã tắt đóng khiếu nại hàng loạt: J.A.R.V.I.S. chưa đối chiếu biên lai hay chuỗi băm, từng ca phải được người phụ trách xử lý.');
+        return;
       }
 
       case 'UPGRADE_LISTING_TIER': {
-        const targetId = action.payload?.listingId || listings[0]?.id;
-        const targetTier: VerificationTier = action.payload?.tier || 3;
-        const targetListing = listings.find((l) => l.id === targetId) || listings[0];
-        if (targetListing) {
-          onUpdateTier(targetListing.id, targetTier);
-          showNotice(`🏅 J.A.R.V.I.S. đã nâng cấp "${targetListing.title}" lên Huy hiệu Cấp ${targetTier}!`);
-          speakJarvisText(`Đã nâng cấp cơ sở ${targetListing.title} lên huy hiệu cấp ${targetTier}.`);
-        }
-        break;
+        showNotice('⛔ Đã tắt nâng huy hiệu xác minh qua J.A.R.V.I.S.: huy hiệu chỉ được cấp sau khi người phụ trách kiểm tra hồ sơ thực địa.');
+        return;
       }
 
       case 'TRIGGER_EMERGENCY_ALERT': {
@@ -455,15 +430,14 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
 
       case 'GENERATE_AND_APPLY_HERO_BANNER': {
         if (onUpdateSiteContent) {
-          const newBannerUrl =
+          const sampleBannerUrl =
             'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=85';
           onUpdateSiteContent({
             ...siteContent,
-            heroBackgroundImage: newBannerUrl,
-            heroBadge: '✨ ĐÃ TỐI ƯU GIAO DIỆN BỞI J.A.R.V.I.S. & REVIDAPI 2K'
+            heroBackgroundImage: sampleBannerUrl
           });
-          showNotice('🖼️ J.A.R.V.I.S. đã sinh ảnh biển mây 2K qua RevidAPI (nano-banana-pro) và cập nhật lên Hero Trang chủ!');
-          speakJarvisText('Đã tạo xong ảnh nền biển mây 2K và áp dụng trực tiếp lên trang chủ.');
+          showNotice('🖼️ Bản demo: đã đổi ảnh nền trang chủ sang một ảnh mẫu có sẵn. Chưa sinh ảnh qua RevidAPI.');
+          speakJarvisText('Đã đổi ảnh nền trang chủ sang ảnh mẫu có sẵn.');
         }
         break;
       }
@@ -819,6 +793,11 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
           )}
         </div>
       </div>
+
+      <DemoNotice dark className="relative z-10">
+        các hành động của J.A.R.V.I.S. chạy bằng kịch bản có sẵn trên trình duyệt; câu trả lời chỉ do AI tạo
+        khi máy chủ có khóa RevidAPI. Không dùng để duyệt hồ sơ, đóng khiếu nại hay cấp huy hiệu.
+      </DemoNotice>
 
       {/* Live Execution Feedback Banner */}
       {executionBanner && (

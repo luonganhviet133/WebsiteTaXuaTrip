@@ -28,20 +28,21 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
   userProfile,
   onRegisterMember
 }) => {
-  const [messages, setMessages] = useState<DirectChatMessage[]>([
-    {
-      id: 'init-msg-1',
-      listingId: listing.id,
-      senderId: 'host',
-      senderName: listing.title,
-      senderRole: 'partner',
-      text: `Dạ chào bạn! Đây là kênh trò chuyện trực tiếp chính chủ của ${listing.title}. Bạn cần hỗ trợ kiểm tra phòng, giá ưu đãi hay thông tin săn mây cứ nhắn mình nhé!`,
-      timestamp: 'Vừa xong',
-      isRead: true
-    }
-  ]);
+  // Chat trên web chưa có máy chủ chuyển tin tới chủ cơ sở: không hiển thị lời chào/trả lời
+  // dưới danh nghĩa chủ cơ sở, chỉ hiển thị thông báo hệ thống nói rõ tin chưa được gửi.
+  const systemMessage = (id: string): DirectChatMessage => ({
+    id,
+    listingId: listing.id,
+    senderId: 'system',
+    senderName: 'Thông báo hệ thống',
+    senderRole: 'admin',
+    text: `Tin nhắn trên web chưa được chuyển tới ${listing.title}. Để hỏi phòng, giá và đường đi, vui lòng gọi hoặc nhắn Zalo ${listing.phone}.`,
+    timestamp: 'Vừa xong',
+    isRead: true
+  });
+
+  const [messages, setMessages] = useState<DirectChatMessage[]>([systemMessage('init-msg-1')]);
   const [inputText, setInputText] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
   const [showRegisterPrompt, setShowRegisterPrompt] = useState(!userProfile?.phone);
   const [regName, setRegName] = useState(userProfile?.name || '');
   const [regPhone, setRegPhone] = useState(userProfile?.phone || '');
@@ -86,31 +87,7 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
     setMessages((prev) => [...prev, newMsg]);
     setInputText('');
 
-    // Simulate smart host response after 1.2s
-    setIsTyping(true);
-    setTimeout(() => {
-      setIsTyping(false);
-      let reply = `Cảm ơn bạn ${userProfile.name || ''} đã nhắn tin! Cơ sở đã nhận được câu hỏi "${text.slice(0, 35)}...". Chủ cơ sở đang trực tiếp kiểm tra và sẽ gọi lại cho bạn qua SĐT ${userProfile.phone || listing.phone} trong 3-5 phút ạ!`;
-      if (text.includes('phòng') || text.includes('cuối tuần')) {
-        reply = `Dạ ngày cuối tuần tới cơ sở vẫn còn phòng view mây đón bình minh. Bạn có thể bấm nút "Xem bằng chứng & Đặt" để giữ phòng với giá niêm yết và được hoàn tích điểm Mây trên website ạ!`;
-      } else if (text.includes('đường') || text.includes('xe')) {
-        reply = `Dạ đường lên khu ${listing.area} đường bê tông đã hoàn thiện đẹp, ô tô 16 chỗ và xe máy số/ga đều lên tận sân được bạn nhé. Nếu cần hỗ trợ dẫn đường bạn gọi hotline ${listing.phone} nhé!`;
-      }
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `reply-${Date.now()}`,
-          listingId: listing.id,
-          senderId: 'host',
-          senderName: listing.title,
-          senderRole: 'partner',
-          text: reply,
-          timestamp: 'Vừa xong',
-          isRead: true
-        }
-      ]);
-    }, 1200);
+    setMessages((prev) => [...prev, systemMessage(`notice-${Date.now()}`)]);
   };
 
   const handleQuickRegister = (e: React.FormEvent) => {
@@ -138,13 +115,12 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
                 alt={listing.title}
                 className="w-11 h-11 rounded-full object-cover border-2 border-white/30"
               />
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-[#073161] rounded-full" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <h3 className="font-extrabold text-sm truncate">{listing.title}</h3>
-                <span className="text-[10px] bg-teal-500/20 text-teal-300 border border-teal-400/40 px-2 py-0.2 rounded-full font-bold shrink-0">
-                  Chính chủ 24/7
+                <span className="text-[11px] bg-amber-400/20 text-amber-200 border border-amber-300/40 px-2 py-0.5 rounded-full font-bold shrink-0">
+                  Bản demo
                 </span>
               </div>
               <p className="text-xs text-slate-300 truncate">
@@ -257,14 +233,6 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
             );
           })}
 
-          {isTyping && (
-            <div className="flex items-center gap-1.5 text-xs text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-full w-fit">
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse delay-100" />
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse delay-200" />
-              <span className="text-[11px] font-medium">{listing.title} đang trả lời...</span>
-            </div>
-          )}
 
           <div ref={messagesEndRef} />
         </div>
