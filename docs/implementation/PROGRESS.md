@@ -44,8 +44,11 @@ Theo plan "Tà Xùa Trip — Plan nâng cấp toàn diện". Repo: `luonganhviet
 - Thêm `src/server/worker.test.ts`: khởi động Worker trong workerd bằng `unstable_dev` và gọi `/api/health`. Trước khi sửa: lỗi đúng như trên Cloudflare. Sau khi sửa: đạt.
 - Kiểm chứng lại: typecheck exit 0, build exit 0, `npm test` 69/69 đạt, dry-run exit 0.
 
+- Sau bản sửa trên, Workers Builds thành công; `/api/health` trên workers.dev trả `status: ok`, D1 `connected`, 2 bucket R2 `bound`; `/api/khong-ton-tai` trả JSON 404.
+- Trang chủ trắng: `index.html` trỏ `/taxua-trip/assets/...` (Vite `base: '/taxua-trip/'` từ thời GitHub Pages) trong khi Worker phục vụ assets ở gốc → 404. Sửa `base: '/'`; Express vẫn phục vụ cả `/` và `/taxua-trip/`. `worker.test.ts` thêm bước tải JS/CSS từ trang chủ: lỗi với base cũ, đạt với base mới. Kiểm chứng: typecheck, build, test 69/69, dry-run đạt.
+
 **Chưa kiểm chứng / còn lại**
-- Deploy thật qua Workers Builds sau khi đẩy bản sửa: kiểm tra ngay sau commit này.
+- Hiển thị trang chủ trên workers.dev sau bản sửa base: kiểm tra ngay sau commit này.
 - GitHub Actions `deploy.yml` vẫn chạy Node 20 nên 2 bộ test lỗi `node:sqlite`; xử lý ở G0.2 (không ảnh hưởng deploy Cloudflare).
 - `compatibility_date = 2024-09-23` nên `process.env` trong Worker có thể không nhận secrets; `antiAbuse.ts` khi đó rơi về khóa test Turnstile luôn cho qua. Xử lý ở G0.3.
 - Nhánh `probe` rỗng do phiên rà soát tạo khi thử quyền đẩy, cần chủ repo xóa trên GitHub.
