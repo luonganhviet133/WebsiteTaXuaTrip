@@ -9,10 +9,35 @@
 | **G0.1** | Git và dọn kho; cấu hình Worker `websitetaxuatrip` với D1/R2 thật (xem mục G0.1 bên dưới) | **ĐẠT** (trang và `/api/health` chạy trên workers.dev) | 2026-11-12 |
 | **G0.2** | CI GitHub Actions chạy Node 22 (typecheck, build, test), bỏ deploy GitHub Pages | **ĐẠT** (CI `check` xanh trên Node 22, commit `0adccf8`) | 2026-11-12 |
 | **G0.3** | Turnstile thật: widget ở form đăng nhập/đăng ký, Worker đọc secret từ env, chặn khi production thiếu secret, bỏ lỗ vượt qua bằng token test | **ĐẠT** (kiểm trên workers.dev; đăng ký thật có giải widget chờ chủ dự án thử) | 2026-11-12 |
-| **G0.4** | Một bộ xử lý API dùng chung cho Worker và Express; Worker có đủ route | **ĐẠT TRÊN NHÁNH `dot/G0.4`** (kiểm trên bản xem trước Cloudflare; chưa gộp vào `main`) | 2026-11-12 |
+| **G0.4** | Một bộ xử lý API dùng chung cho Worker và Express; Worker có đủ route | **ĐẠT** (gộp vào `main`, production đã kiểm) | 2026-11-12 |
+| **G0.5** | Chặn chèn HTML ở bản đồ và file lịch trình; tắt thanh toán mô phỏng; gắn nhãn "Bản demo"; ẩn tài khoản mẫu trên production | **ĐẠT TRÊN NHÁNH `dot/G0.5`** (kiểm trên bản xem trước Cloudflare; chưa gộp vào `main`) | 2026-11-12 |
 | **N03** | Dữ liệu danh bạ, CMS và thẩm định thực tế | *SẴN SÀNG TRIỂN KHAI* | — |
 
 ---
+
+## G0.5 — Chặn chèn HTML và gắn nhãn bản demo (12/11/2026, nhánh `dot/G0.5`)
+
+**Đã làm (commit `c50f991`, rà lại toàn bộ trong lượt này)**
+- `src/utils/escapeHtml.ts`; tooltip bản đồ (`mapTooltipHtml.ts`) và file lịch trình .html tải về (`offlineItineraryHtml.ts`) tách thành hàm có escape; `InteractiveMapSection` escape cả nhãn marker, tooltip tuyến và khoảng cách. Các chỗ còn chèn giá trị chỉ là số hoặc giá trị do code định sẵn.
+- `src/config/features.ts`: `ONLINE_PAYMENT_ENABLED = false` (chờ D03). `MyTripsModal` ẩn mã VietQR cọc tới tài khoản mẫu gõ cứng và nút nộp biên lai, hiện nhãn "Bản demo" hướng khách liên hệ cơ sở.
+- `BookingSuccessModal`: đổi "Giữ Chỗ Thành Công / đã gửi đến chủ cơ sở" thành "Đã Tạo Phiếu Đặt Chỗ" + nhãn demo; Điểm Mây ghi là dự kiến.
+- `DirectChatModal`: bỏ lời chào và trả lời tự động giả danh chủ cơ sở; mỗi tin gửi đi nhận thông báo hệ thống "chưa chuyển tới cơ sở, vui lòng gọi/Zalo"; nhãn "Bản demo".
+- `JarvisAdminAssistant`: tắt duyệt hồ sơ chính chủ, đóng khiếu nại hàng loạt, nâng huy hiệu; thông báo quét và đổi ảnh nền ghi rõ là mô phỏng/ảnh mẫu. `AdminDashboard`: job media AI ghi rõ chưa gửi RevidAPI.
+- `AuthModal`: thẻ tài khoản mẫu và đăng nhập 1-chạm chỉ hiện khi chạy dev.
+- Bổ sung trong lượt này (commit `2fa275c`): luồng đặt phòng (`ListingDetailModal`) và đặt xe (`BusBookingModal`) còn nút gắn **ảnh stock Unsplash làm biên lai** rồi đánh dấu đơn `proof_uploaded`; ẩn bằng cùng cờ, kèm dòng quảng cáo "Lưu bằng chứng chuyển khoản (UNC)".
+
+**Kiểm chứng**
+- `src/utils/htmlEscaping.test.ts` (5 test): thay `escapeHtml` bằng hàm không escape → 5/5 lỗi; khôi phục → 5/5 đạt.
+- Bản sạch: `npm ci` exit 0, typecheck exit 0, build exit 0, `npm test` 108/108, `wrangler deploy --dry-run` exit 0 (gzip 228,31 KiB).
+- Cloudflare bản xem trước `dot-g0-5-websitetaxuatrip.vanhuy171099.workers.dev` (build success):
+  - 1280px: cửa sổ đăng nhập không còn thẻ tài khoản mẫu; trang chi tiết cơ sở có form đặt phòng, không còn khối biên lai và dòng UNC; chat hiện nhãn "Bản demo" và thông báo hệ thống; cửa sổ đặt xe khách không còn khối nộp biên lai.
+  - 768px và 375px: trang chi tiết cơ sở hiển thị đủ, không tràn ngang, không có khối biên lai; chat ở 375px hiển thị đúng.
+
+**Chưa kiểm chứng / còn lại**
+- Chưa gửi thử phiếu đặt chỗ trên trình duyệt để chụp `BookingSuccessModal` (kiểm qua mã).
+- Màn đối tác (`PartnerDashboard`) vẫn có mục xác nhận biên lai từ dữ liệu mẫu; xử lý cùng N06.
+- Ô email trong form đăng nhập vẫn có placeholder `khachhang@gmail.com` (chỉ là gợi ý, không phải tài khoản dùng được).
+- Widget Turnstile trên bản xem trước báo không kết nối được vì hostname bản xem trước chưa khai trong Turnstile (đã biết từ G0.4).
 
 ## G0.4 — Một backend API (12/11/2026, nhánh `dot/G0.4`)
 
