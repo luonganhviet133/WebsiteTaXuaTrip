@@ -180,7 +180,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
   // 2. Motorbike rental cost (with half-day before 12:00 noon support)
   const bikeDailyPrice = selectedPackage
     ? selectedPackage.price
-    : listing.motorbikeFleet?.dailyRate || listing.minPrice || 150000;
+    : listing.motorbikeFleet?.dailyRate || listing.minPrice || 0;
   const bikeCost = calculateMotorbikeRentalCost(
     checkIn,
     '08:00',
@@ -205,8 +205,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
     if (listing.category === 'bus') {
       const unitFare = selectedPackage ? selectedPackage.price : listing.minPrice;
       const comboAddon = includeBusMotorbikeCombo
-        ? (listing.motorbikeFleet?.dailyRate || 180000) -
-          (listing.motorbikeFleet?.comboDiscountAmount || 30000)
+        ? Math.max(0, (listing.motorbikeFleet?.dailyRate || 0) - (listing.motorbikeFleet?.comboDiscountAmount || 0))
         : 0;
       return unitFare * serviceQuantity + comboAddon;
     }
@@ -228,17 +227,19 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
     }
   }
   const totalAmount = Math.max(0, baseTotal - discountAmount);
+  // Chưa có giá do cơ sở/admin nhập thì không cho đặt online, không tự gán giá (N03).
+  const canBookOnline = baseTotal > 0;
 
   // Point rate from admin reward setting or default 8%
   const rewardSetting = rewardSettings.find((r) => r.listingId === listing.id);
   const earnRatePercent = rewardSetting ? rewardSetting.pointEarnRatePercent : 8;
-  const earnedPoints = Math.max(10, Math.round((totalAmount * (earnRatePercent / 100)) / 1000));
+  const earnedPoints = canBookOnline ? Math.max(10, Math.round((totalAmount * (earnRatePercent / 100)) / 1000)) : 0;
 
   const getConsoleLabels = () => {
     switch (listing.category) {
       case 'homestay':
         return {
-          sectionJumpLabel: `Hạng phòng (${listing.roomTypes?.length || 1})`,
+          sectionJumpLabel: `Hạng phòng (${listing.roomTypes?.length || 0})`,
           consoleTitle: 'Đặt Phòng Homestay Trực Tuyến',
           consoleSubtitle: `Tính theo đêm (${stayCost.nights} đêm) • Giữ phòng xác thực`,
           selectedItemLabel: selectedRoom?.name || 'Phòng tiêu chuẩn',
@@ -246,7 +247,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
         };
       case 'bus':
         return {
-          sectionJumpLabel: `Loại vé & Combo (${listing.servicePackages?.length || 3})`,
+          sectionJumpLabel: `Loại vé & Combo (${listing.servicePackages?.length || 0})`,
           consoleTitle: 'Đặt Vé Xe & Combo Xe Máy Đi Kèm',
           consoleSubtitle: 'Giữ ghế trực tiếp với nhà xe • Ưu đãi -30k khi thuê kèm xe máy',
           selectedItemLabel: `${selectedPackage?.name || 'Vé xe tiêu chuẩn'} (${serviceQuantity} vé)${includeBusMotorbikeCombo ? ' + Combo Xe máy' : ''}`,
@@ -254,7 +255,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
         };
       case 'motorbike':
         return {
-          sectionJumpLabel: `Dòng xe (${listing.servicePackages?.length || 3})`,
+          sectionJumpLabel: `Dòng xe (${listing.servicePackages?.length || 0})`,
           consoleTitle: 'Đặt Thuê Xe Máy Phượt Đèo',
           consoleSubtitle: `Tính linh hoạt (${bikeCost.daysLabel}) • Trả trước 12h trưa tính 0.5 ngày`,
           selectedItemLabel: `${selectedPackage?.name || selectedBikeModel} (${serviceQuantity} xe • ${bikeCost.daysLabel})`,
@@ -263,7 +264,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
       case 'restaurant':
       case 'coffee':
         return {
-          sectionJumpLabel: `Thực đơn (${listing.menuItems?.length || 5} món)`,
+          sectionJumpLabel: `Thực đơn (${listing.menuItems?.length || 0} món)`,
           consoleTitle:
             listing.category === 'coffee'
               ? 'Đặt Bàn Săn Mây & Đồ Uống Trước'
@@ -277,7 +278,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
         };
       case 'tour':
         return {
-          sectionJumpLabel: `Lịch trình Tour (${listing.servicePackages?.length || 3})`,
+          sectionJumpLabel: `Lịch trình Tour (${listing.servicePackages?.length || 0})`,
           consoleTitle: 'Đặt Tour Săn Mây & Porter Bản Địa',
           consoleSubtitle: 'Thổ địa dẫn đường an toàn • Bảo hiểm & hỗ trợ chụp ảnh',
           selectedItemLabel: `${selectedPackage?.name || 'Tour tiêu chuẩn'} (${serviceQuantity} khách)`,
@@ -285,7 +286,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
         };
       case 'photo':
         return {
-          sectionJumpLabel: `Gói chụp ảnh (${listing.servicePackages?.length || 3})`,
+          sectionJumpLabel: `Gói chụp ảnh (${listing.servicePackages?.length || 0})`,
           consoleTitle: 'Đặt Lịch Photographer Săn Mây',
           consoleSubtitle: 'Giao toàn bộ file gốc + Ảnh blend màu chất lượng cao',
           selectedItemLabel: `${selectedPackage?.name || 'Gói chụp săn mây'} (${serviceQuantity} gói)`,
@@ -294,7 +295,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
       case 'costume':
       case 'camera':
         return {
-          sectionJumpLabel: `Gói thuê (${listing.servicePackages?.length || 3})`,
+          sectionJumpLabel: `Gói thuê (${listing.servicePackages?.length || 0})`,
           consoleTitle:
             listing.category === 'costume'
               ? 'Đặt Thuê Trang Phục & Phụ Kiện'
@@ -305,7 +306,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
         };
       default:
         return {
-          sectionJumpLabel: `Gói dịch vụ (${listing.servicePackages?.length || 2})`,
+          sectionJumpLabel: `Gói dịch vụ (${listing.servicePackages?.length || 0})`,
           consoleTitle: 'Đặt Dịch Vụ Trực Tuyến',
           consoleSubtitle: 'Xác nhận tức thì • Không phát sinh phụ phí ẩn',
           selectedItemLabel: `${selectedPackage?.name || 'Dịch vụ tiêu chuẩn'} (SL: ${serviceQuantity})`,
@@ -349,6 +350,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
   const handleSubmitBooking = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!canBookOnline) return;
     if (!guestName.trim() || !guestPhone.trim()) {
       setBookingError('Vui lòng điền đầy đủ họ tên và số điện thoại liên hệ!');
       return;
@@ -695,7 +697,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
             {/* Description */}
             <div>
               <h3 className="text-xs font-extrabold uppercase tracking-wider text-teal-700 mb-2">
-                Hồ sơ thẩm định thực địa & Trải nghiệm
+                {listing.verificationTier === 3 ? 'Hồ sơ thẩm định thực địa & Trải nghiệm' : 'Giới thiệu cơ sở'}
               </h3>
               <p className="text-sm text-slate-700 leading-relaxed">{listing.description}</p>
             </div>
@@ -1005,7 +1007,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                 <li className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0" />
                   <span>
-                    Tích lũy <strong>+{earnedPoints} Điểm Mây</strong> đổi ưu đãi
+                    {canBookOnline ? <>Tích lũy <strong>+{earnedPoints} Điểm Mây</strong> đổi ưu đãi</> : 'Tích Điểm Mây khi đặt online (khi cơ sở đã có giá)'}
                   </span>
                 </li>
                 {ONLINE_PAYMENT_ENABLED && (
@@ -1756,16 +1758,23 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                   <p className="text-xs font-bold text-rose-600">{bookingError}</p>
                 )}
 
+                {!canBookOnline && (
+                  <p role="note" className="rounded-control border border-warning-200 bg-warning-50 px-3 py-2 text-sm text-warning-700">
+                    Cơ sở chưa cập nhật {listing.category === 'homestay' ? 'hạng phòng và giá' : 'giá dịch vụ'} trên Tà Xùa Trip nên chưa
+                    đặt online được. Vui lòng liên hệ trực tiếp qua số điện thoại hoặc Zalo ở trên.
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="w-full min-h-[48px] bg-brand-800 hover:bg-brand-700 text-white font-extrabold py-3.5 rounded-2xl text-sm transition-all shadow-md active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={isSubmitting || !canBookOnline}
+                  className="w-full min-h-[48px] bg-brand-800 hover:bg-brand-700 text-white font-extrabold py-3.5 rounded-2xl text-sm transition-all shadow-md active:scale-98 flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <span>Đang xử lý đơn đặt...</span>
                   ) : (
                     <>
-                      <span>{labels.submitButtonLabel}</span>
+                      <span>{canBookOnline ? labels.submitButtonLabel : 'Chưa đặt online được'}</span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
