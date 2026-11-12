@@ -1,0 +1,2098 @@
+{
+  "homestays": [
+    {
+      "category": "homestay",
+      "name": "Chillout Village Tà Xùa",
+      "link": "/homestay/chillout-village-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781170201336-644236.jpg.w1080.webp",
+      "address": "Khe Cải, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "400.000đ",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "Homestay Trà Mây Tà Xùa",
+      "link": "/homestay/homestay-tra-may-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/submissions/2026-11/1793861261076-fbed0926-fd90-4ca0-83e1-8a448a17952c.jpg.w1080.webp",
+      "address": "Khu vực khác · Bản Bẹ, xã Tà Xùa",
+      "priceStr": "360.000đ",
+      "tags": [],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Chạm Cảm Xúc Home",
+      "link": "/homestay/cham-cam-xuc-home",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/submissions/2026-11/1793778100296-79ce7bb4-06dc-42aa-b3ce-ef2f16ea7df7.jpg.w1080.webp",
+      "address": "Khe cải",
+      "priceStr": "800.000đ",
+      "tags": [],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Tà Xùa Ecolodge",
+      "link": "/homestay/ta-xua-ecolodge-2",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/submissions/2026-11/1793595961687-cbacba42-6906-4682-beef-586aacfb4a59.jpg.w1080.webp",
+      "address": "Khu vực khác · Bản Chung Trinh, Xã Tà Xùa, Sơn La",
+      "priceStr": "1.500.000đ",
+      "tags": [],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Dốc Mơ Homestay - Nhà trong Mây",
+      "link": "/homestay/doc-mo-homestay-nha-trong-may",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783068919428-947967.jpg.w1080.webp",
+      "address": "Trung Tâm · Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "599.000đ",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Homestay Mùa Thanh Hằng",
+      "link": "/homestay/mua-thanh-hang-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/submissions/2026-10/1793462645347-82289a38-6352-4a73-8b1e-70891ebb690b.jpg.w1080.webp",
+      "address": "Trung Tâm · Xã tà xùa",
+      "priceStr": "600.000đ",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "May Home Tà Xùa",
+      "link": "/homestay/may-home-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782635791580-187280.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "799.000đ",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Nhà trên bản",
+      "link": "/homestay/nha-tren-ban",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781499385927-244448.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "350.000đ",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Cloud Forest Tà Xùa",
+      "link": "/homestay/cloud-forest-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781335772359-95901.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "799.000đ",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Moong Homestay Ta Xua",
+      "link": "/homestay/moong-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781336065411-812014.png.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "700.000đ",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Tà Xùa Ecolodge",
+      "link": "/homestay/ta-xua-ecolodge",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781236035436-727228.png.w1080.webp",
+      "address": "Khu vực khác · Bản Chung Trinh, Xã Tà Xùa, Sơn La",
+      "priceStr": "499.000đ",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "Tà Xùa Clouds Homestay",
+      "link": "/homestay/ta-xua-clouds-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781260193087-455820.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "400.000đ",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Chillin House Tà Xùa",
+      "link": "/homestay/chillin-house-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781276473094-899077.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "699.000đ",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Homestay Tà Xùa C",
+      "link": "/homestay/homestay-ta-xua-c",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781256822262-665472.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "600.000đ",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "A Phủ Home&#x27;s",
+      "link": "/homestay/a-phu-homes",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781187594943-205295.jpg.w1080.webp",
+      "address": "ngay Trung Tâm xã Tà Xùa",
+      "priceStr": "600.000đ",
+      "tags": [
+        "View săn mây",
+        "Có ăn uống"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "Amora Homestay Tà Xùa",
+      "link": "/homestay/amora-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781189729074-727385.jpg.w1080.webp",
+      "address": "Trung Tâm · Bản Phiêng Ban, Bắc Yên, Sơn La",
+      "priceStr": "600.000đ",
+      "tags": [
+        "View săn mây",
+        "Có ăn uống"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "Bếp Nhà Táo",
+      "link": "/homestay/bep-nha-tao",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781172148301-790559.jpg.w1080.webp",
+      "address": "Trung tâm Khe Cải, huyện Bắc Yên, tỉnh Sơn La, Việt Nam",
+      "priceStr": "600.000đ",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Noong Ơi Homestay Coffee",
+      "link": "/homestay/noong-oi-homestay-coffee",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781172670256-518911.jpg.w1080.webp",
+      "address": "Khe Cải · Sơn La, Việt Nam",
+      "priceStr": "350.000đ",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Mando Homestay",
+      "link": "/homestay/mando-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781173764021-981487.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "699.000đ",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Cam&#x27;s House Tà Xùa",
+      "link": "/homestay/cams-house-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781175292959-600426.jpg.w1080.webp",
+      "address": "Đỉnh Gió · Bắc Yên, Sơn La",
+      "priceStr": "600.000đ",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "BB Homestay Tà Xùa",
+      "link": "/homestay/bb-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1784909686990-288075.jpg.w1080.webp",
+      "address": "Trung Tâm · Xã Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có ăn uống"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Sơn Tra Our House",
+      "link": "/homestay/son-tra-our-house",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783846386021-739256.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Homestay &amp; Coffe Đỉnh Tà Xùa",
+      "link": "/homestay/homestay-coffe-dinh-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783762855901-943720.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Vàng Pè Homestay - Sống lưng khủng long",
+      "link": "/homestay/vang-pe-homestay-song-lung-khung-long",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783780451701-680625.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Estopa Retreat - Tà Xùa",
+      "link": "/homestay/estopa-retreat-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783780772972-201309.jpg.w1080.webp",
+      "address": "Khu vực khác · Bản Trò A, Xã Tà Xùa, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Thác Mây Tà Xùa",
+      "link": "/homestay/thac-may-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783673351020-545007.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Nhà Dà Homestay Tà Xùa",
+      "link": "/homestay/nha-da-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783607922241-262702.jpg.w1080.webp",
+      "address": "Bản Mống Vàng, xã Tà Xùa, Bắc Yên,Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Tà Xùa Hills",
+      "link": "/homestay/ta-xua-hills",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783609812834-795603.jpg.w1080.webp",
+      "address": "Trung Tâm · Bản Tà Xùa, Xã Bắc Yên, Tỉnh Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Khèn Coffee House",
+      "link": "/homestay/khen-coffee-house",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783482200058-352715.jpg.w1080.webp",
+      "address": "Đỉnh Gió · Làng Chếu, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có ăn uống"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Pê Lu Chế Homestay - Nhà chúng mình",
+      "link": "/homestay/pe-lu-che-homestay-nha-chung-minh",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783503681159-214398.jpg.w1080.webp",
+      "address": "Đỉnh Gió · Háng Đồng, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Sunset Clouds Tà Xùa",
+      "link": "/homestay/sunset-clouds-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783504081390-671086.jpg.w1080.webp",
+      "address": "Khu vực khác · Bản Chung Trinh, Xã Tà Xùa, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Xìu Home Tà Xùa",
+      "link": "/homestay/xiu-home-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783523453216-183331.jpg.w1080.webp",
+      "address": "Khu vực khác · Bản Chung Trinh, Xã Tà Xùa, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Bảo Ngọc Homestay Travel",
+      "link": "/homestay/bao-ngoc-homestay-travel",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783415420233-84613.jpg.w1080.webp",
+      "address": "Trung Tâm · Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "thong dong retreat",
+      "link": "/homestay/thong-dong-retreat",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783434421185-263238.jpg.w1080.webp",
+      "address": "Khu vực khác · Bản Xím Vàng, Xã Xím Vàng, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có ăn uống"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Gạo Tà Xùa Homestay",
+      "link": "/homestay/gao-ta-xua-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783434999105-407533.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Homestay Gió Bản",
+      "link": "/homestay/homestay-gio-ban",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783435606236-595957.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Tà Xùa Mây Homestay",
+      "link": "/homestay/ta-xua-may-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783437263188-882970.jpg.w1080.webp",
+      "address": "Trung Tâm · Bản Tà Xùa A, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Mây Mơ Màng Homestay Tà Xùa",
+      "link": "/homestay/may-mo-mang-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783438027957-358842.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "A Tủa Homestay Tà Xùa",
+      "link": "/homestay/a-tua-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783438570244-965892.jpg.w1080.webp",
+      "address": "Trung Tâm · Bản Tà Xùa A, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Phỏng Lài Mountain Homestay",
+      "link": "/homestay/phong-lai-mountain-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783067542501-603643.jpg.w1080.webp",
+      "address": "Trung Tâm · Bản Tà Xùa A, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "LAO XAN Boutique Stay",
+      "link": "/homestay/lao-xan-boutique-stay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783072257056-300715.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Happy Town Tà Xùa - Thị Trấn Vui Vẻ",
+      "link": "/homestay/happy-town-ta-xua-thi-tran-vui-ve",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783091376005-787987.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "Homestay Vân Sơn Lâm",
+      "link": "/homestay/homestay-van-son-lam",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782896773424-832632.jpg.w1080.webp",
+      "address": "Khe Cải, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Tà Xùa Haus Meej Homestay",
+      "link": "/homestay/ta-xua-haus-meej-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782897780410-950031.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Sóc nâu Homestay",
+      "link": "/homestay/soc-nau-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782899104609-597410.jpg.w1080.webp",
+      "address": "Trung Tâm · Bản Tà Xùa, Xã Tà Xùa, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "A Lầu Homestay",
+      "link": "/homestay/a-lau-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782833551581-159748.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Lux House Tà Xùa",
+      "link": "/homestay/lux-house-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782616723989-864385.jpg.w1080.webp",
+      "address": "Trung Tâm · Đường Bản Mây, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Nhà Bên suối Retreat - Tà Xùa",
+      "link": "/homestay/nha-ben-suoi-retreat-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782618664904-658144.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Homestay A Của - Tà Xùa",
+      "link": "/homestay/homestay-a-cua-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782619295412-20437.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "À Lôi Homestay",
+      "link": "/homestay/a-loi-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782619646975-147831.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Rêu homestay Tà Xùa",
+      "link": "/homestay/reu-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782620107385-976341.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "Có ăn uống",
+        "Gia đình"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Homestay Tà Xùa Đan Huyền",
+      "link": "/homestay/homestay-ta-xua-dan-huyen",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782620417076-240079.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long · Bản chống tra, xã háng đồng, huyện bắc yên , Son La, Vietnam",
+      "priceStr": "",
+      "tags": [
+        "Chỗ đỗ xe",
+        "Có ăn uống"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Là Nhà Homestay Tà Xùa",
+      "link": "/homestay/la-nha-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782535214802-944290.jpg.w1080.webp",
+      "address": "Trung Tâm · Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Lofi Homestay Tà Xùa",
+      "link": "/homestay/lofi-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782463184353-373326.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "Homestay Emerald Tà Xùa",
+      "link": "/homestay/homestay-emerald-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782488873173-657199.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Mùa Homestay Tà Xùa",
+      "link": "/homestay/mua-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782492289169-700999.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Homestay Thảo Nguyên Tà Xùa",
+      "link": "/homestay/homestay-thao-nguyen-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782490023734-937838.jpg.w1080.webp",
+      "address": "Khu vực khác · Thảo Nguyên Tà Xùa, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "An Phú Homestay tà xùa",
+      "link": "/homestay/an-phu-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782490527658-308335.jpg.w1080.webp",
+      "address": "Khu vực khác · Bản Tà Xùa, Xã Tà Xùa, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Money House Tà Xùa",
+      "link": "/homestay/money-house-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782491311114-498986.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "New Sun House",
+      "link": "/homestay/new-sun-house",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782492897177-232099.jpg.w1080.webp",
+      "address": "Khe Cải, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Trạm Lưu Trú Tà Xùa",
+      "link": "/homestay/tram-luu-tru-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/homestays/1782493284817-977233.jfif",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Giàng Homestay Tà Xùa",
+      "link": "/homestay/giang-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782270350389-999773.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Lù Homestay Tà xùa",
+      "link": "/homestay/lu-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782272731961-604778.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có ăn uống"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Tà Xùa Village",
+      "link": "/homestay/ta-xua-village",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782270716558-246571.jpg.w1080.webp",
+      "address": "Trung Tâm · Bản Tà Xùa A, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Cloud Valley Háng Đồng",
+      "link": "/homestay/cloud-valley-hang-dong",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782292145061-508692.jpg.w1080.webp",
+      "address": "Khu vực khác · Bản Háng Đồng, Bắc Yên, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Homestay Tà Xùa Mùa Trứ",
+      "link": "/homestay/homestay-ta-xua-mua-tru",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782210233052-324474.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "Sóc Garden",
+      "link": "/homestay/soc-garden",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781533413491-346441.jpg.w1080.webp",
+      "address": "Trung Tâm · Bản Tà Xùa, Xã Tà Xùa, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Mon&#x27;s House",
+      "link": "/homestay/mons-house",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781532660904-362439.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "Y Xoa Homestay",
+      "link": "/homestay/y-xoa-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781536435772-711709.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Tà Xùa Lu Trế",
+      "link": "/homestay/ta-xua-lu-tre",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781537938966-575504.jpg.w1080.webp",
+      "address": "Bản Mống Vàng, xã Tà Xùa, Bắc Yên,Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Phố Núi Homestay",
+      "link": "/homestay/pho-nui-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781408105326-94291.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long, Bản Chống Tra, Xã Háng Đồng, Huyện Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Nhà Lưng Núi",
+      "link": "/homestay/nha-lung-nui",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781427391942-254570.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long · Bản Chống Tra, xã Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "A Dua Homestay",
+      "link": "/homestay/a-dua-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781429339958-329104.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "Skyline Homestay Tà Xùa",
+      "link": "/homestay/skyline-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781337592080-663592.jpg.w1080.webp",
+      "address": "Khe Cải, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Đom Đóm Homestay",
+      "link": "/homestay/dom-dom-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781336756266-456255.png.w1080.webp",
+      "address": "Khe Cải, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "Cặp đôi",
+        "Gia đình"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "Nhà Mer Homestay",
+      "link": "/homestay/nha-mer-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781336937657-530830.jpg.w1080.webp",
+      "address": "Khe Cải, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Paàng Village",
+      "link": "/homestay/paang-village",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781359975952-570948.jpg.w1080.webp",
+      "address": "Khu vực khác · Làng Chếu, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Mây Hạ Retreat",
+      "link": "/homestay/may-ha-retreat",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781360859469-644843.jpg.w1080.webp",
+      "address": "Bản Mống Vàng, xã Tà Xùa, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Mây House",
+      "link": "/homestay/may-house",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781361204489-598059.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long · Bản Chống Tra, xã Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Nơi Ấy Homestay",
+      "link": "/homestay/noi-ay-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781370457207-754703.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long · Háng Đồng, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có ăn uống"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "1941M Homestay",
+      "link": "/homestay/1941m-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781370743999-161764.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Samu Retreat",
+      "link": "/homestay/samu-retreat",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781230602418-691263.jpg.w1080.webp",
+      "address": "Khu vực khác · Bản Chung Trinh, Xã Tà Xùa, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "MiAmi Mountain Retreat",
+      "link": "/homestay/miami-mountain-retreat",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781254245883-757918.png.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có ăn uống"
+      ],
+      "badge": "Nổi bật"
+    },
+    {
+      "category": "homestay",
+      "name": "Pơ Mu Homestay",
+      "link": "/homestay/po-mu-homestay",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781255534676-191186.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Tà Xùa Retreat",
+      "link": "/homestay/ta-xua-retreat",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781258815285-144052.jpg.w1080.webp",
+      "address": "Trung Tâm · Bản Tà Xùa C, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Păng Nhù Homestay - Tà Xùa",
+      "link": "/homestay/pang-nhu-homestay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781274789940-113401.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Nhà Của An Homestay &amp; Coffee Tà Xùa",
+      "link": "/homestay/nha-cua-an-homestay-coffee-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781278696581-882921.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Chỗ đỗ xe"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "Nhặt Nắng house Tà Xùa",
+      "link": "/homestay/nhat-nang-house-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781258511744-732115.png.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": ""
+    },
+    {
+      "category": "homestay",
+      "name": "La Cheu Home",
+      "link": "/homestay/la-cheu-home",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781195882811-517711.png.w1080.webp",
+      "address": "Khu vực khác · Làng Chếu, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Cặp đôi"
+      ],
+      "badge": "Nổi bật"
+    }
+  ],
+  "cafes": [
+    {
+      "category": "coffee",
+      "name": "hây hây meadow",
+      "link": "/cafe/hay-hay-meadow",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/submissions/2026-11/1793497649081-d07e519b-a6ba-4020-ba73-4d8eba93cf3b.jpg.w1080.webp",
+      "address": "Khu vực khác · Bản Xím Vàng, xã Xím Vàng, Sơn La",
+      "priceStr": "150.000đ",
+      "tags": [
+        "7:00-18:00"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Chillout Village – Nhà hàng &amp; Cafe",
+      "link": "/cafe/chillout-village-nha-hang-cafe",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781170201336-644236.jpg.w1080.webp",
+      "address": "Khe Cải",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có đồ ăn"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Moong Homestay &amp; Coffee",
+      "link": "/cafe/moong-homestay-coffee",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781336065411-812014.png.w1080.webp",
+      "address": "Đỉnh Gió",
+      "priceStr": "",
+      "tags": [
+        "View săn mây"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Cloud Coffee – Cloud Forest Tà Xùa",
+      "link": "/cafe/cloud-coffee-cloud-forest-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781335772359-95901.jpg.w1080.webp",
+      "address": "Đỉnh Gió",
+      "priceStr": "",
+      "tags": [
+        "View săn mây"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Sunset Clouds Coffee",
+      "link": "/cafe/sunset-clouds-coffee",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783504081390-671086.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long",
+      "priceStr": "",
+      "tags": [
+        "View săn mây"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Mi Ami Mountain Retreat – Cafe &amp; Nhà hàng",
+      "link": "/cafe/mi-ami-mountain-retreat-cafe-nha-hang",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781254245883-757918.png.w1080.webp",
+      "address": "Đỉnh Gió",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có đồ ăn"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Noong Ơi Homestay Coffee",
+      "link": "/cafe/noong-oi-homestay-coffee",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781172670256-518911.jpg.w1080.webp",
+      "address": "Khe Cải",
+      "priceStr": "",
+      "tags": [
+        "View săn mây"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Cà phê Bản – Sống Lưng Khủng Long",
+      "link": "/cafe/ca-phe-ban-song-lung-khung-long",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/ca-phe-ban-song-lung-khung-long-1793061260691.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long",
+      "priceStr": "",
+      "tags": [
+        "5:00 – 19:00",
+        "View săn mây"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "MẬN – The Cocktail Bar (Mận Pub)",
+      "link": "/cafe/man-the-cocktail-bar-man-pub",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/man-the-cocktail-bar-man-pub-1793061261562.jpg.w1080.webp",
+      "address": "Trung Tâm",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Lili Mountain – Tiệm cà phê Tử Tế",
+      "link": "/cafe/lili-mountain-tiem-ca-phe-tu-te",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/lili-mountain-tiem-ca-phe-tu-te-1793061262541.jpg.w1080.webp",
+      "address": "Khe Cải",
+      "priceStr": "",
+      "tags": [
+        "View săn mây"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Mây Bay Coffee – Tà Xùa",
+      "link": "/cafe/may-bay-coffee-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/may-bay-coffee-ta-xua-1793061263478.jpg.w1080.webp",
+      "address": "Đỉnh Gió",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có đồ ăn"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Mây Bản Tà Xùa – Homestay &amp; Coffee",
+      "link": "/cafe/may-ban-ta-xua-homestay-coffee",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/may-ban-ta-xua-homestay-coffee-1793061264315.jpg.w1080.webp",
+      "address": "Mống Vàng",
+      "priceStr": "",
+      "tags": [
+        "View săn mây"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Hiên Nhà trên Thảo Nguyên",
+      "link": "/cafe/hien-nha-tren-thao-nguyen",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/hien-nha-tren-thao-nguyen-1793061266963.jpg.w1080.webp",
+      "address": "Thảo Nguyên",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Ngoài trời"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Cà phê Tháng 10 – Tà Xùa",
+      "link": "/cafe/ca-phe-thang-10-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/ca-phe-thang-10-ta-xua-1793061265731.jpg.w1080.webp",
+      "address": "Trung Tâm",
+      "priceStr": "",
+      "tags": [
+        "Ngoài trời"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Khèn Coffee House",
+      "link": "/cafe/khen-coffee-house",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783479765436-943476.jpg.w1080.webp",
+      "address": "Làng Chếu, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có đồ ăn"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "An&#x27;s Coffee - Tà Xùa",
+      "link": "/cafe/ans-coffee-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782835358858-740267.jpg.w1080.webp",
+      "address": "Đỉnh Gió",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có đồ ăn"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Khe Cải Coffee (Ngày Nào Đó)",
+      "link": "/cafe/ngay-nao-do-cafe",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782637971562-182968.jpg.w1080.webp",
+      "address": "Khe Cải, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "6:00 - 19;00",
+        "View săn mây"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Cafe Làng Văn Hóa",
+      "link": "/cafe/cafe-lang-van-hoa",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782293911917-598353.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có đồ ăn"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Tiệm Cà Phê Hoàng Hôn",
+      "link": "/cafe/tiem-ca-phe-hoang-hon",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783478715140-965439.jpg.w1080.webp",
+      "address": "Bản Khe Cải, Tà Xùa, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "6:00 - 19:00",
+        "View săn mây"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Trạm Mây Tà Xùa",
+      "link": "/cafe/tram-may-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781973262895-589307.jpg.w1080.webp",
+      "address": "Khe Cải, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Panorama coffee",
+      "link": "/cafe/panorama-coffee",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781584231935-759716.jpg.w1080.webp",
+      "address": "Đỉnh Gió",
+      "priceStr": "40.000đ",
+      "tags": [
+        "6h00 - 18h00",
+        "View săn mây"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Thào Coffee Tà Xùa",
+      "link": "/cafe/thao-coffee-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781339039005-802756.jpg.w1080.webp",
+      "address": "Trung Tâm · Bản Tà Xùa A, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "5:00 - 22:00",
+        "View săn mây"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Nhà H&#x27;Mông",
+      "link": "/cafe/nha-hmong",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781339825199-974357.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "6:30 - 23:00",
+        "Có đồ ăn"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Mị ơi Cafe",
+      "link": "/cafe/mi-oi-cafe",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781368915614-716987.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "50.000đ",
+      "tags": [
+        "7:00 - 18:00",
+        "View săn mây"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Hiên",
+      "link": "/cafe/hien",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781340305409-35441.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Ngoài trời"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Nhà Của An Homestay &amp; Coffee Tà Xùa",
+      "link": "/cafe/nha-cua-an-homestay-coffee-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781278317822-896110.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có đồ ăn"
+      ],
+      "badge": "Cà phê"
+    },
+    {
+      "category": "coffee",
+      "name": "Chill Cafe",
+      "link": "/cafe/chill-cafe",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781276896946-174957.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [
+        "View săn mây",
+        "Có đồ ăn"
+      ],
+      "badge": "Cà phê"
+    }
+  ],
+  "restaurants": [
+    {
+      "category": "restaurant",
+      "name": "Vua Lẩu - Nướng Tà Xùa",
+      "link": "/nha-hang/vua-lau-nuong-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1784910956071-74590.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Cơm nhà Namiya - Đỉnh Gió",
+      "link": "/nha-hang/com-nha-namiya-dinh-gio",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783951895653-561760.jpg.w1080.webp",
+      "address": "Đỉnh Gió, Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Nhà hàng Hang Chú - Tà Xùa",
+      "link": "/nha-hang/nha-hang-hang-chu-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783952565789-259691.jpg.w1080.webp",
+      "address": "Trung tâm Tà Xùa, huyện Bắc Yên, tỉnh Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Nhà Hàng- Coffee Gió Bản Tà Xùa",
+      "link": "/nha-hang/nha-hang-coffee-gio-ban-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783436978126-99002.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Nhà Hàng Bếp Việt",
+      "link": "/nha-hang/nha-hang-bep-viet",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783437593853-753900.jpg.w1080.webp",
+      "address": "Trung Tâm · Bản Tà Xùa A, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Mùa Quán Tà Xùa",
+      "link": "/nha-hang/mua-quan-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782492116101-969.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Trạm Mây Tà Xùa",
+      "link": "/nha-hang/tram-may-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781973420068-129342.jpg.w1080.webp",
+      "address": "Khe Cải, Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Tiệm Mì Cay Tà Xùa",
+      "link": "/nha-hang/tiem-mi-cay-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781798001511-421225.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Tiệm lẩu nướng Trạm Mây",
+      "link": "/nha-hang/tiem-lau-nuong-tram-may",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781583867705-726339.jpg.w1080.webp",
+      "address": "Khe cải - Tà Xùa - Bắc yên - Sơn La",
+      "priceStr": "200.000đ",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Nhà Hàng Phố Núi",
+      "link": "/nha-hang/nha-hang-pho-nui",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781408518415-65977.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long, Bản Chống Tra, Xã Háng Đồng, Huyện Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Nhà Hàng Đồi Mây",
+      "link": "/nha-hang/nha-hang-doi-may",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781410163976-57944.jpg.w1080.webp",
+      "address": "Trung Tâm · Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Bếp ăn Xuân Thì Tà Xùa",
+      "link": "/nha-hang/bep-an-xuan-thi-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781409026275-533297.jpg.w1080.webp",
+      "address": "Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "90.000đ",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Nhà hàng Sammu Tà Xùa",
+      "link": "/nha-hang/nha-hang-sammu-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781411217324-882855.jpg.w1080.webp",
+      "address": "Trung Tâm · Cổng chào Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Nhà Hàng A Phủ - Tinh Hoa Ẩm Thực Tà Xùa",
+      "link": "/nha-hang/nha-hang-a-phu-tinh-hoa-am-thuc-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781342067045-290479.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    },
+    {
+      "category": "restaurant",
+      "name": "Tiệm Nướng Cánh Cam",
+      "link": "/nha-hang/tiem-nuong-canh-cam",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781370032656-414424.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà hàng"
+    }
+  ],
+  "buses": [
+    {
+      "category": "bus",
+      "name": "Nhà Xe Hải Giang",
+      "link": "/nha-xe/nha-xe-hai-giang",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1784909231710-179134.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Minh Châu Limousine",
+      "link": "/nha-xe/minh-chau-limousine",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1784794543327-817078.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Nhà xe Hiền Hựu",
+      "link": "/nha-xe/nha-xe-hien-huu",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781505592311-984762.jpg.w1080.webp",
+      "address": "Trung Tâm Tà Xùa, Bắc Yên, Sơn La, Việt Nam",
+      "priceStr": "300.000đ",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Nhà Xe Thành Mỹ",
+      "link": "/nha-xe/nha-xe-thanh-my",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781342538686-993254.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Nhà Xe Quang Nghĩa",
+      "link": "/nha-xe/nha-xe-quang-nghia",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781368243009-817672.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Nhà Xe Tuấn Thủy",
+      "link": "/nha-xe/nha-xe-tuan-thuy",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781367139588-777261.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Nhà xe Bình Minh",
+      "link": "/nha-xe/nha-xe-binh-minh",
+      "img": "",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Nhà Xe Hạnh Anh",
+      "link": "/nha-xe/nha-xe-hanh-anh",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/homestays/1782490781617-326885.jfif",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Nhà Xe Hương Sơn",
+      "link": "/nha-xe/nha-xe-huong-son",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781367813356-847969.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Nhà Xe Kiên Dũng",
+      "link": "/nha-xe/nha-xe-kien-dung",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/nha-xe-kien-dung-1793061056277.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Mạnh Quyền Xe Ghép",
+      "link": "/nha-xe/manh-quyen-xe-ghep",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/manh-quyen-xe-ghep-1793061057094.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Nhà Xe Duy Huê",
+      "link": "/nha-xe/nha-xe-duy-hue",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/nha-xe-duy-hue-1793061062988.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Sơn Cầm",
+      "link": "/nha-xe/son-cam",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/son-cam-1793061054766.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Hùng Xe Ghép",
+      "link": "/nha-xe/hung-xe-ghep",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/hung-xe-ghep-1793061055578.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Khánh Thịnh Limousine",
+      "link": "/nha-xe/khanh-thinh-limousine",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/khanh-thinh-limousine-1793061057866.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    },
+    {
+      "category": "bus",
+      "name": "Xe ghép Bắc Yên – Hà Nội (Bia Hơi Bắc Yên)",
+      "link": "/nha-xe/xe-ghep-bac-yen-ha-noi-bia-hoi-bac-yen",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/xe-ghep-bac-yen-ha-noi-bia-hoi-bac-yen-1793061061992.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Nhà xe"
+    }
+  ],
+  "tours": [
+    {
+      "category": "tour",
+      "name": "CàchuaTx Vistar",
+      "link": "/tour/cachuatx-vistar",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/cachuatx-vistar-1793061050040.jpg.w1080.webp",
+      "phone": "08659636470812251575",
+      "zalo": "0865963647"
+    },
+    {
+      "category": "tour",
+      "name": "Hồ Guider Trekking",
+      "link": "/tour/ho-guider-trekking",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/ho-guider-trekking-1793061051090.jpg.w1080.webp",
+      "phone": "0349754481",
+      "zalo": "0349754481"
+    },
+    {
+      "category": "tour",
+      "name": "A Vàng Travel",
+      "link": "/tour/a-vang-travel",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/a-vang-travel-1793061051910.jpg.w1080.webp",
+      "phone": "03856321690817559089",
+      "zalo": "0385632169"
+    },
+    {
+      "category": "tour",
+      "name": "Tráng Porter",
+      "link": "/tour/trang-porter",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1784972956837-561323.jpg.w1080.webp",
+      "phone": "0353947175",
+      "zalo": "0353947175"
+    },
+    {
+      "category": "tour",
+      "name": "Hiệp Cuver",
+      "link": "/tour/hiep-cuver",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783140638392-316084.jpg.w1080.webp",
+      "phone": "0916394236",
+      "zalo": "0916394236"
+    },
+    {
+      "category": "tour",
+      "name": "TA XUA GREEN TOUR",
+      "link": "/tour/ta-xua-green-tour",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783067176034-596178.jpg.w1080.webp",
+      "phone": "0383580145",
+      "zalo": "0383580145"
+    },
+    {
+      "category": "tour",
+      "name": "Giàng Táu",
+      "link": "/tour/giang-tau",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1784973083359-748945.jpg.w1080.webp",
+      "phone": "",
+      "zalo": ""
+    },
+    {
+      "category": "tour",
+      "name": "Đạt Bin Bin",
+      "link": "/tour/dat-bin-bin",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1784973166218-599512.jpg.w1080.webp",
+      "phone": "0933669881",
+      "zalo": "0898563115"
+    }
+  ],
+  "photographers": [
+    {
+      "category": "photo",
+      "name": "A Lư Porter",
+      "link": "/tho-chup-anh/a-lu-porter",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/a-lu-porter-1793061048710.jpg.w1080.webp",
+      "phone": "0866548583",
+      "zalo": "0866548583"
+    },
+    {
+      "category": "photo",
+      "name": "Dương Đại",
+      "link": "/tho-chup-anh/duong-dai",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/duong-dai-1793061058599.jpg.w1080.webp",
+      "phone": "0855932788",
+      "zalo": "0855932788"
+    },
+    {
+      "category": "photo",
+      "name": "Huy Kúnn",
+      "link": "/tho-chup-anh/huy-kunn",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/huy-kunn-1793061059455.jpg.w1080.webp",
+      "phone": "0865548296",
+      "zalo": "0865548296"
+    },
+    {
+      "category": "photo",
+      "name": "Tiệm Ảnh Xinh",
+      "link": "/tho-chup-anh/tiem-anh-xinh",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/danh-ba/tiem-anh-xinh-1793061060319.jpg.w1080.webp",
+      "phone": "0829878345",
+      "zalo": "0829878345"
+    },
+    {
+      "category": "photo",
+      "name": "Trungphoto tà xùa",
+      "link": "/tho-chup-anh/trung-anm",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/submissions/2026-11/1793607875576-c064269a-4ff9-4119-92a4-0ebccdebf5ca.jpg.w1080.webp",
+      "phone": "0355139660",
+      "zalo": "0355139660"
+    },
+    {
+      "category": "photo",
+      "name": "Trần Duy Tiệp",
+      "link": "/tho-chup-anh/tran-duy-tiep",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783308020593-793710.jpg.w1080.webp",
+      "phone": "0383580145",
+      "zalo": "0383580145"
+    },
+    {
+      "category": "photo",
+      "name": "Sồng Chơ Porter",
+      "link": "/tho-chup-anh/song-cho-porter",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783308131737-733227.jpg.w1080.webp",
+      "phone": "0344389894",
+      "zalo": "0344389894"
+    },
+    {
+      "category": "photo",
+      "name": "Giàng Táu",
+      "link": "/tho-chup-anh/giang-tau",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783308213144-468243.jpg.w1080.webp",
+      "phone": "0375271309",
+      "zalo": "0375271309"
+    },
+    {
+      "category": "photo",
+      "name": "Hiệp CuVer",
+      "link": "/tho-chup-anh/hiep-cuver",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783308291351-871339.jpg.w1080.webp",
+      "phone": "0916394236",
+      "zalo": "0916394236"
+    },
+    {
+      "category": "photo",
+      "name": "Sơn Bùi",
+      "link": "/tho-chup-anh/son-bui",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782833970571-162804.jpg.w1080.webp",
+      "phone": "0961165445",
+      "zalo": "0961165445"
+    },
+    {
+      "category": "photo",
+      "name": "Ger Hang",
+      "link": "/tho-chup-anh/ger-hang",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782833740239-144842.jpg.w1080.webp",
+      "phone": "0384322093",
+      "zalo": "0384322093"
+    },
+    {
+      "category": "photo",
+      "name": "Ng Đăng Nam",
+      "link": "/tho-chup-anh/ng-dang-nam",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782834057911-577512.jpg.w1080.webp",
+      "phone": "0978107103",
+      "zalo": "0978107103"
+    },
+    {
+      "category": "photo",
+      "name": "Sói",
+      "link": "/tho-chup-anh/soi",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782833886756-975182.jpg.w1080.webp",
+      "phone": "0933669881",
+      "zalo": "0968881080"
+    }
+  ],
+  "costumes": [
+    {
+      "category": "costume",
+      "name": "Tiệm thuê đồ Vấn Vương",
+      "link": "/thue-trang-phuc/tiem-thue-do-van-vuong",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782982603471-117089.jpg.w1080.webp",
+      "phone": "0865292896",
+      "zalo": "0911745198"
+    },
+    {
+      "category": "costume",
+      "name": "Tiệm Chill",
+      "link": "/thue-trang-phuc/tiem-chill",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782834582615-23324.jpg.w1080.webp",
+      "phone": "0367920398",
+      "zalo": "0367920398"
+    },
+    {
+      "category": "costume",
+      "name": "Cloud Concept - Tà Xùa",
+      "link": "/thue-trang-phuc/cloud-concept-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/homestays/1782834957938-683198.jfif",
+      "phone": "0866999045",
+      "zalo": "0866999045"
+    }
+  ],
+  "cameras": [
+    {
+      "category": "camera",
+      "name": "Tiệm thuê đồ Vấn Vương",
+      "link": "/thue-may-anh/tiem-thue-do-van-vuong",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782980770857-217378.jpg.w1080.webp",
+      "phone": "0865292896",
+      "zalo": "0865292896"
+    }
+  ],
+  "checkins": [
+    {
+      "category": "checkin",
+      "name": "Hồ Mắt Ngọc",
+      "link": "/check-in/ho-mat-ngoc",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1793440377128-764530.jpg.w1080.webp",
+      "address": "Mống Vàng Tà Xùa",
+      "priceStr": "",
+      "tags": [
+        "Sáng sớm hoặc chiều muộn, ngày trời quang",
+        "Độ khó: Trung bình"
+      ],
+      "badge": "Check-in"
+    },
+    {
+      "category": "checkin",
+      "name": "Thác Không Tên",
+      "link": "/check-in/thac-khong-ten",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1783932932291-121336.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [
+        "Độ khó: Khó"
+      ],
+      "badge": "Check-in"
+    },
+    {
+      "category": "checkin",
+      "name": "Thảo Nguyên Tà Xùa",
+      "link": "/check-in/thao-nguyen-ta-xua",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781369337709-680386.jpg.w1080.webp",
+      "address": "huyện Bắc Yên, tỉnh Sơn La",
+      "priceStr": "",
+      "tags": [
+        "Độ khó: Trung bình"
+      ],
+      "badge": "Check-in"
+    },
+    {
+      "category": "checkin",
+      "name": "Mỏm Cá Heo",
+      "link": "/check-in/mom-ca-heo",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781340828797-101049.jpg.w1080.webp",
+      "address": "Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "Độ khó: Trung bình"
+      ],
+      "badge": "Check-in"
+    },
+    {
+      "category": "checkin",
+      "name": "Ameii Hill",
+      "link": "/check-in/ameii-hill",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781340971150-607007.png.w1080.webp",
+      "address": "Khe Cải · Tà Xùa, Bắc Yên, Sơn La",
+      "priceStr": "",
+      "tags": [
+        "Độ khó: Trung bình"
+      ],
+      "badge": "Check-in"
+    },
+    {
+      "category": "checkin",
+      "name": "Cây Cô Đơn",
+      "link": "/check-in/cay-co-don",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1781369715287-530600.jpg.w1080.webp",
+      "address": "Tà Xùa",
+      "priceStr": "",
+      "tags": [],
+      "badge": "Check-in"
+    },
+    {
+      "category": "checkin",
+      "name": "Sống Lưng Khủng Long",
+      "link": "/check-in/song-lung-khung-long",
+      "img": "https://qtkjxyuzgrhngjyguzys.supabase.co/storage/v1/object/public/images/_v/homestays/1782633901204-709770.jpg.w1080.webp",
+      "address": "Sống Lưng Khủng Long",
+      "priceStr": "",
+      "tags": [
+        "Độ khó: Trung bình"
+      ],
+      "badge": "Check-in"
+    }
+  ]
+}

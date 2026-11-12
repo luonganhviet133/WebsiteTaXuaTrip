@@ -1,0 +1,31 @@
+{
+  "id": "/",
+  "name": "Tà Xùa Trip – Lưu Trú Thẩm Định, Săn Mây & Cứu Hộ 24/7",
+  "short_name": "TàXùaTrip",
+  "description": "Nền tảng du lịch địa phương giúp bạn biết rõ nơi ở, bằng chứng thẩm định, bản đồ săn mây và điều cần lưu ý trước khi lên đường đến Tà Xùa.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#04244d",
+  "background_color": "#04244d",
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

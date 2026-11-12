@@ -1,0 +1,6 @@
+{
+  "name": "Tà Xùa Trip - Nền tảng Du lịch & Săn Mây Tà Xùa",
+  "description": "Nền tảng du lịch Tà Xùa toàn diện: homestay view mây cập nhật lịch trống, xe khách đón dọc đường, tour trekking & trải nghiệm, dự báo săn mây thông minh và cứu hộ SOS.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
