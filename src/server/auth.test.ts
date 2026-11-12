@@ -228,7 +228,7 @@ test('N02: Real Database, Authentication & Multi-Tenant Authorization Test Suite
     assert.equal(resA.status, 200);
     const bodyA = await resA.json();
     assert.equal(bodyA.data.length, 1);
-    assert.equal(bodyA.data[0].listingId, 'homestay-may');
+    assert.equal(bodyA.data[0].id, 'homestay-may');
 
     const resCrossUpdate = await fetch(`${baseUrl}/api/partner/listings/homestay-lutre`, {
       method: 'PUT',
@@ -248,9 +248,12 @@ test('N02: Real Database, Authentication & Multi-Tenant Authorization Test Suite
         Authorization: `Bearer ${partnerAToken}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ price: 1200000 })
+      // N03: PUT lưu bản nháp, cần nội dung hợp lệ; dữ liệu sai bị từ chối thay vì báo thành công giả.
+      body: JSON.stringify({ content: { title: 'Homestay Mây (nháp)', category: 'homestay', area: 'Đỉnh Gió', minPrice: 1200000 } })
     });
     assert.equal(resOwnUpdate.status, 200);
+    const ownBody = await resOwnUpdate.json();
+    assert.equal(ownBody.data.openVersion.status, 'draft');
   });
 
   // 6. ROLE-BASED ACCESS CONTROL (RBAC)

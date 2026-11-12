@@ -59,6 +59,17 @@ async function runContract(t: any, call: Fetcher, label: string): Promise<void> 
     assert.equal(body.path, '/api/khong-ton-tai');
   });
 
+  await t.test('Danh bạ công khai: 172 cơ sở đã nhập, đều Cấp 1, không tọa độ giả', async () => {
+    const res = await call('/api/listings');
+    assert.equal(res.status, 200);
+    const body: any = await res.json();
+    assert.equal(body.data.length, 172);
+    assert.ok(body.data.every((l: any) => l.verificationTier === 1 && l.coordinates === null && l.rating === 0));
+    const one = await call(`/api/listings/${body.data[0].id}`);
+    assert.equal(one.status, 200);
+    assert.equal((await call('/api/listings/homestay-may')).status, 404, 'cơ sở tự bịa không có trong dữ liệu thật');
+  });
+
   await t.test('Đăng ký traveler trả 201 kèm token', async () => {
     const res = await call('/api/auth/register', jsonInit('POST', { email, password, fullName: 'Khách Hợp Đồng', role: 'traveler' }));
     assert.equal(res.status, 201);

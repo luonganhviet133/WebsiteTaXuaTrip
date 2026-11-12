@@ -685,7 +685,20 @@ export class DatabaseEngine {
       isVerified: true
     });
 
-    // 6. Test Bookings with complete DTO fields (S6)
+    // 6. Cơ sở mẫu (data_origin = 'demo') cho hai partner thử nghiệm; chỉ có trong DB test.
+    const demoContent = (title: string, area: string) => JSON.stringify({
+      title, category: 'homestay', area, address: `${area}, Tà Xùa`, phone: '', zalo: '', description: 'Dữ liệu mẫu cho test.',
+      coverImage: '', images: [], tags: [], minPrice: 0, coordinates: null, isInstantBooking: false,
+    });
+    const now = new Date().toISOString();
+    for (const [id, title, area] of [['homestay-may', 'Homestay Mây Tà Xùa (mẫu)', 'Đỉnh Gió'], ['homestay-lutre', 'Homestay Lu Tre (mẫu)', 'Khe Cải']]) {
+      await this.d1.batch([
+        this.d1.prepare(`INSERT INTO listings (id, category, status, data_origin, published_version_id, created_by, created_at, updated_at) VALUES (?, 'homestay', 'approved', 'demo', ?, 'fixture', ?, ?)`).bind(id, `${id}-v1`, now, now),
+        this.d1.prepare(`INSERT INTO listing_versions (id, listing_id, version_no, status, content_json, created_by, created_at, reviewed_by, reviewed_at) VALUES (?, ?, 1, 'approved', ?, 'fixture', ?, 'fixture', ?)`).bind(`${id}-v1`, id, demoContent(title, area), now, now),
+      ]);
+    }
+
+    // 7. Test Bookings with complete DTO fields (S6)
     await this.createBooking({
       userId: travA.id,
       listingId: 'homestay-may',
