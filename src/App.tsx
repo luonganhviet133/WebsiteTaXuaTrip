@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import { parseLocation, pathForTab, listingPath, buildQuery, normalizeTab, MY_TRIPS_PATH } from './routing/routes.ts';
 import {
   BUS_TRIPS,
   CLOUD_FORECASTS,
@@ -72,8 +74,7 @@ import {
   matchesQuickSuggestion,
   QuickSuggestionId,
   isHomestayAvailableInDateRange,
-  buildDeepLinkSearchParams,
-  parseDeepLinkSearchParams
+  hiddenByDateFilter
 } from './utils/rules.ts';
 import {
   Bus,
@@ -109,6 +110,20 @@ import {
   Scale,
   Shirt
 } from 'lucide-react';
+
+const TAB_TITLES: Record<string, string> = {
+  stay: 'Lưu trú',
+  transport: 'Di chuyển',
+  services: 'Dịch vụ',
+  dining: 'Ăn uống',
+  map: 'Bản đồ săn mây',
+  weather: 'Dự báo săn mây',
+  itinerary: 'Lịch trình',
+  community: 'Cộng đồng',
+  verified: 'Hồ sơ thẩm định',
+  partner: 'Kênh đối tác',
+  admin: 'Quản trị'
+};
 
 export default function App() {
   // Navigation & Role State (N02: Real Server Session Authentication)
@@ -162,7 +177,11 @@ export default function App() {
       });
   }, []);
 
-  const [currentTab, setCurrentTab] = useState<string>('explore');
+  // U2: URL là nguồn sự thật cho màn đang xem (Back, chia sẻ link, tải lại đều đúng).
+  const location = useLocation();
+  const navigate = useNavigate();
+  const route = React.useMemo(() => parseLocation(location.pathname, location.search), [location.pathname, location.search]);
+  const [currentTab, setCurrentTabState] = useState<string>(() => route.tab || 'explore');
 
   // Auth Modal State
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -393,12 +412,12 @@ export default function App() {
   };
 
   // Modals & Pro OTA Pack States
-  const [selectedListingDetail, setSelectedListingDetail] = useState<Listing | null>(null);
+  const [selectedListingDetail, setSelectedListingDetailState] = useState<Listing | null>(null);
   const [isBusModalOpen, setIsBusModalOpen] = useState(false);
   const [isSosModalOpen, setIsSosModalOpen] = useState(false);
   const [isPointsModalOpen, setIsPointsModalOpen] = useState(false);
   const [isWishlistModalOpen, setIsWishlistModalOpen] = useState(false);
-  const [isMyTripsModalOpen, setIsMyTripsModalOpen] = useState(false);
+  const isMyTripsModalOpen = Boolean(route.myTrips);
   const [activeDirectChatListing, setActiveDirectChatListing] = useState<Listing | null>(null);
   const [activeClaimListing, setActiveClaimListing] = useState<Listing | null>(null);
   const [activeDisputeBooking, setActiveDisputeBooking] = useState<Booking | null>(null);
@@ -549,42 +568,111 @@ export default function App() {
     showToast(`Chào mừng thành viên ${name} (${phone}) đã đăng ký!`);
   };
 
-  // Restore state from Deep Link URL on initial load
+  // ---------- Điều hướng bằng đường dẫn (U2) ----------
+  const filterQuery = () =>
+    buildQuery({
+      checkIn: currentTab === 'stay' ? stayCheckIn : undefined,
+      checkOut: currentTab === 'stay' ? stayCheckOut : undefined,
+      area: selectedArea
+    });
+
+  /** Chuyển màn = đổi URL (đẩy vào lịch sử để nút Back quay lại được). */
+  const setCurrentTab = (tab: string) => {
+    const target = pathForTab(tab);
+    if (location.pathname !== target) navigate(`${target}${buildQuery({ area: selectedArea })}`);
+    else setCurrentTabState(normalizeTab(tab));
+  };
+
+  /** Đóng lớp phủ có URL riêng: quay lại trang trước nếu đến từ trong website, không thì về màn nền. */
+  const leaveOverlayRoute = () => {
+    if (location.key !== 'default') navigate(-1);
+    else navigate(`${pathForTab(currentTab)}${filterQuery()}`, { replace: true });
+  };
+
+  const setSelectedListingDetail = (listing: Listing | null) => {
+    if (listing) {
+      setSelectedListingDetailState(listing);
+      const target = listingPath(listing.id);
+      if (location.pathname !== target) navigate(`${target}${location.search}`);
+    } else if (route.listingId) {
+      leaveOverlayRoute();
+    } else {
+      setSelectedListingDetailState(null);
+    }
+  };
+
+  const setIsMyTripsModalOpen = (open: boolean) => {
+    if (open && !route.myTrips) navigate(MY_TRIPS_PATH);
+    else if (!open && route.myTrips) leaveOverlayRoute();
+  };
+
+  // Đọc bộ lọc trong URL một lần khi mở trang (link chia sẻ có ngày/khu vực).
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const parsed = parseDeepLinkSearchParams(window.location.search);
-    if (parsed.tab) setCurrentTab(parsed.tab);
-    if (parsed.checkIn) setStayCheckIn(parsed.checkIn);
-    if (parsed.checkOut) setStayCheckOut(parsed.checkOut);
-    if (parsed.area) setSelectedArea(parsed.area);
-    if (parsed.wishlistIds && parsed.wishlistIds.length > 0) {
+    const q = route.query;
+    if (q.checkIn) setStayCheckIn(q.checkIn);
+    if (q.checkOut) setStayCheckOut(q.checkOut);
+    if (q.area) setSelectedArea(q.area);
+    if (q.wishlistIds && q.wishlistIds.length > 0) {
       setUserProfile((prev) => ({
         ...prev,
-        savedListings: Array.from(new Set([...prev.savedListings, ...parsed.wishlistIds!]))
+        savedListings: Array.from(new Set([...prev.savedListings, ...q.wishlistIds!]))
       }));
-    }
-    if (parsed.listingId) {
-      // Mở thẳng trang chi tiết: lấy từ API, không dùng dữ liệu mẫu (N03.3).
-      listingsApi
-        .getPublic(parsed.listingId)
-        .then((found) => setSelectedListingDetail(found))
-        .catch(() => showToast('Cơ sở trong đường dẫn không tồn tại hoặc chưa được duyệt.'));
     }
   }, []);
 
-  // Sync current state to Deep Link URL
+  // URL đổi (bấm link, Back/Forward, mở link chia sẻ) → cập nhật màn hiển thị.
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const qs = buildDeepLinkSearchParams({
-      tab: currentTab,
-      checkIn: currentTab === 'stay' ? stayCheckIn : undefined,
-      checkOut: currentTab === 'stay' ? stayCheckOut : undefined,
-      area: selectedArea !== 'all' ? selectedArea : undefined,
-      listingId: selectedListingDetail?.id || null
-    });
-    const nextUrl = `${window.location.pathname}${qs}`;
-    window.history.replaceState(null, '', nextUrl);
-  }, [currentTab, stayCheckIn, stayCheckOut, selectedArea, selectedListingDetail]);
+    if (route.redirectTo) {
+      navigate(route.redirectTo, { replace: true });
+      return;
+    }
+    if (route.notFound) {
+      showToast('Không tìm thấy trang này, đã chuyển về trang chủ.');
+      navigate('/', { replace: true });
+      return;
+    }
+    if (route.tab) setCurrentTabState(route.tab);
+    if (!route.listingId) {
+      setSelectedListingDetailState(null);
+      return;
+    }
+    const id = route.listingId;
+    setSelectedListingDetailState((prev) => (prev && prev.id === id ? prev : listings.find((l) => l.id === id) || prev));
+    if (!listings.some((l) => l.id === id)) {
+      listingsApi
+        .getPublic(id)
+        .then((found) => setSelectedListingDetailState(found))
+        .catch(() => {
+          showToast('Cơ sở trong đường dẫn không tồn tại hoặc chưa được duyệt.');
+          navigate('/', { replace: true });
+        });
+    }
+  }, [route]);
+
+  // Bộ lọc đổi → ghi vào query của trang hiện tại (thay thế, không tạo thêm bước Back).
+  // Bỏ qua lần đầu: bộ lọc trong link chia sẻ chưa kịp áp vào state.
+  const filterSyncReady = React.useRef(false);
+  useEffect(() => {
+    if (!filterSyncReady.current) {
+      filterSyncReady.current = true;
+      return;
+    }
+    if (route.redirectTo || route.notFound) return;
+    const qs = route.listingId || route.myTrips ? location.search : filterQuery();
+    if (qs !== location.search) navigate(`${location.pathname}${qs}`, { replace: true });
+  }, [currentTab, stayCheckIn, stayCheckOut, selectedArea]);
+
+  // Tiêu đề tab trình duyệt theo trang đang xem (chia sẻ, lịch sử trình duyệt dễ nhận ra).
+  const baseTitle = React.useRef(typeof document !== 'undefined' ? document.title : 'Tà Xùa Trip');
+  useEffect(() => {
+    document.title = selectedListingDetail
+      ? `${selectedListingDetail.title} | Tà Xùa Trip`
+      : route.myTrips
+        ? 'Chuyến đi của tôi | Tà Xùa Trip'
+        : TAB_TITLES[currentTab]
+          ? `${TAB_TITLES[currentTab]} | Tà Xùa Trip`
+          : baseTitle.current;
+  }, [selectedListingDetail, currentTab, route.myTrips]);
 
   // Toggle Favorite
   const handleToggleSave = (id: string) => {
@@ -831,13 +919,7 @@ export default function App() {
 
       // 7. Date Range Availability Filter
       if (stayFilterByAvailableDates) {
-        const availability = isHomestayAvailableInDateRange(
-          item,
-          stayCheckIn,
-          stayCheckOut,
-          bookings
-        );
-        if (!availability.available) return false;
+        if (hiddenByDateFilter(item, stayCheckIn, stayCheckOut, bookings)) return false;
       } else if (onlyAvailable && item.roomTypes) {
         const hasFreeRooms = item.roomTypes.some((r) => r.availableRooms > 0);
         if (!hasFreeRooms) return false;
@@ -975,7 +1057,7 @@ export default function App() {
       })
     );
 
-    setSelectedListingDetail((prev) => {
+    setSelectedListingDetailState((prev) => {
       if (!prev || prev.id !== newReview.listingId) return prev;
       const updated = calculateUpdatedRating(
         prev.rating,
@@ -2806,7 +2888,7 @@ export default function App() {
                               onClaimListing={(l) => setActiveClaimListing(l)}
                               layoutMode={stayViewMode === 'list' ? 'horizontal' : 'grid'}
                               stayAvailabilityBadge={
-                                stayFilterByAvailableDates
+                                stayFilterByAvailableDates && listing.roomTypes && listing.roomTypes.length > 0
                                   ? {
                                       availableRoomsCount: dateCheck.availableRoomsCount,
                                       dateLabel: `${shortInGlobal} – ${shortOutGlobal}`,

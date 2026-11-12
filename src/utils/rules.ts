@@ -268,6 +268,20 @@ export function doDateRangesOverlap(
 /**
  * Kiểm tra xem homestay có còn phòng trống trong khoảng ngày [checkIn, checkOut) hay không
  */
+/**
+ * Bộ lọc "còn phòng trong ngày đã chọn": chỉ ẩn cơ sở khi có dữ liệu hạng phòng và chứng minh được là hết.
+ * Cơ sở chưa nhập hạng phòng (N03: dữ liệu thu thập chưa có) là "chưa biết", vẫn hiện để khách liên hệ.
+ */
+export function hiddenByDateFilter(
+  listing: Parameters<typeof isHomestayAvailableInDateRange>[0],
+  checkIn: string,
+  checkOut: string,
+  bookings: Parameters<typeof isHomestayAvailableInDateRange>[3] = []
+): boolean {
+  if (!listing.roomTypes || listing.roomTypes.length === 0) return false;
+  return !isHomestayAvailableInDateRange(listing, checkIn, checkOut, bookings).available;
+}
+
 export function isHomestayAvailableInDateRange(
   listing: {
     id: string;

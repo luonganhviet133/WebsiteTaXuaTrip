@@ -16,6 +16,47 @@
 
 ---
 
+## U2 — Điều hướng bằng đường dẫn (13/11/2026, nhánh `dot/U2`)
+
+**Trạng thái: ĐẠT, chờ chủ dự án "gộp U2".**
+
+### Đã làm
+- React Router 7.18 (Q1). `src/routing/routes.ts`: bảng đường dẫn (xem D-U2-01), `/co-so/:id`, `/chuyen-di-cua-toi`, bộ lọc ngày/khu vực trong query, chuyển link cũ `?tab=…&listing=…` sang đường dẫn mới.
+- `App.tsx`: URL là nguồn sự thật. `setCurrentTab`, `setSelectedListingDetail`, `setIsMyTripsModalOpen` giờ đổi URL (đẩy lịch sử) thay vì `replaceState`, nên Back/Forward hoạt động. Đóng lớp phủ = quay lại trang trước; mở thẳng link rồi đóng thì về màn nền. Tiêu đề tab trình duyệt theo trang. Đường dẫn lạ → trang chủ kèm thông báo.
+- **Sửa lỗi có sẵn trên production:** dự phòng SPA của Worker lấy `/index.html`, Cloudflare Assets chuyển `/index.html` → `/` bằng 307, nên mở thẳng/tải lại mọi đường dẫn khác `/` đều bị đá về trang chủ. Đổi sang lấy `/`.
+- **Sửa lỗi do N03 lọt lên production:** trang Lưu trú hiện 0/89 homestay vì bộ lọc "còn phòng trong ngày đã chọn" (mặc định bật) coi cơ sở chưa có dữ liệu hạng phòng là hết phòng. Thêm `hiddenByDateFilter`: chỉ ẩn khi có dữ liệu phòng và chứng minh được là hết; không hiện huy hiệu "còn N phòng" cho cơ sở chưa có dữ liệu phòng.
+
+### Test mới
+- `src/routing/routes.test.ts` (8): đường dẫn không trùng, đọc lại đúng tab, dấu `/` cuối, `/co-so/:id`, chuyến đi, đường dẫn lạ, chuyển link cũ giữ bộ lọc, query đọc/ghi khớp.
+- `src/server/worker.test.ts`: `/co-so/tx-stay-5`, `/luu-tru`, `/chuyen-di-cua-toi`, `/quan-tri` trả `index.html` 200 (trước khi sửa Worker: đỏ, nhận 307 về `/`).
+- `src/utils/rules.test.ts`: `hiddenByDateFilter` (chưa có dữ liệu phòng → vẫn hiện; có dữ liệu và hết phòng → ẩn).
+
+### Lệnh đã chạy
+- `npm run typecheck`: 0 lỗi. `npm run build`: đạt. `npm test`: **158/158**. `npm run worker:dry-run`: đạt.
+- JS chính tăng từ 448,4 lên 461,9 kB gzip (+13,5 kB, chủ yếu do React Router).
+- Workers Builds preview nhánh `dot-u2`: thành công.
+
+### Kiểm tra trên preview `dot-u2-websitetaxuatrip…workers.dev` (thao tác thật trong trình duyệt)
+- Mở thẳng `/co-so/tx-stay-5`: hiện đúng cơ sở, tiêu đề tab "Dốc Mơ Homestay… | Tà Xùa Trip"; bấm Đóng → `/`.
+- Link chia sẻ `/luu-tru?checkin=2026-11-20&checkout=2026-11-22`: ô ngày nhận đúng 20 và 22/11, hiện 12 thẻ; bấm thẻ → `/co-so/tx-stay-1?…`; Back → `/luu-tru?…` (đóng chi tiết); Forward → mở lại; nút Đóng → `/luu-tru?…`.
+- Tải lại trên `/co-so/tx-stay-1` (1280px): vẫn mở đúng cơ sở; Đóng → `/luu-tru`.
+- Link cũ `/?tab=stay&listing=tx-stay-21&checkin=…` → `/co-so/tx-stay-21?checkin=…` và mở đúng cơ sở.
+- `/khong-ton-tai/abc` → `/` kèm "Không tìm thấy trang này…". `/chuyen-di-cua-toi` mở màn chuyến đi; Back → `/`.
+- Thanh điều hướng dưới đáy ở 375px: "Lưu trú" → `/luu-tru`.
+- `/luu-tru` và chi tiết cơ sở ở 375/768/1280px: 0 chữ < 12px, không tràn ngang, không chữ bị cắt.
+
+### Chưa làm / chưa kiểm chứng
+- Trang chi tiết và "Chuyến đi của tôi" đã có URL riêng nhưng vẫn **hiển thị dạng lớp phủ** như cũ; dàn thành trang đầy đủ ở U4.
+- `/doi-tac` và `/quan-tri` chỉ kiểm khi chưa đăng nhập (preview chưa có tài khoản partner/admin).
+- Thẻ cơ sở vẫn mở bằng `onClick` chứ chưa phải thẻ `<a href>` thật (chuột giữa/mở tab mới chưa được; Google chưa thấy link). Để U4/K3 cùng phần SEO.
+- Ngày mặc định của bộ lọc Lưu trú là 06–08/11/2026, đã ở quá khứ (có từ trước); sửa ở N04.
+- `App.tsx` vẫn là một file lớn; tách theo route ở K2.
+
+### Đợt tiếp theo
+- **N04** (tìm kiếm và báo giá).
+
+---
+
 ## N03 — Danh bạ lưu bền, CMS và thẩm định (12/11/2026, nhánh `dot/N03`)
 
 **Trạng thái: ĐẠT, chờ chủ dự án "gộp N03".** Gộp vào `main` sẽ tự chạy migration 0002 + 0003 trên D1 production (nhập 172 cơ sở).

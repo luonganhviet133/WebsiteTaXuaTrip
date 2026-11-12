@@ -13,6 +13,7 @@ import {
   matchesQuickSuggestion,
   doDateRangesOverlap,
   isHomestayAvailableInDateRange,
+  hiddenByDateFilter,
   maskSensitivePII,
   computeMessageHash,
   verifyEvidenceHashChain,
@@ -172,6 +173,19 @@ test('doDateRangesOverlap and isHomestayAvailableInDateRange filter homestays by
   const blockedCheck = isHomestayAvailableInDateRange(homestay, '2026-11-14', '2026-11-15', []);
   assert.equal(blockedCheck.available, false);
   assert.equal(blockedCheck.availableRoomsCount, 0);
+});
+
+test('hiddenByDateFilter: chỉ ẩn khi có dữ liệu phòng và hết phòng; chưa có dữ liệu phòng thì vẫn hiện', () => {
+  const noRooms = { id: 'x', category: 'homestay' };
+  assert.equal(hiddenByDateFilter(noRooms, '2026-11-14', '2026-11-15', []), false);
+  assert.equal(hiddenByDateFilter({ ...noRooms, roomTypes: [] }, '2026-11-14', '2026-11-15', []), false);
+  const full = {
+    id: 'y',
+    category: 'homestay',
+    roomTypes: [{ name: 'A', availableRooms: 1, capacity: 2, bookedDateRanges: [{ checkIn: '2026-11-14', checkOut: '2026-11-16' }] }],
+  };
+  assert.equal(hiddenByDateFilter(full, '2026-11-14', '2026-11-15', []), true);
+  assert.equal(hiddenByDateFilter(full, '2026-11-20', '2026-11-21', []), false);
 });
 
 test('maskSensitivePII masks Vietnamese phone numbers, 12-digit CCCD, and bank accounts before AI indexing', () => {
