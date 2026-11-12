@@ -12,19 +12,27 @@ export interface TurnstileVerifyResult {
   challengeTs?: string;
 }
 
-// Cloudflare dummy test secrets & tokens:
-// 1x0000000000000000000000000000000AA (always passes)
-// 2x0000000000000000000000000000000AA (always fails)
+// Secret test công khai của Cloudflare (luôn cho qua). Chỉ dùng ở dev/test.
+// Token 2x0000000000000000000000000000000AA giả lập lỗi khi chạy với secret này.
+export const TURNSTILE_TEST_SECRET = '1x0000000000000000000000000000000AA';
+
+/**
+ * Secret được truyền vào từ nơi gọi (Worker: env.TURNSTILE_SECRET_KEY; Express: process.env).
+ * Không có secret thì từ chối. Chế độ giả lập chỉ bật khi secret chính là secret test,
+ * không bao giờ dựa vào token client gửi lên.
+ */
 export async function verifyTurnstileToken(
   token: string | undefined,
   clientIp: string,
   expectedAction?: string,
-  allowedHostnames?: string[]
+  allowedHostnames?: string[],
+  secretKey?: string
 ): Promise<TurnstileVerifyResult> {
-  const secretKey = process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA';
+  if (!secretKey) {
+    return { success: false, error: 'TURNSTILE_NOT_CONFIGURED' };
+  }
 
-  // In test mode or when using Cloudflare test dummy keys
-  if (token === '1x0000000000000000000000000000000AA' || secretKey.startsWith('1x0000000000000000000000000000000AA')) {
+  if (secretKey === TURNSTILE_TEST_SECRET) {
     if (token === '2x0000000000000000000000000000000AA') {
       return { success: false, error: 'TURNSTILE_TOKEN_INVALID' };
     }
@@ -37,7 +45,6 @@ export async function verifyTurnstileToken(
     if (token === 'wrong_hostname_token') {
       return { success: false, hostname: 'malicious-domain.com', error: 'TURNSTILE_HOSTNAME_MISMATCH' };
     }
-    // Default dummy pass
     return {
       success: true,
       hostname: 'localhost',

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { TurnstileWidget } from './TurnstileWidget';
+import { TURNSTILE_SITE_KEY } from '../config/turnstile';
 import {
   X,
   Shield,
@@ -55,6 +57,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [turnstileToken, setTurnstileToken] = useState<string>('');
+  const [turnstileReset, setTurnstileReset] = useState(0);
+
+  // Token Turnstile gắn với action (login/register) nên đổi chế độ thì bỏ token cũ.
+  React.useEffect(() => {
+    setTurnstileToken('');
+  }, [mode]);
 
   // Register form states
   const [fullName, setFullName] = useState('');
@@ -124,6 +132,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       return;
     }
 
+    if (!turnstileToken) {
+      setFormError('Vui lòng hoàn tất bước xác minh chống bot bên dưới trước khi tiếp tục.');
+      return;
+    }
+
     setIsLoading(true);
     try {
       const cleanIdentifier = identifier.trim();
@@ -162,6 +175,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }, 400);
     } catch (err: any) {
       setFormError(err.message);
+      setTurnstileToken('');
+      setTurnstileReset((n) => n + 1);
     } finally {
       setIsLoading(false);
     }
@@ -189,6 +204,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     if (!validation.isValid) {
       const firstErr = Object.values(validation.errors)[0];
       setFormError(firstErr);
+      return;
+    }
+
+    if (!turnstileToken) {
+      setFormError('Vui lòng hoàn tất bước xác minh chống bot bên dưới trước khi tiếp tục.');
       return;
     }
 
@@ -236,6 +256,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }, 450);
     } catch (err: any) {
       setFormError(err.message);
+      setTurnstileToken('');
+      setTurnstileReset((n) => n + 1);
     } finally {
       setIsLoading(false);
     }
@@ -542,6 +564,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 </a>
               </div>
 
+              <TurnstileWidget
+                siteKey={TURNSTILE_SITE_KEY}
+                action="login"
+                onToken={setTurnstileToken}
+                resetSignal={turnstileReset}
+              />
+
               <button
                 type="submit"
                 className={`w-full py-2.5 px-4 rounded-xl text-white font-extrabold text-xs shadow-md transition-all cursor-pointer ${currentTheme.buttonBg}`}
@@ -633,6 +662,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   />
                 </div>
               </div>
+
+              <TurnstileWidget
+                siteKey={TURNSTILE_SITE_KEY}
+                action="register"
+                onToken={setTurnstileToken}
+                resetSignal={turnstileReset}
+              />
 
               <button
                 type="submit"

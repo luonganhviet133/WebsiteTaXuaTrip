@@ -25,6 +25,7 @@ import {
 import {
   createRateLimiter,
   verifyTurnstileToken,
+  TURNSTILE_TEST_SECRET,
   getClientIp
 } from './src/server/antiAbuse.ts';
 
@@ -94,7 +95,7 @@ export async function createExpressApp(options: CreateAppOptions = {}): Promise<
     try {
       // Optional Turnstile verification if provided (N02.5)
       if (req.body.turnstileToken) {
-        const turnstile = await verifyTurnstileToken(req.body.turnstileToken, getClientIp(req), 'register');
+        const turnstile = await verifyTurnstileToken(req.body.turnstileToken, getClientIp(req), 'register', undefined, process.env.TURNSTILE_SECRET_KEY || TURNSTILE_TEST_SECRET);
         if (!turnstile.success) {
           return res.status(400).json({ success: false, error: 'TURNSTILE_FAILED: Xác thực chống bot không thành công.' });
         }
@@ -111,7 +112,7 @@ export async function createExpressApp(options: CreateAppOptions = {}): Promise<
   app.post('/api/auth/login', authLimiter as any, async (req, res) => {
     try {
       if (req.body.turnstileToken) {
-        const turnstile = await verifyTurnstileToken(req.body.turnstileToken, getClientIp(req), 'login');
+        const turnstile = await verifyTurnstileToken(req.body.turnstileToken, getClientIp(req), 'login', undefined, process.env.TURNSTILE_SECRET_KEY || TURNSTILE_TEST_SECRET);
         if (!turnstile.success) {
           return res.status(400).json({ success: false, error: 'TURNSTILE_FAILED: Xác thực chống bot không thành công.' });
         }

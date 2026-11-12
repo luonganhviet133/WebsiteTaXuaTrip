@@ -17,7 +17,7 @@ import {
   getUserByToken,
   changeUserPassword
 } from './server/auth.ts';
-import { verifyTurnstileToken, checkRateLimit } from './server/antiAbuse.ts';
+import { verifyTurnstileToken, checkRateLimit, TURNSTILE_TEST_SECRET } from './server/antiAbuse.ts';
 
 export interface Env {
   DB: any;
@@ -44,6 +44,13 @@ function getBearerToken(request: Request): string | null {
   const authHeader = request.headers.get('authorization') || request.headers.get('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
   return authHeader.substring(7).trim();
+}
+
+// Secret Turnstile từ binding của Worker (Settings → Variables and Secrets).
+// Production thiếu secret thì trả undefined để chặn đăng ký/đăng nhập; dev/test dùng secret test.
+function getTurnstileSecret(env: Env): string | undefined {
+  if (env.TURNSTILE_SECRET_KEY) return env.TURNSTILE_SECRET_KEY;
+  return env.NODE_ENV === 'production' ? undefined : TURNSTILE_TEST_SECRET;
 }
 
 function getClientIp(request: Request): string {
@@ -106,12 +113,12 @@ export default {
         try {
           const body: any = await request.json();
           const turnstileToken = body.turnstileToken || request.headers.get('cf-turnstile-token');
-          const turnstileCheck = await verifyTurnstileToken(turnstileToken, clientIp, 'register');
+          const turnstileCheck = await verifyTurnstileToken(turnstileToken, clientIp, 'register', [url.hostname], getTurnstileSecret(env));
           if (!turnstileCheck.success) {
             return jsonResponse({
               success: false,
               error: turnstileCheck.error || 'Xác thực Turnstile không thành công.'
-            }, 400);
+            }, turnstileCheck.error === 'TURNSTILE_NOT_CONFIGURED' ? 503 : 400);
           }
 
           const result = await registerUser(body, db);
@@ -145,12 +152,12 @@ export default {
           const password = body.password;
           const turnstileToken = body.turnstileToken || request.headers.get('cf-turnstile-token');
 
-          const turnstileCheck = await verifyTurnstileToken(turnstileToken, clientIp, 'login');
+          const turnstileCheck = await verifyTurnstileToken(turnstileToken, clientIp, 'login', [url.hostname], getTurnstileSecret(env));
           if (!turnstileCheck.success) {
             return jsonResponse({
               success: false,
               error: turnstileCheck.error || 'Xác thực Turnstile không thành công.'
-            }, 400);
+            }, turnstileCheck.error === 'TURNSTILE_NOT_CONFIGURED' ? 503 : 400);
           }
 
           const result = await loginUser({ identifier, password }, db);

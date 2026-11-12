@@ -39,6 +39,26 @@ test('Worker khởi động được trong workerd và /api/health trả JSON', 
       assert.equal(asset.status, 200, `${assetPath} trả ${asset.status}`);
       await asset.arrayBuffer();
     }
+
+    // G0.3: production (NODE_ENV=production trong wrangler.toml) chưa có TURNSTILE_SECRET_KEY
+    // thì đăng ký/đăng nhập phải bị chặn, kể cả khi gửi token test công khai của Cloudflare.
+    for (const route of ['/api/auth/register', '/api/auth/login']) {
+      const res = await worker.fetch(route, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          identifier: 'bot@example.com',
+          email: 'bot@example.com',
+          password: 'Matkhau123!',
+          fullName: 'Bot',
+          role: 'traveler',
+          turnstileToken: '1x0000000000000000000000000000000AA'
+        })
+      });
+      assert.equal(res.status, 503, `${route} trả ${res.status}`);
+      const body = (await res.json()) as { error?: string };
+      assert.equal(body.error, 'TURNSTILE_NOT_CONFIGURED');
+    }
   } finally {
     await worker.stop();
   }
