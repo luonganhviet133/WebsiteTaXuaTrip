@@ -179,7 +179,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const heroBadge = siteContent?.heroBadge !== undefined ? siteContent.heroBadge : '🏔️ Cổng đặt phòng & thông tin Tà Xùa';
   const heroTitle = siteContent?.heroTitle !== undefined ? siteContent.heroTitle : 'TÀ XÙA TRIP';
   const heroSubtitle = siteContent?.heroSubtitle !== undefined ? siteContent.heroSubtitle : 'Đi thật. Biết trước.';
-  const heroDescription = siteContent?.heroDescription !== undefined ? siteContent.heroDescription : '179+ homestay kiểm duyệt thực tế, minh bạch giá phòng và liên hệ trực tiếp chủ nhà không qua trung gian.';
+  const heroDescription = siteContent?.heroDescription !== undefined ? siteContent.heroDescription : 'Danh bạ homestay, quán ăn, nhà xe Tà Xùa: liên hệ trực tiếp chủ nhà không qua trung gian, ghi rõ thông tin nào đã được xác minh.';
   const heroBgImage = siteContent?.heroBackgroundImage;
 
   return (

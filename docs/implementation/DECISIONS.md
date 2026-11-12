@@ -18,6 +18,14 @@
 
 ---
 
+### D-N03-01: Dữ liệu danh bạ thật chỉ gồm thông tin có nguồn (12/11/2026)
+
+- Nhập 172 cơ sở từ `scraped-taxua-enriched.json`, đều Cấp 1, giữ ID cũ. Ngày thu thập ghi `2026-11-04` theo `updatedCalendarDate` mà `build-mockdata.js` gán khi sinh bộ dữ liệu (ngày thu thập gốc không lưu lại).
+- Không nhập 6 cơ sở do script tự viết (`homestay-may`, `homestay-lutre`, `coffee-mi-oi`, `tx-taxi-1`, `tx-rescue-1`, `tx-bike-1`).
+- Không nhập điểm sao, số đánh giá, tọa độ suy theo khu vực, huy hiệu cấp 2–3, hạng phòng/menu/gói và giá do script tự gán. Giá 0 hiển thị "Liên hệ"; cơ sở không có giá không đặt online được.
+- `hasCloudView` lấy theo thẻ do nguồn ghi ("View săn mây"…), hiển thị là "cơ sở tự khai" cho tới khi xác minh.
+- Sửa của chủ cơ sở luôn qua duyệt; admin sửa công khai ngay và ghi `audit_log`. Gỡ cơ sở = chuyển `rejected`, không xóa dữ liệu.
+
 ### D-SP-2026-11-12: Chính sách sản phẩm do chủ dự án chốt (12/11/2026)
 
 Các quyết định dưới đây thay phần "chưa chốt" của D03, D04, D05, D06, D07, D08, Q1–Q4 trong plan. Mọi đợt code về sau làm theo bảng này; muốn đổi phải ghi quyết định mới.

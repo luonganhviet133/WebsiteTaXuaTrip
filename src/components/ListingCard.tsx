@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { Listing } from '../types/index.ts';
 import { formatVND } from '../utils/rules.ts';
+import { verificationLabel } from '../utils/listingDisplay.ts';
 
 interface ListingCardProps {
   listing: Listing;
@@ -467,8 +468,14 @@ export const ListingCard: React.FC<ListingCardProps> = ({
           <div className="flex md:flex-col items-center md:items-end gap-2 w-full justify-between">
             <div className="inline-flex items-center gap-1.5 bg-brand-800 text-white px-2.5 py-1 rounded-xl text-xs font-black tabular-nums">
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span>{listing.rating}</span>
-              <span className="text-xs font-medium text-slate-200">({listing.reviewCount})</span>
+              {listing.reviewCount > 0 ? (
+                <>
+                  <span>{listing.rating}</span>
+                  <span className="text-xs font-medium text-slate-200">({listing.reviewCount})</span>
+                </>
+              ) : (
+                <span className="font-semibold">Chưa có đánh giá</span>
+              )}
             </div>
 
             {stayAvailabilityBadge && (
@@ -491,7 +498,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
             </span>
             <div className="flex items-baseline md:justify-end gap-1 whitespace-nowrap">
               <span className="text-xl font-black text-brand-800 tabular-nums">
-                {listing.minPrice > 0 ? formatVND(listing.minPrice) : 'Hỗ trợ 24/7'}
+                {listing.minPrice > 0 ? formatVND(listing.minPrice) : 'Liên hệ'}
               </span>
               {listing.minPrice > 0 && meta.unitLabel && (
                 <span className="text-xs text-slate-500 font-bold">{meta.unitLabel}</span>
@@ -633,7 +640,14 @@ export const ListingCard: React.FC<ListingCardProps> = ({
               <span className="inline-flex items-center gap-1 text-xs font-bold text-white bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/15 shadow-xs">
                 <span>Cấp 2</span>
               </span>
-            ) : null}
+            ) : (
+              <span
+                title={verificationLabel(listing).detail}
+                className="inline-flex items-center gap-1 text-xs font-bold text-slate-900 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-slate-200 shadow-xs"
+              >
+                <span>{verificationLabel(listing).title}</span>
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
@@ -695,8 +709,14 @@ export const ListingCard: React.FC<ListingCardProps> = ({
 
             <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/50 backdrop-blur-md border border-white/20 text-white text-xs font-black tabular-nums shadow-xs">
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span>{listing.rating}</span>
-              <span className="text-white/70 text-xs font-normal">({listing.reviewCount})</span>
+              {listing.reviewCount > 0 ? (
+                <>
+                  <span>{listing.rating}</span>
+                  <span className="text-white/70 text-xs font-normal">({listing.reviewCount})</span>
+                </>
+              ) : (
+                <span className="font-semibold">Chưa có đánh giá</span>
+              )}
             </div>
           </div>
         </div>
@@ -772,7 +792,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
             </span>
             <div className="flex items-baseline gap-1 mt-0.5 whitespace-nowrap">
               <span className="text-base sm:text-lg font-black text-brand-800 tabular-nums tracking-tight">
-                {listing.minPrice > 0 ? formatVND(listing.minPrice) : 'Hỗ trợ 24/7'}
+                {listing.minPrice > 0 ? formatVND(listing.minPrice) : 'Liên hệ'}
               </span>
               {listing.minPrice > 0 && meta.unitLabel && (
                 <span className="text-xs text-slate-600 font-bold">{meta.unitLabel}</span>

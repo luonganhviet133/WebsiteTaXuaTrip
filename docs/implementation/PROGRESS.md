@@ -16,6 +16,74 @@
 
 ---
 
+## N03 — Danh bạ lưu bền, CMS và thẩm định (12/11/2026, nhánh `dot/N03`)
+
+**Trạng thái: ĐẠT, chờ chủ dự án "gộp N03".** Gộp vào `main` sẽ tự chạy migration 0002 + 0003 trên D1 production (nhập 172 cơ sở).
+
+### N03.1 — Dữ liệu (commit `525b5a4`)
+- `migrations_d1/0002_listings.sql`: `listings`, `listing_versions`, `listing_claims`, `audit_log`, `site_content`.
+- `src/server/listings/content.ts`: nội dung sửa được + kiểm tra (tên, loại, khu vực, giá nguyên VND, tọa độ trong VN, ảnh http(s), hạng phòng). Điểm sao, số đánh giá, huy hiệu, trạng thái **không** nằm trong nội dung nên không tự khai được.
+- `src/server/listings/importer.ts` + `npm run listings:import` sinh `migrations_d1/0003_import_scraped_listings.sql` (INSERT OR IGNORE, chạy lại không trùng, không đè bản đã sửa). Không sửa mã TypeScript; gỡ `scripts/update-mockdata-file.js`.
+- Kết quả nhập: **172 cơ sở** từ `scraped-taxua-enriched.json`, bỏ 7 điểm check-in. Giữ đủ 172 ID cũ (`tx-stay-…`), ghép theo loại + thứ tự và bắt buộc tên khớp; importer phát hiện 7 cặp cùng tên khác loại/link và tách đúng thành cơ sở riêng.
+- Không tự sinh: tọa độ (0/172 có tọa độ), điểm sao, huy hiệu (172/172 Cấp 1), hạng phòng/menu/gói, lượt xem. Giá chỉ lấy khi nguồn có (26/172); số điện thoại dính liền được tách (vd `08659636470812251575` → 2 số); link nhóm Facebook chung bị bỏ.
+- 6 cơ sở tự bịa (`homestay-may`, `homestay-lutre`, `coffee-mi-oi`, `tx-taxi-1`, `tx-rescue-1` với hotline `1900 8899`, `tx-bike-1`) **không** vào dữ liệu thật; chỉ còn trong `mockData.ts` và fixture test.
+- `DatabaseEngine` trên Node áp chính các file `migrations_d1/*.sql` (bỏ bản schema viết lặp trong `db.ts`).
+
+### N03.2 — Lưu trữ và quyền (commit `8d4f2c2`)
+- `ListingStore` + route: công khai chỉ trả `status = approved` và đúng `published_version_id`. Mỗi cơ sở tối đa một bản mở (nháp/chờ duyệt); bản đã duyệt không bị sửa đè.
+- Chủ cơ sở: lưu nháp → gửi duyệt; admin duyệt/từ chối (có lý do), sửa công khai ngay, đổi trạng thái, ghim ưu tiên, đặt cấp xác minh (cấp 2–3 bắt buộc ghi nguồn, hết hạn sau 12 tháng theo D06).
+- Nhận chính chủ: cần tài khoản partner + bằng chứng; duyệt chỉ gắn quyền sở hữu, **không** nâng huy hiệu.
+- `audit_log` cho mọi thao tác ghi; `site_content` cho CMS.
+- Route PUT `/api/partner/listings/:id` cũ (gửi gì cũng báo thành công) được thay bằng lưu nháp có kiểm tra.
+
+| Route | Quyền |
+|---|---|
+| `GET /api/listings`, `GET /api/listings/:id`, `GET /api/site-content` | công khai |
+| `POST /api/listings/:id/claims` | partner |
+| `GET/POST /api/partner/listings`, `PUT /api/partner/listings/:id`, `POST …/:id/submit` | partner sở hữu (admin được tất cả) |
+| `GET/POST /api/admin/listings`, `PUT …/:id`, `POST …/:id/{review,status,verification,featured}` | admin |
+| `GET /api/admin/claims`, `POST …/:id/review`, `GET /api/admin/audit`, `PUT /api/admin/site-content` | admin |
+
+### N03.3 — Giao diện (commit `6fdd3e6`, `2035c18`)
+- `App` đọc danh bạ từ API; bỏ `INITIAL_LISTINGS` và ghi đè ưu tiên trong localStorage. Trạng thái đang tải/lỗi/rỗng dùng component U1.
+- Chủ cơ sở sửa = lưu nháp + gửi duyệt; admin dùng API cho duyệt/từ chối/gỡ/cấp xác minh (hỏi nguồn)/ghim. Chỉ báo thành công sau khi server xác nhận.
+- Deep link `?listing=` lấy qua `/api/listings/:id`; CMS lưu server (tự lưu sau 1,2 giây), bỏ localStorage.
+- Bản đồ chỉ ghim cơ sở có tọa độ thật, ghi rõ số cơ sở chưa có tọa độ.
+- Nhãn: "Chưa có đánh giá", giá 0 → "Liên hệ", "Chưa xác minh · Thu thập từ nguồn công khai ngày 04/11/2026", "View biển mây (cơ sở tự khai)"; bỏ các câu "179 cơ sở thẩm định".
+- Trang chi tiết: bỏ giá dự phòng gán cứng (150.000đ/180.000đ/30.000đ) và số hạng phòng `|| 3`; cơ sở chưa có giá thì khóa nút đặt và hướng dẫn liên hệ trực tiếp.
+
+### Test mới
+- `src/server/listings/importer.test.ts` (11): ID, tách số điện thoại, khu vực, kiểm tra nội dung, không tự sinh dữ liệu, ID trùng/sai, cùng tên khác loại, chạy SQL hai lần, migration sinh ra khớp (172, Cấp 1, không tọa độ, không cơ sở tự bịa).
+- `src/server/listings/listings.api.test.ts` (12): công khai chỉ approved; partner sửa cơ sở người khác → 403; nội dung sai → 400 theo trường; nháp không đè bản duyệt; từ chối giữ bản công khai và trả lý do; tạo mới chưa công khai; cơ sở bị từ chối biến mất khỏi danh sách và chi tiết; claim không nâng huy hiệu; huy hiệu cần nguồn và hết hạn 12 tháng; admin sửa có log; ghim ưu tiên; CMS chỉ admin lưu.
+- `src/api/listingsApi.test.ts` (5): gộp bản đang sửa, không gửi trường hệ thống, lọc tọa độ, nhãn xác minh.
+- Hợp đồng Express + Worker (workerd + D1 local): `/api/listings` trả 172 cơ sở Cấp 1, `homestay-may` → 404.
+
+### Lệnh đã chạy (lần cuối, trên `2035c18`)
+- `npm run typecheck`: 0 lỗi. `npm run build`: đạt. `npm test`: **149/149**. `npm run worker:dry-run`: đạt (1.793 KiB, gzip 236 KiB).
+- Workers Builds preview nhánh `dot-n03`: thành công; migration chạy trên D1 preview.
+
+### Kiểm tra trên preview `dot-n03-websitetaxuatrip…workers.dev`
+- `/api/listings`: 172 cơ sở, chỉ Cấp 1, 0 tọa độ; `/api/listings/homestay-may`: 404.
+- Trang chủ 375/768/1280px: 0 chữ < 12px, không tràn ngang, không chữ bị cắt; bộ đếm loại lấy từ dữ liệu ("Tất cả cơ sở (172)", "Homestay (89)").
+- Deep link `?listing=tx-stay-5` và `?listing=tx-stay-21` mở đúng cơ sở từ API ở 375 và 1280px, đạt cùng tiêu chí.
+- `tx-stay-21` (nguồn không có giá): nút đặt khóa, hiện hướng dẫn liên hệ. `tx-stay-5` (nguồn có giá 599.000đ) vẫn đặt được như cũ.
+- Bản đồ: ghi "172 cơ sở chưa có tọa độ đã xác minh nên chưa hiện trên bản đồ".
+
+### Chưa làm / chưa kiểm chứng
+- **Ảnh vẫn là link của trang nguồn** (supabase của bên khác); tải ảnh lên R2 để ở U4.
+- Dashboard đối tác và admin **chưa xem bằng mắt** trên preview vì D1 preview chưa có tài khoản admin/partner; luồng của chúng đã kiểm bằng test API.
+- Màn admin cũ chỉ có nút duyệt/từ chối chung; lý do từ chối và nguồn xác minh đang hỏi bằng hộp `prompt` của trình duyệt (U5 làm form riêng).
+- Hồ sơ nhận chính chủ không gửi số CCCD/MST (dữ liệu nhạy cảm); admin gọi điện xác minh. Tải giấy tờ lên R2 riêng tư để sau.
+- Cập nhật phòng trống trong dashboard đối tác vẫn chỉ đổi trên màn hình (đã ghi rõ trong thông báo); lịch phòng thật ở N05.
+- AI tư vấn, dự báo săn mây, cộng đồng và lịch trình AI vẫn đọc `INITIAL_LISTINGS` (dữ liệu mẫu); chuyển sang API ở N08.
+- Danh sách công khai trả toàn bộ 172 cơ sở một lần (JS gzip +4 kB; JSON ~400 kB); phân trang ở K3.
+- Sau khi gộp, homestay/dịch vụ trên production sẽ mất điểm sao, số đánh giá, huy hiệu cấp 2–3, tọa độ và hạng phòng tự sinh trước đây. Đây là chủ đích theo D06.
+
+### Đợt tiếp theo
+- **U2** (React Router, đường dẫn `/co-so/:id`) rồi **N04** (tìm kiếm và báo giá).
+
+---
+
 ## U1 — Bộ thiết kế chung (12/11/2026, nhánh `dot/U1`)
 
 **Trạng thái: ĐẠT, chờ chủ dự án "gộp U1".**

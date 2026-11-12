@@ -69,7 +69,7 @@ interface PartnerDashboardProps {
   onCheckInBooking: (bookingId: string) => void;
   onCompleteBooking: (bookingId: string) => void;
   billingEnabled: boolean;
-  onUpdateListing?: (updated: Listing) => void;
+  onUpdateListing?: (updated: Listing) => void | Promise<boolean>;
   onConfirmPaymentProof?: (bookingId: string) => void;
 }
 

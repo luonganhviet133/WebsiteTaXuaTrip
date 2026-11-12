@@ -279,7 +279,7 @@ Hotline hỗ trợ: 0981 234 567`;
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                AI kiểm tra 179 cơ sở, lịch xe, tình trạng phòng và dự toán ngân sách chính xác
+                AI gợi ý cơ sở, lịch xe và dự toán ngân sách tham khảo
               </p>
             </div>
           </div>
@@ -508,7 +508,7 @@ Hotline hỗ trợ: 0981 234 567`;
               <div className="max-w-md mx-auto space-y-2 text-xs font-semibold text-slate-600">
                 <div className={`flex items-center justify-center gap-2 ${loadingStep >= 1 ? 'text-teal-800' : 'text-slate-400'}`}>
                   {loadingStep >= 1 ? <CheckCircle2 className="w-4 h-4 text-teal-600" /> : <Clock className="w-4 h-4" />}
-                  <span>Đối chiếu 179 homestay & kiểm tra lịch trống phòng...</span>
+                  <span>Đang đối chiếu danh sách homestay...</span>
                 </div>
                 <div className={`flex items-center justify-center gap-2 ${loadingStep >= 2 ? 'text-teal-800' : 'text-slate-400'}`}>
                   {loadingStep >= 2 ? <CheckCircle2 className="w-4 h-4 text-teal-600" /> : <Clock className="w-4 h-4" />}
@@ -791,7 +791,7 @@ Hotline hỗ trợ: 0981 234 567`;
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h4 className="text-xs font-black uppercase tracking-wider text-brand-800">
-                      Homestay được AI chọn lọc từ 179 cơ sở thẩm định
+                      Homestay được AI gợi ý
                     </h4>
                     <span className="text-xs text-slate-500">
                       {result.recommendedHomestays.length} gợi ý phù hợp

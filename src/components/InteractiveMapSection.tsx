@@ -18,7 +18,7 @@ import {
   Layers,
   CheckCircle2
 } from 'lucide-react';
-import { Listing, CloudLandmark, LocationArea } from '../types/index.ts';
+import { Listing, MappableListing, CloudLandmark, LocationArea } from '../types/index.ts';
 import {
   formatVND,
   calculateDistanceKm,
@@ -26,7 +26,9 @@ import {
 } from '../utils/rules.ts';
 
 interface InteractiveMapSectionProps {
-  listings: Listing[];
+  listings: MappableListing[];
+  /** Số cơ sở bị bỏ khỏi bản đồ vì chưa có tọa độ thật. */
+  unmappedCount?: number;
   landmarks: CloudLandmark[];
   onSelectListing: (listing: Listing) => void;
 }
@@ -117,11 +119,11 @@ const CLOUD_HUNTING_ROUTES: CloudHuntingRoute[] = [
  * để 100% ghim trên bản đồ đều tách rời, dễ nhìn và bấm chọn được.
  */
 function spreadOverlappingCoordinates(
-  items: Listing[],
+  items: MappableListing[],
   landmarks: CloudLandmark[]
 ): Map<string, { lat: number; lng: number }> {
   const result = new Map<string, { lat: number; lng: number }>();
-  const buckets = new Map<string, Listing[]>();
+  const buckets = new Map<string, MappableListing[]>();
 
   items.forEach((item) => {
     // Gom nhóm các tọa độ trùng hoặc cách nhau < ~100m
@@ -192,6 +194,7 @@ function spreadOverlappingCoordinates(
 
 export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
   listings,
+  unmappedCount = 0,
   landmarks,
   onSelectListing
 }) => {
@@ -215,7 +218,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
   const [selectedLandmark, setSelectedLandmark] = useState<CloudLandmark | null>(
     landmarks[0] || null
   );
-  const [selectedMapListing, setSelectedMapListing] = useState<Listing | null>(null);
+  const [selectedMapListing, setSelectedMapListing] = useState<MappableListing | null>(null);
   const [targetCloudSpotId, setTargetCloudSpotId] = useState<string>(
     landmarks[0]?.id || 'spot-dinh-gio'
   );
@@ -739,7 +742,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
     }
   };
 
-  const handleFlyToListing = (item: Listing) => {
+  const handleFlyToListing = (item: MappableListing) => {
     setSelectedMapListing(item);
     const displayCoords = displayCoordinatesMap.get(item.id) || item.coordinates;
     if (mapInstanceRef.current) {
@@ -854,6 +857,13 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
       className="bg-[#f8fafc] border-y border-slate-200/80 py-4 sm:py-6 px-3 sm:px-6 lg:px-8"
     >
       <div className="max-w-7xl mx-auto">
+        {unmappedCount > 0 && (
+          <p role="note" className="mb-3 rounded-control border border-info-200 bg-info-50 px-3 py-2 text-sm text-info-700">
+            {listings.length === 0
+              ? `${unmappedCount} cơ sở chưa có tọa độ đã xác minh nên chưa hiện trên bản đồ. Bản đồ đang hiển thị các điểm săn mây.`
+              : `${unmappedCount} cơ sở chưa có tọa độ đã xác minh nên chưa hiện trên bản đồ.`}
+          </p>
+        )}
         {/* Compact Above-the-Fold Header + Quick Landmark Jump Pills */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3.5">
           <div className="flex items-center gap-2.5 flex-wrap">

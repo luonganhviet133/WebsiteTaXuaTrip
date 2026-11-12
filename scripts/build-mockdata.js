@@ -1,3 +1,5 @@
+// ĐÃ NGỪNG DÙNG (N03.1): script này tự gán điểm sao, tọa độ theo khu vực, huy hiệu cấp 3, giá và hạng phòng.
+// Dữ liệu thật nhập bằng scripts/import-listings.ts. Chỉ giữ để tra cứu nguồn gốc all-listings.json (dùng ghép ID cũ).
 import fs from 'node:fs';
 import path from 'node:path';
 

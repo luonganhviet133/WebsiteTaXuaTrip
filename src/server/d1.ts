@@ -114,7 +114,7 @@ class NodeSQLitePreparedStatement implements D1PreparedStatement {
   }
 }
 
-class NodeSQLiteD1Database implements D1Database {
+export class NodeSQLiteD1Database implements D1Database {
   private db: DatabaseSync;
   public readonly databasePath: string;
 
@@ -176,6 +176,15 @@ class NodeSQLiteD1Database implements D1Database {
     };
   }
 
+  /** Chỉ dùng khi khởi tạo trên Node: chạy SQL đồng bộ (D1 thật không có). */
+  public execSync(query: string): void {
+    this.db.exec(query);
+  }
+
+  public allSync<T = unknown>(query: string): T[] {
+    return this.db.prepare(query).all() as T[];
+  }
+
   public close(): void {
     try {
       this.db.close();
@@ -187,6 +196,6 @@ class NodeSQLiteD1Database implements D1Database {
  * Creates a D1Database instance.
  * @param databasePath ':memory:' for isolated testing, or a path to a SQLite file.
  */
-export function createD1Database(databasePath = ':memory:'): D1Database {
+export function createD1Database(databasePath = ':memory:'): NodeSQLiteD1Database {
   return new NodeSQLiteD1Database(databasePath);
 }

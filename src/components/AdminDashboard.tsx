@@ -109,8 +109,9 @@ import { JarvisAdminAssistant } from './JarvisAdminAssistant.tsx';
 
 interface AdminDashboardProps {
   listings: Listing[];
-  onAddListing?: (newListing: Listing) => void;
-  onUpdateListing?: (updatedListing: Listing) => void;
+  onAddListing?: (newListing: Listing) => void | Promise<void>;
+  /** Trả false khi server từ chối; khi đó không báo thành công. */
+  onUpdateListing?: (updatedListing: Listing) => void | Promise<boolean>;
   onDeleteListing?: (listingId: string) => void;
   trips?: BusTrip[];
   onUpdateTrips?: React.Dispatch<React.SetStateAction<BusTrip[]>>;
@@ -950,13 +951,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setTimeout(() => setCmsSaveFeedback(null), 3500);
   };
 
-  const commitListingUpdate = (updated: Listing, msg = '✅ Đã cập nhật cơ sở dịch vụ thành công!') => {
+  const commitListingUpdate = async (updated: Listing, msg = '✅ Đã cập nhật cơ sở dịch vụ thành công!') => {
     setSelectedListingDetail(updated);
     if (onUpdateListing) {
-      onUpdateListing({
+      const ok = await onUpdateListing({
         ...updated,
         updatedCalendarDate: new Date().toISOString().slice(0, 10)
       });
+      if (ok === false) return;
     }
     showAdminToast(msg);
   };
@@ -1052,10 +1054,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     };
 
     if (onAddListing) {
-      onAddListing(created);
+      // Server cấp ID mới; không mở bản tạm phía trình duyệt để tránh sửa nhầm ID chưa tồn tại.
+      void onAddListing(created);
     }
     setIsCreatingListing(false);
-    setSelectedListingDetail(created);
+    setSelectedListingDetail(null);
     setEditingListingMode('service_features');
     setNewListingForm({
       ...newListingForm,
@@ -2640,12 +2643,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             adminPriorityRank: l.adminPriorityRank ?? 10,
                             adminFeaturedLabel: l.adminFeaturedLabel || '👑 Admin Đề Xuất'
                           };
-                          onUpdateListing(updated);
-                          showAdminToast(
+                          void Promise.resolve(onUpdateListing(updated)).then((ok) => {
+                            if (ok === false) return;
+                            showAdminToast(
                             nextFeatured
                               ? `👑 Đã ghim "${l.title}" lên đầu trang (Hạng #${updated.adminPriorityRank})!`
                               : `Đã bỏ ghim ưu tiên cho "${l.title}".`
-                          );
+                            );
+                          });
                         }}
                         className={`px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer transition-all ${
                           l.isAdminFeatured

@@ -690,7 +690,7 @@ export function compareHomestaysMatrix(
     verificationTier: number;
     hasCloudView: boolean;
     tags: string[];
-    coordinates: { lat: number; lng: number };
+    coordinates: { lat: number; lng: number } | null;
     roomTypes?: Array<{ capacity: number; availableRooms: number; totalRooms: number }>;
   }>
 ): {
@@ -708,7 +708,7 @@ export function compareHomestaysMatrix(
     quietRetreat: boolean;
     maxRoomCapacity: number;
     totalAvailableRooms: number;
-    distanceToDinhGioKm: number;
+    distanceToDinhGioKm: number | null; // null khi cơ sở chưa có tọa độ thật
   }>;
 } {
   const dinhGioCoord = { lat: 21.3278, lng: 104.4775 };
@@ -753,7 +753,7 @@ export function compareHomestaysMatrix(
       quietRetreat: matchesQuickSuggestion({ category: 'homestay', tags: h.tags }, 'quiet_retreat'),
       maxRoomCapacity,
       totalAvailableRooms,
-      distanceToDinhGioKm: calculateDistanceKm(h.coordinates, dinhGioCoord)
+      distanceToDinhGioKm: h.coordinates ? calculateDistanceKm(h.coordinates, dinhGioCoord) : null
     };
   });
 

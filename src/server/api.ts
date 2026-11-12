@@ -21,6 +21,8 @@ import {
   type AuthenticatedUser
 } from './auth.ts';
 import { verifyTurnstileToken, checkRateLimit } from './antiAbuse.ts';
+import { handleListingRoutes } from './listings/routes.ts';
+import { ListingStore } from './listings/store.ts';
 
 export interface ApiContext {
   db: DatabaseEngine;
@@ -189,27 +191,14 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
     return json({ success: true, data: booking });
   }
 
-  if (route === 'GET /api/partner/listings') {
-    const user = await requireRole(request, ctx, ['partner', 'admin']);
-    if (user instanceof Response) return user;
-    if (user.role === 'admin') return json({ success: true, data: 'admin_all_listings' });
-    if (!user.providerId) return json({ success: true, data: [] });
-    return json({ success: true, data: await ctx.db.getProviderListings(user.providerId) });
-  }
-
-  const listingMatch = method === 'PUT' && pathname.match(/^\/api\/partner\/listings\/([^/]+)$/);
-  if (listingMatch) {
-    const user = await requireRole(request, ctx, ['partner', 'admin']);
-    if (user instanceof Response) return user;
-    const listingId = decodeURIComponent(listingMatch[1]);
-    if (user.role !== 'admin') {
-      const owned = user.providerId ? await ctx.db.getProviderListings(user.providerId) : [];
-      if (!owned.some((pl) => pl.listingId === listingId)) {
-        return json({ success: false, error: 'FORBIDDEN: Bạn không có quyền chỉnh sửa cơ sở lưu trú này.' }, 403);
-      }
-    }
-    return json({ success: true, message: `Đã cập nhật thông tin cơ sở ${listingId} thành công.` });
-  }
+  // ==================== DANH BẠ CƠ SỞ (N03) ====================
+  const listingResponse = await handleListingRoutes(request, pathname, {
+    store: new ListingStore(ctx.db.d1),
+    json,
+    readJson,
+    requireRole: (allowed) => requireRole(request, ctx, allowed),
+  });
+  if (listingResponse) return listingResponse;
 
   if (route === 'GET /api/admin/overview') {
     const user = await requireRole(request, ctx, ['admin']);
