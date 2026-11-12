@@ -16,6 +16,62 @@
 
 ---
 
+## N04 — Tìm kiếm xuyên suốt, báo giá và voucher (13/11/2026, nhánh `dot/N04`)
+
+**Trạng thái: ĐẠT, chờ chủ dự án "gộp N04".** Gộp sẽ chạy migration 0004 (bảng `quotes`, `vouchers`) trên D1 production.
+
+### N04.1 — Lựa chọn tìm kiếm (commit `f7e0d20`)
+- `src/search/searchIntent.ts`: "hôm nay" theo giờ Việt Nam; ngày mặc định = ngày mai, 1 đêm; chuẩn hóa ngày quá khứ/sai (vd `2026-02-30`) → mặc định, tối đa 30 đêm, khách/phòng là số nguyên trong giới hạn.
+- Ô ngày/khách ở trang chủ trước đây là state riêng (06/11 cố định) và không nối với gì; giờ dùng chung với App, bấm "Tìm phòng" → `/luu-tru?checkin=…&checkout=…&adults=…`.
+- URL giữ thêm `adults`, `children`, `rooms`; thêm ô "Số phòng"; nút chọn nhanh ngày tính từ hôm nay (thay 06/11, 14/11, 20/11 cố định).
+- `src/search/attribution.ts`: ghi `utm_*`/`ref` lần chạm đầu trong `main.tsx` trước khi router viết lại URL; gắn vào đơn đặt (`booking.attribution`).
+
+### N04.2 — Báo giá server (commit `bfdeba3`, `c529c3d`)
+- `src/server/pricing/quote.ts` theo D04: giá từng đêm; đêm thứ Sáu, thứ Bảy, ngày lễ dùng giá cuối tuần; nhân số phòng; sức chứa = người lớn + trẻ em; VND số nguyên; chặn NaN/âm/ngày sai/quá khứ/trả trước nhận/>30 đêm/hạng phòng lạ/vượt số phòng/vượt sức chứa; hạn báo giá 30 phút.
+- `POST /api/quotes`: chỉ đọc đúng các trường lựa chọn, mọi trường giá/tổng client gửi kèm bị bỏ qua; lưu snapshot vào `quotes` kèm phiên bản hồ sơ đã dùng (N05 kiểm lại khi giữ chỗ); giới hạn 60 yêu cầu/phút/IP. `GET /api/quotes/:id`.
+- Ngày lễ: `PUT /api/admin/pricing/holidays` (admin), `GET /api/pricing/holidays`.
+- Trang chi tiết homestay: bỏ ngày cố định 14–15/11/2026 và bỏ `priceWeekend` cho mọi đêm; tổng tiền lấy từ báo giá server; hiện giá từng đêm; ô người lớn/trẻ em/số phòng; đơn đặt mang `quoteId`; báo giá quá hạn thì lấy lại trước khi đặt.
+
+### N04.3 — Voucher (commit `bfdeba3`, `c529c3d`)
+- Bảng `vouchers`; kiểm active, ngày bắt đầu/hết hạn, đơn tối thiểu, loại dịch vụ, cơ sở, hết lượt; phần trăm làm tròn xuống, có trần; voucher sai không chặn báo giá mà trả lý do và giảm 0.
+- `VoucherStore.redeem`: một câu UPDATE có điều kiện → nhiều yêu cầu cùng lúc không vượt `usage_limit` (N05 gọi khi chốt giữ chỗ).
+- Admin xem/tạo/bật-tắt voucher qua `/api/admin/vouchers`. **Bỏ voucher mẫu** `INITIAL_VOUCHERS` (TAXUA10…): voucher là chính sách tiền, chờ admin tạo.
+
+### Test mới
+- `src/search/searchIntent.test.ts` (8): giờ VN, cộng ngày qua tháng/năm, mặc định, chuẩn hóa ngày/khách/phòng, nút chọn nhanh, UTM lần chạm đầu.
+- `src/server/pricing/quote.test.ts` (11): loại đêm, ngày thường, hỗn hợp T5→CN, ngày lễ, số phòng, sức chứa, 9 kiểu đầu vào sai, chưa có hạng phòng, hạn 30 phút, voucher (làm tròn, trần, 7 lý do bị chặn), tổng sau giảm.
+- `src/server/pricing/pricing.api.test.ts` (5): giá client gửi bị bỏ qua + snapshot; 409/404/400; ngày lễ chỉ admin; voucher chỉ admin tạo, mã lạ/sai cơ sở; hai yêu cầu cùng lúc chỉ một yêu cầu dùng lượt cuối.
+- Hợp đồng Express + Worker: `/api/quotes` trả 409 `NOT_QUOTABLE` cho cơ sở chưa có hạng phòng; `/api/pricing/holidays` 200.
+- `src/routing/routes.test.ts`, `src/api/quotesApi.test.ts` cập nhật/bổ sung.
+
+### Lệnh đã chạy
+- `npm run typecheck`: 0 lỗi. `npm run build`: đạt (JS chính 465,1 kB gzip, +3,2 kB). `npm test`: **186/186**. `npm run worker:dry-run`: đạt.
+- Workers Builds preview nhánh `dot-n04`: thành công, migration 0004 chạy trên D1 preview.
+
+### Kiểm tra trên preview (thao tác thật trong trình duyệt)
+- **Dữ liệu thử chỉ trên D1 preview:** thêm hạng phòng "Phòng đôi (dữ liệu thử preview)" 500.000/800.000đ cho `tx-stay-7` và voucher `THU10` (10%). Production không bị đụng.
+- Mở `/?utm_source=facebook&utm_campaign=san-may-thang-11`: nguồn được ghi trước khi URL đổi. Ô ngày trang chủ mặc định 14→15/11 (ngày mai), không cho chọn trước 13/11.
+- Chọn 19→22/11, 2 khách ở trang chủ → `/luu-tru?checkin=2026-11-19&checkout=2026-11-22&adults=2`; mở `tx-stay-7` → giữ đúng ngày và 2 khách.
+- Giá từng đêm: T5 19/11 ngày thường 500.000đ; T6 20/11 và T7 21/11 cuối tuần 800.000đ; tổng 2.100.000đ.
+- Voucher `thu10` → "Đã áp dụng mã THU10: giảm 210.000 ₫", tổng 1.890.000đ; đổi sang `SAIMA` → "Mã giảm giá không tồn tại", tổng về 2.100.000đ.
+- 2 phòng → 4.200.000đ, URL thêm `rooms=2`; 5 khách → "2 phòng … ở tối đa 4 khách; bạn chọn 5 khách", nút đặt khóa.
+- Gửi `total: 1000, discount: 2.000.000, priceWeekend: 1` thẳng vào API → server vẫn trả 2.100.000đ, giảm 0. Ngày quá khứ → 400 `DATE_IN_PAST`.
+- Tải lại trang chi tiết (375px) giữ 4 người lớn, 2 phòng, 3 đêm, 4.200.000đ.
+- `/luu-tru` (768px) và chi tiết (375, 1280px): 0 chữ < 12px, không tràn ngang, không chữ bị cắt; nút chọn nhanh "T7 14/11 → CN 15/11", "T6 20/11 → CN 22/11", "T6 27/11 → CN 29/11".
+
+### Chưa làm / chưa kiểm chứng
+- Báo giá server mới cho **homestay có hạng phòng**. Hiện chưa cơ sở thật nào trên production có hạng phòng, nên chưa đặt online được homestay nào cho tới khi chủ cơ sở/admin nhập. 26 cơ sở có "giá từ" của nguồn hiện giá tham khảo.
+- Xe máy, nhà xe, tour, ăn uống… vẫn tính giá ở trình duyệt như cũ; voucher cho các loại này tạm không dùng được. Làm ở N09.
+- Chưa có màn admin nhập ngày lễ (mới có API); làm ở U5.
+- Đơn đặt vẫn chỉ lưu trong trình duyệt; `quoteId` và `redeem` voucher được N05 dùng khi giữ chỗ thật.
+- Giới hạn tần suất báo giá dùng bộ nhớ trong từng isolate Worker (không chính xác tuyệt đối giữa các máy chủ Cloudflare).
+- Dữ liệu thử trên D1 preview (`tx-stay-7`, `THU10`) vẫn để lại cho các lần thử sau.
+
+### Đợt tiếp theo
+- **N05** (lịch trống, giữ chỗ 30 phút, vòng đời đơn) — chia N05.1, N05.2, N05.3.
+
+---
+
 ## U2 — Điều hướng bằng đường dẫn (13/11/2026, nhánh `dot/U2`)
 
 **Trạng thái: ĐẠT, chờ chủ dự án "gộp U2".**

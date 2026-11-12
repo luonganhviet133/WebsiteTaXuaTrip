@@ -18,6 +18,15 @@
 
 ---
 
+### D-N04-01: Cách tính báo giá và lựa chọn tìm kiếm (13/11/2026)
+
+- Ngày tính theo giờ Việt Nam (UTC+7). Ngày mặc định: nhận phòng ngày mai, 1 đêm. Tối đa 30 đêm mỗi lần đặt.
+- Đêm cuối tuần là đêm bắt đầu vào thứ Sáu hoặc thứ Bảy; ngày lễ do admin nhập (`site_content` khóa `pricing_holidays`) cũng tính giá cuối tuần (D04).
+- Trẻ em tính vào sức chứa phòng như người lớn và không có giá riêng (D04 không có quy định riêng cho trẻ em). Muốn đổi (vd miễn tính trẻ dưới 6 tuổi) thì ghi quyết định mới.
+- Báo giá có hạn 30 phút, lưu snapshot kèm phiên bản hồ sơ; chỉ báo giá cho hạng phòng có giá ngày thường và cuối tuần > 0.
+- Không nhập voucher mẫu; voucher do admin tạo. Phần trăm giảm làm tròn xuống tới đồng.
+- Nguồn khách: ghi `utm_*`/`ref` lần chạm đầu, lưu ở trình duyệt khách và gắn vào đơn.
+
 ### D-U2-01: Bảng đường dẫn (13/11/2026)
 
 Đường dẫn tiếng Việt không dấu (Q2 không làm tiếng Anh). Đổi đường dẫn đã công khai phải giữ chuyển hướng từ đường dẫn cũ.

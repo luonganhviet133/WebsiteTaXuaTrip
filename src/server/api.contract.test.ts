@@ -70,6 +70,19 @@ async function runContract(t: any, call: Fetcher, label: string): Promise<void> 
     assert.equal((await call('/api/listings/homestay-may')).status, 404, 'cơ sở tự bịa không có trong dữ liệu thật');
   });
 
+  await t.test('Báo giá: cơ sở chưa có hạng phòng → 409 NOT_QUOTABLE; ngày lễ đọc được', async () => {
+    const q = await call('/api/quotes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ listingId: 'tx-stay-5', roomTypeId: 'x', checkIn: '2099-01-05', checkOut: '2099-01-06', adults: 2 }),
+    });
+    assert.equal(q.status, 409);
+    assert.equal(((await q.json()) as any).code, 'NOT_QUOTABLE');
+    const h = await call('/api/pricing/holidays');
+    assert.equal(h.status, 200);
+    assert.deepEqual(((await h.json()) as any).data, []);
+  });
+
   await t.test('Đăng ký traveler trả 201 kèm token', async () => {
     const res = await call('/api/auth/register', jsonInit('POST', { email, password, fullName: 'Khách Hợp Đồng', role: 'traveler' }));
     assert.equal(res.status, 201);

@@ -23,6 +23,7 @@ import {
 import { verifyTurnstileToken, checkRateLimit } from './antiAbuse.ts';
 import { handleListingRoutes } from './listings/routes.ts';
 import { ListingStore } from './listings/store.ts';
+import { handlePricingRoutes } from './pricing/routes.ts';
 
 export interface ApiContext {
   db: DatabaseEngine;
@@ -199,6 +200,17 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
     requireRole: (allowed) => requireRole(request, ctx, allowed),
   });
   if (listingResponse) return listingResponse;
+
+  // ==================== BÁO GIÁ & VOUCHER (N04) ====================
+  const pricingResponse = await handlePricingRoutes(request, pathname, {
+    d1: ctx.db.d1,
+    json,
+    readJson,
+    requireRole: (allowed) => requireRole(request, ctx, allowed),
+    rateLimit: (key, max) => checkRateLimit(key, max, 60 * 1000).allowed,
+    clientIp: ctx.clientIp,
+  });
+  if (pricingResponse) return pricingResponse;
 
   if (route === 'GET /api/admin/overview') {
     const user = await requireRole(request, ctx, ['admin']);

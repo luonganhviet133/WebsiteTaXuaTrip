@@ -50,12 +50,15 @@ test('Link cũ dạng ?tab=&listing= được chuyển sang đường dẫn mớ
 });
 
 test('Bộ lọc trong query: đọc và ghi khớp nhau', () => {
-  const q = buildQuery({ checkIn: '2026-11-20', checkOut: '2026-11-22', area: 'Đỉnh Gió', wishlistIds: ['a', 'b'] });
+  const q = buildQuery({ checkIn: '2026-11-20', checkOut: '2026-11-22', adults: 4, children: 1, rooms: 2, area: 'Đỉnh Gió', wishlistIds: ['a', 'b'] });
   const r = parseLocation('/luu-tru', q);
   assert.equal(r.query.checkIn, '2026-11-20');
   assert.equal(r.query.checkOut, '2026-11-22');
   assert.equal(r.query.area, 'Đỉnh Gió');
   assert.deepEqual(r.query.wishlistIds, ['a', 'b']);
+  assert.equal(r.query.adults, 4);
+  assert.equal(r.query.children, 1);
+  assert.equal(r.query.rooms, 2);
   assert.equal(buildQuery({}), '');
   assert.equal(buildQuery({ area: 'all' }), '');
 });
