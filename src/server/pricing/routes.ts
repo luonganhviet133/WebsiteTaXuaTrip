@@ -11,7 +11,8 @@ import { ListingStore } from '../listings/store.ts';
 import { LISTING_CATEGORIES } from '../listings/content.ts';
 import { buildStayQuote, type VoucherRecord } from './quote.ts';
 import { QuoteStore, VoucherStore, normalizeVoucherCode } from './store.ts';
-import { isValidIsoDate } from '../../search/searchIntent.ts';
+import { isValidIsoDate, nightsBetween } from '../../search/searchIntent.ts';
+import { InventoryStore } from '../inventory/store.ts';
 import type { ListingRouteDeps } from '../listings/routes.ts';
 import type { D1Database } from '../d1.ts';
 
@@ -46,10 +47,17 @@ export async function handlePricingRoutes(request: Request, pathname: string, de
       children: body.children ?? 0,
       rooms: body.rooms ?? 1,
     };
+    // N05.1: báo giá dùng cùng nguồn tồn với tìm kiếm và trang chi tiết.
+    let availableRooms: number | undefined;
+    const room = (published.content.roomTypes || []).find((r) => r.id === request_.roomTypeId);
+    if (room && isValidIsoDate(request_.checkIn) && isValidIsoDate(request_.checkOut) && nightsBetween(request_.checkIn, request_.checkOut) >= 1 && nightsBetween(request_.checkIn, request_.checkOut) <= 30) {
+      availableRooms = (await new InventoryStore(d1).forListing(listingId, [room], request_.checkIn, request_.checkOut))[0]?.available;
+    }
     const result = buildStayQuote(published.content, request_, {
       holidays: await quotes.getHolidays(),
       voucher,
       listingId,
+      availableRooms,
     });
     if (!result.ok) {
       const status = result.code === 'NOT_QUOTABLE' ? 409 : 400;

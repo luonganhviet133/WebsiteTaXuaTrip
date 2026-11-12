@@ -83,6 +83,16 @@ async function runContract(t: any, call: Fetcher, label: string): Promise<void> 
     assert.deepEqual(((await h.json()) as any).data, []);
   });
 
+  await t.test('Tồn phòng: bảng tồn tìm kiếm trả 200 (chưa cơ sở nào có hạng phòng); chi tiết cơ sở trả danh sách rỗng', async () => {
+    const all = await call('/api/availability?checkIn=2099-01-05&checkOut=2099-01-07');
+    assert.equal(all.status, 200);
+    assert.deepEqual(((await all.json()) as any).data, {});
+    const one = await call('/api/listings/tx-stay-5/availability?checkIn=2099-01-05&checkOut=2099-01-07');
+    assert.equal(one.status, 200);
+    assert.deepEqual(((await one.json()) as any).data.rooms, []);
+    assert.equal((await call('/api/availability?checkIn=2099-01-07&checkOut=2099-01-05')).status, 400);
+  });
+
   await t.test('Đăng ký traveler trả 201 kèm token', async () => {
     const res = await call('/api/auth/register', jsonInit('POST', { email, password, fullName: 'Khách Hợp Đồng', role: 'traveler' }));
     assert.equal(res.status, 201);
