@@ -16,6 +16,51 @@
 
 ---
 
+## U1 — Bộ thiết kế chung (12/11/2026, nhánh `dot/U1`)
+
+**Trạng thái: ĐẠT, chờ chủ dự án "gộp U1".**
+
+### Đã làm
+- `src/index.css`: khối `@theme` với màu `brand-50…950` (`brand-800` = `#073161` là màu chính đang dùng, `brand-700` = `#0a3f7c`, `brand-900` = `#04244d`), màu phụ `accent-*` (teal), màu trạng thái `success/warning/danger/info-*`, `--font-sans` (Be Vietnam Pro), bo góc `rounded-control/card/modal`. Thang chữ dùng mặc định Tailwind (`text-xs` 12px tối thiểu, `text-sm` 14px, `text-base` 16px).
+- Đổi 815 chỗ `text-[9px]`, `text-[9.5px]`, `text-[10px]`, `text-[10.5px]`, `text-[11px]` sang `text-xs` trong 27 file; tooltip bản đồ (`mapTooltipHtml.ts`) nâng lên 12px.
+- Đổi mã hex brand trong className (`-[#073161]`, `-[#0a3f7c]`, `-[#04244d]`) sang token `brand-800/700/900`. Giá trị màu giữ nguyên, giao diện không đổi màu.
+- Component mới trong `src/components/ui/` (xuất qua `index.ts`): `Button`, `Input`, `Select` (nhãn gắn ô, lỗi `role="alert"`, ô nhập 16px), `Modal`, `Sheet` (trượt từ đáy trên điện thoại, đóng bằng Esc, khóa cuộn), `Card`, `Badge`, `Toast` + `useToast`, `Skeleton`, `EmptyState`, `ErrorState`. Chưa thay vào màn cũ; U2–U5 dùng dần.
+- `npm test` đổi sang `tsx --test "src/**/*.test.ts"` để Node tự mở rộng glob, chạy được test ở thư mục con (trước đây shell chỉ mở rộng một cấp).
+
+### Test mới (`src/components/ui/designSystem.test.ts`, 9 test)
+- Cấm mọi `text-[Npx]` với N < 12 trong `src` (đã thử thêm `text-[10px]` vào `DemoNotice.tsx`: test đỏ, chỉ đúng file và dòng; gỡ ra: xanh).
+- Tooltip bản đồ không có chữ < 12px; token có trong `@theme`; không còn hex brand rời trong className.
+- Render tĩnh Button, Input, Select, Modal, Sheet, Card, Badge, Skeleton, EmptyState, ErrorState; reducer Toast giữ tối đa 3 thông báo mới nhất.
+
+### Lệnh đã chạy
+- `npm run typecheck`: 0 lỗi.
+- `npm test`: 119/119 đạt ở 5 lần chạy liên tiếp sau khi build. Lần chạy đầu tiên (khi `dist/` còn là bản build cũ, trước khi build lại) có 1 test fail; không tái hiện được và không giữ được log test nào fail. Xóa `dist/` thì 6 test cần bản build fail như dự kiến. CI luôn build trước khi test.
+- `npm run build`: đạt; CSS 190,91 kB (gzip 29,05 kB, trước 28,28 kB); JS 2.033 kB (gzip 444,25 kB).
+- `npm run worker:dry-run`: đạt.
+- Workers Builds bản preview nhánh `dot-u1`: thành công.
+
+### Kiểm tra giao diện thật (preview `dot-u1-websitetaxuatrip…workers.dev` so với production)
+| Cỡ | Chữ < 12px (ngoài bản đồ): production → U1 | Tràn ngang trang | Chữ bị cắt | Chiều cao trang |
+|---|---|---|---|---|
+| 375px | 1.506 → 0 | không | 0 | 14.981 → 15.306px |
+| 768px | 1.506 → 0 | không | 0 | 10.106 → 10.401px |
+| 1280px | 1.502 → 0 | không | 0 | 7.190 → 7.318px |
+
+- Menu di động và hộp thoại đăng nhập ở 375px: 0 chữ < 12px, không tràn, không bị cắt.
+- `bg-brand-800`, `text-brand-800` ra đúng `rgb(7, 49, 97)`; font Be Vietnam Pro.
+
+### Chưa làm / chưa kiểm chứng
+- Nhãn trên ghim bản đồ (HTML dựng trong `InteractiveMapSection.tsx`, 10–11px, khung cố định) giữ nguyên để không lệch điểm neo ghim; xem lại ở U6.
+- Ô nhập trong các form cũ (ví dụ đăng nhập) đang 12px; trên iPhone ô dưới 16px tự phóng to khi bấm vào. Sửa khi thay bằng `Input` mới ở U3/U5.
+- Mới xem trang chủ, menu và hộp thoại đăng nhập; các màn quản trị, đối tác và chi tiết cơ sở chỉ được kiểm bằng test quét mã, chưa xem bằng mắt.
+- Chưa xem trên điện thoại thật.
+- Giữ tiêu điểm trong hộp thoại (focus trap) để ở U6.
+
+### Đợt tiếp theo
+- Theo lộ trình: **N03** (danh bạ và CMS, gồm N03.1–N03.3), làm kèm U2 (React Router, đã chốt Q1).
+
+---
+
 ## G0.6 — Migration D1 trong quy trình deploy (12/11/2026, nhánh `dot/G0.6`)
 
 **Đã có từ trước (G0.1/G0.4):** D1 + R2 production và bản xem trước; Workers Builds tự deploy `main` và dựng bản xem trước cho nhánh khác; secrets Turnstile/Gemini ở Worker.
