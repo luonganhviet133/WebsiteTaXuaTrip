@@ -31,6 +31,10 @@
 **Phát hiện, chưa sửa**
 - `DatabaseEngine.initSchemaSync()` không tạo được bảng trên D1 thật: gọi `d1.exec()` không chờ, và `exec` của D1 coi mỗi dòng là một câu lệnh nên `CREATE TABLE` nhiều dòng hỏng. D1 mới phải áp `migrations_d1/0001` bằng tay (đã làm cho production ở G0.1; test hợp đồng tự áp cho D1 local). Nên thay bằng `wrangler d1 migrations apply` trong quy trình deploy.
 
+**Sau khi đẩy nhánh**
+- GitHub Actions CI (chạy tay trên nhánh `dot/G0.4`, commit `ed7a45b`): success.
+- Cloudflare Workers Builds bản thử cho nhánh `dot/G0.4`: **failure**, chưa đọc được log (cần đăng nhập dashboard). Production không đổi: `/api/health` trên workers.dev vẫn trả dạng của `main`. Chưa gộp vào `main` cho tới khi biết nguyên nhân.
+
 **Chưa kiểm chứng**
 - Gọi Gemini thật qua `@google/genai` trong workerd (không gọi dịch vụ trả phí trong lượt này; test không có khóa nên chạy bộ quy tắc nội bộ).
 - `/api/revid/test-connection` bằng quyền admin (route này gọi mạng ra ngoài).
