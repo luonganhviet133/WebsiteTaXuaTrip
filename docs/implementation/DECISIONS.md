@@ -18,6 +18,29 @@
 
 ---
 
+### D-U2-01: Bảng đường dẫn (13/11/2026)
+
+Đường dẫn tiếng Việt không dấu (Q2 không làm tiếng Anh). Đổi đường dẫn đã công khai phải giữ chuyển hướng từ đường dẫn cũ.
+
+| Màn | Đường dẫn |
+|---|---|
+| Trang chủ | `/` |
+| Lưu trú | `/luu-tru` |
+| Di chuyển | `/di-chuyen` |
+| Dịch vụ | `/dich-vu` |
+| Ăn uống | `/an-uong` |
+| Bản đồ | `/ban-do` |
+| Dự báo săn mây | `/san-may` |
+| Lịch trình | `/lich-trinh` |
+| Cộng đồng | `/cong-dong` |
+| Hồ sơ thẩm định | `/tham-dinh` |
+| Kênh đối tác | `/doi-tac` |
+| Quản trị | `/quan-tri` |
+| Chi tiết cơ sở | `/co-so/:id` |
+| Chuyến đi của tôi | `/chuyen-di-cua-toi` |
+
+Bộ lọc giữ trong query: `checkin`, `checkout`, `area`, `wishlist`. Link kiểu cũ `?tab=`/`?listing=` tự chuyển sang đường dẫn mới.
+
 ### D-N03-01: Dữ liệu danh bạ thật chỉ gồm thông tin có nguồn (12/11/2026)
 
 - Nhập 172 cơ sở từ `scraped-taxua-enriched.json`, đều Cấp 1, giữ ID cũ. Ngày thu thập ghi `2026-11-04` theo `updatedCalendarDate` mà `build-mockdata.js` gán khi sinh bộ dữ liệu (ngày thu thập gốc không lưu lại).
