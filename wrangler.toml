@@ -27,3 +27,21 @@ bucket_name = "taxua-trip-private"
 
 [vars]
 NODE_ENV = "production"
+
+# Bản xem trước cho các nhánh khác main (Workers Builds chạy `npx wrangler preview`).
+# Dùng tài nguyên riêng, không đụng D1/R2 production. NODE_ENV = production để đăng ký/đăng nhập
+# bị chặn (503) cho tới khi thêm TURNSTILE_SECRET_KEY ở mục Previews Base của Worker.
+[previews.vars]
+NODE_ENV = "production"
+
+[[previews.d1_databases]]
+binding = "DB"
+database_id = "22280e1e-e2b5-4bec-9473-122d81a0098c"
+
+[[previews.r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "taxua-trip-media-preview"
+
+[[previews.r2_buckets]]
+binding = "PRIVATE_BUCKET"
+bucket_name = "taxua-trip-private-preview"

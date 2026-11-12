@@ -33,7 +33,8 @@
 
 **Sau khi đẩy nhánh**
 - GitHub Actions CI (chạy tay trên nhánh `dot/G0.4`, commit `ed7a45b`): success.
-- Cloudflare Workers Builds bản thử cho nhánh `dot/G0.4`: **failure**, chưa đọc được log (cần đăng nhập dashboard). Production không đổi: `/api/health` trên workers.dev vẫn trả dạng của `main`. Chưa gộp vào `main` cho tới khi biết nguyên nhân.
+- Cloudflare Workers Builds bản thử cho nhánh `dot/G0.4` lần 1: failure. Log: nhánh khác `main` chạy `npx wrangler preview`, lệnh này đòi khối `previews` trong `wrangler.toml` (không phải lỗi code). Production không đổi.
+- Sửa: tạo tài nguyên riêng cho bản xem trước qua connector (D1 `taxua-trip-db-preview` id `22280e1e-…`, đã áp `0001` và thấy đủ 6 bảng; R2 `taxua-trip-media-preview`, `taxua-trip-private-preview`) và thêm khối `previews` vào `wrangler.toml`, `NODE_ENV = production` để đăng ký/đăng nhập bị chặn tới khi có secret Turnstile riêng cho bản xem trước. `unstable_readConfig` đọc đúng khối mới; `wrangler deploy --dry-run` vẫn dùng D1/R2 production; `worker.test.ts` + `api.contract.test.ts` 29/29 đạt. Không chạy thử được `wrangler preview` trên máy build vì lệnh đòi đăng nhập trước khi kiểm cấu hình; kết quả xem ở bản build kế tiếp.
 
 **Chưa kiểm chứng**
 - Gọi Gemini thật qua `@google/genai` trong workerd (không gọi dịch vụ trả phí trong lượt này; test không có khóa nên chạy bộ quy tắc nội bộ).
