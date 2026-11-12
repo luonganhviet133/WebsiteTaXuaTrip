@@ -302,6 +302,10 @@ export interface BusTrip {
 
 export interface Booking {
   id: string;
+  /** N04.1: nguồn khách lần chạm đầu (utm_*, ref) */
+  attribution?: import('../search/attribution.ts').Attribution;
+  /** N04.2: mã báo giá server dùng khi đặt (N05 kiểm lại khi giữ chỗ) */
+  quoteId?: string;
   listingId: string;
   listingTitle: string;
   category: ServiceCategory;

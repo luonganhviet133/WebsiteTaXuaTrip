@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { parseLocation, pathForTab, listingPath, buildQuery, normalizeTab, MY_TRIPS_PATH } from './routing/routes.ts';
+import { normalizeSearchIntent, quickDatePresets, todayInVietnam, type SearchIntent } from './search/searchIntent.ts';
+import { readAttribution } from './search/attribution.ts';
 import {
   BUS_TRIPS,
   CLOUD_FORECASTS,
@@ -375,11 +377,33 @@ export default function App() {
   const [isFloatingSocialExpanded, setIsFloatingSocialExpanded] = useState<boolean>(false);
   const [stayViewDirection, setStayViewDirection] = useState('all');
   const [stayCarAccess, setStayCarAccess] = useState('all');
-  const [stayCheckIn, setStayCheckIn] = useState('2026-11-06');
-  const [stayCheckOut, setStayCheckOut] = useState('2026-11-08');
+  // N04.1: lựa chọn tìm kiếm dùng chung (trang chủ → danh sách → chi tiết → báo giá).
+  // Lấy từ URL khi mở trang, đã chuẩn hóa (ngày quá khứ/sai → ngày mai theo giờ VN).
+  const initialIntent = React.useMemo(() => normalizeSearchIntent(route.query), []);
+  const [stayCheckIn, setStayCheckIn] = useState(initialIntent.checkIn);
+  const [stayCheckOut, setStayCheckOut] = useState(initialIntent.checkOut);
   const [stayFilterByAvailableDates, setStayFilterByAvailableDates] = useState(true);
-  const [stayAdults, setStayAdults] = useState(2);
-  const [stayChildren, setStayChildren] = useState(0);
+  const [stayAdults, setStayAdults] = useState(initialIntent.adults);
+  const [stayChildren, setStayChildren] = useState(initialIntent.children);
+  const [stayRooms, setStayRooms] = useState(initialIntent.rooms);
+
+  /** Đổi lựa chọn từ bất kỳ màn nào; luôn chuẩn hóa để không lọt ngày sai/số âm. */
+  const updateSearchIntent = (patch: Partial<SearchIntent>) => {
+    const next = normalizeSearchIntent({
+      checkIn: stayCheckIn,
+      checkOut: stayCheckOut,
+      adults: stayAdults,
+      children: stayChildren,
+      rooms: stayRooms,
+      area: selectedArea,
+      ...patch
+    });
+    setStayCheckIn(next.checkIn);
+    setStayCheckOut(next.checkOut);
+    setStayAdults(next.adults);
+    setStayChildren(next.children);
+    setStayRooms(next.rooms);
+  };
 
   const handleToggleStayAmenity = (amenityKey: string) => {
     setStayAmenities((prev) =>
@@ -573,13 +597,25 @@ export default function App() {
     buildQuery({
       checkIn: currentTab === 'stay' ? stayCheckIn : undefined,
       checkOut: currentTab === 'stay' ? stayCheckOut : undefined,
+      adults: currentTab === 'stay' ? stayAdults : undefined,
+      children: currentTab === 'stay' ? stayChildren : undefined,
+      rooms: currentTab === 'stay' ? stayRooms : undefined,
       area: selectedArea
     });
 
   /** Chuyển màn = đổi URL (đẩy vào lịch sử để nút Back quay lại được). */
   const setCurrentTab = (tab: string) => {
     const target = pathForTab(tab);
-    if (location.pathname !== target) navigate(`${target}${buildQuery({ area: selectedArea })}`);
+    const keepIntent = normalizeTab(tab) === 'stay';
+    const qs = buildQuery({
+      area: selectedArea,
+      checkIn: keepIntent ? stayCheckIn : undefined,
+      checkOut: keepIntent ? stayCheckOut : undefined,
+      adults: keepIntent ? stayAdults : undefined,
+      children: keepIntent ? stayChildren : undefined,
+      rooms: keepIntent ? stayRooms : undefined
+    });
+    if (location.pathname !== target) navigate(`${target}${qs}`);
     else setCurrentTabState(normalizeTab(tab));
   };
 
@@ -609,8 +645,6 @@ export default function App() {
   // Đọc bộ lọc trong URL một lần khi mở trang (link chia sẻ có ngày/khu vực).
   useEffect(() => {
     const q = route.query;
-    if (q.checkIn) setStayCheckIn(q.checkIn);
-    if (q.checkOut) setStayCheckOut(q.checkOut);
     if (q.area) setSelectedArea(q.area);
     if (q.wishlistIds && q.wishlistIds.length > 0) {
       setUserProfile((prev) => ({
@@ -660,7 +694,7 @@ export default function App() {
     if (route.redirectTo || route.notFound) return;
     const qs = route.listingId || route.myTrips ? location.search : filterQuery();
     if (qs !== location.search) navigate(`${location.pathname}${qs}`, { replace: true });
-  }, [currentTab, stayCheckIn, stayCheckOut, selectedArea]);
+  }, [currentTab, stayCheckIn, stayCheckOut, stayAdults, stayChildren, stayRooms, selectedArea]);
 
   // Tiêu đề tab trình duyệt theo trang đang xem (chia sẻ, lịch sử trình duyệt dễ nhận ra).
   const baseTitle = React.useRef(typeof document !== 'undefined' ? document.title : 'Tà Xùa Trip');
@@ -908,7 +942,8 @@ export default function App() {
       }
 
       // 6. Real Guest Capacity Check (stayAdults + stayChildren)
-      const totalRequestedGuests = stayAdults + Math.ceil(stayChildren * 0.5);
+      // D04: không có quy định riêng cho trẻ em → trẻ em tính vào sức chứa như người lớn (giống báo giá server).
+      const totalRequestedGuests = stayAdults + stayChildren;
       if (item.roomTypes && item.roomTypes.length > 0) {
         const totalHomestayCapacity = item.roomTypes.reduce(
           (sum, r) => sum + Math.max(1, r.availableRooms || 1) * (r.capacity || 2),
@@ -947,7 +982,10 @@ export default function App() {
     });
 
   // Booking completion handler
-  const handleBookingSuccess = (newBooking: Booking) => {
+  const handleBookingSuccess = (bookingInput: Booking) => {
+    // N04.1: gắn nguồn khách lần chạm đầu (đã ghi trong main.tsx trước khi URL bị viết lại).
+    const attribution = typeof window !== 'undefined' ? readAttribution(window.localStorage) : null;
+    const newBooking: Booking = attribution ? { ...bookingInput, attribution } : bookingInput;
     setBookings((prev) => [newBooking, ...prev]);
     const earnedPoints = calculateMemberPoints(newBooking.totalAmount);
     setUserProfile((prev) => ({
@@ -1326,6 +1364,8 @@ export default function App() {
               onChangeHeroConsoleMode={setHeroConsoleMode}
               selectedComboCategory={selectedComboCategory}
               onChangeComboCategory={setSelectedComboCategory}
+              stayIntent={{ checkIn: stayCheckIn, checkOut: stayCheckOut, adults: stayAdults }}
+              onChangeStayIntent={updateSearchIntent}
               onOpenBusComboModal={(enableBike) =>
                 handleOpenBusBookingModal(undefined, Boolean(enableBike))
               }
@@ -2050,6 +2090,7 @@ export default function App() {
             setStayFilterByAvailableDates(false);
             setStayAdults(2);
             setStayChildren(0);
+            setStayRooms(1);
             setVisibleStayCount(12);
           };
 
@@ -2150,13 +2191,11 @@ export default function App() {
                     <input
                       type="date"
                       value={stayCheckIn}
+                      min={todayInVietnam()}
+                      aria-label="Ngày nhận phòng"
                       onChange={(e) => {
-                        const nextIn = e.target.value;
-                        setStayCheckIn(nextIn);
+                        updateSearchIntent({ checkIn: e.target.value });
                         setStayFilterByAvailableDates(true);
-                        if (stayCheckOut && nextIn >= stayCheckOut) {
-                          setStayCheckOut(nextIn);
-                        }
                       }}
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                     />
@@ -2172,8 +2211,9 @@ export default function App() {
                       type="date"
                       value={stayCheckOut}
                       min={stayCheckIn}
+                      aria-label="Ngày trả phòng"
                       onChange={(e) => {
-                        setStayCheckOut(e.target.value);
+                        updateSearchIntent({ checkOut: e.target.value });
                         setStayFilterByAvailableDates(true);
                       }}
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
@@ -2189,7 +2229,7 @@ export default function App() {
                       <Users className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                       <select
                         value={stayAdults}
-                        onChange={(e) => setStayAdults(Number(e.target.value))}
+                        onChange={(e) => updateSearchIntent({ adults: Number(e.target.value) })}
                         className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none w-full cursor-pointer"
                       >
                         {[1, 2, 3, 4, 5, 6, 8, 10, 12, 15].map((n) => (
@@ -2557,11 +2597,7 @@ export default function App() {
                         </label>
 
                         <div className="flex flex-wrap gap-1.5">
-                          {[
-                            { label: '06/11 → 08/11', inDate: '2026-11-06', outDate: '2026-11-08' },
-                            { label: '14/11 → 16/11', inDate: '2026-11-14', outDate: '2026-11-16' },
-                            { label: '20/11 → 22/11', inDate: '2026-11-20', outDate: '2026-11-22' }
-                          ].map((preset) => {
+                          {quickDatePresets().map((preset) => {
                             const isSelectedPreset =
                               stayFilterByAvailableDates &&
                               stayCheckIn === preset.inDate &&
@@ -2571,8 +2607,7 @@ export default function App() {
                                 key={preset.label}
                                 type="button"
                                 onClick={() => {
-                                  setStayCheckIn(preset.inDate);
-                                  setStayCheckOut(preset.outDate);
+                                  updateSearchIntent({ checkIn: preset.inDate, checkOut: preset.outDate });
                                   setStayFilterByAvailableDates(true);
                                 }}
                                 className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer border ${
@@ -2624,7 +2659,7 @@ export default function App() {
                         </select>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-2 pt-1">
+                      <div className="grid grid-cols-3 gap-2 pt-1">
                         <div>
                           <label className="text-xs font-bold text-slate-600 block mb-1">
                             Người lớn
@@ -2633,7 +2668,7 @@ export default function App() {
                             type="number"
                             min={1}
                             value={stayAdults}
-                            onChange={(e) => setStayAdults(Math.max(1, Number(e.target.value)))}
+                            onChange={(e) => updateSearchIntent({ adults: Number(e.target.value) })}
                             className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800"
                           />
                         </div>
@@ -2645,7 +2680,20 @@ export default function App() {
                             type="number"
                             min={0}
                             value={stayChildren}
-                            onChange={(e) => setStayChildren(Math.max(0, Number(e.target.value)))}
+                            onChange={(e) => updateSearchIntent({ children: Number(e.target.value) })}
+                            className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs font-bold text-slate-600 block mb-1">
+                            Số phòng
+                          </label>
+                          <input
+                            type="number"
+                            min={1}
+                            max={10}
+                            value={stayRooms}
+                            onChange={(e) => updateSearchIntent({ rooms: Number(e.target.value) })}
                             className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800"
                           />
                         </div>

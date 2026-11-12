@@ -45,6 +45,9 @@ export function listingPath(id: string): string {
 export interface RouteQuery {
   checkIn?: string;
   checkOut?: string;
+  adults?: number;
+  children?: number;
+  rooms?: number;
   area?: string;
   wishlistIds?: string[];
 }
@@ -65,6 +68,9 @@ export function buildQuery(q: RouteQuery): string {
   const sp = new URLSearchParams();
   if (q.checkIn) sp.set('checkin', q.checkIn);
   if (q.checkOut) sp.set('checkout', q.checkOut);
+  if (q.adults) sp.set('adults', String(q.adults));
+  if (q.children) sp.set('children', String(q.children));
+  if (q.rooms && q.rooms > 1) sp.set('rooms', String(q.rooms));
   if (q.area && q.area !== 'all') sp.set('area', q.area);
   if (q.wishlistIds && q.wishlistIds.length) sp.set('wishlist', q.wishlistIds.join(','));
   const s = sp.toString();
@@ -73,9 +79,14 @@ export function buildQuery(q: RouteQuery): string {
 
 export function parseLocation(pathname: string, search: string): ParsedRoute {
   const legacy = parseDeepLinkSearchParams(search);
+  const sp = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search);
+  const num = (k: string) => (sp.get(k) !== null && sp.get(k) !== '' ? Number(sp.get(k)) : undefined);
   const query: RouteQuery = {
     checkIn: legacy.checkIn,
     checkOut: legacy.checkOut,
+    adults: num('adults'),
+    children: num('children'),
+    rooms: num('rooms'),
     area: legacy.area,
     wishlistIds: legacy.wishlistIds,
   };

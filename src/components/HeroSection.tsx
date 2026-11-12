@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { defaultStayDates, todayInVietnam } from '../search/searchIntent.ts';
 import {
   Building2,
   Package,
@@ -49,6 +50,9 @@ interface HeroSectionProps {
   selectedComboCategory?: 'all' | CuratedComboCategory;
   onChangeComboCategory?: (cat: 'all' | CuratedComboCategory) => void;
   onOpenBusComboModal?: (enableBikeCombo?: boolean) => void;
+  /** N04.1: ngày/khách dùng chung với danh sách và trang chi tiết. */
+  stayIntent?: { checkIn: string; checkOut: string; adults: number };
+  onChangeStayIntent?: (patch: Partial<{ checkIn: string; checkOut: string; adults: number }>) => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
@@ -69,7 +73,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onChangeHeroConsoleMode,
   selectedComboCategory = 'all',
   onChangeComboCategory,
-  onOpenBusComboModal
+  onOpenBusComboModal,
+  stayIntent,
+  onChangeStayIntent
 }) => {
   const [internalHeroMode, setInternalHeroMode] = useState<HeroConsoleMode>('stay');
   const activeMode = propHeroMode || internalHeroMode;
@@ -82,15 +88,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   // Stay form state
-  const [checkInDate, setCheckInDate] = useState('2026-11-06');
-  const [checkOutDate, setCheckOutDate] = useState('2026-11-08');
-  const [guestCount, setGuestCount] = useState(2);
+  // N04.1: dùng lựa chọn chung của App; chỉ khi không được truyền mới dùng state riêng.
+  const fallbackDates = defaultStayDates();
+  const [localCheckIn, setLocalCheckIn] = useState(fallbackDates.checkIn);
+  const [localCheckOut, setLocalCheckOut] = useState(fallbackDates.checkOut);
+  const [localGuests, setLocalGuests] = useState(2);
+  const checkInDate = stayIntent?.checkIn ?? localCheckIn;
+  const checkOutDate = stayIntent?.checkOut ?? localCheckOut;
+  const guestCount = stayIntent?.adults ?? localGuests;
+  const setCheckInDate = (v: string) => (onChangeStayIntent ? onChangeStayIntent({ checkIn: v }) : setLocalCheckIn(v));
+  const setCheckOutDate = (v: string) => (onChangeStayIntent ? onChangeStayIntent({ checkOut: v }) : setLocalCheckOut(v));
+  const setGuestCount = (v: number) => (onChangeStayIntent ? onChangeStayIntent({ adults: v }) : setLocalGuests(v));
+  const todayVn = todayInVietnam();
   const [roomCount] = useState(1);
   const [bedViewFilter, setBedViewFilter] = useState(false);
   const [carAccessFilter, setCarAccessFilter] = useState(false);
 
   // Combo & Trekking form state
-  const [comboDepartureDate, setComboDepartureDate] = useState('2026-11-06');
+  const [comboDepartureDate, setComboDepartureDate] = useState(fallbackDates.checkIn);
   const [comboGuests, setComboGuests] = useState(2);
 
   // Bus Shuttle quick form state
@@ -129,7 +144,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       setSelectedCategory('homestay');
     }
     onExploreClick();
-    scrollToElement('verified-listings-section');
+    // N04.1: sang trang Lưu trú với đúng ngày/khách vừa chọn (giữ trong URL).
+    if (onNavigateTab) onNavigateTab('stay');
+    else scrollToElement('verified-listings-section');
   };
 
   const handleComboSearchSubmit = () => {
@@ -399,6 +416,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <input
                     type="date"
                     value={checkInDate}
+                    min={todayVn}
+                    aria-label="Ngày nhận phòng"
                     onChange={(e) => setCheckInDate(e.target.value)}
                     className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer"
                   />
@@ -413,6 +432,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <input
                     type="date"
                     value={checkOutDate}
+                    min={checkInDate}
+                    aria-label="Ngày trả phòng"
                     onChange={(e) => setCheckOutDate(e.target.value)}
                     className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer"
                   />
