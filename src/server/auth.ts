@@ -3,7 +3,7 @@
  * Backed by Cloudflare D1 Relational Engine
  */
 import type { Request, Response, NextFunction } from 'express';
-import { db, verifyPassword, hashPassword } from './db.ts';
+import { getDefaultDb, verifyPassword, hashPassword } from './db.ts';
 import type { DatabaseEngine, ProfileRecord, ProviderRecord } from './db.ts';
 
 export interface AuthenticatedUser {
@@ -41,7 +41,7 @@ export interface LoginInput {
 }
 
 // Convert internal profile & provider to clean public representation
-export async function sanitizeUser(profile: ProfileRecord, provider?: ProviderRecord, customDb: DatabaseEngine = db): Promise<AuthenticatedUser> {
+export async function sanitizeUser(profile: ProfileRecord, provider?: ProviderRecord, customDb: DatabaseEngine = getDefaultDb()): Promise<AuthenticatedUser> {
   const ownedListingIds: string[] = [];
   if (provider) {
     const pl = await customDb.getProviderListings(provider.id);
@@ -65,7 +65,7 @@ export async function sanitizeUser(profile: ProfileRecord, provider?: ProviderRe
 }
 
 // 1. User Registration (Guards against self-appointed admin & auto-ownership)
-export async function registerUser(input: RegisterInput, customDb: DatabaseEngine = db): Promise<{ token: string; user: AuthenticatedUser }> {
+export async function registerUser(input: RegisterInput, customDb: DatabaseEngine = getDefaultDb()): Promise<{ token: string; user: AuthenticatedUser }> {
   // STRICT RULE: Users CANNOT self-register as admin!
   if (input.role === 'admin') {
     throw new Error('FORBIDDEN_ADMIN_REGISTRATION: Không được phép tự đăng ký tài khoản quản trị viên.');
@@ -128,7 +128,7 @@ export async function registerUser(input: RegisterInput, customDb: DatabaseEngin
 }
 
 // 2. User Login (Unified Email & Phone Support - R9)
-export async function loginUser(credentials: LoginInput, customDb: DatabaseEngine = db): Promise<{ token: string; user: AuthenticatedUser }> {
+export async function loginUser(credentials: LoginInput, customDb: DatabaseEngine = getDefaultDb()): Promise<{ token: string; user: AuthenticatedUser }> {
   const rawIdentifier = (credentials.identifier || credentials.emailOrPhone || credentials.email || credentials.phone || '').trim();
   if (!rawIdentifier || !credentials.password) {
     throw new Error('INVALID_CREDENTIALS: Vui lòng nhập đầy đủ email/số điện thoại và mật khẩu.');
@@ -155,13 +155,13 @@ export async function loginUser(credentials: LoginInput, customDb: DatabaseEngin
 }
 
 // 3. User Logout
-export async function logoutUser(token: string, customDb: DatabaseEngine = db): Promise<boolean> {
+export async function logoutUser(token: string, customDb: DatabaseEngine = getDefaultDb()): Promise<boolean> {
   if (!token) return false;
   return customDb.revokeSession(token);
 }
 
 // 4. Session Verification
-export async function getUserByToken(token: string, customDb: DatabaseEngine = db): Promise<AuthenticatedUser | undefined> {
+export async function getUserByToken(token: string, customDb: DatabaseEngine = getDefaultDb()): Promise<AuthenticatedUser | undefined> {
   const active = await customDb.findActiveSession(token);
   if (!active) return undefined;
   return sanitizeUser(active.profile, active.provider, customDb);
@@ -172,7 +172,7 @@ export async function changeUserPassword(
   userId: string,
   currentPass: string,
   newPass: string,
-  customDb: DatabaseEngine = db
+  customDb: DatabaseEngine = getDefaultDb()
 ): Promise<boolean> {
   const profile = await customDb.findProfileById(userId);
   if (!profile) {
@@ -192,7 +192,7 @@ export async function changeUserPassword(
 // 5. Bootstrap Initial Admin (R3: Explicit Parameters, No Hardcoded Defaults, Atomic Password Updates & Revocation)
 export async function bootstrapFirstAdmin(
   data: { email: string; password: string; fullName?: string; phone?: string },
-  customDb: DatabaseEngine = db
+  customDb: DatabaseEngine = getDefaultDb()
 ): Promise<AuthenticatedUser> {
   if (!data.email || !data.email.includes('@')) {
     throw new Error('INVALID_EMAIL: Vui lòng cung cấp địa chỉ email hợp lệ.');
@@ -231,7 +231,7 @@ export interface AuthRequest extends Request {
 }
 
 // Auth Middleware Factory
-export function createAuthMiddleware(customDb: DatabaseEngine = db) {
+export function createAuthMiddleware(customDb?: DatabaseEngine) {
   return async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     const authHeader = req.headers.authorization || '';
     let token = '';
@@ -244,7 +244,7 @@ export function createAuthMiddleware(customDb: DatabaseEngine = db) {
 
     if (token) {
       try {
-        const user = await getUserByToken(token, customDb);
+        const user = await getUserByToken(token, customDb ?? getDefaultDb());
         if (user) {
           req.user = user;
           req.token = token;
@@ -257,7 +257,7 @@ export function createAuthMiddleware(customDb: DatabaseEngine = db) {
   };
 }
 
-export const authenticate = createAuthMiddleware(db);
+export const authenticate = createAuthMiddleware();
 
 // Require authenticated user
 export function requireAuth(req: AuthRequest, res: Response, next: NextFunction): void {

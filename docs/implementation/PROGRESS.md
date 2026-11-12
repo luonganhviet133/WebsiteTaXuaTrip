@@ -36,8 +36,17 @@ Theo plan "Tà Xùa Trip — Plan nâng cấp toàn diện". Repo: `luonganhviet
 - `npm test`: 68/68 đạt, 0 lỗi
 - `npx wrangler deploy --dry-run`: exit 0, tự chạy build giao diện, đọc 25 file assets, nhận binding D1/R2
 
+**Lỗi deploy lần đầu và cách sửa**
+- Workers Builds build và upload thành công nhưng Cloudflare từ chối phiên bản Worker (lỗi 10021): `Uncaught TypeError ... fileURLToPath` tại `src/server/db.ts:16`.
+- Nguyên nhân gốc: `db.ts` chạy code chỉ có trên Node ngay ở cấp module: tính thư mục dự án bằng `import.meta.url` (undefined trên Worker) và tạo kho mặc định `new DatabaseEngine()` mở `node:sqlite` (Worker chỉ có bản giả, gọi là lỗi). `wrangler deploy --dry-run` không chạy code nên không bắt được.
+- Đã tái hiện bằng `wrangler dev --local` (workerd): cùng lỗi, cùng dòng.
+- Sửa: `resolveProjectRoot()` chỉ được gọi khi cần đường dẫn SQLite mặc định; thay `export const db` bằng `getDefaultDb()` tạo kho ở lần dùng đầu; cập nhật `auth.ts`, `server.ts`, `scripts/seed-d1.js`. Worker vẫn dùng D1 truyền vào qua `env.DB`, không đổi.
+- Thêm `src/server/worker.test.ts`: khởi động Worker trong workerd bằng `unstable_dev` và gọi `/api/health`. Trước khi sửa: lỗi đúng như trên Cloudflare. Sau khi sửa: đạt.
+- Kiểm chứng lại: typecheck exit 0, build exit 0, `npm test` 69/69 đạt, dry-run exit 0.
+
 **Chưa kiểm chứng / còn lại**
-- Deploy thật qua Workers Builds sau khi đẩy `main`: kiểm tra ở bước kế tiếp.
+- Deploy thật qua Workers Builds sau khi đẩy bản sửa: kiểm tra ngay sau commit này.
+- GitHub Actions `deploy.yml` vẫn chạy Node 20 nên 2 bộ test lỗi `node:sqlite`; xử lý ở G0.2 (không ảnh hưởng deploy Cloudflare).
 - `compatibility_date = 2024-09-23` nên `process.env` trong Worker có thể không nhận secrets; `antiAbuse.ts` khi đó rơi về khóa test Turnstile luôn cho qua. Xử lý ở G0.3.
 - Nhánh `probe` rỗng do phiên rà soát tạo khi thử quyền đẩy, cần chủ repo xóa trên GitHub.
 

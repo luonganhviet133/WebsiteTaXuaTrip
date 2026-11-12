@@ -11,7 +11,7 @@ import {
 } from './src/server/aiAdvisor.ts';
 import type { TripConsultRequest } from './src/server/aiAdvisor.ts';
 import { REVID_MODELS_CATALOG } from './src/data/mockData.ts';
-import { db, DatabaseEngine } from './src/server/db.ts';
+import { getDefaultDb, DatabaseEngine } from './src/server/db.ts';
 import {
   createAuthMiddleware,
   authenticate,
@@ -67,7 +67,7 @@ export async function createExpressApp(options: CreateAppOptions = {}): Promise<
   const isProd = options.isProd !== undefined ? options.isProd : defaultIsProd;
   const port = process.env.PORT || 3000;
 
-  const databaseInstance = options.db || db;
+  const databaseInstance = options.db || getDefaultDb();
 
   // STRICT R2 & S4: Verify database health on startup
   const dbHealth = await databaseInstance.checkHealth();

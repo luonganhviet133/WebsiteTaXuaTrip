@@ -4,9 +4,10 @@
  * Usage:
  *   npx tsx scripts/seed-d1.js
  */
-import { db } from '../src/server/db.ts';
+import { getDefaultDb } from '../src/server/db.ts';
 
 async function seed() {
+  const db = getDefaultDb();
   console.log('🌱 Bắt đầu nạp dữ liệu mẫu vào D1 (Chỉ dành cho môi trường dev/demo/test)...');
   // Temporary enable test mode on operational instance for explicit dev seed script
   db.isTestInstance = true;

@@ -13,11 +13,10 @@ import { fileURLToPath } from 'node:url';
 import { createD1Database } from './d1.ts';
 import type { D1Database } from './d1.ts';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+// Chỉ gọi khi chạy trên Node (dev, CLI, test). Không tính ở cấp module vì trên Cloudflare Worker
+// import.meta.url là undefined và không có file system, Worker sẽ sập ngay lúc khởi động.
 export function resolveProjectRoot(): string {
-  let curr = __dirname;
+  let curr = path.dirname(fileURLToPath(import.meta.url));
   while (curr && curr !== path.dirname(curr)) {
     if (fs.existsSync(path.join(curr, 'package.json'))) {
       return curr;
@@ -27,7 +26,6 @@ export function resolveProjectRoot(): string {
   return process.cwd();
 }
 
-const projectRoot = resolveProjectRoot();
 
 export interface ProfileRecord {
   id: string;
@@ -134,7 +132,7 @@ export class DatabaseEngine {
     } else if (options.inMemoryOnly) {
       this.d1 = createD1Database(':memory:');
     } else {
-      const defaultSqlitePath = options.sqlitePath || process.env.DATABASE_SQLITE_PATH || path.resolve(projectRoot, '.data', 'taxua_trip.sqlite');
+      const defaultSqlitePath = options.sqlitePath || process.env.DATABASE_SQLITE_PATH || path.resolve(resolveProjectRoot(), '.data', 'taxua_trip.sqlite');
       this.d1 = createD1Database(defaultSqlitePath);
     }
 
@@ -785,4 +783,10 @@ export class DatabaseEngine {
 }
 
 // Default operational singleton pointing to .data/taxua_trip.sqlite
-export const db = new DatabaseEngine();
+// Kho mặc định cho Express/CLI trên Node, tạo ở lần dùng đầu tiên.
+// Không tạo ở cấp module: Worker import file này nhưng không có node:sqlite.
+let defaultDb: DatabaseEngine | undefined;
+export function getDefaultDb(): DatabaseEngine {
+  if (!defaultDb) defaultDb = new DatabaseEngine();
+  return defaultDb;
+}
