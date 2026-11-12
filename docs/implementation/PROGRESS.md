@@ -11,7 +11,7 @@
 | **G0.3** | Turnstile thật: widget ở form đăng nhập/đăng ký, Worker đọc secret từ env, chặn khi production thiếu secret, bỏ lỗ vượt qua bằng token test | **ĐẠT** (kiểm trên workers.dev; đăng ký thật có giải widget chờ chủ dự án thử) | 2026-11-12 |
 | **G0.4** | Một bộ xử lý API dùng chung cho Worker và Express; Worker có đủ route | **ĐẠT** (gộp vào `main`, production đã kiểm) | 2026-11-12 |
 | **G0.5** | Chặn chèn HTML ở bản đồ và file lịch trình; tắt thanh toán mô phỏng; gắn nhãn "Bản demo"; ẩn tài khoản mẫu trên production | **ĐẠT** (gộp vào `main` commit `ea3d542`; production đã kiểm: không còn khối biên lai, chat có nhãn demo, không còn tài khoản mẫu) | 2026-11-12 |
-| **G0.6** | Migration D1 chạy trong bước deploy; Worker không tự tạo bảng; kiểm tra không lộ bí mật | **CODE XONG TRÊN NHÁNH `dot/G0.6`** (chờ đổi lệnh deploy trên Cloudflare và gộp vào `main`) | 2026-11-12 |
+| **G0.6** | Migration D1 chạy trong bước deploy; Worker không tự tạo bảng; kiểm tra không lộ bí mật | **ĐẠT** (gộp `main` commit `8d974de`; Workers Builds chạy `npm run deploy`, migration production đã chạy) | 2026-11-12 |
 | **N03** | Dữ liệu danh bạ, CMS và thẩm định thực tế | *SẴN SÀNG TRIỂN KHAI* | — |
 
 ---
@@ -34,8 +34,14 @@
 - Quét bí mật trên `dist/client`, gói Worker và file trong Git (mẫu khóa Google `AIza…`, `sk_/sk-…`, private key, `ghp_`, `0x4AAAAAA…`): chỉ thấy site key Turnstile công khai, tên chức năng `mask_pii_before_embedding`, khóa giả trong test và chữ giữ chỗ trong `.env.example`; không có `.env`/`.dev.vars` trong Git.
 - Bản sạch: `npm ci` exit 0, typecheck exit 0, build exit 0, `npm test` 110/110, `npm run worker:dry-run` exit 0.
 
+**Sau khi gộp vào `main` (commit `8d974de`)**
+- Chủ dự án đổi Deploy command production thành `npm run deploy`. Workers Builds: success; GitHub Actions CI: success.
+- D1 production (truy vấn qua connector): `d1_migrations` = `0001_initial_schema.sql@2026-11-12 13:45:38` (UTC); `profiles` 1 dòng và `user_sessions` 1 dòng của tài khoản tạo trước đó vẫn còn; đủ 6 bảng.
+- workers.dev: `/api/health` ok (D1 kết nối, có khóa Gemini); token sai → 401; đăng ký không token → 400 `MISSING_TURNSTILE_TOKEN`; báo giá nhanh 200; trang chủ hiển thị.
+- Lệnh `npm run deploy:preview` cho nhánh khác `main` chưa được thử (chờ lần đẩy nhánh tiếp theo).
+
 **Chưa kiểm chứng / cần chủ dự án làm**
-- Chưa chạy `--remote` (máy build không có quyền Cloudflare; không đổi production trong lượt này). Lần deploy `main` đầu tiên bằng `npm run deploy` sẽ chạy lại `0001` trên D1 production (an toàn theo thử nghiệm local).
+- (Trước khi gộp) Chưa chạy `--remote` (máy build không có quyền Cloudflare; không đổi production trong lượt này). Lần deploy `main` đầu tiên bằng `npm run deploy` sẽ chạy lại `0001` trên D1 production (an toàn theo thử nghiệm local).
 - Đổi lệnh trong Workers & Pages → websitetaxuatrip → Settings → Build: Deploy command `npm run deploy`; Non-production branch deploy command `npm run deploy:preview`. Chưa đổi thì Workers Builds vẫn chạy `npx wrangler deploy` / `npx wrangler preview` như cũ (không chạy migration, không lỗi).
 - Đăng nhập trên bản xem trước: cần thêm hostname bản xem trước vào widget Turnstile và `TURNSTILE_SECRET_KEY` ở mục Previews Base.
 
