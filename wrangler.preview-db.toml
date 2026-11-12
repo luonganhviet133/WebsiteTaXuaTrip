@@ -1,0 +1,10 @@
+# Chỉ dùng cho `npm run db:migrate:preview`: áp migrations_d1/ lên D1 của bản xem trước.
+# Tách khỏi wrangler.toml để cấu hình deploy production không chứa id D1 nào khác ngoài D1 production.
+# id này phải trùng với [[previews.d1_databases]] trong wrangler.toml.
+name = "websitetaxuatrip-preview-db"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "taxua-trip-db-preview"
+database_id = "22280e1e-e2b5-4bec-9473-122d81a0098c"
+migrations_dir = "migrations_d1"

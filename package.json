@@ -18,10 +18,14 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx --test src/**/*.test.ts",
     "db:migrate": "tsx scripts/migrate-d1.js",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "db:migrate:preview": "wrangler d1 migrations apply DB --remote --config wrangler.preview-db.toml",
     "db:seed": "tsx scripts/seed-d1.js",
     "db:bootstrap": "tsx scripts/bootstrap-admin.js",
     "worker:dev": "wrangler dev",
-    "worker:dry-run": "wrangler deploy --dry-run"
+    "worker:dry-run": "wrangler deploy --dry-run",
+    "deploy": "npm run db:migrate:remote && wrangler deploy",
+    "deploy:preview": "npm run db:migrate:preview && wrangler preview"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

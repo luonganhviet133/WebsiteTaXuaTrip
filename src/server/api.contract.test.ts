@@ -168,11 +168,11 @@ test('Hợp đồng API trên Express', { timeout: 120_000 }, async (t) => {
 
 test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t) => {
   const persistTo = fs.mkdtempSync(path.join(os.tmpdir(), 'taxua-contract-'));
-  // D1 local mới tinh chưa có bảng: áp migration chuẩn giống cách làm với D1 production.
-  execSync(
-    `npx wrangler d1 execute taxua-trip-db --local --persist-to "${persistTo}" --file migrations_d1/0001_initial_schema.sql`,
-    { cwd: projectRoot, stdio: 'ignore' }
-  );
+  // D1 local mới tinh chưa có bảng: áp migration bằng đúng lệnh `npm run deploy` dùng cho D1 thật.
+  execSync(`npx wrangler d1 migrations apply DB --local --persist-to "${persistTo}"`, {
+    cwd: projectRoot,
+    stdio: 'ignore'
+  });
   const worker = await unstable_dev(path.join(projectRoot, 'src/worker.ts'), {
     config: path.join(projectRoot, 'wrangler.toml'),
     local: true,

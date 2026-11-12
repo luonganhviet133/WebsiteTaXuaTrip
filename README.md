@@ -44,6 +44,16 @@ npm run db:migrate
 ```
 *Migration runner sẽ tự động quét và áp dụng tuần tự các tệp migration trong thư mục `migrations_d1/` (`0001_initial_schema.sql`) kèm lưu lịch sử vào bảng `schema_migrations`, đảm bảo tính lũy kế an toàn.*
 
+### Migration D1 trên Cloudflare (production và bản xem trước):
+Bảng trên D1 thật do `wrangler d1 migrations apply` tạo từ `migrations_d1/`, lịch sử lưu ở bảng `d1_migrations`. Worker không tự tạo bảng.
+```bash
+npm run db:migrate:remote    # D1 production (database_id trong wrangler.toml)
+npm run db:migrate:preview   # D1 bản xem trước (cấu hình riêng wrangler.preview-db.toml)
+```
+Workers Builds cần dùng các lệnh deploy sau (Workers & Pages → websitetaxuatrip → Settings → Build):
+- Deploy command (nhánh `main`): `npm run deploy` = áp migration production rồi `wrangler deploy`.
+- Non-production branch deploy command: `npm run deploy:preview` = áp migration bản xem trước rồi `wrangler preview`.
+
 ### Khởi tạo Quản trị viên (Bootstrap Admin):
 ```bash
 npm run db:bootstrap -- --email admin@taxuatrip.vn --password "MatKhauBaoMat123!" --name "Super Admin"

@@ -128,15 +128,21 @@ export class DatabaseEngine {
     this.isTestInstance = Boolean(options.isTest || options.inMemoryOnly);
 
     if (options.d1) {
+      // D1 của Cloudflare: schema do `wrangler d1 migrations apply` tạo lúc deploy (npm run deploy).
+      // Không tự tạo bảng ở đây: exec của D1 là bất đồng bộ, coi mỗi dòng là một lệnh, và Worker
+      // tạo DatabaseEngine ở mỗi request.
       this.d1 = options.d1;
-    } else if (options.inMemoryOnly) {
+      return;
+    }
+
+    if (options.inMemoryOnly) {
       this.d1 = createD1Database(':memory:');
     } else {
       const defaultSqlitePath = options.sqlitePath || process.env.DATABASE_SQLITE_PATH || path.resolve(resolveProjectRoot(), '.data', 'taxua_trip.sqlite');
       this.d1 = createD1Database(defaultSqlitePath);
     }
 
-    // Auto-initialize schema if not yet applied
+    // SQLite trên Node (dev, CLI, test): tự tạo bảng nếu chưa có.
     this.initSchemaSync();
   }
 

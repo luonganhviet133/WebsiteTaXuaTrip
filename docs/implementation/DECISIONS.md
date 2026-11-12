@@ -18,6 +18,12 @@
 
 ---
 
+### D-G0.6-01: Migration D1 chạy trong bước deploy, Worker không tự tạo bảng (12/11/2026)
+
+- **Bối cảnh:** `DatabaseEngine.initSchemaSync()` gửi `CREATE TABLE` nhiều dòng qua `d1.exec()` ở mỗi request mà không chờ; `exec` của D1 coi mỗi dòng là một lệnh nên không tạo được bảng. D1 production và bản xem trước hiện có bảng là nhờ chạy tay qua connector ở G0.1/G0.4.
+- **Quyết định:** `wrangler d1 migrations apply` (thư mục `migrations_d1/`, bảng lịch sử `d1_migrations`) là cách duy nhất tạo/đổi schema D1 thật, chạy ngay trước `wrangler deploy`/`wrangler preview` qua `npm run deploy` / `npm run deploy:preview`. `DatabaseEngine` dùng D1 binding không tự tạo bảng; SQLite trên Node (dev/test) vẫn tự tạo bảng.
+- **Hệ quả:** D1 production đã có bảng nhưng chưa có `d1_migrations`, nên lần chạy đầu sẽ chạy lại `0001` (toàn `IF NOT EXISTS`); đã thử đúng tình huống này trên D1 local: dữ liệu cũ giữ nguyên, lần hai báo không còn migration. D1 bản xem trước dùng cấu hình riêng `wrangler.preview-db.toml` (không dùng `preview_database_id`: khi có trường này, `wrangler deploy` in binding là D1 bản xem trước dù vẫn upload D1 production, dễ đọc nhầm log và phụ thuộc chi tiết nội bộ của wrangler). Bảng `schema_migrations` của `scripts/migrate-d1.js` chỉ còn dùng cho SQLite local. Migration mới về sau phải viết được chạy lại an toàn hoặc chỉ chạy một lần qua `d1_migrations`.
+
 ### D-G0.4-01: Một bộ xử lý API dùng chung cho Worker và Express (12/11/2026)
 
 - **Bối cảnh:** Express có 15 route, Worker 9 route viết riêng; cùng route nhưng khác dạng phản hồi (404, health, partner listings), khác mã lỗi (tự đăng ký admin: Express 403, Worker 400) và khác cách giới hạn tần suất. Worker thiếu `/api/user/bookings/:id`, `PUT /api/partner/listings/:id`, `/api/ai/*`, `/api/revid/*`; Express thiếu `/api/auth/change-password`.

@@ -3,7 +3,8 @@ main = "src/worker.ts"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
-# Workers Builds chạy `npx wrangler deploy`; lệnh này build giao diện vào dist/client trước khi upload.
+# Workers Builds chạy `npm run deploy` (main) / `npm run deploy:preview` (nhánh khác): áp migration D1 rồi
+# `wrangler deploy` / `wrangler preview`; lệnh [build] build giao diện vào dist/client trước khi upload.
 [build]
 command = "node scripts/build-worker-assets.mjs"
 

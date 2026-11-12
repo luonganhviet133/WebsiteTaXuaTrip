@@ -11,9 +11,33 @@
 | **G0.3** | Turnstile thật: widget ở form đăng nhập/đăng ký, Worker đọc secret từ env, chặn khi production thiếu secret, bỏ lỗ vượt qua bằng token test | **ĐẠT** (kiểm trên workers.dev; đăng ký thật có giải widget chờ chủ dự án thử) | 2026-11-12 |
 | **G0.4** | Một bộ xử lý API dùng chung cho Worker và Express; Worker có đủ route | **ĐẠT** (gộp vào `main`, production đã kiểm) | 2026-11-12 |
 | **G0.5** | Chặn chèn HTML ở bản đồ và file lịch trình; tắt thanh toán mô phỏng; gắn nhãn "Bản demo"; ẩn tài khoản mẫu trên production | **ĐẠT** (gộp vào `main` commit `ea3d542`; production đã kiểm: không còn khối biên lai, chat có nhãn demo, không còn tài khoản mẫu) | 2026-11-12 |
+| **G0.6** | Migration D1 chạy trong bước deploy; Worker không tự tạo bảng; kiểm tra không lộ bí mật | **CODE XONG TRÊN NHÁNH `dot/G0.6`** (chờ đổi lệnh deploy trên Cloudflare và gộp vào `main`) | 2026-11-12 |
 | **N03** | Dữ liệu danh bạ, CMS và thẩm định thực tế | *SẴN SÀNG TRIỂN KHAI* | — |
 
 ---
+
+## G0.6 — Migration D1 trong quy trình deploy (12/11/2026, nhánh `dot/G0.6`)
+
+**Đã có từ trước (G0.1/G0.4):** D1 + R2 production và bản xem trước; Workers Builds tự deploy `main` và dựng bản xem trước cho nhánh khác; secrets Turnstile/Gemini ở Worker.
+
+**Đã làm**
+- `db.ts`: `DatabaseEngine` dùng D1 binding không gọi `initSchemaSync()` (trước đây mỗi request gửi `CREATE TABLE` nhiều dòng qua `d1.exec()` không chờ, D1 không tạo được bảng). SQLite trên Node (dev/test) vẫn tự tạo bảng.
+- `package.json`: `db:migrate:remote` (D1 production), `db:migrate:preview` (D1 bản xem trước qua `wrangler.preview-db.toml`), `deploy` = migration production rồi `wrangler deploy`, `deploy:preview` = migration bản xem trước rồi `wrangler preview`.
+- `wrangler.preview-db.toml`: cấu hình riêng chỉ chứa D1 bản xem trước, để `wrangler.toml` không có id D1 nào khác ngoài production (xem D-G0.6-01).
+- `api.contract.test.ts` tạo bảng cho D1 local bằng `wrangler d1 migrations apply DB --local`, cùng lệnh với deploy.
+- README (mục migration D1 trên Cloudflare), DECISIONS (D-G0.6-01).
+
+**Kiểm chứng**
+- `src/server/db.d1.test.ts`: trên mã cũ "Đã gửi 1 lệnh exec tới D1 khi khởi tạo" (lỗi); sau khi sửa 2/2 đạt.
+- `wrangler d1 migrations apply` trên D1 local, chạy không tương tác như Workers Builds: D1 mới → tạo đủ bảng; D1 đã có bảng + dữ liệu tạo tay (giống production hiện tại) → chạy được, dữ liệu cũ giữ nguyên, 6 bảng, `d1_migrations` có 1 dòng; chạy lần hai → "No migrations to apply". Cấu hình chính nhắm D1 `70511a20…`, `wrangler.preview-db.toml` nhắm `22280e1e…`.
+- Lần thử đầu dùng `preview_database_id` trong `wrangler.toml`: `worker:dry-run` in `env.DB (22280e1e…)`. Đọc mã wrangler 4.160.1: `deploy`/`versionsUpload` gọi `getBindings` với `usePreviewIds: false` nên upload vẫn là D1 production, dòng in ra chỉ là hiển thị; vẫn bỏ cách này để log không gây nhầm và không phụ thuộc chi tiết nội bộ. Sau khi đổi: dry-run in `env.DB (taxua-trip-db)`.
+- Quét bí mật trên `dist/client`, gói Worker và file trong Git (mẫu khóa Google `AIza…`, `sk_/sk-…`, private key, `ghp_`, `0x4AAAAAA…`): chỉ thấy site key Turnstile công khai, tên chức năng `mask_pii_before_embedding`, khóa giả trong test và chữ giữ chỗ trong `.env.example`; không có `.env`/`.dev.vars` trong Git.
+- Bản sạch: `npm ci` exit 0, typecheck exit 0, build exit 0, `npm test` 110/110, `npm run worker:dry-run` exit 0.
+
+**Chưa kiểm chứng / cần chủ dự án làm**
+- Chưa chạy `--remote` (máy build không có quyền Cloudflare; không đổi production trong lượt này). Lần deploy `main` đầu tiên bằng `npm run deploy` sẽ chạy lại `0001` trên D1 production (an toàn theo thử nghiệm local).
+- Đổi lệnh trong Workers & Pages → websitetaxuatrip → Settings → Build: Deploy command `npm run deploy`; Non-production branch deploy command `npm run deploy:preview`. Chưa đổi thì Workers Builds vẫn chạy `npx wrangler deploy` / `npx wrangler preview` như cũ (không chạy migration, không lỗi).
+- Đăng nhập trên bản xem trước: cần thêm hostname bản xem trước vào widget Turnstile và `TURNSTILE_SECRET_KEY` ở mục Previews Base.
 
 ## G0.5 — Chặn chèn HTML và gắn nhãn bản demo (12/11/2026, nhánh `dot/G0.5`)
 
