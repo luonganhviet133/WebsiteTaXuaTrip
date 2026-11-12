@@ -18,6 +18,30 @@
 
 ---
 
+### D-SP-2026-11-12: Chính sách sản phẩm do chủ dự án chốt (12/11/2026)
+
+Các quyết định dưới đây thay phần "chưa chốt" của D03, D04, D05, D06, D07, D08, Q1–Q4 trong plan. Mọi đợt code về sau làm theo bảng này; muốn đổi phải ghi quyết định mới.
+
+| Mã | Quyết định |
+|---|---|
+| **D03 – Tiền cọc** | Cọc **30%**, khách chuyển **thẳng vào tài khoản ngân hàng của từng cơ sở** (VietQR theo tài khoản cơ sở đã xác minh). **70% còn lại phải trả trước giờ nhận phòng 24 giờ** để chốt phòng. Website **không giữ tiền**; cơ sở bấm xác nhận "đã nhận cọc" / "đã nhận 70%". |
+| **Quá hạn 70%** | Hệ thống nhắc khách ở mốc trước 48 giờ và trước 30 giờ. Quá mốc trước 24 giờ mà cơ sở chưa xác nhận nhận đủ 70% thì cơ sở được quyền nhả phòng, khoản cọc 30% không hoàn. |
+| **Hủy** | **Không hoàn tiền.** Điều khoản phải hiển thị rõ và khách tick đồng ý **trước khi** thấy mã chuyển cọc. |
+| **Đổi ngày do thời tiết/sạt lở** | Website **không tự áp ngoại lệ**; chỉ hiển thị ghi chú "khách thỏa thuận trực tiếp với cơ sở". |
+| **Pass phòng/tour (đợt N06.4)** | Chỉ thành viên đã xác minh SĐT được pass và nhận pass. Giá pass **không cao hơn tổng số khách đã trả cho cơ sở** (30% hoặc 100%). Pass trước giờ nhận phòng ít nhất 24 giờ. Cơ sở được báo và xác nhận đổi tên khách. Người nhận trả tiền trực tiếp cho người pass (website không giữ tiền); đơn khóa riêng cho người nhận 2 giờ, người pass bấm "đã nhận tiền" thì đơn chuyển tên; trao đổi qua chat có lưu bằng chứng. Miễn phí giai đoạn đầu. |
+| **D04 – Giá** | Giá theo từng đêm; đêm cuối tuần = đêm thứ Sáu, thứ Bảy và ngày lễ (danh sách lễ do admin nhập). Sức chứa theo số cơ sở khai cho từng phòng. **Không có giá trẻ em riêng.** Giữ chỗ chờ cọc 30 phút, hết hạn tự nhả phòng. |
+| **D05 – Điểm Mây** | Chỉ cộng khi đơn **hoàn tất**; có thể cộng thêm khi review có ảnh, pass thành công, giới thiệu thành viên. Đổi thành voucher tại cơ sở tham gia, không đổi ra tiền. Hết hạn sau 12 tháng. |
+| **Phí nền tảng** | **Không cố định 50.000đ/đơn**: mỗi cơ sở một mức phí riêng do admin cài sau khi thỏa thuận; thu bằng **hóa đơn cuối tháng** gửi đối tác. |
+| **D06 – Xác minh** | Ba cấp: Cấp 1 tự khai; Cấp 2 đã xác minh giấy tờ (GPKD hoặc CCCD chủ + gọi điện + ảnh mới có thời gian chụp); Cấp 3 thẩm định thực địa (người đi, ngày, ảnh tại chỗ). Huy hiệu hết hạn sau 12 tháng; mỗi thông tin "đã xác minh" hiển thị nguồn và ngày. Giấy tờ lưu R2 riêng tư. 179 cơ sở hiện có bắt đầu ở Cấp 1. **Người xác minh: chủ dự án.** |
+| **SOS** | Chỉ hiển thị số đã gọi thử (ghi người gọi, ngày gọi). Chưa có thì chỉ hiển thị 113, 114, 115. Bỏ mọi cam kết thời gian cứu hộ. |
+| **D07 – Chat** | Chỉ người trong cuộc đọc; admin đọc khi có phiếu khiếu nại và mỗi lần đọc được ghi log; lưu 12 tháng sau ngày trả phòng hoặc tới khi khiếu nại đóng; khách xóa tài khoản thì ẩn danh. Đối chiếu Nghị định 13/2023 về bảo vệ dữ liệu cá nhân trước khi mở thật. |
+| **D08 – AI, thời tiết** | AI dùng Gemini (đã có khóa) với trần ngân sách theo tháng. Thời tiết dùng Open-Meteo; kiểm tra điều khoản sử dụng thương mại trước khi mở beta. |
+| **Q1** | React Router cho trang có đường dẫn riêng (U2). |
+| **Q2** | Không làm tiếng Anh; chữ giao diện để trực tiếp trong code. |
+| **Q3 – Báo cho chủ cơ sở** | Chuông thông báo trong dashboard + Web Push + email + nút "Mở Zalo". Zalo OA/ZNS khi có pháp nhân. Không dùng Telegram cho chủ cơ sở. |
+| **Q3b – Telegram cho admin** | Admin nhận báo đơn mới, khiếu nại, lỗi hệ thống và trao đổi hai chiều với J.A.R.V.I.S. qua **bot Telegram**. Chỉ chat ID admin trong danh sách cho phép được dùng; webhook có secret; token bot là secret của Worker. Lệnh từ Telegram chỉ tra cứu/tóm tắt hoặc thao tác **từng việc có xác nhận**, ghi log; không duyệt/đóng hàng loạt (giữ nguyên nguyên tắc G0.5). Website vẫn là kênh chính, Telegram là kênh phụ. Làm ở đợt **A1** (thông báo + tra cứu) sau N05.3 và **A2** (J.A.R.V.I.S. hai chiều) cùng N08.2. |
+| **Q4 – Tên miền** | Chưa có; chủ dự án mua sau. Khi có, thêm hostname vào Turnstile và gắn vào Worker. |
+
 ### D-G0.6-01: Migration D1 chạy trong bước deploy, Worker không tự tạo bảng (12/11/2026)
 
 - **Bối cảnh:** `DatabaseEngine.initSchemaSync()` gửi `CREATE TABLE` nhiều dòng qua `d1.exec()` ở mỗi request mà không chờ; `exec` của D1 coi mỗi dòng là một lệnh nên không tạo được bảng. D1 production và bản xem trước hiện có bảng là nhờ chạy tay qua connector ở G0.1/G0.4.
