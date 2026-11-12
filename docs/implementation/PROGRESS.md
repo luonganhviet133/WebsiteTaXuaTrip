@@ -6,9 +6,9 @@
 |---|---|---|---|
 | **N01.1** | Sửa build/start server production, type-only imports, Express app testable, CI pipeline, README (Đã sửa & nghiệm thu F1, F2, F3) | **ĐẠT NGHIỆM THU** | 2026-11-12 |
 | **N02** | Sửa S1–S6 và chuyển kiến trúc đích sang D1/Workers; auth/bootstrap/ownership/anti-abuse theo Cloudflare plan | **ĐẠT NGHIỆM THU (LOCAL D1 & WORKERD)** *(Cloud staging chờ kiểm chứng)* | 2026-11-12 |
-| **G0.1** | Git và dọn kho; cấu hình Worker `websitetaxuatrip` với D1/R2 thật (xem mục G0.1 bên dưới) | **CODE XONG, CHỜ KIỂM CHỨNG DEPLOY** | 2026-11-12 |
-| **G0.2** | CI GitHub Actions chạy Node 22 (typecheck, build, test), bỏ deploy GitHub Pages | **CODE XONG, CHỜ CI XANH TRÊN GITHUB** | 2026-11-12 |
-| **G0.3** | Turnstile thật: widget ở form đăng nhập/đăng ký, Worker đọc secret từ env, chặn khi production thiếu secret, bỏ lỗ vượt qua bằng token test | **CODE XONG, CHỜ KIỂM CHỨNG TRÊN WORKERS.DEV** | 2026-11-12 |
+| **G0.1** | Git và dọn kho; cấu hình Worker `websitetaxuatrip` với D1/R2 thật (xem mục G0.1 bên dưới) | **ĐẠT** (trang và `/api/health` chạy trên workers.dev) | 2026-11-12 |
+| **G0.2** | CI GitHub Actions chạy Node 22 (typecheck, build, test), bỏ deploy GitHub Pages | **ĐẠT** (CI `check` xanh trên Node 22, commit `0adccf8`) | 2026-11-12 |
+| **G0.3** | Turnstile thật: widget ở form đăng nhập/đăng ký, Worker đọc secret từ env, chặn khi production thiếu secret, bỏ lỗ vượt qua bằng token test | **ĐẠT** (kiểm trên workers.dev; đăng ký thật có giải widget chờ chủ dự án thử) | 2026-11-12 |
 | **N03** | Dữ liệu danh bạ, CMS và thẩm định thực tế | *SẴN SÀNG TRIỂN KHAI* | — |
 
 ---
@@ -31,8 +31,16 @@
 - `src/server/worker.test.ts`: thêm bước gọi `/api/auth/register` và `/api/auth/login` kèm token test trên Worker production không có secret → 503 `TURNSTILE_NOT_CONFIGURED`. Trước khi sửa: register trả 400 (qua được Turnstile). Sau khi sửa: đạt.
 - `npm ci` exit 0, typecheck exit 0, build exit 0, `npm test` 75/75, `wrangler deploy --dry-run` exit 0.
 
+**Kiểm chứng sau deploy (commit `0adccf8`)**
+- GitHub Actions `check` (Node 22): success. Workers Builds: success.
+- Trên workers.dev: widget "Xác minh bạn là con người" hiện ở form đăng ký (tiếng Việt, logo Cloudflare); script Turnstile đã tải.
+- Gọi trực tiếp API: đăng ký không token → 400 `MISSING_TURNSTILE_TOKEN`; đăng nhập kèm token test công khai `1x…AA` → 400 `invalid-input-response` từ Siteverify, tức Worker đang dùng secret thật và lỗ vượt qua đã đóng.
+- Không tạo tài khoản thật trên production trong lượt này; chủ dự án tự thử đăng ký có giải widget.
+
+**Phát hiện thêm, chưa sửa (thuộc G0.5)**
+- Khối "Tài khoản mẫu" kèm email/mật khẩu demo và nút "Đăng nhập 1-chạm" vẫn hiện ở production; nút này không gửi token Turnstile nên trên production sẽ luôn bị từ chối.
+
 **Chưa kiểm chứng / còn lại**
-- CI trên GitHub với Node 22 và đăng ký/đăng nhập thật có widget trên workers.dev: kiểm tra sau khi đẩy.
 - Widget dùng key thật chỉ chạy trên hostname đã khai báo trong Turnstile; `wrangler dev` trên localhost với bản build production sẽ không qua được widget.
 - Giới hạn tần suất vẫn đếm trong bộ nhớ từng isolate của Worker, chưa dùng chung; xử lý theo kế hoạch chống abuse sau.
 
