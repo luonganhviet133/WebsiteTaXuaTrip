@@ -913,7 +913,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                                     {summary.capacityText}
                                   </span>
                                   <span className="text-emerald-700 font-bold">
-                                    Còn {room.availableRooms} phòng trống
+                                    {room.availableRooms > 0 ? `Còn ${room.availableRooms} phòng trống` : 'Hết phòng các đêm đã chọn'}
                                   </span>
                                 </div>
 

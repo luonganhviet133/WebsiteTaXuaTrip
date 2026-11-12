@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { managedToListing, toContent, claimToRequest, type ManagedListing } from './listingsApi.ts';
-import { onlyMappable, verificationLabel, formatMinPrice } from '../utils/listingDisplay.ts';
+import { onlyMappable, verificationLabel, formatMinPrice, applyAvailability } from '../utils/listingDisplay.ts';
 import type { Listing } from '../types/index.ts';
 
 const published = {
@@ -52,4 +52,21 @@ test('verificationLabel ghi nguồn và ngày', () => {
 
 test('claimToRequest đổi trạng thái approved → verified cho màn admin cũ', () => {
   assert.equal(claimToRequest({ id: 'c', listingId: 'x', status: 'approved', createdAt: '2026-11-12T10:00:00Z' }).status, 'verified');
+});
+
+test('applyAvailability: ghi phòng trống từ server theo ngày đã chọn; cơ sở không có trong bảng tồn giữ nguyên', () => {
+  const withRooms = {
+    ...published,
+    id: 'a',
+    roomTypes: [
+      { id: 'r1', name: 'A', capacity: 2, priceWeekday: 1, priceWeekend: 1, totalRooms: 3, availableRooms: 3 },
+      { id: 'r2', name: 'B', capacity: 4, priceWeekday: 1, priceWeekend: 1, totalRooms: 1, availableRooms: 1 },
+    ],
+  } as unknown as Listing;
+  const out = applyAvailability([withRooms, published], { a: { r1: 0, r2: 1 } });
+  assert.deepEqual(out[0].roomTypes!.map((r) => r.availableRooms), [0, 1], 'hết phòng là 0, không thành 1');
+  assert.equal(out[1], published, 'không có hạng phòng → giữ nguyên đối tượng');
+  assert.equal(applyAvailability([withRooms], null)[0], withRooms, 'chưa tải tồn → giữ nguyên');
+  const missingRoom = applyAvailability([withRooms], { a: { r1: 2 } });
+  assert.equal(missingRoom[0].roomTypes![1].availableRooms, 0, 'hạng phòng không có trong bảng tồn (chưa duyệt) → 0');
 });

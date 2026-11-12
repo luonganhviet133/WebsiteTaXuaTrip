@@ -93,7 +93,7 @@ export function applyVoucher(
 export function buildStayQuote(
   listing: ListingContent & { id?: string },
   req: StayQuoteRequest,
-  opts: { holidays: string[]; now?: Date; voucher?: VoucherRecord | null; listingId?: string }
+  opts: { holidays: string[]; now?: Date; voucher?: VoucherRecord | null; listingId?: string; /** N05.1: phòng trống cả khoảng của hạng phòng đã chọn */ availableRooms?: number }
 ): QuoteResult {
   const now = opts.now || new Date();
   const today = todayInVietnam(now);
@@ -110,6 +110,12 @@ export function buildStayQuote(
   if (!isNonNegInt(req.adults, 50) || req.adults < 1 || !isNonNegInt(req.children, 50)) return fail('INVALID_GUESTS', 'Số khách không hợp lệ.');
   if (!isNonNegInt(req.rooms, 20) || req.rooms < 1) return fail('INVALID_ROOMS', 'Số phòng không hợp lệ.');
   if (req.rooms > room.totalRooms) return fail('NOT_ENOUGH_ROOMS', `Hạng phòng này chỉ có ${room.totalRooms} phòng.`);
+  if (opts.availableRooms !== undefined && req.rooms > opts.availableRooms) {
+    return fail(
+      'NOT_ENOUGH_ROOMS',
+      opts.availableRooms === 0 ? 'Hạng phòng này đã hết phòng cho các đêm đã chọn.' : `Hạng phòng này chỉ còn ${opts.availableRooms} phòng trống cho các đêm đã chọn.`
+    );
+  }
   const guests = req.adults + req.children;
   if (guests > room.capacity * req.rooms) {
     return fail('OVER_CAPACITY', `${req.rooms} phòng "${room.name}" ở tối đa ${room.capacity * req.rooms} khách; bạn chọn ${guests} khách.`);

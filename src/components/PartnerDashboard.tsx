@@ -65,6 +65,10 @@ interface PartnerDashboardProps {
   bookings: Booking[];
   wallet: PartnerWallet;
   onUpdateAvailability: (roomId: string, newAvailable: number) => void;
+  /** N05.1: đêm đang chỉnh phòng trống và số phòng trống thật của đêm đó (từ server). */
+  inventoryDate?: string;
+  onChangeInventoryDate?: (date: string) => void;
+  roomAvailability?: Record<string, number> | null;
   onConfirmBooking: (bookingId: string) => void;
   onCheckInBooking: (bookingId: string) => void;
   onCompleteBooking: (bookingId: string) => void;
@@ -115,6 +119,9 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
   bookings,
   wallet,
   onUpdateAvailability,
+  inventoryDate,
+  onChangeInventoryDate,
+  roomAvailability,
   onConfirmBooking,
   onCheckInBooking,
   onCompleteBooking,
@@ -215,42 +222,10 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
   });
 
   // --- HOMESTAY STATE ---
-  const [rooms, setRooms] = useState<RoomType[]>(partnerListing.roomTypes || [
-    {
-      id: 'r-sample-1',
-      name: 'Phòng Mây Mù Ban Công Vip',
-      price: 850000,
-      priceWeekday: 850000,
-      priceWeekend: 1050000,
-      capacity: 2,
-      totalRooms: 4,
-      availableRooms: 2,
-      viewType: 'cloud_view',
-      viewDescription: 'View thung lũng mây Tà Xùa đón bình minh và hoàng hôn',
-      hasWaterHeater: true,
-      hasAirConditioner: true,
-      hasHeaterMattress: true,
-      hasPrivateBathroom: true,
-      amenities: ['Máy sấy tóc', 'Ban công săn mây riêng', 'Ấm siêu tốc']
-    },
-    {
-      id: 'r-sample-2',
-      name: 'Phòng Gia Đình Ngắm Đỉnh Gió',
-      price: 1200000,
-      priceWeekday: 1200000,
-      priceWeekend: 1450000,
-      capacity: 4,
-      totalRooms: 3,
-      availableRooms: 1,
-      viewType: 'valley_view',
-      viewDescription: 'View rừng nguyên sinh và biển mây buổi sáng',
-      hasWaterHeater: true,
-      hasAirConditioner: true,
-      hasHeaterMattress: true,
-      hasPrivateBathroom: true,
-      amenities: ['2 giường đôi 1m8', 'Bình nóng lạnh 30L', 'Ban công rộng']
-    }
-  ]);
+  // Hạng phòng thật của cơ sở; chưa có thì để trống (không hiện phòng mẫu như thể của cơ sở).
+  const [rooms, setRooms] = useState<RoomType[]>(partnerListing.roomTypes || []);
+  /** Phòng trống của đêm đang chọn: lấy từ server nếu có, không thì số khai trong hồ sơ. */
+  const availableOf = (room: RoomType) => roomAvailability?.[room.id] ?? room.availableRooms;
 
   // Form thêm hạng phòng mới
   const [isAddingRoom, setIsAddingRoom] = useState(false);
@@ -1102,6 +1077,32 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                 </form>
               )}
 
+              {/* N05.1: chọn đêm để xem/cập nhật phòng trống (lưu trên máy chủ) */}
+              {onChangeInventoryDate && (
+                <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-700 bg-slate-900 p-3">
+                  <label htmlFor="partner-inventory-date" className="text-xs font-bold text-slate-200">
+                    Đêm áp dụng
+                  </label>
+                  <input
+                    id="partner-inventory-date"
+                    type="date"
+                    value={inventoryDate}
+                    min={new Date(Date.now() + 7 * 3600_000).toISOString().slice(0, 10)}
+                    onChange={(e) => e.target.value && onChangeInventoryDate(e.target.value)}
+                    className="rounded-xl border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white"
+                  />
+                  <span className="text-xs text-slate-400">
+                    Số phòng trống tính theo từng đêm và trừ sẵn phòng khách đã giữ/đặt. Chỉ hạng phòng đã được duyệt mới mở lịch.
+                  </span>
+                </div>
+              )}
+
+              {rooms.length === 0 && (
+                <p className="rounded-2xl border border-dashed border-slate-600 p-4 text-sm text-slate-300">
+                  Cơ sở chưa có hạng phòng. Bấm "Thêm hạng phòng" để nhập tên, sức chứa, giá ngày thường/cuối tuần và số phòng, rồi gửi duyệt.
+                </p>
+              )}
+
               {/* Danh sách các phòng hiện có */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {rooms.map((room) => {
@@ -1122,12 +1123,12 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                           <div className="flex items-center gap-2">
                             <span
                               className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                                room.availableRooms > 0
+                                availableOf(room) > 0
                                   ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                                   : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
                               }`}
                             >
-                              {room.availableRooms > 0 ? `Còn ${room.availableRooms} phòng` : 'HẾT PHÒNG'}
+                              {availableOf(room) > 0 ? `Còn ${availableOf(room)} phòng` : 'HẾT PHÒNG'}
                             </span>
                             <button
                               type="button"
@@ -1171,34 +1172,24 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       {/* Nút điều chỉnh số phòng trống nhanh 1 chạm */}
                       <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
                         <span className="text-xs text-slate-300 font-medium">
-                          Phòng trống hôm nay:
+                          Phòng trống đêm {inventoryDate ? inventoryDate.split('-').reverse().join('/') : 'hôm nay'}:
                         </span>
                         <div className="flex items-center gap-2">
                           <button
                             type="button"
-                            onClick={() => {
-                              const nextVal = Math.max(0, room.availableRooms - 1);
-                              setRooms((prev) =>
-                                prev.map((r) => (r.id === room.id ? { ...r, availableRooms: nextVal } : r))
-                              );
-                              onUpdateAvailability(room.id, nextVal);
-                            }}
+                            aria-label={`Giảm phòng trống ${room.name}`}
+                            onClick={() => onUpdateAvailability(room.id, Math.max(0, availableOf(room) - 1))}
                             className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-base flex items-center justify-center transition-colors border border-slate-700 cursor-pointer"
                           >
                             -
                           </button>
                           <span className="w-8 text-center text-sm font-black text-teal-300">
-                            {room.availableRooms}
+                            {availableOf(room)}
                           </span>
                           <button
                             type="button"
-                            onClick={() => {
-                              const nextVal = Math.min(room.totalRooms, room.availableRooms + 1);
-                              setRooms((prev) =>
-                                prev.map((r) => (r.id === room.id ? { ...r, availableRooms: nextVal } : r))
-                              );
-                              onUpdateAvailability(room.id, nextVal);
-                            }}
+                            aria-label={`Tăng phòng trống ${room.name}`}
+                            onClick={() => onUpdateAvailability(room.id, Math.min(room.totalRooms, availableOf(room) + 1))}
                             className="w-8 h-8 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-base flex items-center justify-center transition-colors shadow-sm cursor-pointer"
                           >
                             +
@@ -1231,9 +1222,6 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       const parsed = parseZaloAvailabilityCommand(zaloCommandInput);
                       if (parsed.matched && parsed.availableCount !== null && rooms[0]) {
                         const targetRoom = rooms[0];
-                        setRooms((prev) =>
-                          prev.map((r) => (r.id === targetRoom.id ? { ...r, availableRooms: parsed.availableCount! } : r))
-                        );
                         onUpdateAvailability(targetRoom.id, parsed.availableCount);
                         setZaloCommandFeedback(
                           `✅ Bot Zalo OA đã ghi nhận: Cập nhật "${targetRoom.name}" thành CÒN ${parsed.availableCount} PHÒNG.`
