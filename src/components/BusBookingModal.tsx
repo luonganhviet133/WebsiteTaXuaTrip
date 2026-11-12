@@ -1,3 +1,4 @@
+import { ONLINE_PAYMENT_ENABLED } from '../config/features';
 import React, { useState } from 'react';
 import { 
   X, 
@@ -603,7 +604,8 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                 />
               </div>
 
-              {/* KHUNG TẢI BẰNG CHỨNG CHUYỂN KHOẢN (THEO YÊU CẦU 1) */}
+              {/* Nộp biên lai: tắt cho tới khi có thanh toán thật (N06, quyết định D03) */}
+              {ONLINE_PAYMENT_ENABLED && (
               <div className="bg-slate-900 p-3.5 rounded-2xl border border-slate-750 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
@@ -641,6 +643,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                   </button>
                 )}
               </div>
+              )}
 
               {/* Summary breakdown */}
               <div className="bg-slate-900/90 rounded-2xl p-4 border border-slate-750 space-y-2 text-xs">

@@ -1,3 +1,4 @@
+import { ONLINE_PAYMENT_ENABLED } from '../config/features';
 import React, { useState, useEffect } from 'react';
 import {
   X,
@@ -995,10 +996,12 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     Tích lũy <strong>+{earnedPoints} Điểm Mây</strong> đổi ưu đãi
                   </span>
                 </li>
+                {ONLINE_PAYMENT_ENABLED && (
                 <li className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0" />
                   <span>Lưu bằng chứng chuyển khoản (UNC) chống tranh chấp</span>
                 </li>
+                )}
                 <li className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0" />
                   <span>Đúng giá niêm yết • Không qua cò mồi trung gian</span>
@@ -1658,7 +1661,8 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                   )}
                 </div>
 
-                {/* Tải Bằng Chứng Chuyển Khoản (UNC) */}
+                {/* Đính kèm biên lai: tắt cho tới khi có thanh toán thật (N06, quyết định D03) */}
+                {ONLINE_PAYMENT_ENABLED && (
                 <div className="pt-3 border-t border-slate-200 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
@@ -1700,6 +1704,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     </button>
                   )}
                 </div>
+                )}
 
                 {/* Price Breakdown */}
                 <div className="pt-3 border-t border-slate-200 space-y-1.5 text-xs">
