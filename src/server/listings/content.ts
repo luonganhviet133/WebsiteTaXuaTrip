@@ -44,6 +44,8 @@ export interface ListingContent {
   priceNote?: string;
   /** null = chưa có tọa độ thật; không suy tọa độ từ khu vực. */
   coordinates: Coordinates | null;
+  /** Cơ sở tự khai (hoặc nguồn ghi) có view biển mây. */
+  hasCloudView: boolean;
   isInstantBooking: boolean;
   roomTypes?: RoomType[];
   menuItems?: MenuItem[];
@@ -182,6 +184,7 @@ export function validateListingContent(input: unknown): ValidationResult {
     tags,
     minPrice,
     coordinates,
+    hasCloudView: Boolean(src.hasCloudView),
     isInstantBooking: Boolean(src.isInstantBooking),
   };
   if (src.facebook) content.facebook = src.facebook;

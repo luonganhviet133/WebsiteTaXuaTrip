@@ -45,6 +45,7 @@ import {
   calculateMotorbikeRentalCost,
   getHomestayRoomSummary
 } from '../utils/rules.ts';
+import { verificationLabel } from '../utils/listingDisplay.ts';
 
 interface ListingDetailModalProps {
   listing: Listing | null;
@@ -516,12 +517,19 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                 {listing.hasCloudView && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-teal-600 text-white shadow-xs">
                     <Cloud className="w-3.5 h-3.5" />
-                    Cloud View đã xác minh
+                    {listing.verificationTier >= 2 ? 'View biển mây đã xác minh' : 'View biển mây (cơ sở tự khai)'}
                   </span>
                 )}
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-white/95 text-brand-800 shadow-xs">
+                <span
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-white/95 text-brand-800 shadow-xs"
+                  title={verificationLabel(listing).detail}
+                >
                   <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
-                  Thẩm định Cấp {listing.verificationTier}
+                  {listing.verificationTier >= 2 ? `Cấp ${listing.verificationTier} · ` : ''}
+                  {verificationLabel(listing).title}
+                </span>
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-black/45 text-white">
+                  {verificationLabel(listing).detail}
                 </span>
               </div>
               <h2
@@ -534,10 +542,14 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
             <div className="flex items-center gap-1.5 sm:gap-2 bg-white/95 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl shadow-md text-xs">
               <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-              <span className="font-extrabold text-brand-800 text-sm">{listing.rating}</span>
-              <span className="text-slate-600 font-medium">
-                ({listing.reviewCount} đánh giá thực tế)
-              </span>
+              {listing.reviewCount > 0 ? (
+                <>
+                  <span className="font-extrabold text-brand-800 text-sm">{listing.rating}</span>
+                  <span className="text-slate-600 font-medium">({listing.reviewCount} đánh giá thực tế)</span>
+                </>
+              ) : (
+                <span className="text-slate-700 font-semibold">Chưa có đánh giá</span>
+              )}
             </div>
           </div>
         </div>
@@ -1027,7 +1039,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     <span>Đánh giá từ khách đã sử dụng dịch vụ</span>
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-50 text-amber-800 border border-amber-200">
                       <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                      {listing.rating} ({listing.reviewCount})
+                      {listing.reviewCount > 0 ? `${listing.rating} (${listing.reviewCount})` : 'Chưa có'}
                     </span>
                   </h3>
                 </div>

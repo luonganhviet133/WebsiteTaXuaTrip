@@ -52,7 +52,7 @@ interface JarvisAdminAssistantProps {
   isModalOverlay?: boolean;
   onCloseOverlay?: () => void;
   onUpdateTier: (listingId: string, newTier: VerificationTier) => void;
-  onUpdateListing?: (updated: Listing) => void;
+  onUpdateListing?: (updated: Listing) => void | Promise<boolean>;
   onApproveClaim?: (claimId: string) => void;
   onResolveDispute?: (
     disputeId: string,

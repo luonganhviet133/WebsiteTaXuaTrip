@@ -252,7 +252,9 @@ export const CompareHomestaysModal: React.FC<CompareHomestaysModalProps> = ({
                           <div className="bg-white p-2 rounded-xl border border-slate-200/70">
                             <div className="text-slate-400 font-semibold">Cách Đỉnh Gió</div>
                             <div className="font-bold text-slate-800 mt-0.5">
-                              {row.distanceToDinhGioKm} km (~{estimateMountainTravelMinutes(row.distanceToDinhGioKm)}p)
+                              {row.distanceToDinhGioKm === null
+                                ? 'Chưa có tọa độ'
+                                : `${row.distanceToDinhGioKm} km (~${estimateMountainTravelMinutes(row.distanceToDinhGioKm)}p)`}
                             </div>
                           </div>
                         </div>
@@ -439,12 +441,16 @@ export const CompareHomestaysModal: React.FC<CompareHomestaysModalProps> = ({
                     </td>
                     {matrix.rows.map((row) => (
                       <td key={row.id} className="py-3.5 px-4">
-                        <span className="font-bold text-slate-800">
-                          {row.distanceToDinhGioKm} km
-                        </span>{' '}
-                        <span className="text-slate-500">
-                          (~{estimateMountainTravelMinutes(row.distanceToDinhGioKm)} phút xe máy)
-                        </span>
+                        {row.distanceToDinhGioKm === null ? (
+                          <span className="text-slate-500">Chưa có tọa độ</span>
+                        ) : (
+                          <>
+                            <span className="font-bold text-slate-800">{row.distanceToDinhGioKm} km</span>{' '}
+                            <span className="text-slate-500">
+                              (~{estimateMountainTravelMinutes(row.distanceToDinhGioKm)} phút xe máy)
+                            </span>
+                          </>
+                        )}
                       </td>
                     ))}
                   </tr>

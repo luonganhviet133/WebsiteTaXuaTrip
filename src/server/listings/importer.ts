@@ -103,6 +103,8 @@ export function buildImportPlan(records: ScrapedRecord[], opts: ImportOptions): 
       tags: (raw.tags || []).map(decode),
       minPrice: parseVnd(raw.priceStr),
       coordinates: null,
+      // Chỉ theo thẻ do chính nguồn ghi, không suy đoán.
+      hasCloudView: (raw.tags || []).some((t) => /(săn|biển) mây|view mây/i.test(t)),
       isInstantBooking: false,
     });
     if (!result.ok) {

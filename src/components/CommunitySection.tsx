@@ -1950,7 +1950,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
 
                   <div className="sm:col-span-2">
                     <label className="text-xs font-bold text-slate-700 block mb-1">
-                      2. Chọn Cơ sở / Nhà xe đã thẩm định trong hệ thống (179 cơ sở)
+                      2. Chọn Cơ sở / Nhà xe trong danh bạ Tà Xùa Trip
                     </label>
                     <select
                       value={newDealListingTitle}
@@ -3049,7 +3049,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     <span>CHIA SẺ CỘNG ĐỒNG · NHẬN NGAY +30 ĐIỂM MÂY</span>
                   </span>
                   <span className="text-xs font-bold bg-white/15 px-2.5 py-0.5 rounded-full">
-                    Đổi Voucher 179 Cơ sở
+                    Đổi Voucher tại cơ sở
                   </span>
                 </div>
                 <h3 className="text-base sm:text-lg font-extrabold">
@@ -3064,7 +3064,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     [
                       { id: 'san_may', label: '☁️ Bản tin Săn Mây' },
                       { id: 'ghep_chuyen', label: '🚗 Kèo Ghép Chuyến' },
-                      { id: 'homestay_179', label: '🏡 179 Cơ Sở Thật' }
+                      { id: 'homestay_179', label: '🏡 Cơ sở trên Tà Xùa Trip' }
                     ] as const
                   ).map((item) => (
                     <button

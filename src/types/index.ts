@@ -190,16 +190,32 @@ export interface Listing {
   isAdminFeatured?: boolean;
   adminPriorityRank?: number; // Số càng lớn càng được ưu tiên lên đầu (VD: 100, 95, 90...)
   adminFeaturedLabel?: string; // VD: "👑 Admin Đề Xuất", "🔥 Top 1 Săn Mây", "💎 Đối Tác Chiến Lược"
+  /** null = chưa có tọa độ thật (N03: không suy tọa độ từ khu vực). */
   coordinates: {
     lat: number;
     lng: number;
-  };
+  } | null;
   stats: {
     views: number;
     callClicks: number;
     bookingsCount: number;
   };
+  // N03: nguồn gốc và xác minh do server trả về
+  dataOrigin?: 'scraped' | 'partner' | 'admin' | 'demo';
+  sourceName?: string | null;
+  collectedAt?: string | null;
+  verification?: {
+    tier: VerificationTier;
+    recordedTier: VerificationTier;
+    source: string | null;
+    verifiedAt: string | null;
+    expiresAt: string | null;
+    expired: boolean;
+  };
 }
+
+/** Cơ sở có tọa độ thật, dùng cho bản đồ. */
+export type MappableListing = Listing & { coordinates: { lat: number; lng: number } };
 
 export interface CloudLandmark {
   id: string;

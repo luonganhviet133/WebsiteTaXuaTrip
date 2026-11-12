@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  INITIAL_LISTINGS,
   BUS_TRIPS,
   CLOUD_FORECASTS,
   COMMUNITY_POSTS,
@@ -9,7 +8,6 @@ import {
   INITIAL_USER_PROFILE,
   INITIAL_PARTNER_WALLET,
   CLOUD_LANDMARKS,
-  INITIAL_CLAIM_REQUESTS,
   INITIAL_DISPUTES,
   INITIAL_VOUCHERS,
   INITIAL_REWARD_SETTINGS,
@@ -62,6 +60,9 @@ import { VerificationMethodologySection } from './components/VerificationMethodo
 import { DisputeModal } from './components/DisputeModal.tsx';
 import { ReviewModal } from './components/ReviewModal.tsx';
 import { AuthModal } from './components/AuthModal.tsx';
+import { listingsApi, managedToListing, claimToRequest, toContent, ApiError, type ManagedListing } from './api/listingsApi.ts';
+import { onlyMappable } from './utils/listingDisplay.ts';
+import { EmptyState, ErrorState, Skeleton } from './components/ui/index.ts';
 import { AuthUser, DEMO_ACCOUNTS } from './types/auth.ts';
 import {
   formatVND,
@@ -213,97 +214,81 @@ export default function App() {
     showToast('Đã đăng xuất tài khoản.');
   };
 
-  // Application Data State (with persisted Admin Priority Overrides)
-  const [listings, setListings] = useState<Listing[]>(() => {
+  // Danh bạ cơ sở: đọc từ API (N03). Công khai chỉ có cơ sở đã duyệt.
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [listingsLoad, setListingsLoad] = useState<'loading' | 'ready' | 'error'>('loading');
+  const reloadListings = React.useCallback(async () => {
     try {
-      const savedOverrides = localStorage.getItem('taxua_admin_priority_overrides_v1');
-      if (savedOverrides) {
-        const overrideMap: Record<
-          string,
-          { isAdminFeatured?: boolean; adminPriorityRank?: number; adminFeaturedLabel?: string }
-        > = JSON.parse(savedOverrides);
-        return INITIAL_LISTINGS.map((item) => {
-          const ov = overrideMap[item.id];
-          if (!ov) return item;
-          return {
-            ...item,
-            isAdminFeatured: ov.isAdminFeatured,
-            adminPriorityRank: ov.adminPriorityRank,
-            adminFeaturedLabel: ov.adminFeaturedLabel
-          };
-        });
-      }
+      setListings(await listingsApi.listPublic());
+      setListingsLoad('ready');
     } catch (e) {
       console.error(e);
+      setListingsLoad('error');
     }
-    return INITIAL_LISTINGS;
-  });
-
+  }, []);
   useEffect(() => {
+    reloadListings();
+  }, [reloadListings]);
+
+  // Hồ sơ quản lý: chủ cơ sở thấy cơ sở của mình (kể cả nháp/chờ duyệt), admin thấy tất cả.
+  const [managedListings, setManagedListings] = useState<ManagedListing[]>([]);
+  const reloadManaged = React.useCallback(async () => {
     try {
-      const overrideMap: Record<
-        string,
-        { isAdminFeatured?: boolean; adminPriorityRank?: number; adminFeaturedLabel?: string }
-      > = {};
-      listings.forEach((item) => {
-        if (item.isAdminFeatured || item.adminPriorityRank || item.adminFeaturedLabel) {
-          overrideMap[item.id] = {
-            isAdminFeatured: Boolean(item.isAdminFeatured),
-            adminPriorityRank: item.adminPriorityRank || 0,
-            adminFeaturedLabel: item.adminFeaturedLabel
-          };
-        }
-      });
-      localStorage.setItem('taxua_admin_priority_overrides_v1', JSON.stringify(overrideMap));
+      if (currentUser?.role === 'admin') setManagedListings(await listingsApi.listAll());
+      else if (currentUser?.role === 'partner') setManagedListings(await listingsApi.listMine());
+      else setManagedListings([]);
     } catch (e) {
       console.error(e);
     }
-  }, [listings]);
+  }, [currentUser?.id, currentUser?.role]);
+  useEffect(() => {
+    reloadManaged();
+  }, [reloadManaged]);
+  const managedAsListings = React.useMemo(
+    () => managedListings.map(managedToListing).filter((l): l is Listing => l !== null),
+    [managedListings]
+  );
 
-  const [selectedPartnerListingId, setSelectedPartnerListingId] = useState<string>(INITIAL_LISTINGS[0]?.id || 'homestay-may');
+  const [selectedPartnerListingId, setSelectedPartnerListingId] = useState<string>('');
   const [trips, setTrips] = useState(BUS_TRIPS);
   const [landmarks, setLandmarks] = useState<CloudLandmark[]>(CLOUD_LANDMARKS);
   const [forecasts, setForecasts] = useState<CloudHuntingForecast[]>(CLOUD_FORECASTS);
-  const [siteContent, setSiteContent] = useState<SiteContentConfig>(() => {
-    try {
-      const saved = localStorage.getItem('taxua_site_content_config_v2');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return {
+  // Nội dung trang (CMS) lưu ở server; chưa có thì dùng nội dung mặc định.
+  const [siteContent, setSiteContent] = useState<SiteContentConfig>(INITIAL_SITE_CONTENT);
+  useEffect(() => {
+    listingsApi
+      .getSiteContent()
+      .then((saved: any) => {
+        if (!saved) return;
+        setSiteContent({
           ...INITIAL_SITE_CONTENT,
-          ...parsed,
-          heroBanners:
-            Array.isArray(parsed.heroBanners) && parsed.heroBanners.length > 0
-              ? parsed.heroBanners
-              : INITIAL_SITE_CONTENT.heroBanners,
-          curatedCombos:
-            Array.isArray(parsed.curatedCombos) && parsed.curatedCombos.length > 0
-              ? parsed.curatedCombos
-              : INITIAL_CURATED_COMBOS,
-          socialChannels:
-            Array.isArray(parsed.socialChannels) && parsed.socialChannels.length > 0
-              ? parsed.socialChannels
-              : INITIAL_SITE_CONTENT.socialChannels
-        };
-      }
-    } catch (e) {
-      console.error(e);
-    }
-    return INITIAL_SITE_CONTENT;
-  });
+          ...saved,
+          heroBanners: Array.isArray(saved.heroBanners) && saved.heroBanners.length > 0 ? saved.heroBanners : INITIAL_SITE_CONTENT.heroBanners,
+          curatedCombos: Array.isArray(saved.curatedCombos) && saved.curatedCombos.length > 0 ? saved.curatedCombos : INITIAL_CURATED_COMBOS,
+          socialChannels: Array.isArray(saved.socialChannels) && saved.socialChannels.length > 0 ? saved.socialChannels : INITIAL_SITE_CONTENT.socialChannels
+        });
+      })
+      .catch((e) => console.error(e));
+  }, []);
+
+  // Admin sửa nội dung trang: lưu lên server sau 1,2 giây không gõ, báo kết quả thật.
+  const siteContentSaveTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handleUpdateSiteContent = (next: SiteContentConfig) => {
+    setSiteContent(next);
+    if (siteContentSaveTimer.current) clearTimeout(siteContentSaveTimer.current);
+    siteContentSaveTimer.current = setTimeout(() => {
+      listingsApi
+        .putSiteContent(next)
+        .then(() => showToast('Đã lưu nội dung trang lên máy chủ.'))
+        .catch((e) => showToast(e instanceof ApiError ? `Chưa lưu nội dung trang: ${e.message}` : 'Chưa lưu được nội dung trang.'));
+    }, 1200);
+  };
 
   // Hero Console Mode & Curated Combo Filter States
   const [heroConsoleMode, setHeroConsoleMode] = useState<HeroConsoleMode>('stay');
   const [selectedComboCategory, setSelectedComboCategory] = useState<'all' | CuratedComboCategory>('all');
   const [showAllCuratedCombos, setShowAllCuratedCombos] = useState<boolean>(false);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem('taxua_site_content_config_v2', JSON.stringify(siteContent));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [siteContent]);
   const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>(COMMUNITY_POSTS);
   const [bookings, setBookings] = useState<Booking[]>(INITIAL_BOOKINGS);
   const [reviews, setReviews] = useState<Review[]>(INITIAL_REVIEWS);
@@ -313,7 +298,7 @@ export default function App() {
   const [disputes, setDisputes] = useState<BookingDispute[]>(INITIAL_DISPUTES);
   const [vouchers, setVouchers] = useState<PromoVoucher[]>(INITIAL_VOUCHERS);
   const [rewardSettings, setRewardSettings] = useState<ServiceRewardSetting[]>(INITIAL_REWARD_SETTINGS);
-  const [claimRequests, setClaimRequests] = useState<PartnerClaimRequest[]>(INITIAL_CLAIM_REQUESTS);
+  const [claimRequests, setClaimRequests] = useState<PartnerClaimRequest[]>([]);
 
   // Subcategory filter states for Di Chuyển, Dịch Vụ, Ăn Uống
   const [transportSubCategory, setTransportSubCategory] = useState<'all' | 'bus' | 'taxi' | 'motorbike'>('all');
@@ -460,39 +445,52 @@ export default function App() {
     showToast(`Đã lưu tỷ lệ tích điểm ${percent}% cho cơ sở!`);
   };
 
-  // Claim owner handlers
+  // Nhận chính chủ (N03.2): lưu ở server; duyệt chỉ gắn quyền sở hữu, không nâng huy hiệu.
+  const reloadClaims = React.useCallback(async () => {
+    if (currentUser?.role !== 'admin') return setClaimRequests([]);
+    try {
+      setClaimRequests((await listingsApi.listClaims()).map(claimToRequest));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [currentUser?.id, currentUser?.role]);
+  useEffect(() => {
+    reloadClaims();
+  }, [reloadClaims]);
+
+  const reviewClaim = async (claimId: string, decision: 'approve' | 'reject') => {
+    try {
+      await listingsApi.reviewClaim(claimId, decision);
+      showToast(decision === 'approve' ? 'Đã duyệt: cơ sở được gắn cho tài khoản chủ cơ sở.' : 'Đã từ chối hồ sơ nhận cơ sở.');
+      await Promise.all([reloadClaims(), reloadListings(), reloadManaged()]);
+    } catch (e) {
+      showToast(e instanceof ApiError ? e.message : 'Không xử lý được hồ sơ.');
+    }
+  };
   const handleApproveClaim = (claimId: string) => {
-    const claim = claimRequests.find((c) => c.id === claimId);
-    if (!claim) return;
-    setClaimRequests((prev) =>
-      prev.map((c) => (c.id === claimId ? { ...c, status: 'verified' } : c))
-    );
-    setListings((prev) =>
-      prev.map((l) =>
-        l.id === claim.listingId
-          ? { ...l, claimedByOwner: true, ownerVerificationStatus: 'verified_owner', verificationTier: 3 }
-          : l
-      )
-    );
-    showToast(`Đã duyệt xác nhận chính chủ cho ${claim.listingTitle}!`);
+    void reviewClaim(claimId, 'approve');
   };
-
   const handleRejectClaim = (claimId: string) => {
-    setClaimRequests((prev) =>
-      prev.map((c) => (c.id === claimId ? { ...c, status: 'rejected' } : c))
-    );
-    showToast('Đã từ chối hồ sơ xác nhận chính chủ.');
+    void reviewClaim(claimId, 'reject');
   };
 
-  const handleSubmitClaim = (request: Omit<PartnerClaimRequest, 'id' | 'createdAt' | 'status'>) => {
-    const newClaim: PartnerClaimRequest = {
-      ...request,
-      id: `claim-${Date.now()}`,
-      status: 'pending',
-      createdAt: new Date().toISOString().replace('T', ' ').slice(0, 16)
-    };
-    setClaimRequests((prev) => [newClaim, ...prev]);
-    showToast('Hồ sơ xác nhận đã được gửi đến ban quản trị Tà Xùa Trip!');
+  const handleSubmitClaim = async (request: Omit<PartnerClaimRequest, 'id' | 'createdAt' | 'status'>) => {
+    if (currentUser?.role !== 'partner') {
+      showToast('Vui lòng đăng nhập bằng tài khoản Chủ cơ sở để gửi hồ sơ nhận cơ sở.');
+      return;
+    }
+    try {
+      // Không gửi số CCCD/MST qua kênh này; admin gọi điện xác minh với chủ cơ sở.
+      await listingsApi.claim(request.listingId, {
+        ownerName: request.ownerName,
+        ownerPhone: request.ownerPhone.replace(/\s/g, ''),
+        zalo: request.zalo,
+        evidenceNote: request.proofDocumentNote
+      });
+      showToast('Đã gửi hồ sơ nhận cơ sở. Ban quản trị sẽ liên hệ để xác minh.');
+    } catch (e) {
+      showToast(e instanceof ApiError ? e.message : 'Không gửi được hồ sơ.');
+    }
   };
 
   const handleSubmitDispute = (disputeData: Omit<BookingDispute, 'id' | 'createdAt' | 'status'>) => {
@@ -566,8 +564,11 @@ export default function App() {
       }));
     }
     if (parsed.listingId) {
-      const found = INITIAL_LISTINGS.find((l) => l.id === parsed.listingId);
-      if (found) setSelectedListingDetail(found);
+      // Mở thẳng trang chi tiết: lấy từ API, không dùng dữ liệu mẫu (N03.3).
+      listingsApi
+        .getPublic(parsed.listingId)
+        .then((found) => setSelectedListingDetail(found))
+        .catch(() => showToast('Cơ sở trong đường dẫn không tồn tại hoặc chưa được duyệt.'));
     }
   }, []);
 
@@ -909,7 +910,7 @@ export default function App() {
         return listing;
       })
     );
-    showToast('Đã cập nhật số phòng trống thành công!');
+    showToast('Đã đổi số phòng trống trên màn hình này. Lịch phòng lưu trên máy chủ sẽ có ở đợt N05.');
   };
 
   const handleConfirmBooking = (bookingId: string) => {
@@ -1006,25 +1007,43 @@ export default function App() {
     );
   };
 
-  const handleUpdateTier = (listingId: string, newTier: VerificationTier) => {
-    setListings((prev) =>
-      prev.map((l) => (l.id === listingId ? { ...l, verificationTier: newTier } : l))
-    );
-    showToast(`Đã cập nhật huy hiệu Cấp ${newTier} cho cơ sở!`);
+  const runAdmin = async (action: () => Promise<unknown>, okMsg: string) => {
+    try {
+      await action();
+      showToast(okMsg);
+      await Promise.all([reloadListings(), reloadManaged()]);
+      return true;
+    } catch (e) {
+      showToast(e instanceof ApiError ? e.message : 'Thao tác không thành công.');
+      return false;
+    }
   };
 
+  const handleUpdateTier = (listingId: string, newTier: VerificationTier) => {
+    // D06: cấp 2–3 phải ghi nguồn xác minh (giấy tờ, người thẩm định, ngày).
+    const source =
+      newTier === 1 ? '' : window.prompt(`Nguồn xác minh cho Cấp ${newTier} (giấy tờ đã xem, người thẩm định, ngày):`) || '';
+    if (newTier > 1 && source.trim().length < 5) {
+      showToast('Chưa đổi cấp: cần ghi nguồn xác minh.');
+      return;
+    }
+    void runAdmin(() => listingsApi.setVerification(listingId, newTier, source.trim()), `Đã cập nhật Cấp ${newTier} cho cơ sở.`);
+  };
+
+  const hasPendingVersion = (listingId: string) =>
+    managedListings.some((m) => m.id === listingId && m.openVersion?.status === 'pending');
+
   const handleApproveListing = (listingId: string) => {
-    setListings((prev) =>
-      prev.map((l) => (l.id === listingId ? { ...l, status: 'approved' } : l))
-    );
-    showToast('Đã phê duyệt cơ sở hiển thị công khai!');
+    void (hasPendingVersion(listingId)
+      ? runAdmin(() => listingsApi.review(listingId, 'approve'), 'Đã duyệt bản cập nhật, thông tin mới đã công khai.')
+      : runAdmin(() => listingsApi.setStatus(listingId, 'approved'), 'Đã phê duyệt cơ sở hiển thị công khai.'));
   };
 
   const handleRejectListing = (listingId: string) => {
-    setListings((prev) =>
-      prev.map((l) => (l.id === listingId ? { ...l, status: 'rejected' } : l))
-    );
-    showToast('Đã từ chối cơ sở');
+    const note = window.prompt('Lý do từ chối (chủ cơ sở sẽ thấy):') || undefined;
+    void (hasPendingVersion(listingId)
+      ? runAdmin(() => listingsApi.review(listingId, 'reject', note), 'Đã từ chối bản cập nhật; bản công khai giữ nguyên.')
+      : runAdmin(() => listingsApi.setStatus(listingId, 'rejected', note), 'Đã từ chối cơ sở; cơ sở không còn hiển thị công khai.'));
   };
 
   const handleAddCommunityPost = (post: CommunityPost) => {
@@ -1040,28 +1059,81 @@ export default function App() {
     }
   };
 
-  const partnerOwnedListings = React.useMemo(() => {
-    if (currentUser?.role !== 'partner') return [];
-    const ids = currentUser.ownedListingIds || (currentUser.partnerListingId ? [currentUser.partnerListingId] : []);
-    return listings.filter((l: Listing) => ids.includes(l.id));
-  }, [currentUser, listings]);
+  const partnerOwnedListings = currentUser?.role === 'partner' ? managedAsListings : [];
 
   const partnerListing = partnerOwnedListings.find((l: Listing) => l.id === selectedPartnerListingId) || partnerOwnedListings[0] || null;
 
-  const handleUpdateListingFromPartnerOrAdmin = (updated: Listing) => {
-    setListings((prev) => prev.map((item) => (item.id === updated.id ? updated : item)));
-    if (selectedListingDetail?.id === updated.id) {
-      setSelectedListingDetail(updated);
+  // Chủ cơ sở: lưu nháp rồi gửi duyệt. Admin: lưu và công khai ngay. Chỉ báo thành công khi server xác nhận.
+  const handleUpdateListingFromPartnerOrAdmin = async (updated: Listing): Promise<boolean> => {
+    if (currentUser?.role === 'admin') {
+      const before = managedAsListings.find((l) => l.id === updated.id);
+      const featuredChanged =
+        !before ||
+        Boolean(before.isAdminFeatured) !== Boolean(updated.isAdminFeatured) ||
+        (before.adminPriorityRank || 0) !== (updated.adminPriorityRank || 0) ||
+        (before.adminFeaturedLabel || '') !== (updated.adminFeaturedLabel || '');
+      const contentChanged = !before || JSON.stringify(toContent(before)) !== JSON.stringify(toContent(updated));
+      try {
+        if (featuredChanged) {
+          await listingsApi.setFeatured(updated.id, {
+            isAdminFeatured: Boolean(updated.isAdminFeatured),
+            adminPriorityRank: updated.adminPriorityRank || 0,
+            adminFeaturedLabel: updated.adminFeaturedLabel
+          });
+        }
+        if (contentChanged) await listingsApi.adminPublish(updated);
+        await Promise.all([reloadListings(), reloadManaged()]);
+        return true;
+      } catch (e) {
+        showToast(e instanceof ApiError ? `Chưa lưu: ${e.message}` : 'Chưa lưu được thay đổi.');
+        return false;
+      }
     }
+    if (currentUser?.role === 'partner') {
+      try {
+        await listingsApi.saveDraft(updated);
+        await listingsApi.submit(updated.id);
+        showToast('Đã gửi bản cập nhật. Khách vẫn thấy thông tin cũ cho tới khi ban quản trị duyệt.');
+        await reloadManaged();
+        return true;
+      } catch (e) {
+        showToast(e instanceof ApiError ? `Chưa lưu: ${e.message}` : 'Chưa lưu được thay đổi.');
+        return false;
+      }
+    }
+    showToast('Bạn cần đăng nhập để sửa thông tin cơ sở.');
+    return false;
   };
 
-  const handleAddListingFromAdmin = (created: Listing) => {
-    setListings((prev) => [created, ...prev]);
+  const handleAddListingFromAdmin = async (created: Listing) => {
+    await runAdmin(() => listingsApi.adminCreate(created), 'Đã tạo và công khai cơ sở mới.');
   };
 
-  const handleDeleteListingFromAdmin = (listingId: string) => {
-    setListings((prev) => prev.filter((item) => item.id !== listingId));
+  const handleDeleteListingFromAdmin = async (listingId: string) => {
+    // Không xóa dữ liệu: gỡ khỏi trang công khai (status rejected) và ghi log.
+    await runAdmin(() => listingsApi.setStatus(listingId, 'rejected', 'Admin gỡ cơ sở'), 'Đã gỡ cơ sở khỏi trang công khai.');
   };
+
+  // Trạng thái tải danh bạ dùng chung cho các lưới cơ sở.
+  const listingsStatusBlock =
+    listingsLoad === 'loading' ? (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" aria-busy="true" aria-label="Đang tải danh sách cơ sở">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="rounded-card border border-slate-200 bg-white p-4 space-y-3">
+            <Skeleton className="h-40 w-full" />
+            <Skeleton className="h-5 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        ))}
+      </div>
+    ) : listingsLoad === 'error' ? (
+      <ErrorState message="Không tải được danh sách cơ sở. Kiểm tra mạng rồi thử lại." onRetry={() => { setListingsLoad('loading'); void reloadListings(); }} />
+    ) : listings.length === 0 ? (
+      <EmptyState title="Chưa có cơ sở nào được duyệt" description="Danh bạ đang được cập nhật, vui lòng quay lại sau." />
+    ) : null;
+
+  // Admin thấy mọi cơ sở (kể cả chờ duyệt, bị từ chối); người khác thấy danh sách công khai.
+  const adminListings = currentUser?.role === 'admin' ? managedAsListings : listings;
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f8fafc] text-slate-900 flex flex-col font-sans selection:bg-brand-800 selection:text-white">
@@ -1565,7 +1637,7 @@ export default function App() {
                       Tư Vấn Giá Phòng & Lên Lịch Trình Tà Xùa Tự Động
                     </h3>
                     <p className="text-xs text-teal-100 mt-1 leading-relaxed">
-                      Nhập <span className="font-bold text-amber-300">Ngày đi · Ngày về · Số người · Điểm đón · Ngân sách</span>. AI quét dữ liệu thật 179 homestay & xe đón để tính chi phí trọn gói minh bạch.
+                      Nhập <span className="font-bold text-amber-300">Ngày đi · Ngày về · Số người · Điểm đón · Ngân sách</span>. AI gợi ý homestay & xe đón và ước tính chi phí trọn gói để bạn tham khảo.
                     </p>
                   </div>
                   <button
@@ -1717,7 +1789,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Interactive Category Filter Segmented Control (Full 11 Categories - 179 Listings) */}
+                {/* Interactive Category Filter Segmented Control (11 loại cơ sở, số lượng lấy từ API) */}
                 <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-6">
                   {[
                     { id: 'all', label: 'Tất cả cơ sở', count: listings.length },
@@ -1755,7 +1827,9 @@ export default function App() {
                   ))}
                 </div>
 
-                {filteredListings.length === 0 ? (
+                {listingsStatusBlock ? (
+                  listingsStatusBlock
+                ) : filteredListings.length === 0 ? (
                   <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center max-w-2xl mx-auto shadow-2xs">
                     <h3 className="text-lg font-extrabold text-brand-800 mb-2">
                       Chưa có phòng Cloud View khớp điều kiện lọc hiện tại
@@ -1858,7 +1932,8 @@ export default function App() {
 
             {/* 5. Interactive Map of Homestays & Cloud-Hunting Landmarks */}
             <InteractiveMapSection
-              listings={filteredListings}
+              listings={onlyMappable(filteredListings)}
+              unmappedCount={filteredListings.length - onlyMappable(filteredListings).length}
               landmarks={landmarks}
               onSelectListing={(l) => setSelectedListingDetail(l)}
             />
@@ -2665,7 +2740,8 @@ export default function App() {
                   {stayViewMode === 'map' && (
                     <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-sm bg-white">
                       <InteractiveMapSection
-                        listings={stayFilteredListings}
+                        listings={onlyMappable(stayFilteredListings)}
+                        unmappedCount={stayFilteredListings.length - onlyMappable(stayFilteredListings).length}
                         landmarks={landmarks}
                         onSelectListing={(l) => setSelectedListingDetail(l)}
                       />
@@ -2673,7 +2749,9 @@ export default function App() {
                   )}
 
                   {/* Verified Homestays List Filtered by Date Range & Criteria */}
-                  {stayFilteredListings.length === 0 ? (
+                  {listingsStatusBlock ? (
+                    listingsStatusBlock
+                  ) : stayFilteredListings.length === 0 ? (
                     <div className="bg-white border border-slate-200 rounded-2xl p-10 text-center space-y-3">
                       <h3 className="text-lg font-extrabold text-brand-800">
                         Chưa có homestay khớp toàn bộ điều kiện lọc hiện tại
@@ -2851,7 +2929,8 @@ export default function App() {
 
         {currentTab === 'map' && (
           <InteractiveMapSection
-            listings={listings}
+            listings={onlyMappable(listings)}
+            unmappedCount={listings.length - onlyMappable(listings).length}
             landmarks={landmarks}
             onSelectListing={(l) => setSelectedListingDetail(l)}
           />
@@ -3913,7 +3992,7 @@ export default function App() {
         {currentTab === 'admin' && (
           currentUser?.role === 'admin' ? (
             <AdminDashboard
-              listings={listings}
+              listings={adminListings}
               billingEnabled={billingEnabled}
               onToggleBilling={handleToggleBilling}
               onUpdateTier={handleUpdateTier}
@@ -3925,7 +4004,7 @@ export default function App() {
               trips={trips}
               onUpdateTrips={setTrips}
               siteContent={siteContent}
-              onUpdateSiteContent={setSiteContent}
+              onUpdateSiteContent={handleUpdateSiteContent}
               landmarks={landmarks}
               onUpdateLandmarks={setLandmarks}
               forecasts={forecasts}
@@ -4104,7 +4183,7 @@ export default function App() {
       {/* Admin-Only J.A.R.V.I.S. Tactical HUD Overlay (Summoned from any page via Orb or Ctrl+J) */}
       {currentUser?.role === 'admin' && isJarvisOverlayOpen && (
         <JarvisAdminAssistant
-          listings={listings}
+          listings={adminListings}
           disputes={disputes}
           claimRequests={claimRequests}
           vouchers={vouchers}
@@ -4118,7 +4197,7 @@ export default function App() {
           onUpdateListing={handleUpdateListingFromPartnerOrAdmin}
           onApproveClaim={handleApproveClaim}
           onResolveDispute={handleResolveDispute}
-          onUpdateSiteContent={setSiteContent}
+          onUpdateSiteContent={handleUpdateSiteContent}
           onUpdateForecasts={setForecasts}
           onAddVoucher={(newV) => setVouchers((prev) => [newV, ...prev])}
           onToggleBilling={handleToggleBilling}

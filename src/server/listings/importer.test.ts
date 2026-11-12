@@ -87,6 +87,7 @@ test('Importer: không tự sinh đánh giá, tọa độ, huy hiệu, phòng; g
   assert.equal(item.content.phone, '0933669881');
   assert.equal(item.content.facebook, undefined, 'link nhóm Facebook chung không phải trang của cơ sở');
   assert.equal(item.content.isInstantBooking, false);
+  assert.equal(item.content.hasCloudView, true, 'nguồn ghi thẻ "View săn mây"');
 });
 
 test('Importer: giữ ID cũ theo loại + link, báo ID trùng và ID sai', () => {
