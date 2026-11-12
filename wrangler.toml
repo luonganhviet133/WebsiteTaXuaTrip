@@ -5,7 +5,7 @@ compatibility_flags = ["nodejs_compat"]
 
 # Workers Builds chạy `npx wrangler deploy`; lệnh này build giao diện vào dist/client trước khi upload.
 [build]
-command = "npm run build:client"
+command = "node scripts/build-worker-assets.mjs"
 
 [assets]
 directory = "./dist/client"

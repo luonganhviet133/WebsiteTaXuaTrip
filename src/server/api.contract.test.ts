@@ -20,6 +20,13 @@ import { DatabaseEngine } from './db.ts';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
+// Dùng dist/client đã build sẵn (`npm run build` chạy trước `npm test`), không build lại khi khởi động Worker:
+// build lại sẽ xóa dist/client trong lúc các file test khác đang phục vụ thư mục này.
+process.env.SKIP_CLIENT_BUILD = '1';
+if (!fs.existsSync(path.join(projectRoot, 'dist/client/index.html'))) {
+  throw new Error('Thiếu dist/client: chạy `npm run build` trước khi chạy test Worker.');
+}
+
 type Fetcher = (route: string, init?: RequestInit) => Promise<Response>;
 
 function jsonInit(method: string, body: unknown, token?: string): RequestInit {

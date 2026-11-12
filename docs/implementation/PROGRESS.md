@@ -28,6 +28,12 @@
 - `npm ci` exit 0, typecheck exit 0, build exit 0, `npm test` 103/103 đạt (75 cũ + 28 bước hợp đồng), `wrangler deploy --dry-run` exit 0.
 - Gói Worker: 1.762 KiB, gzip 228 KiB (trước 80,6 KiB / 17,7 KiB) do mang thêm bộ AI và `mockData`; dưới giới hạn 3 MB gói miễn phí.
 
+**Sau khi gộp vào `main` (commit `9a26119`)**
+- Workers Builds production: success. GitHub Actions CI: **failure**, `worker.test.ts` nhận 404 ở trang chủ (31 dòng log: `404 !== 200`).
+- Nguyên nhân gốc: mỗi lần test khởi động Worker bằng `unstable_dev`, wrangler chạy lệnh `[build]` (`vite build`, xóa sạch `dist/client` rồi build lại). Từ G0.4 có 2 file test khởi động Worker, chạy song song với `server.test.ts`; tiến trình này xóa `dist/client` khi tiến trình kia đang phục vụ. Tái hiện trên máy build: theo dõi mỗi 0,2 giây thấy `dist/client/index.html` biến mất 9 lần trong 3 lượt chạy (test vẫn đạt nhờ may thời điểm; máy CI trúng lỗi).
+- Sửa (nhánh `dot/G0.4-ci-race`): `[build]` gọi `scripts/build-worker-assets.mjs`, script build giao diện như cũ trừ khi `SKIP_CLIENT_BUILD=1`; 2 file test Worker đặt biến này và báo lỗi rõ nếu chưa có `dist/client`.
+- Kiểm chứng: cài sạch → typecheck → build → `npm test` 103/103 trong khi theo dõi `dist/client`: không biến mất lần nào. `wrangler deploy --dry-run` không đặt biến vẫn build giao diện; đặt biến mà thiếu `dist` thì dừng với lỗi thư mục assets.
+
 **Phát hiện, chưa sửa**
 - `DatabaseEngine.initSchemaSync()` không tạo được bảng trên D1 thật: gọi `d1.exec()` không chờ, và `exec` của D1 coi mỗi dòng là một câu lệnh nên `CREATE TABLE` nhiều dòng hỏng. D1 mới phải áp `migrations_d1/0001` bằng tay (đã làm cho production ở G0.1; test hợp đồng tự áp cho D1 local). Nên thay bằng `wrangler d1 migrations apply` trong quy trình deploy.
 

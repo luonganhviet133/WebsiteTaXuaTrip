@@ -7,11 +7,19 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { unstable_dev } from 'wrangler';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+
+// Dùng dist/client đã build sẵn (`npm run build` chạy trước `npm test`), không build lại khi khởi động Worker:
+// build lại sẽ xóa dist/client trong lúc các file test khác đang phục vụ thư mục này.
+process.env.SKIP_CLIENT_BUILD = '1';
+if (!fs.existsSync(path.join(projectRoot, 'dist/client/index.html'))) {
+  throw new Error('Thiếu dist/client: chạy `npm run build` trước khi chạy test Worker.');
+}
 
 test('Worker khởi động được trong workerd và /api/health trả JSON', { timeout: 120_000 }, async () => {
   const worker = await unstable_dev(path.join(projectRoot, 'src/worker.ts'), {
