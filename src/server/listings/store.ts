@@ -187,6 +187,17 @@ export class ListingStore {
     return row ? toPublic(row) : null;
   }
 
+  /** Nội dung công khai + mã phiên bản, dùng cho báo giá (N04). Chỉ cơ sở đã duyệt. */
+  async getPublishedForQuote(id: string): Promise<{ content: ListingContent; versionId: string } | null> {
+    const row = await this.d1
+      .prepare(
+        `SELECT v.id AS version_id, v.content_json FROM listings l JOIN listing_versions v ON v.id = l.published_version_id WHERE l.id = ? AND l.status = 'approved'`
+      )
+      .bind(id)
+      .first<{ version_id: string; content_json: string }>();
+    return row ? { content: JSON.parse(row.content_json), versionId: row.version_id } : null;
+  }
+
   // ---------- Quản lý ----------
   private async getRow(id: string): Promise<ListingRow | null> {
     return this.d1.prepare(`${SELECT_LISTING} WHERE l.id = ?`).bind(id).first<ListingRow>();
