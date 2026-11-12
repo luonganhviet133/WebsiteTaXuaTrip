@@ -27,3 +27,16 @@ export function verificationLabel(l: Pick<Listing, 'verificationTier' | 'verific
   }
   return { title: 'Chưa xác minh', detail: 'Thông tin do cơ sở tự khai' };
 }
+
+/**
+ * N05.1: ghi phòng trống từ server (theo đúng ngày khách đang chọn) vào từng hạng phòng,
+ * để bộ lọc, thẻ, trang chi tiết đọc cùng một nguồn tồn. Cơ sở không có trong bảng tồn giữ nguyên.
+ */
+export function applyAvailability(listings: Listing[], map: Record<string, Record<string, number>> | null): Listing[] {
+  if (!map) return listings;
+  return listings.map((l) => {
+    const rooms = map[l.id];
+    if (!rooms || !l.roomTypes || l.roomTypes.length === 0) return l;
+    return { ...l, roomTypes: l.roomTypes.map((r) => ({ ...r, availableRooms: rooms[r.id] ?? 0 })) };
+  });
+}

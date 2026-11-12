@@ -54,10 +54,8 @@ Workers Builds cần dùng các lệnh deploy sau (Workers & Pages → websiteta
 - Deploy command (nhánh `main`): `npm run deploy` = áp migration production rồi `wrangler deploy`.
 - Non-production branch deploy command: `npm run deploy:preview` = áp migration bản xem trước rồi `wrangler preview`.
 
-### Khởi tạo Quản trị viên (Bootstrap Admin):
-```bash
-npm run db:bootstrap -- --email admin@taxuatrip.vn --password "MatKhauBaoMat123!" --name "Super Admin"
-```
+### Khởi tạo Quản trị viên
+Xem mục 7. Lưu ý: `npm run db:bootstrap` chỉ ghi vào SQLite trên máy chạy lệnh, **không** ghi lên D1 của Cloudflare.
 
 ## 4. Kiểm Thử & Pipeline (Clean CI/CD Pipeline)
 
@@ -130,10 +128,18 @@ npm start
 
 Hệ thống tuân thủ nghiêm ngặt nguyên tắc **Zero Default Credentials**:
 - Không tự động tạo tài khoản Admin hay mật khẩu mặc định khi khởi động production (R1).
-- Để tạo tài khoản Quản trị viên (Admin) đầu tiên hoặc cập nhật mật khẩu cho tài khoản hiện có, chạy lệnh CLI bootstrap:
+- **Trên website thật (Cloudflare D1):** tự đăng ký một tài khoản Khách trên website bằng email dành cho quản trị, rồi nâng quyền và thu hồi phiên cũ (người có quyền Cloudflare chạy, không gửi mật khẩu qua bất kỳ kênh nào):
 
 ```bash
-npm run db:bootstrap -- --email admin@taxuatrip.vn --password "MatKhauBaoMat123!" --name "Super Admin"
+npx wrangler d1 execute taxua-trip-db --remote --command "UPDATE profiles SET role='admin', is_verified=1 WHERE email='email-quan-tri@example.com'; UPDATE user_sessions SET revoked_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE revoked_at IS NULL AND user_id=(SELECT id FROM profiles WHERE email='email-quan-tri@example.com');"
+```
+
+  Sau đó đăng xuất và đăng nhập lại để nhận quyền mới.
+
+- **Chạy local (SQLite trên máy):** lệnh CLI bootstrap tạo admin hoặc đặt lại mật khẩu, **chỉ** tác động file SQLite local, không lên Cloudflare:
+
+```bash
+npm run db:bootstrap -- --email admin@taxuatrip.vn --password "<mật khẩu mạnh của bạn>" --name "Super Admin"
 ```
 
 *Đặc tính của lệnh Bootstrap Admin:*

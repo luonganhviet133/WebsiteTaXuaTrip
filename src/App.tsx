@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { parseLocation, pathForTab, listingPath, buildQuery, normalizeTab, MY_TRIPS_PATH } from './routing/routes.ts';
-import { normalizeSearchIntent, quickDatePresets, todayInVietnam, type SearchIntent } from './search/searchIntent.ts';
+import { normalizeSearchIntent, quickDatePresets, todayInVietnam, addDays, type SearchIntent } from './search/searchIntent.ts';
 import { readAttribution } from './search/attribution.ts';
 import {
   BUS_TRIPS,
@@ -64,7 +64,7 @@ import { DisputeModal } from './components/DisputeModal.tsx';
 import { ReviewModal } from './components/ReviewModal.tsx';
 import { AuthModal } from './components/AuthModal.tsx';
 import { listingsApi, managedToListing, claimToRequest, toContent, voucherFromServer, ApiError, type ManagedListing } from './api/listingsApi.ts';
-import { onlyMappable } from './utils/listingDisplay.ts';
+import { onlyMappable, applyAvailability } from './utils/listingDisplay.ts';
 import { EmptyState, ErrorState, Skeleton } from './components/ui/index.ts';
 import { AuthUser, DEMO_ACCOUNTS } from './types/auth.ts';
 import {
@@ -235,7 +235,7 @@ export default function App() {
   };
 
   // Danh bạ cơ sở: đọc từ API (N03). Công khai chỉ có cơ sở đã duyệt.
-  const [listings, setListings] = useState<Listing[]>([]);
+  const [publicListings, setListings] = useState<Listing[]>([]);
   const [listingsLoad, setListingsLoad] = useState<'loading' | 'ready' | 'error'>('loading');
   const reloadListings = React.useCallback(async () => {
     try {
@@ -249,6 +249,27 @@ export default function App() {
   useEffect(() => {
     reloadListings();
   }, [reloadListings]);
+
+  // N05.1: phòng trống theo đúng ngày khách đang chọn, từ server (một nguồn tồn cho lọc, thẻ, chi tiết, báo giá).
+  const [availabilityMap, setAvailabilityMap] = useState<Record<string, Record<string, number>> | null>(null);
+  const [availabilityRange, setAvailabilityRange] = useState<{ checkIn: string; checkOut: string } | null>(null);
+  const [availabilityTick, setAvailabilityTick] = useState(0);
+  useEffect(() => {
+    if (!availabilityRange) return;
+    let cancelled = false;
+    fetch(`/api/availability?checkIn=${availabilityRange.checkIn}&checkOut=${availabilityRange.checkOut}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((body) => {
+        if (!cancelled) setAvailabilityMap(body?.success ? body.data : null);
+      })
+      .catch(() => {
+        if (!cancelled) setAvailabilityMap(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [availabilityRange?.checkIn, availabilityRange?.checkOut, availabilityTick]);
+  const listings = React.useMemo(() => applyAvailability(publicListings, availabilityMap), [publicListings, availabilityMap]);
 
   // Hồ sơ quản lý: chủ cơ sở thấy cơ sở của mình (kể cả nháp/chờ duyệt), admin thấy tất cả.
   const [managedListings, setManagedListings] = useState<ManagedListing[]>([]);
@@ -386,6 +407,10 @@ export default function App() {
   const [stayAdults, setStayAdults] = useState(initialIntent.adults);
   const [stayChildren, setStayChildren] = useState(initialIntent.children);
   const [stayRooms, setStayRooms] = useState(initialIntent.rooms);
+
+  useEffect(() => {
+    setAvailabilityRange({ checkIn: stayCheckIn, checkOut: stayCheckOut });
+  }, [stayCheckIn, stayCheckOut]);
 
   /** Đổi lựa chọn từ bất kỳ màn nào; luôn chuẩn hóa để không lọt ngày sai/số âm. */
   const updateSearchIntent = (patch: Partial<SearchIntent>) => {
@@ -973,8 +998,9 @@ export default function App() {
       // D04: không có quy định riêng cho trẻ em → trẻ em tính vào sức chứa như người lớn (giống báo giá server).
       const totalRequestedGuests = stayAdults + stayChildren;
       if (item.roomTypes && item.roomTypes.length > 0) {
+        // N05.1: phòng còn 0 là 0 (trước đây Math.max(1, …) đếm thành 1). availableRooms đã theo ngày chọn (applyAvailability).
         const totalHomestayCapacity = item.roomTypes.reduce(
-          (sum, r) => sum + Math.max(1, r.availableRooms || 1) * (r.capacity || 2),
+          (sum, r) => sum + Math.max(0, r.availableRooms ?? r.totalRooms ?? 0) * (r.capacity || 0),
           0
         );
         if (totalHomestayCapacity < totalRequestedGuests) return false;
@@ -982,7 +1008,8 @@ export default function App() {
 
       // 7. Date Range Availability Filter
       if (stayFilterByAvailableDates) {
-        if (hiddenByDateFilter(item, stayCheckIn, stayCheckOut, bookings)) return false;
+        // Tồn đã tính ở server theo từng đêm (applyAvailability); không trừ thêm đơn lưu trong trình duyệt để tránh đếm hai lần.
+        if (hiddenByDateFilter(item, stayCheckIn, stayCheckOut, [])) return false;
       } else if (onlyAvailable && item.roomTypes) {
         const hasFreeRooms = item.roomTypes.some((r) => r.availableRooms > 0);
         if (!hasFreeRooms) return false;
@@ -1043,22 +1070,48 @@ export default function App() {
   };
 
   // Partner dashboard handlers
-  const handleUpdateAvailability = (roomId: string, newAvailable: number) => {
-    setListings((prev) =>
-      prev.map((listing) => {
-        if (listing.roomTypes) {
-          return {
-            ...listing,
-            roomTypes: listing.roomTypes.map((r) =>
-              r.id === roomId ? { ...r, availableRooms: newAvailable } : r
-            ),
-            updatedCalendarDate: new Date().toISOString().slice(0, 10)
-          };
-        }
-        return listing;
-      })
-    );
-    showToast('Đã đổi số phòng trống trên màn hình này. Lịch phòng lưu trên máy chủ sẽ có ở đợt N05.');
+  // N05.1: chủ cơ sở cập nhật phòng trống theo đêm, lưu trên máy chủ.
+  const [partnerInventoryDate, setPartnerInventoryDate] = useState<string>(() => todayInVietnam());
+  const [partnerRoomAvailability, setPartnerRoomAvailability] = useState<Record<string, number> | null>(null);
+  const partnerListingIdForInventory = currentUser?.role === 'partner' ? selectedPartnerListingId || managedListings[0]?.id || '' : '';
+  const reloadPartnerAvailability = React.useCallback(async () => {
+    if (!partnerListingIdForInventory) return setPartnerRoomAvailability(null);
+    try {
+      const res = await fetch(
+        `/api/listings/${encodeURIComponent(partnerListingIdForInventory)}/availability?checkIn=${partnerInventoryDate}&checkOut=${addDays(partnerInventoryDate, 1)}`
+      );
+      const body = await res.json();
+      setPartnerRoomAvailability(
+        body?.success ? Object.fromEntries(body.data.rooms.map((r: { roomTypeId: string; available: number }) => [r.roomTypeId, r.available])) : null
+      );
+    } catch {
+      setPartnerRoomAvailability(null);
+    }
+  }, [partnerListingIdForInventory, partnerInventoryDate]);
+  useEffect(() => {
+    reloadPartnerAvailability();
+  }, [reloadPartnerAvailability]);
+
+  const handleUpdateAvailability = async (roomId: string, newAvailable: number) => {
+    const listingId = partnerListingIdForInventory;
+    if (!listingId) return;
+    try {
+      const res = await fetch(`/api/partner/listings/${encodeURIComponent(listingId)}/inventory`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('taxua_session_token') || ''}` },
+        body: JSON.stringify({ roomTypeId: roomId, dates: [partnerInventoryDate], availableRooms: newAvailable })
+      });
+      const body = await res.json().catch(() => null);
+      if (!res.ok || !body?.success) {
+        showToast(`Chưa lưu: ${body?.error || 'không cập nhật được phòng trống.'}`);
+        return;
+      }
+      showToast(`Đã lưu: đêm ${partnerInventoryDate.split('-').reverse().join('/')} còn ${newAvailable} phòng.`);
+      await reloadPartnerAvailability();
+      setAvailabilityTick((n) => n + 1);
+    } catch {
+      showToast('Không kết nối được máy chủ, chưa lưu phòng trống.');
+    }
   };
 
   const handleConfirmBooking = (bookingId: string) => {
@@ -2944,12 +2997,7 @@ export default function App() {
                         }
                       >
                         {stayFilteredListings.slice(0, visibleStayCount).map((listing) => {
-                          const dateCheck = isHomestayAvailableInDateRange(
-                            listing,
-                            stayCheckIn,
-                            stayCheckOut,
-                            bookings
-                          );
+                          const dateCheck = isHomestayAvailableInDateRange(listing, stayCheckIn, stayCheckOut, []);
                           return (
                             <ListingCard
                               key={listing.id}
@@ -4057,6 +4105,9 @@ export default function App() {
                 bookings={bookings.filter((b) => b.listingId === partnerListing.id)}
                 wallet={partnerWallet}
                 onUpdateAvailability={handleUpdateAvailability}
+                inventoryDate={partnerInventoryDate}
+                onChangeInventoryDate={setPartnerInventoryDate}
+                roomAvailability={partnerRoomAvailability}
                 onConfirmBooking={handleConfirmBooking}
                 onCheckInBooking={handleCheckInBooking}
                 onCompleteBooking={handleCompleteBooking}
