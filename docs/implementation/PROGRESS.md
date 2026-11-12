@@ -9,7 +9,7 @@
 | **G0.1** | Git và dọn kho; cấu hình Worker `websitetaxuatrip` với D1/R2 thật (xem mục G0.1 bên dưới) | **ĐẠT** (trang và `/api/health` chạy trên workers.dev) | 2026-11-12 |
 | **G0.2** | CI GitHub Actions chạy Node 22 (typecheck, build, test), bỏ deploy GitHub Pages | **ĐẠT** (CI `check` xanh trên Node 22, commit `0adccf8`) | 2026-11-12 |
 | **G0.3** | Turnstile thật: widget ở form đăng nhập/đăng ký, Worker đọc secret từ env, chặn khi production thiếu secret, bỏ lỗ vượt qua bằng token test | **ĐẠT** (kiểm trên workers.dev; đăng ký thật có giải widget chờ chủ dự án thử) | 2026-11-12 |
-| **G0.4** | Một bộ xử lý API dùng chung cho Worker và Express; Worker có đủ route | **ĐẠT TRÊN NHÁNH `dot/G0.4`** (chưa gộp vào `main`, chưa deploy) | 2026-11-12 |
+| **G0.4** | Một bộ xử lý API dùng chung cho Worker và Express; Worker có đủ route | **ĐẠT TRÊN NHÁNH `dot/G0.4`** (kiểm trên bản xem trước Cloudflare; chưa gộp vào `main`) | 2026-11-12 |
 | **N03** | Dữ liệu danh bạ, CMS và thẩm định thực tế | *SẴN SÀNG TRIỂN KHAI* | — |
 
 ---
@@ -34,7 +34,8 @@
 **Sau khi đẩy nhánh**
 - GitHub Actions CI (chạy tay trên nhánh `dot/G0.4`, commit `ed7a45b`): success.
 - Cloudflare Workers Builds bản thử cho nhánh `dot/G0.4` lần 1: failure. Log: nhánh khác `main` chạy `npx wrangler preview`, lệnh này đòi khối `previews` trong `wrangler.toml` (không phải lỗi code). Production không đổi.
-- Sửa: tạo tài nguyên riêng cho bản xem trước qua connector (D1 `taxua-trip-db-preview` id `22280e1e-…`, đã áp `0001` và thấy đủ 6 bảng; R2 `taxua-trip-media-preview`, `taxua-trip-private-preview`) và thêm khối `previews` vào `wrangler.toml`, `NODE_ENV = production` để đăng ký/đăng nhập bị chặn tới khi có secret Turnstile riêng cho bản xem trước. `unstable_readConfig` đọc đúng khối mới; `wrangler deploy --dry-run` vẫn dùng D1/R2 production; `worker.test.ts` + `api.contract.test.ts` 29/29 đạt. Không chạy thử được `wrangler preview` trên máy build vì lệnh đòi đăng nhập trước khi kiểm cấu hình; kết quả xem ở bản build kế tiếp.
+- Sửa: tạo tài nguyên riêng cho bản xem trước qua connector (D1 `taxua-trip-db-preview` id `22280e1e-…`, đã áp `0001` và thấy đủ 6 bảng; R2 `taxua-trip-media-preview`, `taxua-trip-private-preview`) và thêm khối `previews` vào `wrangler.toml`, `NODE_ENV = production` để đăng ký/đăng nhập bị chặn tới khi có secret Turnstile riêng cho bản xem trước. `unstable_readConfig` đọc đúng khối mới; `wrangler deploy --dry-run` vẫn dùng D1/R2 production; `worker.test.ts` + `api.contract.test.ts` 29/29 đạt. Không chạy thử được `wrangler preview` trên máy build vì lệnh đòi đăng nhập trước khi kiểm cấu hình.
+- Bản build thử lần 2 (commit `f8b3aa8`): **success**. Bản xem trước `https://dot-g0-4-websitetaxuatrip.vanhuy171099.workers.dev` chạy code G0.4: `/api/health` 200 (`runtime: workerd`, D1 và 2 R2 đều gắn, không có khóa Gemini/Revid vì secret production không chia sẻ sang bản xem trước); `/api/khong-ton-tai` 404 JSON; `/api/ai/quick-quote` và `/api/ai/consult` 200 (bộ quy tắc nội bộ, 2 đêm); `/api/revid/classify` 200 `L3_reasoning`; `/api/user/bookings/abc` và `PUT /api/partner/listings/homestay-may` không token → 401; đăng ký kèm token test → 503 `TURNSTILE_NOT_CONFIGURED`; trang chủ 200, có file JS chính. Gói Worker 228 KiB gzip khởi động được trên Cloudflare.
 
 **Chưa kiểm chứng**
 - Gọi Gemini thật qua `@google/genai` trong workerd (không gọi dịch vụ trả phí trong lượt này; test không có khóa nên chạy bộ quy tắc nội bộ).
