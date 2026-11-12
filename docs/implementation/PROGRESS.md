@@ -9,9 +9,32 @@
 | **G0.1** | Git và dọn kho; cấu hình Worker `websitetaxuatrip` với D1/R2 thật (xem mục G0.1 bên dưới) | **ĐẠT** (trang và `/api/health` chạy trên workers.dev) | 2026-11-12 |
 | **G0.2** | CI GitHub Actions chạy Node 22 (typecheck, build, test), bỏ deploy GitHub Pages | **ĐẠT** (CI `check` xanh trên Node 22, commit `0adccf8`) | 2026-11-12 |
 | **G0.3** | Turnstile thật: widget ở form đăng nhập/đăng ký, Worker đọc secret từ env, chặn khi production thiếu secret, bỏ lỗ vượt qua bằng token test | **ĐẠT** (kiểm trên workers.dev; đăng ký thật có giải widget chờ chủ dự án thử) | 2026-11-12 |
+| **G0.4** | Một bộ xử lý API dùng chung cho Worker và Express; Worker có đủ route | **ĐẠT TRÊN NHÁNH `dot/G0.4`** (chưa gộp vào `main`, chưa deploy) | 2026-11-12 |
 | **N03** | Dữ liệu danh bạ, CMS và thẩm định thực tế | *SẴN SÀNG TRIỂN KHAI* | — |
 
 ---
+
+## G0.4 — Một backend API (12/11/2026, nhánh `dot/G0.4`)
+
+**Đã làm**
+- Thêm `src/server/api.ts`: toàn bộ 16 route `/api/*` (auth gồm cả đổi mật khẩu, booking theo quyền, listing đối tác, admin, AI tư vấn/báo giá, health, gateway Revid, 404 JSON). Xem quyết định D-G0.4-01.
+- `src/worker.ts` còn 91 dòng: tạo `ApiContext` từ `env` (D1, secret Turnstile, hostname, khóa Gemini/Revid, R2) rồi gọi `handleApiRequest`; phần phục vụ file tĩnh giữ nguyên.
+- `server.ts`: thay ~260 dòng route Express bằng một lớp chuyển request/response sang `handleApiRequest`.
+- `aiAdvisor.ts`: `consultWithGeminiAI` nhận khóa qua tham số (mặc định vẫn `process.env`).
+- Gỡ phần Express đã thừa: `createAuthMiddleware`, `authenticate`, `requireAuth`, `requireRole`, `AuthRequest` (auth.ts) và `createRateLimiter` (antiAbuse.ts).
+
+**Kiểm chứng (bản sạch, xóa `node_modules` và `dist`)**
+- `src/server/api.contract.test.ts` viết trước: trên mã cũ 13/26 bước lỗi (Worker thiếu route, khác dạng 404, khác mã lỗi; Express thiếu đổi mật khẩu). Sau khi sửa: 26/26 đạt trên cả hai.
+- `npm ci` exit 0, typecheck exit 0, build exit 0, `npm test` 103/103 đạt (75 cũ + 28 bước hợp đồng), `wrangler deploy --dry-run` exit 0.
+- Gói Worker: 1.762 KiB, gzip 228 KiB (trước 80,6 KiB / 17,7 KiB) do mang thêm bộ AI và `mockData`; dưới giới hạn 3 MB gói miễn phí.
+
+**Phát hiện, chưa sửa**
+- `DatabaseEngine.initSchemaSync()` không tạo được bảng trên D1 thật: gọi `d1.exec()` không chờ, và `exec` của D1 coi mỗi dòng là một câu lệnh nên `CREATE TABLE` nhiều dòng hỏng. D1 mới phải áp `migrations_d1/0001` bằng tay (đã làm cho production ở G0.1; test hợp đồng tự áp cho D1 local). Nên thay bằng `wrangler d1 migrations apply` trong quy trình deploy.
+
+**Chưa kiểm chứng**
+- Gọi Gemini thật qua `@google/genai` trong workerd (không gọi dịch vụ trả phí trong lượt này; test không có khóa nên chạy bộ quy tắc nội bộ).
+- `/api/revid/test-connection` bằng quyền admin (route này gọi mạng ra ngoài).
+- Chưa gộp vào `main` nên production chưa đổi.
 
 ## G0.2 + G0.3 — CI Node 22 và Turnstile thật (12/11/2026)
 

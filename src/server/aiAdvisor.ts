@@ -420,8 +420,11 @@ export function generateLocalRuleBasedConsultation(req: TripConsultRequest): Tri
 /**
  * Gọi Google Gemini API (Server-side) với context dữ liệu thực từ app
  */
-export async function consultWithGeminiAI(req: TripConsultRequest): Promise<TripConsultResponse> {
-  const apiKey = process.env.GEMINI_API_KEY;
+// apiKey truyền từ nơi gọi (Worker: env.GEMINI_API_KEY); mặc định đọc process.env khi chạy Node.
+export async function consultWithGeminiAI(
+  req: TripConsultRequest,
+  apiKey: string | undefined = process.env.GEMINI_API_KEY
+): Promise<TripConsultResponse> {
 
   // Nếu không có API Key hoặc bị lỗi mạng, dùng fallback thông minh chất lượng cao
   if (!apiKey) {

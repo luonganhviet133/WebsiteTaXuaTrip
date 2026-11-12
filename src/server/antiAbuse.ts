@@ -2,7 +2,7 @@
  * Anti-Abuse & Bot Protection Module (N02.5)
  * Cloudflare Turnstile Server Verification & Rate Limiting
  */
-import type { Request, Response, NextFunction } from 'express';
+import type { Request } from 'express';
 
 export interface TurnstileVerifyResult {
   success: boolean;
@@ -158,29 +158,4 @@ export function getClientIp(req: Request): string {
     return cfIp.trim();
   }
   return req.ip || req.socket.remoteAddress || '127.0.0.1';
-}
-
-export function createRateLimiter(options: {
-  maxRequests: number;
-  windowMs: number;
-  keyPrefix: string;
-}) {
-  return (req: Request, res: Response, next: NextFunction): void => {
-    const ip = getClientIp(req);
-    const identifier = (req.body?.identifier || req.body?.email || '').trim().toLowerCase();
-    const key = `${options.keyPrefix}:${ip}:${identifier}`;
-    const result = checkRateLimit(key, options.maxRequests, options.windowMs);
-
-    if (!result.allowed) {
-      res.setHeader('Retry-After', String(result.retryAfter));
-      res.status(429).json({
-        success: false,
-        error: result.error,
-        retryAfter: result.retryAfter
-      });
-      return;
-    }
-
-    next();
-  };
 }

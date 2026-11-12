@@ -2,7 +2,6 @@
  * Authentication & Authorization Module for Tà Xùa Trip
  * Backed by Cloudflare D1 Relational Engine
  */
-import type { Request, Response, NextFunction } from 'express';
 import { getDefaultDb, verifyPassword, hashPassword } from './db.ts';
 import type { DatabaseEngine, ProfileRecord, ProviderRecord } from './db.ts';
 
@@ -222,74 +221,4 @@ export async function bootstrapFirstAdmin(
     });
     return sanitizeUser(profile, undefined, customDb);
   }
-}
-
-// Express Request Extension
-export interface AuthRequest extends Request {
-  user?: AuthenticatedUser;
-  token?: string;
-}
-
-// Auth Middleware Factory
-export function createAuthMiddleware(customDb?: DatabaseEngine) {
-  return async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
-    const authHeader = req.headers.authorization || '';
-    let token = '';
-
-    if (authHeader.startsWith('Bearer ')) {
-      token = authHeader.slice(7).trim();
-    } else if (req.headers['x-session-token']) {
-      token = String(req.headers['x-session-token']).trim();
-    }
-
-    if (token) {
-      try {
-        const user = await getUserByToken(token, customDb ?? getDefaultDb());
-        if (user) {
-          req.user = user;
-          req.token = token;
-        }
-      } catch {
-        // Token error ignored, remains unauthenticated
-      }
-    }
-    next();
-  };
-}
-
-export const authenticate = createAuthMiddleware();
-
-// Require authenticated user
-export function requireAuth(req: AuthRequest, res: Response, next: NextFunction): void {
-  if (!req.user) {
-    res.status(401).json({
-      error: 'UNAUTHORIZED: Yêu cầu đăng nhập hoặc phiên làm việc đã hết hạn.',
-      timestamp: new Date().toISOString()
-    });
-    return;
-  }
-  next();
-}
-
-// Require specific role (RBAC)
-export function requireRole(...allowedRoles: Array<'traveler' | 'partner' | 'admin'>) {
-  return (req: AuthRequest, res: Response, next: NextFunction): void => {
-    if (!req.user) {
-      res.status(401).json({
-        error: 'UNAUTHORIZED: Yêu cầu đăng nhập.',
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
-
-    if (!allowedRoles.includes(req.user.role)) {
-      res.status(403).json({
-        error: `FORBIDDEN: Vai trò '${req.user.role}' không có quyền thực hiện hành động này.`,
-        requiredRoles: allowedRoles,
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
-    next();
-  };
 }

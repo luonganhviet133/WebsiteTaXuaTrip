@@ -18,6 +18,14 @@
 
 ---
 
+### D-G0.4-01: Một bộ xử lý API dùng chung cho Worker và Express (12/11/2026)
+
+- **Bối cảnh:** Express có 15 route, Worker 9 route viết riêng; cùng route nhưng khác dạng phản hồi (404, health, partner listings), khác mã lỗi (tự đăng ký admin: Express 403, Worker 400) và khác cách giới hạn tần suất. Worker thiếu `/api/user/bookings/:id`, `PUT /api/partner/listings/:id`, `/api/ai/*`, `/api/revid/*`; Express thiếu `/api/auth/change-password`.
+- **Quyết định:** Mọi route `/api/*` nằm ở `src/server/api.ts`, nhận/trả `Request`/`Response` chuẩn web. Worker gọi trực tiếp; Express chỉ chuyển đổi request/response (dùng cho dev local). Không đưa Express vào Worker để giữ `compatibility_date` hiện tại và tránh phụ thuộc vào adapter Node HTTP. Hành vi Express (đang được 75 test kiểm tra) làm chuẩn, thêm `change-password` từ Worker.
+- **Giới hạn tần suất đăng nhập/đăng ký:** khóa theo IP + tài khoản, 15 lần/phút (cách của Express). Worker trước đây khóa theo IP. Lý do: bộ test gọi nhiều tài khoản từ cùng IP. Vẫn là bộ đếm trong bộ nhớ của từng isolate; bộ đếm dùng chung (Durable Object/Rate Limiting binding) để sau.
+- **Khóa AI:** `GEMINI_API_KEY`, `REVID_*` truyền từ `env` của Worker (Worker không đọc được qua `process.env` với `compatibility_date` 2024).
+- **Kiểm chứng:** `src/server/api.contract.test.ts` chạy cùng 13 bước trên Express và Worker (workerd, D1 local áp migration `0001`).
+
 ## Đợt N01.1 — Môi trường chạy, build production và kiểm thử nền tảng
 
 ### D-N01.1-01: Tách biệt Express App Factory (`createExpressApp`) và Server Listener (`startServer`)
