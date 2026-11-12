@@ -6,9 +6,40 @@
 |---|---|---|---|
 | **N01.1** | Sửa build/start server production, type-only imports, Express app testable, CI pipeline, README (Đã sửa & nghiệm thu F1, F2, F3) | **ĐẠT NGHIỆM THU** | 2026-11-12 |
 | **N02** | Sửa S1–S6 và chuyển kiến trúc đích sang D1/Workers; auth/bootstrap/ownership/anti-abuse theo Cloudflare plan | **ĐẠT NGHIỆM THU (LOCAL D1 & WORKERD)** *(Cloud staging chờ kiểm chứng)* | 2026-11-12 |
+| **G0.1** | Git và dọn kho; cấu hình Worker `websitetaxuatrip` với D1/R2 thật (xem mục G0.1 bên dưới) | **CODE XONG, CHỜ KIỂM CHỨNG DEPLOY** | 2026-11-12 |
 | **N03** | Dữ liệu danh bạ, CMS và thẩm định thực tế | *SẴN SÀNG TRIỂN KHAI* | — |
 
 ---
+
+## G0.1 — Git, dọn kho và cấu hình Worker thật (12/11/2026)
+
+Theo plan "Tà Xùa Trip — Plan nâng cấp toàn diện". Repo: `luonganhviet133/WebsiteTaXuaTrip`, nhánh `main`.
+
+**Đã làm**
+- Commit mốc nguyên trạng (không gồm `node_modules`, `dist`, `.data`, `tmp`, `.wrangler`, `.env`, `.aistudio`).
+- Bỏ `public/ta-xua-trip-project.zip` (trùng SHA-256 với `ta-xua-trip-source.zip`; `HostingModal` chỉ tải `build.zip` và `source.zip`).
+- Bỏ phần PostgreSQL cũ: `migrations/`, `scripts/migrate.js`, phụ thuộc `pg` và `@types/pg` (chỉ `scripts/migrate.js` dùng). Sửa một dòng README còn nhắc PostgreSQL.
+- Bỏ `bun.lock`: dự án dùng npm (`package-lock.json`), hai lockfile có thể khiến Cloudflare Workers Builds chọn sai trình cài.
+- Thêm `.npmrc` (`legacy-peer-deps=true`): không có cờ này `npm ci` thất bại vì xung đột peer dependency; Workers Builds không truyền cờ.
+- Thêm `.aistudio/` vào `.gitignore`.
+- `wrangler.toml`: tên `websitetaxuatrip` (khớp Worker trên Cloudflare), `database_id` D1 thật `70511a20-b9e0-4069-8eb9-e1eb87cf9406`, `[build] command = "npm run build:client"`.
+
+**Tài nguyên Cloudflare đã tạo qua connector (ngoài code)**
+- D1 `taxua-trip-db` (APAC), đã áp `migrations_d1/0001_initial_schema.sql` và ghi `0001_initial_schema` vào `schema_migrations`; truy vấn lại thấy đủ 6 bảng.
+- R2 `taxua-trip-media`, `taxua-trip-private` (trống).
+- Secrets `TURNSTILE_SECRET_KEY`, `GEMINI_API_KEY` do chủ dự án nhập ở Worker → Settings.
+
+**Kiểm chứng (chạy trên bản sạch sau khi xóa `node_modules` và `dist`)**
+- `npm ci` không cờ: exit 0
+- `npm run typecheck`: exit 0
+- `npm run build`: exit 0 (JS 2.046,91 kB, gzip 446,69 kB; `dist/server.js` 725,1 kB)
+- `npm test`: 68/68 đạt, 0 lỗi
+- `npx wrangler deploy --dry-run`: exit 0, tự chạy build giao diện, đọc 25 file assets, nhận binding D1/R2
+
+**Chưa kiểm chứng / còn lại**
+- Deploy thật qua Workers Builds sau khi đẩy `main`: kiểm tra ở bước kế tiếp.
+- `compatibility_date = 2024-09-23` nên `process.env` trong Worker có thể không nhận secrets; `antiAbuse.ts` khi đó rơi về khóa test Turnstile luôn cho qua. Xử lý ở G0.3.
+- Nhánh `probe` rỗng do phiên rà soát tạo khi thử quyền đẩy, cần chủ repo xóa trên GitHub.
 
 ## 1. Kết Quả Khắc Phục & Nghiệm Thu R1–R9 (Theo N02_REVIEW.md)
 

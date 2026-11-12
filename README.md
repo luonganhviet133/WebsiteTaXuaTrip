@@ -125,7 +125,7 @@ npm run db:bootstrap -- --email admin@taxuatrip.vn --password "MatKhauBaoMat123!
 ```
 
 *Đặc tính của lệnh Bootstrap Admin:*
-- Đọc và ghi đồng bộ vào cùng kho dữ liệu với server (PostgreSQL khi có `DATABASE_URL` hoặc `.data/taxua_db.json`).
+- Đọc và ghi đồng bộ vào cùng kho dữ liệu với server (D1/SQLite local tại `DATABASE_SQLITE_PATH`, mặc định `.data/taxua_trip.sqlite`).
 - Không in mật khẩu hoặc thông tin nhạy cảm ra log.
 - Nếu tài khoản đã tồn tại: Cập nhật mật khẩu mới và tự động **thu hồi toàn bộ các phiên làm việc (sessions) cũ** của user đó để bảo vệ an toàn.
 - Server ngay lập tức nhận diện mật khẩu mới qua cơ sở dữ liệu chung; phiên đăng nhập cũ bị từ chối 401.
