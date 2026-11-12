@@ -280,7 +280,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           badgeText: 'Chủ Cơ Sở',
           activeBg: 'bg-amber-800 text-white border-amber-600 shadow-md',
           colorAccent: 'text-amber-800',
-          gradientBg: 'from-slate-900 via-amber-950 to-[#073161]',
+          gradientBg: 'from-slate-900 via-amber-950 to-brand-800',
           buttonBg: 'bg-amber-700 hover:bg-amber-800'
         };
       case 'traveler':
@@ -288,10 +288,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         return {
           icon: User,
           badgeText: 'Khách Hàng',
-          activeBg: 'bg-[#073161] text-white border-teal-500 shadow-md',
+          activeBg: 'bg-brand-800 text-white border-teal-500 shadow-md',
           colorAccent: 'text-teal-700',
-          gradientBg: 'from-[#073161] via-[#0b4382] to-teal-900',
-          buttonBg: 'bg-[#073161] hover:bg-[#0a3f7c]'
+          gradientBg: 'from-brand-800 via-[#0b4382] to-teal-900',
+          buttonBg: 'bg-brand-800 hover:bg-brand-700'
         };
     }
   };
@@ -315,7 +315,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <CurrentIcon className="w-6 h-6 text-amber-300" />
               </div>
               <div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[10px] font-black uppercase tracking-wider mb-1">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-white text-xs font-black uppercase tracking-wider mb-1">
                   <span>{currentTheme.badgeText}</span>
                 </div>
                 <h2 id="auth-modal-title" className="text-xl sm:text-2xl font-black tracking-tight leading-tight">
@@ -364,7 +364,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         ? 'bg-rose-700 text-white shadow-xs'
                         : tab.id === 'partner'
                         ? 'bg-amber-700 text-white shadow-xs'
-                        : 'bg-[#073161] text-white shadow-xs'
+                        : 'bg-brand-800 text-white shadow-xs'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
                   }`}
                 >
@@ -385,7 +385,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
                   <span>Tài khoản mẫu: {currentDemo.roleLabel}</span>
                 </div>
-                <span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-full">
                   Sẵn sàng đăng nhập
                 </span>
               </div>
@@ -396,7 +396,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
               <div className="flex flex-wrap items-center gap-1.5 mb-3">
                 {currentDemo.badges.map((b, idx) => (
-                  <span key={idx} className="text-[10px] font-semibold text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded-md">
+                  <span key={idx} className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded-md">
                     ✓ {b}
                   </span>
                 ))}
@@ -404,11 +404,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
               <div className="bg-white border border-slate-200/80 rounded-xl p-2.5 flex items-center justify-between gap-2 mb-3 text-xs">
                 <div className="min-w-0">
-                  <span className="text-[10px] text-slate-600 font-extrabold uppercase block">Email đăng nhập:</span>
+                  <span className="text-xs text-slate-600 font-extrabold uppercase block">Email đăng nhập:</span>
                   <span className="font-mono text-slate-800 font-semibold truncate block">{currentDemo.email}</span>
                 </div>
                 <div className="text-right shrink-0">
-                  <span className="text-[10px] text-slate-600 font-extrabold uppercase block">Mật khẩu:</span>
+                  <span className="text-xs text-slate-600 font-extrabold uppercase block">Mật khẩu:</span>
                   <span className="font-mono text-slate-800 font-semibold">{currentDemo.password}</span>
                 </div>
               </div>
@@ -439,7 +439,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 }}
                 className={`text-xs sm:text-sm font-extrabold pb-1 border-b-2 cursor-pointer transition-colors ${
                   mode === 'login'
-                    ? 'text-[#073161] border-[#073161]'
+                    ? 'text-brand-800 border-brand-800'
                     : 'text-slate-600 hover:text-slate-800 border-transparent'
                 }`}
               >
@@ -453,7 +453,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 }}
                 className={`text-xs sm:text-sm font-extrabold pb-1 border-b-2 cursor-pointer transition-colors ${
                   mode === 'register'
-                    ? 'text-[#073161] border-[#073161]'
+                    ? 'text-brand-800 border-brand-800'
                     : 'text-slate-600 hover:text-slate-800 border-transparent'
                 }`}
               >
@@ -461,7 +461,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               </button>
             </div>
 
-            <span className="text-[11px] text-slate-600 hidden sm:inline">
+            <span className="text-xs text-slate-600 hidden sm:inline">
               Vai trò: <strong className="text-slate-700">{currentTheme.badgeText}</strong>
             </span>
           </div>
@@ -501,7 +501,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         ? 'chuhome.may@taxuatrip.vn hoặc SĐT'
                         : 'khachhang@gmail.com hoặc SĐT'
                     }
-                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161]/20 focus:border-[#073161]"
+                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                 </div>
@@ -517,7 +517,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         setIdentifier(currentDemo.email);
                         setPassword(currentDemo.password);
                       }}
-                      className="text-[11px] text-teal-700 hover:underline cursor-pointer"
+                      className="text-xs text-teal-700 hover:underline cursor-pointer"
                     >
                       Điền nhanh tài khoản mẫu
                     </button>
@@ -530,7 +530,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)"
-                    className="w-full pl-9 pr-9 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161]/20 focus:border-[#073161]"
+                    className="w-full pl-9 pr-9 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                   <button
@@ -549,7 +549,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="rounded border-slate-300 text-[#073161] focus:ring-0"
+                    className="rounded border-slate-300 text-brand-800 focus:ring-0"
                   />
                   <span>Ghi nhớ phiên đăng nhập</span>
                 </label>
@@ -558,7 +558,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   href="https://zalo.me/0981234567"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-slate-500 hover:text-[#073161] text-[11px]"
+                  className="text-slate-500 hover:text-brand-800 text-xs"
                 >
                   Quên mật khẩu?
                 </a>
@@ -592,7 +592,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Ví dụ: Vàng A Tủa / Nguyễn Thùy Linh"
-                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161]/20 focus:border-[#073161]"
+                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                 </div>
@@ -609,7 +609,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={regContact}
                     onChange={(e) => setRegContact(e.target.value)}
                     placeholder="098... hoặc email của bạn"
-                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161]/20 focus:border-[#073161]"
+                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                 </div>
@@ -627,7 +627,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       value={facilityName}
                       onChange={(e) => setFacilityName(e.target.value)}
                       placeholder="Ví dụ: A Lầu Homestay / Xe ghép Bắc Yên - Tà Xùa"
-                      className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161]/20 focus:border-[#073161]"
+                      className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                       required
                     />
                   </div>
@@ -644,7 +644,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={regPassword}
                     onChange={(e) => setRegPassword(e.target.value)}
                     placeholder="Tối thiểu 6 ký tự"
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161]/20 focus:border-[#073161]"
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                 </div>
@@ -657,7 +657,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={regConfirmPassword}
                     onChange={(e) => setRegConfirmPassword(e.target.value)}
                     placeholder="Nhập lại mật khẩu"
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161]/20 focus:border-[#073161]"
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                 </div>

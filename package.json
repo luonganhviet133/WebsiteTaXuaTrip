@@ -16,7 +16,7 @@
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test src/**/*.test.ts",
+    "test": "tsx --test \"src/**/*.test.ts\"",
     "db:migrate": "tsx scripts/migrate-d1.js",
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
     "db:migrate:preview": "wrangler d1 migrations apply DB --remote --config wrangler.preview-db.toml",

@@ -1074,10 +1074,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <span className="text-xs font-black uppercase tracking-wider text-indigo-400">
                 TRUNG TÂM ĐIỀU HÀNH & QUẢN TRỊ ADMIN TOÀN DIỆN
               </span>
-              <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-2.5 py-0.5 rounded-full border border-indigo-500/40 font-bold">
+              <span className="text-xs bg-indigo-500/20 text-indigo-300 px-2.5 py-0.5 rounded-full border border-indigo-500/40 font-bold">
                 Admin Master Control
               </span>
-              <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">
+              <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">
                 Toàn quyền Thêm / Sửa / Xóa Dịch Vụ & CMS
               </span>
             </div>
@@ -1094,7 +1094,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="flex items-center justify-between gap-4 mb-2">
               <div>
                 <span className="text-xs font-bold text-white block">Cờ Thu Phí `billing_enabled`:</span>
-                <span className="text-[11px] text-slate-400">50.000đ khi booking hoàn tất</span>
+                <span className="text-xs text-slate-400">50.000đ khi booking hoàn tất</span>
               </div>
               <button
                 type="button"
@@ -1267,7 +1267,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                   <div className="sm:col-span-2">
-                    <label className="text-[11px] text-slate-300 block mb-1">Tên cơ sở dịch vụ *</label>
+                    <label className="text-xs text-slate-300 block mb-1">Tên cơ sở dịch vụ *</label>
                     <input
                       type="text"
                       value={newListingForm.title}
@@ -1278,7 +1278,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Ngành dịch vụ *</label>
+                    <label className="text-xs text-slate-300 block mb-1">Ngành dịch vụ *</label>
                     <select
                       value={newListingForm.category}
                       onChange={(e) => setNewListingForm({ ...newListingForm, category: e.target.value as ServiceCategory })}
@@ -1297,7 +1297,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Khu vực *</label>
+                    <label className="text-xs text-slate-300 block mb-1">Khu vực *</label>
                     <select
                       value={newListingForm.area}
                       onChange={(e) => setNewListingForm({ ...newListingForm, area: e.target.value as LocationArea })}
@@ -1314,7 +1314,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Hotline / Zalo *</label>
+                    <label className="text-xs text-slate-300 block mb-1">Hotline / Zalo *</label>
                     <input
                       type="text"
                       value={newListingForm.phone}
@@ -1323,7 +1323,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Giá từ (VNĐ) *</label>
+                    <label className="text-xs text-slate-300 block mb-1">Giá từ (VNĐ) *</label>
                     <input
                       type="number"
                       step="10000"
@@ -1333,7 +1333,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Huy hiệu khởi tạo</label>
+                    <label className="text-xs text-slate-300 block mb-1">Huy hiệu khởi tạo</label>
                     <select
                       value={newListingForm.verificationTier}
                       onChange={(e) =>
@@ -1347,7 +1347,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Địa chỉ chi tiết</label>
+                    <label className="text-xs text-slate-300 block mb-1">Địa chỉ chi tiết</label>
                     <input
                       type="text"
                       value={newListingForm.address}
@@ -1359,7 +1359,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">URL Ảnh đại diện (Cover Image) *</label>
+                    <label className="text-xs text-slate-300 block mb-1">URL Ảnh đại diện (Cover Image) *</label>
                     <input
                       type="text"
                       value={newListingForm.coverImage}
@@ -1368,7 +1368,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Ghi chú giá / Ưu đãi</label>
+                    <label className="text-xs text-slate-300 block mb-1">Ghi chú giá / Ưu đãi</label>
                     <input
                       type="text"
                       value={newListingForm.priceNote}
@@ -1379,7 +1379,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-slate-300 block mb-1">Mô tả chi tiết cơ sở</label>
+                  <label className="text-xs text-slate-300 block mb-1">Mô tả chi tiết cơ sở</label>
                   <textarea
                     rows={2}
                     value={newListingForm.description}
@@ -1479,7 +1479,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     />
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                        <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
                           Admin Đang Kiểm Soát: {selectedListingDetail.category.toUpperCase()}
                         </span>
                         <span className="text-xs text-slate-400">ID: {selectedListingDetail.id}</span>
@@ -1529,7 +1529,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div className="sm:col-span-2">
-                        <label className="text-[11px] text-slate-300 block mb-1">Tên cơ sở dịch vụ</label>
+                        <label className="text-xs text-slate-300 block mb-1">Tên cơ sở dịch vụ</label>
                         <input
                           type="text"
                           value={selectedListingDetail.title}
@@ -1538,7 +1538,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Ngành dịch vụ</label>
+                        <label className="text-xs text-slate-300 block mb-1">Ngành dịch vụ</label>
                         <select
                           value={selectedListingDetail.category}
                           onChange={(e) =>
@@ -1565,7 +1565,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Khu vực</label>
+                        <label className="text-xs text-slate-300 block mb-1">Khu vực</label>
                         <select
                           value={selectedListingDetail.area}
                           onChange={(e) =>
@@ -1581,7 +1581,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </select>
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Hotline</label>
+                        <label className="text-xs text-slate-300 block mb-1">Hotline</label>
                         <input
                           type="text"
                           value={selectedListingDetail.phone}
@@ -1596,7 +1596,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Giá từ (VNĐ)</label>
+                        <label className="text-xs text-slate-300 block mb-1">Giá từ (VNĐ)</label>
                         <input
                           type="number"
                           step="10000"
@@ -1608,7 +1608,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Địa chỉ</label>
+                        <label className="text-xs text-slate-300 block mb-1">Địa chỉ</label>
                         <input
                           type="text"
                           value={selectedListingDetail.address}
@@ -1621,7 +1621,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
 
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Mô tả chi tiết cơ sở</label>
+                      <label className="text-xs text-slate-300 block mb-1">Mô tả chi tiết cơ sở</label>
                       <textarea
                         rows={3}
                         value={selectedListingDetail.description}
@@ -1634,7 +1634,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Ảnh đại diện (Cover Image URL)</label>
+                        <label className="text-xs text-slate-300 block mb-1">Ảnh đại diện (Cover Image URL)</label>
                         <input
                           type="text"
                           value={selectedListingDetail.coverImage}
@@ -1645,7 +1645,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Ghi chú giá (`priceNote`)</label>
+                        <label className="text-xs text-slate-300 block mb-1">Ghi chú giá (`priceNote`)</label>
                         <input
                           type="text"
                           value={selectedListingDetail.priceNote || ''}
@@ -1700,7 +1700,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   images: (selectedListingDetail.images || []).filter((_, i) => i !== idx)
                                 })
                               }
-                              className="absolute top-1 right-1 bg-rose-600 text-white p-1 rounded-lg text-[10px] cursor-pointer"
+                              className="absolute top-1 right-1 bg-rose-600 text-white p-1 rounded-lg text-xs cursor-pointer"
                               title="Xóa ảnh"
                             >
                               <Trash2 className="w-3 h-3" />
@@ -1717,7 +1717,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <span className="text-xs font-extrabold text-amber-300 flex items-center gap-1.5">
                             <span>👑 Cơ Chế Ghim Ưu Tiên Đề Xuất Đầu Trang (Admin Priority Boost)</span>
                           </span>
-                          <p className="text-[11px] text-slate-300 mt-0.5">
+                          <p className="text-xs text-slate-300 mt-0.5">
                             Cơ sở được ghim sẽ luôn hiển thị đầu tiên trên trang Khám Phá, Lưu Trú, Di Chuyển kèm huy hiệu nổi bật.
                           </p>
                         </div>
@@ -1745,7 +1745,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       {selectedListingDetail.isAdminFeatured && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-amber-500/20">
                           <div>
-                            <label className="text-[11px] text-amber-200 font-bold block mb-1">
+                            <label className="text-xs text-amber-200 font-bold block mb-1">
                               Thứ tự ưu tiên (Số càng nhỏ càng đứng đầu: 1 = Top 1)
                             </label>
                             <input
@@ -1763,7 +1763,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             />
                           </div>
                           <div>
-                            <label className="text-[11px] text-amber-200 font-bold block mb-1">
+                            <label className="text-xs text-amber-200 font-bold block mb-1">
                               Nhãn Huy Hiệu Đề Xuất Hiển Thị Trên Thẻ Cơ Sở
                             </label>
                             <input
@@ -2014,7 +2014,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               <div className="flex items-start justify-between gap-2">
                                 <div>
                                   <h5 className="font-bold text-white text-sm">{rm.name}</h5>
-                                  <p className="text-[11px] text-slate-400">
+                                  <p className="text-xs text-slate-400">
                                     Tối đa {rm.capacity} khách • Tổng {rm.totalRooms} phòng • Còn trống:{' '}
                                     <strong className="text-emerald-400">{rm.availableRooms}</strong>
                                   </p>
@@ -2036,7 +2036,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               </div>
                               <div className="grid grid-cols-3 gap-2 text-xs pt-1">
                                 <div>
-                                  <span className="text-[10px] text-slate-400 block">Giá thường</span>
+                                  <span className="text-xs text-slate-400 block">Giá thường</span>
                                   <input
                                     type="number"
                                     value={rm.priceWeekday}
@@ -2054,7 +2054,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   />
                                 </div>
                                 <div>
-                                  <span className="text-[10px] text-slate-400 block">Giá cuối tuần</span>
+                                  <span className="text-xs text-slate-400 block">Giá cuối tuần</span>
                                   <input
                                     type="number"
                                     value={rm.priceWeekend}
@@ -2072,7 +2072,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   />
                                 </div>
                                 <div>
-                                  <span className="text-[10px] text-slate-400 block">Phòng trống</span>
+                                  <span className="text-xs text-slate-400 block">Phòng trống</span>
                                   <input
                                     type="number"
                                     min="0"
@@ -2190,7 +2190,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                               {/* Sơ đồ ghế nhanh cho Admin khóa/mở */}
                               <div>
-                                <span className="text-[11px] text-slate-400 block mb-1.5">
+                                <span className="text-xs text-slate-400 block mb-1.5">
                                   Sơ đồ ghế ({tr.totalSeats - tr.bookedSeats.length}/{tr.totalSeats} ghế trống) - Bấm để Khóa/Mở ghế:
                                 </span>
                                 <div className="flex flex-wrap gap-1.5">
@@ -2211,7 +2211,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             })
                                           );
                                         }}
-                                        className={`px-2 py-1 rounded text-[10px] font-bold cursor-pointer border ${
+                                        className={`px-2 py-1 rounded text-xs font-bold cursor-pointer border ${
                                           isBooked
                                             ? 'bg-rose-900/60 border-rose-600 text-rose-200'
                                             : 'bg-slate-900 border-teal-500/40 text-teal-300'
@@ -2226,11 +2226,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                               {/* Điểm đón trả */}
                               <div className="flex flex-wrap items-center gap-2 pt-1">
-                                <span className="text-[11px] text-slate-400">Điểm đón/trả:</span>
+                                <span className="text-xs text-slate-400">Điểm đón/trả:</span>
                                 {tr.stops.map((st) => (
                                   <span
                                     key={st.id}
-                                    className="bg-slate-900 border border-slate-700 text-slate-200 text-[11px] px-2.5 py-0.5 rounded-full flex items-center gap-1"
+                                    className="bg-slate-900 border border-slate-700 text-slate-200 text-xs px-2.5 py-0.5 rounded-full flex items-center gap-1"
                                   >
                                     <span>{st.name}</span>
                                     <button
@@ -2256,7 +2256,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     value={adminNewStopName}
                                     onChange={(e) => setAdminNewStopName(e.target.value)}
                                     placeholder="Thêm điểm đón..."
-                                    className="bg-slate-900 border border-slate-700 rounded-lg px-2 py-0.5 text-[11px] text-white w-36"
+                                    className="bg-slate-900 border border-slate-700 rounded-lg px-2 py-0.5 text-xs text-white w-36"
                                   />
                                   <button
                                     type="button"
@@ -2276,7 +2276,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       );
                                       setAdminNewStopName('');
                                     }}
-                                    className="bg-teal-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg cursor-pointer"
+                                    className="bg-teal-600 text-white text-xs font-bold px-2 py-0.5 rounded-lg cursor-pointer"
                                   >
                                     + Thêm
                                   </button>
@@ -2294,7 +2294,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <div className="space-y-4">
                         <div className="bg-slate-850 p-4 rounded-2xl border border-slate-750 grid grid-cols-1 sm:grid-cols-3 gap-3">
                           <div>
-                            <label className="text-[11px] text-slate-400 block mb-1">Giờ mở cửa</label>
+                            <label className="text-xs text-slate-400 block mb-1">Giờ mở cửa</label>
                             <input
                               type="time"
                               value={selectedListingDetail.openingHours?.openTime || '06:30'}
@@ -2312,7 +2312,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             />
                           </div>
                           <div>
-                            <label className="text-[11px] text-slate-400 block mb-1">Giờ đóng cửa</label>
+                            <label className="text-xs text-slate-400 block mb-1">Giờ đóng cửa</label>
                             <input
                               type="time"
                               value={selectedListingDetail.openingHours?.closeTime || '22:00'}
@@ -2330,7 +2330,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             />
                           </div>
                           <div>
-                            <label className="text-[11px] text-slate-400 block mb-1">Ghi chú phục vụ</label>
+                            <label className="text-xs text-slate-400 block mb-1">Ghi chú phục vụ</label>
                             <input
                               type="text"
                               value={selectedListingDetail.openingHours?.serviceNote || ''}
@@ -2415,7 +2415,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             >
                               <div>
                                 <div className="font-bold text-white text-xs">{mn.name}</div>
-                                <div className="text-[11px] text-teal-300 font-bold">
+                                <div className="text-xs text-teal-300 font-bold">
                                   {formatVND(mn.price)} / {mn.unit}
                                 </div>
                               </div>
@@ -2431,7 +2431,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     };
                                     commitListingUpdate(updated);
                                   }}
-                                  className={`text-[10px] font-bold px-2 py-1 rounded-lg cursor-pointer ${
+                                  className={`text-xs font-bold px-2 py-1 rounded-lg cursor-pointer ${
                                     mn.isAvailable ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'
                                   }`}
                                 >
@@ -2534,7 +2534,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             >
                               <div>
                                 <div className="font-bold text-white text-xs">{pk.name}</div>
-                                <div className="text-[11px] text-teal-300 font-bold">
+                                <div className="text-xs text-teal-300 font-bold">
                                   {formatVND(pk.price)}/{pk.unit} • Còn trống: {pk.availableQuantity ?? 5}
                                 </div>
                               </div>
@@ -2580,14 +2580,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <div className="flex flex-wrap items-center gap-2 mb-1">
                         <h4 className="font-extrabold text-white text-sm">{l.title}</h4>
                         {l.isAdminFeatured && (
-                          <span className="text-[10px] bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 px-2.5 py-0.5 rounded-full font-extrabold shadow-sm">
+                          <span className="text-xs bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 px-2.5 py-0.5 rounded-full font-extrabold shadow-sm">
                             {l.adminFeaturedLabel || '👑 Admin Đề Xuất'} (Ưu tiên #{l.adminPriorityRank ?? 10})
                           </span>
                         )}
-                        <span className="text-[10px] bg-slate-800 text-teal-300 px-2 py-0.5 rounded-full font-bold border border-teal-500/30">
+                        <span className="text-xs bg-slate-800 text-teal-300 px-2 py-0.5 rounded-full font-bold border border-teal-500/30">
                           {l.category.toUpperCase()}
                         </span>
-                        <span className="text-[10px] bg-slate-800 text-amber-300 px-2 py-0.5 rounded-full font-bold">
+                        <span className="text-xs bg-slate-800 text-amber-300 px-2 py-0.5 rounded-full font-bold">
                           Từ {formatVND(l.minPrice)}
                         </span>
                       </div>
@@ -2600,7 +2600,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <span>Ảnh: {(l.images || []).length} ảnh</span>
                       </div>
 
-                      <div className="text-[11px] text-slate-300 mt-1.5 flex flex-wrap gap-2">
+                      <div className="text-xs text-slate-300 mt-1.5 flex flex-wrap gap-2">
                         {l.roomTypes && l.roomTypes.length > 0 && (
                           <span className="bg-slate-800 px-2 py-0.5 rounded text-emerald-400 font-medium">
                             {l.roomTypes.length} hạng phòng • Còn {l.roomTypes.reduce((s, r) => s + r.availableRooms, 0)} phòng trống
@@ -2647,7 +2647,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               : `Đã bỏ ghim ưu tiên cho "${l.title}".`
                           );
                         }}
-                        className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold cursor-pointer transition-all ${
+                        className={`px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer transition-all ${
                           l.isAdminFeatured
                             ? 'bg-amber-500 text-slate-950 shadow'
                             : 'bg-slate-800 text-slate-300 hover:text-amber-300'
@@ -2671,7 +2671,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             });
                           }}
                           title="Thứ tự ưu tiên (1 = Cao nhất)"
-                          className="w-12 bg-slate-900 border border-amber-500/40 rounded-lg px-1.5 py-1 text-[11px] font-extrabold text-amber-300 text-center"
+                          className="w-12 bg-slate-900 border border-amber-500/40 rounded-lg px-1.5 py-1 text-xs font-extrabold text-amber-300 text-center"
                         />
                       )}
                     </div>
@@ -2858,18 +2858,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <span className="text-xs font-extrabold text-teal-400 uppercase tracking-wide block">
                           + THÊM KÊNH SOCIAL / SĐT HOTLINE MỚI & CHỌN VỊ TRÍ HIỂN THỊ TRÊN WEBSITE
                         </span>
-                        <p className="text-[11px] text-slate-400 mt-0.5">
+                        <p className="text-xs text-slate-400 mt-0.5">
                           Mọi kênh thêm mới hoặc chỉnh sửa tại đây sẽ tự động hiển thị đồng bộ ở Header, Footer, Popup Cộng Đồng (Phần 4), Thanh nổi và Bảng SOS.
                         </p>
                       </div>
-                      <span className="text-[11px] font-bold bg-teal-500/20 text-teal-300 px-3 py-1 rounded-full border border-teal-500/30">
+                      <span className="text-xs font-bold bg-teal-500/20 text-teal-300 px-3 py-1 rounded-full border border-teal-500/30">
                         Đang hoạt động: {(cmsConfig.socialChannels || []).filter((c) => c.isActive).length}/{(cmsConfig.socialChannels || []).length} kênh
                       </span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Nền tảng / Loại kênh *</label>
+                        <label className="text-xs text-slate-300 block mb-1">Nền tảng / Loại kênh *</label>
                         <select
                           value={newSocialChannel.platform}
                           onChange={(e) =>
@@ -2888,7 +2888,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </select>
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Tên hiển thị của kênh *</label>
+                        <label className="text-xs text-slate-300 block mb-1">Tên hiển thị của kênh *</label>
                         <input
                           type="text"
                           value={newSocialChannel.title}
@@ -2898,7 +2898,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">ID Kênh hoặc Số Điện Thoại *</label>
+                        <label className="text-xs text-slate-300 block mb-1">ID Kênh hoặc Số Điện Thoại *</label>
                         <input
                           type="text"
                           value={newSocialChannel.handleOrNumber}
@@ -2913,7 +2913,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div className="sm:col-span-2">
-                        <label className="text-[11px] text-slate-300 block mb-1">
+                        <label className="text-xs text-slate-300 block mb-1">
                           Đường dẫn URL (Link TikTok/FB/Zalo hoặc `tel:0981234567`) *
                         </label>
                         <input
@@ -2925,7 +2925,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">
+                        <label className="text-xs text-slate-300 block mb-1">
                           Số lượng thành viên / Khung giờ trực
                         </label>
                         <input
@@ -2945,7 +2945,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
                       <div className="sm:col-span-2">
-                        <label className="text-[11px] text-slate-300 block mb-1">Mô tả ngắn hiển thị cho khách</label>
+                        <label className="text-xs text-slate-300 block mb-1">Mô tả ngắn hiển thị cho khách</label>
                         <input
                           type="text"
                           value={newSocialChannel.description}
@@ -2957,7 +2957,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-300 block mb-1">Nhãn nổi bật (Badge)</label>
+                        <label className="text-xs text-slate-300 block mb-1">Nhãn nổi bật (Badge)</label>
                         <input
                           type="text"
                           value={newSocialChannel.badgeText}
@@ -3092,7 +3092,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 ))}
                               </select>
 
-                              <span className="text-[11px] font-mono text-slate-400">#{ch.id}</span>
+                              <span className="text-xs font-mono text-slate-400">#{ch.id}</span>
                             </div>
 
                             <div className="flex items-center gap-2">
@@ -3145,7 +3145,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                           <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
                             <div className="sm:col-span-2">
-                              <label className="text-[10px] text-slate-400 block">Tên hiển thị</label>
+                              <label className="text-xs text-slate-400 block">Tên hiển thị</label>
                               <input
                                 type="text"
                                 value={ch.title}
@@ -3164,7 +3164,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               />
                             </div>
                             <div>
-                              <label className="text-[10px] text-slate-400 block">ID / Số điện thoại</label>
+                              <label className="text-xs text-slate-400 block">ID / Số điện thoại</label>
                               <input
                                 type="text"
                                 value={ch.handleOrNumber}
@@ -3183,7 +3183,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               />
                             </div>
                             <div>
-                              <label className="text-[10px] text-slate-400 block">Thành viên / Giờ trực</label>
+                              <label className="text-xs text-slate-400 block">Thành viên / Giờ trực</label>
                               <input
                                 type="text"
                                 value={ch.memberOrFollowerCount || ''}
@@ -3205,7 +3205,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                             <div>
-                              <label className="text-[10px] text-slate-400 block">Đường dẫn URL / `tel:`</label>
+                              <label className="text-xs text-slate-400 block">Đường dẫn URL / `tel:`</label>
                               <input
                                 type="text"
                                 value={ch.url}
@@ -3224,7 +3224,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               />
                             </div>
                             <div>
-                              <label className="text-[10px] text-slate-400 block">Mô tả ngắn</label>
+                              <label className="text-xs text-slate-400 block">Mô tả ngắn</label>
                               <input
                                 type="text"
                                 value={ch.description}
@@ -3246,13 +3246,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                           {/* Tích chọn các vị trí hiển thị */}
                           <div className="flex flex-wrap items-center gap-2 pt-1">
-                            <span className="text-[11px] font-bold text-slate-400">Vị trí hiển thị:</span>
+                            <span className="text-xs font-bold text-slate-400">Vị trí hiển thị:</span>
                             {(Object.keys(placementLabels) as SocialPlacement[]).map((pl) => {
                               const hasPlacement = ch.placements.includes(pl);
                               return (
                                 <label
                                   key={pl}
-                                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold cursor-pointer border ${
+                                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer border ${
                                     hasPlacement
                                       ? 'bg-teal-500/20 text-teal-300 border-teal-500/40'
                                       : 'bg-slate-900 text-slate-500 border-slate-800'
@@ -3303,7 +3303,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                          <label className="text-[11px] text-slate-300 block mb-1">Kênh nguồn phát tán (utm_source)</label>
+                          <label className="text-xs text-slate-300 block mb-1">Kênh nguồn phát tán (utm_source)</label>
                           <select
                             value={adminUtmSource}
                             onChange={(e) => setAdminUtmSource(e.target.value as any)}
@@ -3318,7 +3318,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </select>
                         </div>
                         <div>
-                          <label className="text-[11px] text-slate-300 block mb-1">Tên chiến dịch (utm_campaign)</label>
+                          <label className="text-xs text-slate-300 block mb-1">Tên chiến dịch (utm_campaign)</label>
                           <input
                             type="text"
                             value={adminUtmCampaign}
@@ -3367,7 +3367,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <span className="text-xs font-extrabold text-teal-400 uppercase">
                           CHECKLIST VẬN HÀNH PHỄU CỘNG ĐỒNG 30 NGÀY (DÀNH CHO ADMIN)
                         </span>
-                        <span className="text-[11px] font-bold bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full">
+                        <span className="text-xs font-bold bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full">
                           {adminLaunchChecklist.filter((i) => i.done).length}/{adminLaunchChecklist.length}
                         </span>
                       </div>
@@ -3409,7 +3409,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <span className="text-xs font-extrabold text-teal-400 uppercase tracking-wide block">
                         Cấu Hình Khối Đầu Trang (Hero Section & Ảnh Nền Chính)
                       </span>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
+                      <p className="text-xs text-slate-400 mt-0.5">
                         Tự động lưu & đồng bộ tức thì ra ngoài website khi gõ hoặc xóa. Xóa trống ô nào thì ô đó sẽ ẩn hoàn toàn trên giao diện.
                       </p>
                     </div>
@@ -3432,7 +3432,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           if (onUpdateSiteContent) onUpdateSiteContent(next);
                           showAdminToast('✅ Đã đặt lại cấu hình Hero chuẩn (Đã xóa trống mô tả chi tiết)!');
                         }}
-                        className="text-[11px] font-bold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 px-3 py-1.5 rounded-xl border border-slate-700 cursor-pointer"
+                        className="text-xs font-bold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 px-3 py-1.5 rounded-xl border border-slate-700 cursor-pointer"
                       >
                         Khôi phục chuẩn (Ẩn mô tả)
                       </button>
@@ -3441,7 +3441,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="text-[11px] text-slate-400 block mb-1">Nhãn Badge trên cùng</label>
+                      <label className="text-xs text-slate-400 block mb-1">Nhãn Badge trên cùng</label>
                       <input
                         type="text"
                         value={cmsConfig.heroBadge ?? ''}
@@ -3456,7 +3456,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-400 block mb-1">Tiêu đề lớn (Hero Title)</label>
+                      <label className="text-xs text-slate-400 block mb-1">Tiêu đề lớn (Hero Title)</label>
                       <input
                         type="text"
                         value={cmsConfig.heroTitle ?? ''}
@@ -3470,7 +3470,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-400 block mb-1">Slogan nghệ thuật (Subtitle)</label>
+                      <label className="text-xs text-slate-400 block mb-1">Slogan nghệ thuật (Subtitle)</label>
                       <input
                         type="text"
                         value={cmsConfig.heroSubtitle ?? ''}
@@ -3487,7 +3487,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="text-[11px] text-slate-400 block">
+                      <label className="text-xs text-slate-400 block">
                         Mô tả chi tiết dưới tiêu đề Hero (Xóa trống sẽ ẩn hoàn toàn trên web)
                       </label>
                       {cmsConfig.heroDescription && (
@@ -3499,7 +3499,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             if (onUpdateSiteContent) onUpdateSiteContent(next);
                             showAdminToast('✅ Đã xóa trống mô tả Hero (Đã đồng bộ ẩn ra web)!');
                           }}
-                          className="text-[10px] font-bold text-rose-400 hover:text-rose-300 cursor-pointer"
+                          className="text-xs font-bold text-rose-400 hover:text-rose-300 cursor-pointer"
                         >
                           ✕ Xóa sạch mô tả này
                         </button>
@@ -3522,7 +3522,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
                     <div className="sm:col-span-3 space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <label className="text-[11px] text-slate-400 block">
+                        <label className="text-xs text-slate-400 block">
                           URL Ảnh Nền Hero Trang Chủ (`heroBackgroundImage`)
                         </label>
                         <button
@@ -3531,7 +3531,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             setAdminTab('revid_api_gateway');
                             setRevidSubSection('live_playground');
                           }}
-                          className="text-[11px] font-extrabold text-amber-300 hover:text-amber-200 flex items-center gap-1 cursor-pointer"
+                          className="text-xs font-extrabold text-amber-300 hover:text-amber-200 flex items-center gap-1 cursor-pointer"
                         >
                           <Sparkles className="w-3.5 h-3.5" />
                           <span>✨ Tạo ảnh 2K bằng RevidAPI (`nano-banana-pro`) →</span>
@@ -3552,7 +3552,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                       {/* Chọn nhanh ảnh nền mẫu chất lượng cao */}
                       <div className="flex items-center gap-2 pt-1 flex-wrap">
-                        <span className="text-[10px] text-slate-400 font-bold">Gợi ý ảnh Tà Xùa 2K:</span>
+                        <span className="text-xs text-slate-400 font-bold">Gợi ý ảnh Tà Xùa 2K:</span>
                         {[
                           {
                             label: '🌅 Bình minh Đỉnh Gió',
@@ -3576,7 +3576,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               if (onUpdateSiteContent) onUpdateSiteContent(next);
                               showAdminToast(`✅ Đã chọn ảnh nền "${preset.label}"!`);
                             }}
-                            className="text-[10px] bg-slate-800 hover:bg-slate-700 text-teal-300 px-2 py-0.5 rounded-lg border border-slate-700 cursor-pointer"
+                            className="text-xs bg-slate-800 hover:bg-slate-700 text-teal-300 px-2 py-0.5 rounded-lg border border-slate-700 cursor-pointer"
                           >
                             {preset.label}
                           </button>
@@ -3586,7 +3586,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {cmsConfig.heroBackgroundImage && (
                       <div className="rounded-xl overflow-hidden border border-slate-700 h-24 relative shadow-md">
                         <img src={cmsConfig.heroBackgroundImage} alt="Hero BG" className="w-full h-full object-cover" />
-                        <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[9px] text-emerald-300 px-1.5 py-0.5 rounded-md font-mono">
+                        <span className="absolute bottom-1 right-1 bg-slate-950/80 text-xs text-emerald-300 px-1.5 py-0.5 rounded-md font-mono">
                           Live Web
                         </span>
                       </div>
@@ -3601,7 +3601,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <span className="text-xs font-extrabold text-teal-400 uppercase tracking-wide block">
                         Quản Trị 3+ Thẻ Điểm Nhấn Hero (Điểm Săn Mây Đỉnh Nhất • Combo Tiết Kiệm • Ẩm Thực & Cafe Đỉnh Gió)
                       </span>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
+                      <p className="text-xs text-slate-400 mt-0.5">
                         Thêm mới, sửa nhãn huy hiệu (`badgeText`), tiêu đề, mô tả, ảnh nền và chọn đích đến khi khách bấm vào từng thẻ trên Hero.
                       </p>
                     </div>
@@ -3714,7 +3714,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <div className="relative h-32">
                             <img src={hb.imageUrl} alt={hb.title} className="w-full h-full object-cover" />
                             <div className="absolute top-2 left-2 flex items-center gap-1.5">
-                              <span className="bg-slate-950/85 text-amber-300 text-[10px] font-extrabold px-2.5 py-1 rounded-lg border border-amber-500/30">
+                              <span className="bg-slate-950/85 text-amber-300 text-xs font-extrabold px-2.5 py-1 rounded-lg border border-amber-500/30">
                                 Thẻ #{hb.sortOrder ?? idx + 1}
                               </span>
                               <button
@@ -3729,7 +3729,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   setCmsConfig(next);
                                   if (onUpdateSiteContent) onUpdateSiteContent(next);
                                 }}
-                                className={`px-2 py-1 rounded-lg text-[10px] font-extrabold cursor-pointer ${
+                                className={`px-2 py-1 rounded-lg text-xs font-extrabold cursor-pointer ${
                                   hb.isActive !== false
                                     ? 'bg-emerald-600 text-white'
                                     : 'bg-slate-800 text-slate-400'
@@ -3756,7 +3756,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </div>
                           <div className="p-3.5 space-y-2">
                             <div>
-                              <label className="text-[10px] text-slate-400 block mb-0.5">Nhãn đầu thẻ (`badgeText`)</label>
+                              <label className="text-xs text-slate-400 block mb-0.5">Nhãn đầu thẻ (`badgeText`)</label>
                               <input
                                 type="text"
                                 value={hb.badgeText || ''}
@@ -3771,11 +3771,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   setCmsConfig(next);
                                   if (onUpdateSiteContent) onUpdateSiteContent(next);
                                 }}
-                                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-[11px] font-extrabold text-amber-300"
+                                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-extrabold text-amber-300"
                               />
                             </div>
                             <div>
-                              <label className="text-[10px] text-slate-400 block mb-0.5">Tiêu đề chính (`title`)</label>
+                              <label className="text-xs text-slate-400 block mb-0.5">Tiêu đề chính (`title`)</label>
                               <input
                                 type="text"
                                 value={hb.title}
@@ -3794,7 +3794,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               />
                             </div>
                             <div>
-                              <label className="text-[10px] text-slate-400 block mb-0.5">Mô tả ngắn (`description`)</label>
+                              <label className="text-xs text-slate-400 block mb-0.5">Mô tả ngắn (`description`)</label>
                               <input
                                 type="text"
                                 value={hb.description || hb.subtitle || ''}
@@ -3809,12 +3809,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   setCmsConfig(next);
                                   if (onUpdateSiteContent) onUpdateSiteContent(next);
                                 }}
-                                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-[11px] text-teal-300"
+                                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-teal-300"
                               />
                             </div>
                             <div className="grid grid-cols-3 gap-2">
                               <div className="col-span-2">
-                                <label className="text-[10px] text-slate-400 block mb-0.5">Đích đến khi click</label>
+                                <label className="text-xs text-slate-400 block mb-0.5">Đích đến khi click</label>
                                 <select
                                   value={hb.targetTab || 'map'}
                                   onChange={(e) => {
@@ -3828,7 +3828,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     setCmsConfig(next);
                                     if (onUpdateSiteContent) onUpdateSiteContent(next);
                                   }}
-                                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-amber-200 font-bold"
+                                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-amber-200 font-bold"
                                 >
                                   <option value="map">Bản đồ & Săn mây</option>
                                   <option value="combo">Gói Combo & Trekking</option>
@@ -3840,7 +3840,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 </select>
                               </div>
                               <div>
-                                <label className="text-[10px] text-slate-400 block mb-0.5">Thứ tự</label>
+                                <label className="text-xs text-slate-400 block mb-0.5">Thứ tự</label>
                                 <input
                                   type="number"
                                   min={1}
@@ -3857,12 +3857,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     setCmsConfig(next);
                                     if (onUpdateSiteContent) onUpdateSiteContent(next);
                                   }}
-                                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-white text-center font-bold"
+                                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white text-center font-bold"
                                 />
                               </div>
                             </div>
                             <div>
-                              <label className="text-[10px] text-slate-400 block mb-0.5">URL Ảnh thu nhỏ</label>
+                              <label className="text-xs text-slate-400 block mb-0.5">URL Ảnh thu nhỏ</label>
                               <input
                                 type="text"
                                 value={hb.imageUrl}
@@ -3878,7 +3878,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   if (onUpdateSiteContent) onUpdateSiteContent(next);
                                 }}
                                 placeholder="URL ảnh banner..."
-                                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-[10px] text-slate-300"
+                                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-300"
                               />
                             </div>
                           </div>
@@ -3939,7 +3939,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                       <div>
-                        <label className="text-[10px] text-slate-400 block mb-0.5">Giá ưu đãi (VNĐ)</label>
+                        <label className="text-xs text-slate-400 block mb-0.5">Giá ưu đãi (VNĐ)</label>
                         <input
                           type="number"
                           value={newComboForm.comboPrice || 1250000}
@@ -3948,7 +3948,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] text-slate-400 block mb-0.5">Giá gốc (VNĐ)</label>
+                        <label className="text-xs text-slate-400 block mb-0.5">Giá gốc (VNĐ)</label>
                         <input
                           type="number"
                           value={newComboForm.originalPrice || 1500000}
@@ -3957,7 +3957,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] text-slate-400 block mb-0.5">Đơn vị tính</label>
+                        <label className="text-xs text-slate-400 block mb-0.5">Đơn vị tính</label>
                         <input
                           type="text"
                           value={newComboForm.unit || 'người'}
@@ -3967,7 +3967,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] text-slate-400 block mb-0.5">Thời lượng</label>
+                        <label className="text-xs text-slate-400 block mb-0.5">Thời lượng</label>
                         <input
                           type="text"
                           value={newComboForm.duration || '2 Ngày 1 Đêm'}
@@ -3976,7 +3976,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] text-amber-300 font-bold block mb-0.5">Thứ tự ưu tiên (1 = Top 1)</label>
+                        <label className="text-xs text-amber-300 font-bold block mb-0.5">Thứ tự ưu tiên (1 = Top 1)</label>
                         <input
                           type="number"
                           min={1}
@@ -4090,10 +4090,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               />
                               <div>
                                 <div className="flex flex-wrap items-center gap-1.5 mb-1">
-                                  <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold px-2 py-0.5 rounded-full">
+                                  <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-extrabold px-2 py-0.5 rounded-full">
                                     Ưu tiên #{pkg.priorityOrder}
                                   </span>
-                                  <span className="bg-teal-500/20 text-teal-300 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                  <span className="bg-teal-500/20 text-teal-300 text-xs font-bold px-2 py-0.5 rounded-full">
                                     {pkg.duration}
                                   </span>
                                 </div>
@@ -4129,7 +4129,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   setCmsConfig(next);
                                   if (onUpdateSiteContent) onUpdateSiteContent(next);
                                 }}
-                                className={`px-2.5 py-1 rounded-lg text-[10px] font-extrabold cursor-pointer ${
+                                className={`px-2.5 py-1 rounded-lg text-xs font-extrabold cursor-pointer ${
                                   pkg.isActive ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400'
                                 }`}
                               >
@@ -4156,7 +4156,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                             <div>
-                              <label className="text-[10px] text-slate-400 block">Giá bán (VNĐ)</label>
+                              <label className="text-xs text-slate-400 block">Giá bán (VNĐ)</label>
                               <input
                                 type="number"
                                 value={pkg.comboPrice}
@@ -4175,7 +4175,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               />
                             </div>
                             <div>
-                              <label className="text-[10px] text-slate-400 block">Giá gốc (VNĐ)</label>
+                              <label className="text-xs text-slate-400 block">Giá gốc (VNĐ)</label>
                               <input
                                 type="number"
                                 value={pkg.originalPrice || pkg.comboPrice}
@@ -4194,7 +4194,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               />
                             </div>
                             <div>
-                              <label className="text-[10px] text-amber-300 font-bold block">Thứ tự ưu tiên</label>
+                              <label className="text-xs text-amber-300 font-bold block">Thứ tự ưu tiên</label>
                               <input
                                 type="number"
                                 min={1}
@@ -4215,7 +4215,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               />
                             </div>
                             <div>
-                              <label className="text-[10px] text-slate-400 block">Ghim đầu trang</label>
+                              <label className="text-xs text-slate-400 block">Ghim đầu trang</label>
                               <button
                                 type="button"
                                 onClick={() => {
@@ -4228,7 +4228,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   setCmsConfig(next);
                                   if (onUpdateSiteContent) onUpdateSiteContent(next);
                                 }}
-                                className={`w-full py-1 rounded-lg text-[11px] font-extrabold cursor-pointer ${
+                                className={`w-full py-1 rounded-lg text-xs font-extrabold cursor-pointer ${
                                   pkg.isPinnedFeatured
                                     ? 'bg-amber-500 text-slate-950'
                                     : 'bg-slate-900 text-slate-400 border border-slate-700'
@@ -4241,7 +4241,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <div>
-                              <label className="text-[10px] text-slate-400 block">Nhãn Badge nổi bật</label>
+                              <label className="text-xs text-slate-400 block">Nhãn Badge nổi bật</label>
                               <input
                                 type="text"
                                 value={pkg.badgeText}
@@ -4256,11 +4256,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   setCmsConfig(next);
                                   if (onUpdateSiteContent) onUpdateSiteContent(next);
                                 }}
-                                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-[11px] text-amber-300 font-bold"
+                                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-amber-300 font-bold"
                               />
                             </div>
                             <div>
-                              <label className="text-[10px] text-slate-400 block">Quyền lợi bao gồm (ngăn cách dấu ;)</label>
+                              <label className="text-xs text-slate-400 block">Quyền lợi bao gồm (ngăn cách dấu ;)</label>
                               <input
                                 type="text"
                                 value={(pkg.includedItems || []).join('; ')}
@@ -4278,7 +4278,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   setCmsConfig(next);
                                   if (onUpdateSiteContent) onUpdateSiteContent(next);
                                 }}
-                                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-[11px] text-teal-200"
+                                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-teal-200"
                               />
                             </div>
                           </div>
@@ -4299,14 +4299,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   >
                     <div className="relative h-28 rounded-xl overflow-hidden border border-slate-700">
                       <img src={sec.bannerImageUrl} alt={sec.sectionName} className="w-full h-full object-cover" />
-                      <span className="absolute bottom-1.5 left-1.5 bg-slate-950/80 text-teal-300 text-[10px] font-bold px-2 py-0.5 rounded">
+                      <span className="absolute bottom-1.5 left-1.5 bg-slate-950/80 text-teal-300 text-xs font-bold px-2 py-0.5 rounded">
                         {sec.sectionName}
                       </span>
                     </div>
                     <div className="md:col-span-3 space-y-2">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <div>
-                          <label className="text-[10px] text-slate-400 block">Tiêu đề chuyên mục ({sec.sectionKey})</label>
+                          <label className="text-xs text-slate-400 block">Tiêu đề chuyên mục ({sec.sectionKey})</label>
                           <input
                             type="text"
                             value={sec.title}
@@ -4323,7 +4323,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           />
                         </div>
                         <div>
-                          <label className="text-[10px] text-slate-400 block">URL Ảnh Banner Chuyên Mục</label>
+                          <label className="text-xs text-slate-400 block">URL Ảnh Banner Chuyên Mục</label>
                           <input
                             type="text"
                             value={sec.bannerImageUrl}
@@ -4341,7 +4341,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </div>
                       </div>
                       <div>
-                        <label className="text-[10px] text-slate-400 block">Mô tả chuyên mục hiển thị dưới tiêu đề</label>
+                        <label className="text-xs text-slate-400 block">Mô tả chuyên mục hiển thị dưới tiêu đề</label>
                         <input
                           type="text"
                           value={sec.subtitle}
@@ -4394,7 +4394,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="text-[11px] text-slate-400 block mb-1">Mức độ cảnh báo</label>
+                    <label className="text-xs text-slate-400 block mb-1">Mức độ cảnh báo</label>
                     <select
                       value={cmsConfig.emergencyBanner.severity}
                       onChange={(e) => {
@@ -4414,7 +4414,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="text-[11px] text-slate-400 block mb-1">Tiêu đề cảnh báo</label>
+                    <label className="text-xs text-slate-400 block mb-1">Tiêu đề cảnh báo</label>
                     <input
                       type="text"
                       value={cmsConfig.emergencyBanner.title}
@@ -4431,7 +4431,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">Nội dung chi tiết thông điệp cảnh báo</label>
+                  <label className="text-xs text-slate-400 block mb-1">Nội dung chi tiết thông điệp cảnh báo</label>
                   <textarea
                     rows={2}
                     value={cmsConfig.emergencyBanner.message}
@@ -4569,7 +4569,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             if (onUpdateLandmarks) onUpdateLandmarks(next);
                           }}
                           placeholder="URL ảnh..."
-                          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-[10px] text-slate-300"
+                          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-300"
                         />
                         <input
                           type="text"
@@ -4580,7 +4580,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             setCmsLandmarks(next);
                             if (onUpdateLandmarks) onUpdateLandmarks(next);
                           }}
-                          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-[11px] text-slate-200"
+                          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-200"
                         />
                       </div>
                     </div>
@@ -4602,7 +4602,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-xs">
                       <div>
-                        <label className="text-[10px] text-slate-400 block">Tỷ lệ mây (%)</label>
+                        <label className="text-xs text-slate-400 block">Tỷ lệ mây (%)</label>
                         <input
                           type="number"
                           min="0"
@@ -4618,7 +4618,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] text-slate-400 block">Nhiệt độ thấp (°C)</label>
+                        <label className="text-xs text-slate-400 block">Nhiệt độ thấp (°C)</label>
                         <input
                           type="number"
                           value={fc.tempMin}
@@ -4632,7 +4632,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] text-slate-400 block">Nhiệt độ cao (°C)</label>
+                        <label className="text-xs text-slate-400 block">Nhiệt độ cao (°C)</label>
                         <input
                           type="number"
                           value={fc.tempMax}
@@ -4647,7 +4647,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-400 block">Lời khuyên thực địa hiển thị cho du khách</label>
+                      <label className="text-xs text-slate-400 block">Lời khuyên thực địa hiển thị cho du khách</label>
                       <input
                         type="text"
                         value={fc.advice}
@@ -4734,7 +4734,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       >
                         <div className="flex-1">
                           <div className="text-xs font-bold text-white">{po.title}</div>
-                          <div className="text-[11px] text-slate-400 line-clamp-1">{po.content}</div>
+                          <div className="text-xs text-slate-400 line-clamp-1">{po.content}</div>
                         </div>
                         <button
                           type="button"
@@ -4760,7 +4760,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[11px] text-slate-400 block mb-1">Slogan Chân Trang</label>
+                      <label className="text-xs text-slate-400 block mb-1">Slogan Chân Trang</label>
                       <input
                         type="text"
                         value={cmsConfig.footerConfig?.brandTagline || ''}
@@ -4777,7 +4777,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-400 block mb-1">Hotline Cứu Hộ Khẩn Cấp 24/7</label>
+                      <label className="text-xs text-slate-400 block mb-1">Hotline Cứu Hộ Khẩn Cấp 24/7</label>
                       <input
                         type="text"
                         value={cmsConfig.footerConfig?.rescueHotline || ''}
@@ -4848,7 +4848,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: bot.themeColor }} />
                         <span className="text-white font-extrabold">{bot.name}</span>
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">
+                      <div className="text-xs text-slate-400 mt-0.5">
                         Tính cách: <strong className="text-teal-300">{bot.personaTone}</strong> • RAG: {(bot.knowledgeFileIds || []).length} file
                       </div>
                     </button>
@@ -4862,12 +4862,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <span className="text-xs font-bold text-teal-400 uppercase tracking-wide">
                     Cấu Hình Chi Tiết: {activeBot.name}
                   </span>
-                  <span className="text-[10px] text-slate-400">ID: {activeBot.id}</span>
+                  <span className="text-xs text-slate-400">ID: {activeBot.id}</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Vai trò hiển thị (Role Title)</label>
+                    <label className="text-xs text-slate-300 block mb-1">Vai trò hiển thị (Role Title)</label>
                     <input
                       type="text"
                       value={activeBot.roleTitle}
@@ -4880,7 +4880,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Tính cách & Giọng điệu (Persona Tone)</label>
+                    <label className="text-xs text-slate-300 block mb-1">Tính cách & Giọng điệu (Persona Tone)</label>
                     <select
                       value={activeBot.personaTone}
                       onChange={(e) => {
@@ -4897,7 +4897,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-[11px] text-slate-300 block mb-1">Màu sắc giao diện khung chat</label>
+                    <label className="text-xs text-slate-300 block mb-1">Màu sắc giao diện khung chat</label>
                     <div className="flex items-center gap-2">
                       <input
                         type="color"
@@ -4914,7 +4914,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-slate-300 block mb-1">Lời nhắc hệ thống chuyên sâu (System Prompt)</label>
+                  <label className="text-xs text-slate-300 block mb-1">Lời nhắc hệ thống chuyên sâu (System Prompt)</label>
                   <textarea
                     rows={3}
                     value={activeBot.systemPrompt}
@@ -4927,7 +4927,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-slate-300 block mb-1">Lời chào mở đầu khi khách mở khung chat (Welcome Message)</label>
+                  <label className="text-xs text-slate-300 block mb-1">Lời chào mở đầu khi khách mở khung chat (Welcome Message)</label>
                   <input
                     type="text"
                     value={activeBot.welcomeMessage}
@@ -5012,7 +5012,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <FileText className="w-4 h-4 text-sky-400" />
                       <span>Kho File Kiến Thức (Knowledge Base) Cho Chatbot</span>
                     </h4>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-xs text-slate-400">
                       Chatbot sẽ chỉ trả lời dựa trên các file kiến thức này, tuyệt đối không bịa đặt thông tin sai lệch.
                     </p>
                   </div>
@@ -5028,7 +5028,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </button>
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Tiêu đề tài liệu kiến thức *</label>
+                      <label className="text-xs text-slate-300 block mb-1">Tiêu đề tài liệu kiến thức *</label>
                       <input
                         type="text"
                         value={newFileTitle}
@@ -5039,7 +5039,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Tóm tắt nội dung chính</label>
+                      <label className="text-xs text-slate-300 block mb-1">Tóm tắt nội dung chính</label>
                       <input
                         type="text"
                         value={newFileSummary}
@@ -5049,7 +5049,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-300 block mb-1">Nội dung văn bản (Markdown / Text)</label>
+                      <label className="text-xs text-slate-300 block mb-1">Nội dung văn bản (Markdown / Text)</label>
                       <textarea
                         rows={3}
                         value={newFileContent}
@@ -5083,11 +5083,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <div>
                             <div className="font-bold text-white text-sm flex items-center gap-2">
                               <span>{file.title || file.fileName}</span>
-                              <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">
+                              <span className="text-xs font-mono text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">
                                 {file.fileName} ({file.fileSize || '30 KB'})
                               </span>
                             </div>
-                            <p className="text-[11px] text-slate-300 mt-0.5">{file.summary || file.content}</p>
+                            <p className="text-xs text-slate-300 mt-0.5">{file.summary || file.content}</p>
                           </div>
                         </div>
 
@@ -5132,11 +5132,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <MessageSquare className="w-4 h-4 text-emerald-400" />
                       <span>Giám Sát Lịch Sử Tương Tác Hệ Thống & Radar Cảnh Báo Lừa Đảo</span>
                     </h4>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-xs text-slate-400">
                       Tự động rà soát tin nhắn giữa Member ↔ Member, Member ↔ Đối tác để bảo vệ quyền lợi du khách.
                     </p>
                   </div>
-                  <span className="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                  <span className="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
                     Mã hóa SHA-256 Tamper-evident
                   </span>
                 </div>
@@ -5156,11 +5156,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <span className="font-bold text-white text-xs">{log.senderName}</span>
                           <span className="text-slate-400">➔</span>
                           <span className="font-bold text-teal-300 text-xs">{log.recipientName}</span>
-                          <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">
+                          <span className="text-xs bg-slate-800 px-2 py-0.5 rounded text-slate-400">
                             {log.channel === 'direct_chat' ? 'Chat Trực Tiếp' : log.channel === 'community' ? 'Cộng Đồng' : 'AI Concierge'}
                           </span>
                         </div>
-                        <span className="text-[10px] text-slate-400 font-mono">{log.timestamp}</span>
+                        <span className="text-xs text-slate-400 font-mono">{log.timestamp}</span>
                       </div>
 
                       <p className="text-slate-200 text-xs italic bg-slate-900/60 p-2 rounded-lg">
@@ -5169,14 +5169,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                       {log.isFlaggedScam && (
                         <div className="flex items-center justify-between pt-1">
-                          <div className="text-[11px] text-rose-400 font-bold flex items-center gap-1.5">
+                          <div className="text-xs text-rose-400 font-bold flex items-center gap-1.5">
                             <AlertCircle className="w-3.5 h-3.5" />
                             <span>CẢNH BÁO: {log.flagReason}</span>
                           </div>
                           <button
                             type="button"
                             onClick={() => alert(`Đã khóa quyền chat của đối tượng vi phạm: ${log.senderName}`)}
-                            className="bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-[10px] px-2.5 py-1 rounded-lg cursor-pointer"
+                            className="bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs px-2.5 py-1 rounded-lg cursor-pointer"
                           >
                             Khóa Quyền Chat
                           </button>
@@ -5195,11 +5195,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <ShieldCheck className="w-4 h-4 text-teal-400" />
                       <span>Ma Trận Cổng Kiểm Quyền 6 Trợ Lý AI (PostgreSQL RLS & PII Masking)</span>
                     </h4>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-xs text-slate-400">
                       Đã chuyển từ trang Lịch trình Khách hàng về độc quyền trong Admin Studio để kiểm soát phân quyền dữ liệu và chống Prompt Injection.
                     </p>
                   </div>
-                  <span className="text-[10px] text-amber-300 font-bold bg-amber-500/15 px-2.5 py-1 rounded-full border border-amber-500/30">
+                  <span className="text-xs text-amber-300 font-bold bg-amber-500/15 px-2.5 py-1 rounded-full border border-amber-500/30">
                     Golden Set: Sai số giá/lịch = 0%
                   </span>
                 </div>
@@ -5246,14 +5246,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <div key={idx} className="bg-slate-850 border border-slate-750 rounded-xl p-3.5 space-y-1.5">
                       <div className="flex items-center justify-between gap-2">
                         <span className="font-extrabold text-white">{ast.name}</span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300">
                           {ast.role}
                         </span>
                       </div>
-                      <div className="text-[10px] font-mono text-sky-300 bg-slate-900 px-2 py-1 rounded border border-slate-800 truncate">
+                      <div className="text-xs font-mono text-sky-300 bg-slate-900 px-2 py-1 rounded border border-slate-800 truncate">
                         {ast.tools}
                       </div>
-                      <p className="text-[11px] text-slate-400 leading-relaxed">{ast.rule}</p>
+                      <p className="text-xs text-slate-400 leading-relaxed">{ast.rule}</p>
                     </div>
                   ))}
                 </div>
@@ -5293,7 +5293,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <span className="text-slate-400">• Đơn: {d.bookingId}</span>
                         <span className="text-amber-400 font-semibold">• Loại: {d.issueType}</span>
                       </div>
-                      <span className="text-[10px] bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded-full font-bold">
+                      <span className="text-xs bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded-full font-bold">
                         {d.status.toUpperCase()}
                       </span>
                     </div>
@@ -5303,7 +5303,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <p className="text-xs text-slate-300 mt-1 italic bg-slate-850 p-2.5 rounded-xl border border-slate-750">
                         "{d.description}"
                       </p>
-                      <div className="text-[11px] text-slate-400 mt-1">
+                      <div className="text-xs text-slate-400 mt-1">
                         Khách: {d.guestName} ({d.guestPhone}) • Tạo ngày: {d.createdAt}
                       </div>
                     </div>
@@ -5351,12 +5351,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-sm font-black text-amber-400">{v.code}</span>
-                      <span className="text-[10px] text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">
+                      <span className="text-xs text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">
                         {v.discountType === 'percent' ? `Giảm ${v.discountValue}%` : `Giảm ${formatVND(v.discountValue)}`}
                       </span>
                     </div>
                     <div className="text-slate-300 font-semibold mt-1">{v.title}</div>
-                    <div className="text-[11px] text-slate-400">Đơn tối thiểu: {formatVND(v.minBookingAmount)}</div>
+                    <div className="text-xs text-slate-400">Đơn tối thiểu: {formatVND(v.minBookingAmount)}</div>
                   </div>
 
                   {onToggleVoucher && (
@@ -5399,7 +5399,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <div className="text-slate-300 mt-0.5">
                         Chủ cơ sở: <strong>{c.ownerName}</strong> • SĐT: <strong>{c.ownerPhone}</strong> (Zalo: {c.zalo})
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">
+                      <div className="text-xs text-slate-400 mt-0.5">
                         CCCD/Mã số thuế: {c.cccdOrTax} • Ghi chú: {c.proofDocumentNote}
                       </div>
                     </div>
@@ -5454,7 +5454,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <div className="font-bold text-teal-300">{log.ticketId} • {log.actor}</div>
                     <div className="text-slate-300 mt-0.5">{log.reason}</div>
                   </div>
-                  <div className="text-[10px] text-slate-500 font-mono shrink-0">{log.timestamp}</div>
+                  <div className="text-xs text-slate-500 font-mono shrink-0">{log.timestamp}</div>
                 </div>
               ))}
             </div>
@@ -5469,7 +5469,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {/* Header & Global Gateway Status */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-750 pb-5">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-300 text-[11px] font-extrabold mb-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-300 text-xs font-extrabold mb-2">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>TÍCH HỢP CHÍNH THỨC: REVIDAPI.COM/DASHBOARD/DOCS · UNIFIED AI & MEDIA GATEWAY</span>
                 </div>
@@ -5485,13 +5485,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="flex flex-wrap items-center gap-3">
                 {/* Credit Wallet Quick Badge */}
                 <div className="bg-slate-900 border border-amber-500/40 rounded-2xl px-4 py-2.5 text-right">
-                  <span className="text-[10px] uppercase tracking-wider text-slate-400 block">
+                  <span className="text-xs uppercase tracking-wider text-slate-400 block">
                     Số dư Ví RevidAPI Credit
                   </span>
                   <div className="text-base font-black text-amber-400 tabular-nums">
                     {revidConfig.creditWallet.balanceCredits.toLocaleString('vi-VN')} Credits
                   </div>
-                  <span className="text-[10px] text-emerald-400 font-bold">
+                  <span className="text-xs text-emerald-400 font-bold">
                     ≈ {formatVND(Math.round((revidConfig.creditWallet.balanceCredits / 1500) * revidConfig.creditWallet.vndPer1500Credits))} · Hôm nay: {revidConfig.creditWallet.usedCreditsToday}/{revidConfig.creditWallet.dailyCreditLimit} cr
                   </span>
                 </div>
@@ -5622,11 +5622,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       >
                         <div className="space-y-2.5">
                           <div className="flex items-center justify-between gap-2">
-                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                            <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-teal-500/20 text-teal-300 border border-teal-500/30">
                               {preset.badge}
                             </span>
                             {isActive && (
-                              <span className="text-[11px] font-black text-emerald-400 flex items-center gap-1">
+                              <span className="text-xs font-black text-emerald-400 flex items-center gap-1">
                                 <CheckCircle2 className="w-3.5 h-3.5" /> Đang áp dụng
                               </span>
                             )}
@@ -5636,7 +5636,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <p className="text-xs text-slate-300 leading-relaxed">{preset.description}</p>
 
                           {/* Preset Level Summary Table */}
-                          <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-3 space-y-1.5 text-[11px]">
+                          <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-3 space-y-1.5 text-xs">
                             <div className="flex items-center justify-between">
                               <span className="text-slate-400">L1 (Lọc chat & PII):</span>
                               <span className="font-mono font-bold text-emerald-300">
@@ -5702,7 +5702,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <label className="bg-slate-950 border border-slate-800 rounded-xl p-4 flex items-start justify-between gap-3 cursor-pointer">
                       <div>
                         <div className="font-bold text-white">Tự Động Chấm Điểm Độ Phức Tạp (Auto-Router)</div>
-                        <p className="text-[11px] text-slate-400 mt-1">
+                        <p className="text-xs text-slate-400 mt-1">
                           Tự động phân tích độ dài và ràng buộc câu hỏi của khách để chọn L1 (0 cr), L2 (54 cr) hoặc L3 (108 cr) thay vì luôn gọi model đắt tiền.
                         </p>
                       </div>
@@ -5722,7 +5722,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <label className="bg-slate-950 border border-slate-800 rounded-xl p-4 flex items-start justify-between gap-3 cursor-pointer">
                       <div>
                         <div className="font-bold text-white">Tận Dụng Bộ Nhớ Đệm Prompt (Cache Read)</div>
-                        <p className="text-[11px] text-slate-400 mt-1">
+                        <p className="text-xs text-slate-400 mt-1">
                           Giữ nguyên ngữ cảnh 179 cơ sở trong bộ nhớ đệm của RevidAPI, giảm giá đọc token từ 258 cr xuống chỉ còn 26 cr/1M (tiết kiệm tới 90%).
                         </p>
                       </div>
@@ -5742,7 +5742,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <label className="bg-slate-950 border border-slate-800 rounded-xl p-4 flex items-start justify-between gap-3 cursor-pointer">
                       <div>
                         <div className="font-bold text-white">Xoay Vòng Đa Khóa Tự Động (Auto Key Failover)</div>
-                        <p className="text-[11px] text-slate-400 mt-1">
+                        <p className="text-xs text-slate-400 mt-1">
                           Khi Key chính chạm giới hạn băng thông (`HTTP 429`), hệ thống lập tức chuyển sang Backup Key mà khách hàng không hề hay biết.
                         </p>
                       </div>
@@ -5803,10 +5803,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
                           <div>
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${levelBadgeColor}`}>
+                              <span className={`px-2.5 py-0.5 rounded-full text-xs font-black border ${levelBadgeColor}`}>
                                 {route.complexityLevel.toUpperCase()}
                               </span>
-                              <span className="font-mono text-[11px] text-teal-400 bg-slate-950 px-2.5 py-0.5 rounded-lg border border-slate-800">
+                              <span className="font-mono text-xs text-teal-400 bg-slate-950 px-2.5 py-0.5 rounded-lg border border-slate-800">
                                 {route.endpointPath}
                               </span>
                               <h5 className="text-sm font-extrabold text-white">{route.featureName}</h5>
@@ -5815,7 +5815,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </div>
 
                           <div className="flex items-center gap-3 shrink-0">
-                            <span className="text-[11px] text-amber-300 font-bold">
+                            <span className="text-xs text-amber-300 font-bold">
                               ~{route.avgCreditsPerCall} cr / lần gọi
                             </span>
                             <button
@@ -5843,7 +5843,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
                           {/* Complexity Level Select */}
                           <div>
-                            <label className="text-[11px] text-slate-400 block mb-1">
+                            <label className="text-xs text-slate-400 block mb-1">
                               Cấp độ phức tạp
                             </label>
                             <select
@@ -5871,7 +5871,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                           {/* Primary Model Select */}
                           <div>
-                            <label className="text-[11px] text-slate-400 block mb-1">
+                            <label className="text-xs text-slate-400 block mb-1">
                               Model chính (Primary Model)
                             </label>
                             <select
@@ -5897,7 +5897,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                           {/* Fallback Model Select */}
                           <div>
-                            <label className="text-[11px] text-slate-400 block mb-1">
+                            <label className="text-xs text-slate-400 block mb-1">
                               Model dự phòng (Fallback)
                             </label>
                             <select
@@ -5926,7 +5926,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           {route.complexityLevel === 'L5_media' && route.endpointPath === '/v1/generate' ? (
                             <>
                               <div>
-                                <label className="text-[11px] text-slate-400 block mb-1">
+                                <label className="text-xs text-slate-400 block mb-1">
                                   Tỷ lệ khung hình (Aspect Ratio)
                                 </label>
                                 <select
@@ -5947,7 +5947,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 </select>
                               </div>
                               <div>
-                                <label className="text-[11px] text-slate-400 block mb-1">
+                                <label className="text-xs text-slate-400 block mb-1">
                                   Độ phân giải (Resolution)
                                 </label>
                                 <select
@@ -5971,7 +5971,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           ) : (
                             <>
                               <div>
-                                <label className="text-[11px] text-slate-400 block mb-1">
+                                <label className="text-xs text-slate-400 block mb-1">
                                   Temperature ({route.temperature})
                                 </label>
                                 <input
@@ -5992,7 +5992,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 />
                               </div>
                               <div>
-                                <label className="text-[11px] text-slate-400 block mb-1">
+                                <label className="text-xs text-slate-400 block mb-1">
                                   Max Output Tokens
                                 </label>
                                 <input
@@ -6062,7 +6062,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
                     <div className="sm:col-span-2">
-                      <label className="text-[11px] text-slate-400 block mb-1">
+                      <label className="text-xs text-slate-400 block mb-1">
                         Base URL RevidAPI (v1)
                       </label>
                       <input
@@ -6074,7 +6074,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-400 block mb-1">
+                      <label className="text-xs text-slate-400 block mb-1">
                         Định dạng Header Xác thực
                       </label>
                       <select
@@ -6089,7 +6089,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </select>
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-400 block mb-1">
+                      <label className="text-xs text-slate-400 block mb-1">
                         Timeout (ms) / Số lần thử lại
                       </label>
                       <div className="flex gap-2">
@@ -6129,11 +6129,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <span className="font-extrabold text-white">{k.label}</span>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/20 text-teal-300 uppercase">
+                            <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-teal-500/20 text-teal-300 uppercase">
                               {k.role}
                             </span>
                             <span
-                              className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              className={`px-2 py-0.5 rounded-full text-xs font-bold ${
                                 k.status === 'active'
                                   ? 'bg-emerald-500/20 text-emerald-300'
                                   : 'bg-rose-500/20 text-rose-300'
@@ -6142,7 +6142,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               {k.status === 'active' ? '● Đang hoạt động' : '○ Đã tạm khóa'}
                             </span>
                           </div>
-                          <div className="text-[11px] text-slate-400 font-mono">
+                          <div className="text-xs text-slate-400 font-mono">
                             Key: <span className="text-amber-300">{k.rawKey ? `${k.rawKey.slice(0, 10)}...` : k.maskedKey}</span> · Hôm nay: {k.requestsToday} req ({k.creditsUsedToday} credits) · Gần nhất: {k.lastUsedAt}
                           </div>
                         </div>
@@ -6297,9 +6297,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               <span className="font-mono text-xs font-black text-teal-300 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">
                                 {m.id}
                               </span>
-                              <span className="text-[11px] font-bold text-slate-400">{m.provider}</span>
+                              <span className="text-xs font-bold text-slate-400">{m.provider}</span>
                             </div>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-800 text-amber-300">
+                            <span className="px-2 py-0.5 rounded-full text-xs font-black bg-slate-800 text-amber-300">
                               {m.recommendedLevel.toUpperCase()}
                             </span>
                           </div>
@@ -6308,7 +6308,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <p className="text-xs text-slate-400 leading-relaxed">{m.description}</p>
                         </div>
 
-                        <div className="pt-2.5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                        <div className="pt-2.5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
                           {m.category === 'llm' ? (
                             <div className="flex flex-wrap items-center gap-2">
                               <span className="px-2 py-0.5 rounded bg-slate-950 text-emerald-300 font-mono">
@@ -6377,7 +6377,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
 
                   {/* Quick Sample Prompts for L1, L2, L3, L4 */}
-                  <div className="flex flex-wrap gap-1.5 text-[11px]">
+                  <div className="flex flex-wrap gap-1.5 text-xs">
                     <button
                       type="button"
                       onClick={() =>
@@ -6423,7 +6423,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <form onSubmit={handleRunPlaygroundChat} className="space-y-3 text-xs">
                     {!playgroundUseAutoComplexity && (
                       <div>
-                        <label className="text-[11px] text-slate-400 block mb-1">
+                        <label className="text-xs text-slate-400 block mb-1">
                           Chọn Model chỉ định thủ công
                         </label>
                         <select
@@ -6471,13 +6471,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           Model: {playgroundResult.modelUsed} ({playgroundResult.latencyMs}ms)
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-400 italic">
+                      <p className="text-xs text-slate-400 italic">
                         Lý do chọn: {playgroundResult.complexity.reason}
                       </p>
                       <div className="p-3 rounded-xl bg-slate-900 text-slate-100 leading-relaxed">
                         {playgroundResult.reply}
                       </div>
-                      <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400 pt-1">
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400 pt-1">
                         <span>
                           Tokens: In {playgroundResult.usage.inputTokens} (Cache Read: {playgroundResult.usage.cacheReadTokens}) · Out {playgroundResult.usage.outputTokens}
                         </span>
@@ -6490,10 +6490,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                   {/* Auto-Generated cURL Preview */}
                   <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-1.5">
-                    <div className="text-[10px] font-extrabold uppercase text-slate-400">
+                    <div className="text-xs font-extrabold uppercase text-slate-400">
                       Mã tích hợp cURL chuẩn `revidapi.com/dashboard/docs`:
                     </div>
-                    <pre className="text-[10px] font-mono text-teal-300 overflow-x-auto whitespace-pre-wrap">
+                    <pre className="text-xs font-mono text-teal-300 overflow-x-auto whitespace-pre-wrap">
 {`curl -X POST ${revidConfig.baseUrl}/chat/completions \\
   -H "${revidConfig.authHeaderMode === 'x_api_key' ? 'X-API-Key: sk_live_...' : 'Authorization: Bearer sk_live_...'}" \\
   -H "Content-Type: application/json" \\
@@ -6522,7 +6522,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <form onSubmit={handleSubmitAsyncMediaJob} className="space-y-3 text-xs">
                     <div className="grid grid-cols-3 gap-2">
                       <div>
-                        <label className="text-[11px] text-slate-400 block mb-1">Model Media</label>
+                        <label className="text-xs text-slate-400 block mb-1">Model Media</label>
                         <select
                           value={mediaJobModel}
                           onChange={(e) => setMediaJobModel(e.target.value)}
@@ -6536,7 +6536,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </select>
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-400 block mb-1">Khung hình</label>
+                        <label className="text-xs text-slate-400 block mb-1">Khung hình</label>
                         <select
                           value={mediaAspectRatio}
                           onChange={(e) => setMediaAspectRatio(e.target.value as any)}
@@ -6548,7 +6548,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </select>
                       </div>
                       <div>
-                        <label className="text-[11px] text-slate-400 block mb-1">Độ phân giải</label>
+                        <label className="text-xs text-slate-400 block mb-1">Độ phân giải</label>
                         <select
                           value={mediaResolution}
                           onChange={(e) => setMediaResolution(e.target.value as any)}
@@ -6592,7 +6592,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             {job.jobId} · {job.modelId}
                           </span>
                           <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                            className={`px-2 py-0.5 rounded-full text-xs font-black ${
                               job.status === 'completed'
                                 ? 'bg-emerald-500/20 text-emerald-300'
                                 : 'bg-amber-500/20 text-amber-300'
@@ -6601,7 +6601,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             {job.status === 'completed' ? '✓ COMPLETED (100%)' : `⏳ PROCESSING (${job.progressPercent}%)`}
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-300 line-clamp-2">{job.promptOrInput}</p>
+                        <p className="text-xs text-slate-300 line-clamp-2">{job.promptOrInput}</p>
                         {job.resultUrl && (
                           <div className="flex items-center justify-between gap-2 pt-1">
                             <img
@@ -6620,7 +6620,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 if (onUpdateSiteContent) onUpdateSiteContent(nextCms);
                                 showAdminToast('🖼️ Đã gắn ảnh từ RevidAPI làm Ảnh nền Hero Trang chủ!');
                               }}
-                              className="px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-[11px] cursor-pointer"
+                              className="px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs cursor-pointer"
                             >
                               Gắn làm Ảnh Nền Hero CMS →
                             </button>
@@ -6646,7 +6646,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
                     <div>
-                      <label className="text-[11px] text-slate-400 block mb-1">
+                      <label className="text-xs text-slate-400 block mb-1">
                         Giới hạn Credit tối đa / ngày
                       </label>
                       <input
@@ -6665,7 +6665,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-400 block mb-1">
+                      <label className="text-xs text-slate-400 block mb-1">
                         Ngưỡng cảnh báo sắp hết Credit
                       </label>
                       <input
@@ -6684,7 +6684,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-400 block mb-1">
+                      <label className="text-xs text-slate-400 block mb-1">
                         Tự chuyển về Free Model khi đạt (%)
                       </label>
                       <input
@@ -6705,7 +6705,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-slate-400 block mb-1">
+                      <label className="text-xs text-slate-400 block mb-1">
                         Giới hạn Request / phút / thành viên
                       </label>
                       <input
@@ -6760,23 +6760,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       >
                         <div>
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 font-mono text-[10px] font-bold">
+                            <span className="px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 font-mono text-xs font-bold">
                               {log.complexityLevel.toUpperCase()}
                             </span>
                             <span className="font-mono font-bold text-amber-300">{log.modelUsed}</span>
                             <span className="font-bold text-white">{log.featureName}</span>
                           </div>
-                          <div className="text-[11px] text-slate-400 mt-0.5 font-mono">
+                          <div className="text-xs text-slate-400 mt-0.5 font-mono">
                             {log.endpoint} · Key: {log.keyLabel} · In: {log.inputTokens || 0} / Out: {log.outputTokens || 0} (Cache: {log.cacheReadTokens || 0})
                           </div>
                         </div>
 
                         <div className="flex items-center gap-3 shrink-0">
-                          <span className="font-mono text-[11px] text-slate-400">{log.latencyMs}ms</span>
+                          <span className="font-mono text-xs text-slate-400">{log.latencyMs}ms</span>
                           <span className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-emerald-300 font-mono font-bold">
                             -{log.creditsCharged} cr
                           </span>
-                          <span className="text-[10px] text-slate-500 font-mono">{log.timestamp}</span>
+                          <span className="text-xs text-slate-500 font-mono">{log.timestamp}</span>
                         </div>
                       </div>
                     ))}

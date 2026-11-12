@@ -715,17 +715,17 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
             >
               <div className="w-3.5 h-3.5 rounded-full bg-cyan-300 shadow-md shadow-cyan-300" />
             </div>
-            <span className="absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded bg-cyan-400 text-slate-950 font-black text-[9px] uppercase">
+            <span className="absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded bg-cyan-400 text-slate-950 font-black text-xs uppercase">
               ADMIN ONLY
             </span>
           </div>
 
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-[10px] font-black tracking-widest uppercase">
+              <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-black tracking-widest uppercase">
                 J.A.R.V.I.S. TACTICAL OS v4.2 · ĐỘC QUYỀN ADMIN
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold">
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold">
                 ● Sức khỏe Hệ thống: {systemHealthScore}/100
               </span>
             </div>
@@ -853,13 +853,13 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
                       : 'bg-cyan-950/40 border-cyan-400/40 text-cyan-100 ml-8'
                   }`}
                 >
-                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2 text-[11px]">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2 text-xs">
                     <div className="flex items-center gap-2">
                       <span className="font-black text-cyan-300 uppercase tracking-wider">
                         {msg.sender === 'jarvis' ? '💠 J.A.R.V.I.S. EXECUTIVE CORE' : '👨‍✈️ QUẢN TRỊ VIÊN (ADMIN)'}
                       </span>
                       {msg.modelUsed && (
-                        <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-amber-300 font-mono text-[10px]">
+                        <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-amber-300 font-mono text-xs">
                           {msg.modelUsed}
                         </span>
                       )}
@@ -875,7 +875,7 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
                       {msg.telemetryHighlights.map((hl, idx) => (
                         <span
                           key={idx}
-                          className="px-2.5 py-1 rounded-lg bg-slate-900 border border-cyan-500/20 text-[11px] font-bold text-cyan-300"
+                          className="px-2.5 py-1 rounded-lg bg-slate-900 border border-cyan-500/20 text-xs font-bold text-cyan-300"
                         >
                           📡 {hl}
                         </span>
@@ -886,7 +886,7 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
                   {/* Executable Tactical Action Cards */}
                   {msg.proposedActions && msg.proposedActions.length > 0 && (
                     <div className="mt-4 space-y-2.5 pt-3 border-t border-slate-800">
-                      <div className="text-[11px] font-extrabold text-amber-300 uppercase tracking-wider">
+                      <div className="text-xs font-extrabold text-amber-300 uppercase tracking-wider">
                         ⚡ Phiếu Mệnh Lệnh Thực Thi Trực Tiếp Trên Hệ Thống ({msg.proposedActions.length}):
                       </div>
                       {msg.proposedActions.map((act) => (
@@ -901,7 +901,7 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
                           <div className="space-y-1">
                             <div className="flex flex-wrap items-center gap-2">
                               <span
-                                className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
+                                className={`px-2 py-0.5 rounded text-xs font-black uppercase ${
                                   act.riskLevel === 'critical'
                                     ? 'bg-rose-500/20 text-rose-300'
                                     : act.riskLevel === 'moderate'
@@ -915,7 +915,7 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
                                 {act.title}
                               </h5>
                             </div>
-                            <p className="text-[11px] text-slate-400">{act.description}</p>
+                            <p className="text-xs text-slate-400">{act.description}</p>
                           </div>
 
                           <div className="shrink-0">
@@ -985,7 +985,7 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
                       `Báo cáo nhanh Quản trị viên: Hệ thống đạt ${systemHealthScore} trên 100 điểm. Có 179 cơ sở đang hoạt động, ${pendingClaims.length} yêu cầu duyệt chính chủ, ${pendingDisputes.length} khiếu nại cọc và ${revidConfig.creditWallet.balanceCredits} credit trong ví RevidAPI.`
                     )
                   }
-                  className="text-[11px] font-bold text-amber-300 hover:underline cursor-pointer"
+                  className="text-xs font-bold text-amber-300 hover:underline cursor-pointer"
                 >
                   🔊 Đọc báo cáo giọng nói
                 </button>
@@ -1045,7 +1045,7 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
                 <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
                   🧭 Điều Hướng Nhanh Tới Phân Hệ Chuyên Sâu
                 </h4>
-                <div className="grid grid-cols-2 gap-2 text-[11px]">
+                <div className="grid grid-cols-2 gap-2 text-xs">
                   {[
                     { id: 'smart_listings', name: '1. Quản trị 179 Cơ sở' },
                     { id: 'cms_content', name: '2. CMS & Ảnh Toàn Trang' },
@@ -1138,12 +1138,12 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
               key={i}
               className={`bg-slate-900/95 border rounded-2xl p-4 space-y-2 ${card.color}`}
             >
-              <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider">
+              <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider">
                 <span className="text-slate-400">{card.title}</span>
                 <span className="px-2 py-0.5 rounded bg-slate-950">{card.status}</span>
               </div>
               <div className="text-lg font-black text-white">{card.metric}</div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">{card.sub}</p>
+              <p className="text-xs text-slate-400 leading-relaxed">{card.sub}</p>
             </div>
           ))}
         </div>
@@ -1179,7 +1179,7 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
                           );
                           showNotice(`Đã ${pb.isActive ? 'tắt' : 'bật'} Playbook "${pb.name}"!`);
                         }}
-                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${
                           pb.isActive
                             ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                             : 'bg-slate-800 text-slate-500'
@@ -1195,7 +1195,7 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
                       <strong className="text-teal-300">HÀNH ĐỘNG (THEN):</strong> {pb.automatedAction}
                     </div>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-900">
+                  <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-900">
                     <span>Đã kích hoạt hôm nay: {pb.triggeredCountToday} lần</span>
                     <span>Gần nhất: {pb.lastTriggeredAt}</span>
                   </div>
@@ -1280,18 +1280,18 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono text-[10px] font-bold uppercase">
+                      <span className="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold uppercase">
                         {sk.category}
                       </span>
-                      <span className="text-[11px] text-emerald-400 font-bold">● Sẵn sàng</span>
+                      <span className="text-xs text-emerald-400 font-bold">● Sẵn sàng</span>
                     </div>
                     <h5 className="font-extrabold text-white text-sm">{sk.name}</h5>
-                    <p className="text-slate-400 text-[11px]">{sk.description}</p>
+                    <p className="text-slate-400 text-xs">{sk.description}</p>
                     <div className="flex flex-wrap gap-1">
                       {sk.triggerKeywords.map((kw, i) => (
                         <span
                           key={i}
-                          className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-[10px] text-amber-300 font-mono"
+                          className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-xs text-amber-300 font-mono"
                         >
                           "{kw}"
                         </span>
@@ -1299,13 +1299,13 @@ export const JarvisAdminAssistant: React.FC<JarvisAdminAssistantProps> = ({
                     </div>
                   </div>
                   <div className="pt-2 border-t border-slate-900 flex items-center justify-between gap-2">
-                    <span className="font-mono text-[10px] text-teal-400 truncate">
+                    <span className="font-mono text-xs text-teal-400 truncate">
                       {sk.endpointOrHandler}
                     </span>
                     <button
                       type="button"
                       onClick={() => handleProcessAdminCommand(sk.triggerKeywords[0] || sk.name)}
-                      className="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold text-[11px] shrink-0 cursor-pointer"
+                      className="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold text-xs shrink-0 cursor-pointer"
                     >
                       Chạy thử →
                     </button>

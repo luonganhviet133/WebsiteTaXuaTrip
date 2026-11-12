@@ -264,7 +264,7 @@ Hotline hỗ trợ: 0981 234 567`;
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/70 backdrop-blur-md overflow-y-auto">
       <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[94vh] flex flex-col">
         {/* Header */}
-        <div className="px-5 sm:px-8 py-4 sm:py-5 bg-gradient-to-r from-[#052247] via-[#073161] to-[#0a468a] text-white flex items-center justify-between shrink-0">
+        <div className="px-5 sm:px-8 py-4 sm:py-5 bg-gradient-to-r from-[#052247] via-brand-800 to-[#0a468a] text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <span className="w-10 h-10 rounded-2xl bg-teal-400/20 text-teal-300 border border-teal-400/30 flex items-center justify-center shadow-inner">
               <Sparkles className="w-5 h-5 text-teal-300 animate-pulse" />
@@ -274,7 +274,7 @@ Hotline hỗ trợ: 0981 234 567`;
                 <h2 className="text-base sm:text-lg font-black tracking-tight">
                   Trợ Lý AI Tư Vấn Phòng & Lịch Trình Tà Xùa
                 </h2>
-                <span className="text-[10px] font-black uppercase tracking-wider bg-teal-400/20 text-teal-300 px-2 py-0.5 rounded-full border border-teal-300/30">
+                <span className="text-xs font-black uppercase tracking-wider bg-teal-400/20 text-teal-300 px-2 py-0.5 rounded-full border border-teal-300/30">
                   Dữ liệu thật 100%
                 </span>
               </div>
@@ -299,7 +299,7 @@ Hotline hỗ trợ: 0981 234 567`;
           {/* Top Form: Nhập tiêu chí chuyến đi */}
           <form onSubmit={handleStartConsultation} className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-200/70">
-              <span className="text-xs font-black uppercase tracking-wider text-[#073161] flex items-center gap-1.5">
+              <span className="text-xs font-black uppercase tracking-wider text-brand-800 flex items-center gap-1.5">
                 <Calendar className="w-4 h-4 text-teal-600" />
                 Thông số chuyến đi cần tư vấn
               </span>
@@ -311,7 +311,7 @@ Hotline hỗ trợ: 0981 234 567`;
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Ngày đi */}
               <div>
-                <label className="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1">
                   Ngày đi (Check-in)
                 </label>
                 <div className="relative">
@@ -319,7 +319,7 @@ Hotline hỗ trợ: 0981 234 567`;
                     type="date"
                     value={checkIn}
                     onChange={(e) => setCheckIn(e.target.value)}
-                    className="w-full text-xs font-bold text-[#073161] bg-white border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full text-xs font-bold text-brand-800 bg-white border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
                     required
                   />
                 </div>
@@ -327,7 +327,7 @@ Hotline hỗ trợ: 0981 234 567`;
 
               {/* Ngày về */}
               <div>
-                <label className="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1">
                   Ngày về (Check-out)
                 </label>
                 <div className="relative">
@@ -336,7 +336,7 @@ Hotline hỗ trợ: 0981 234 567`;
                     value={checkOut}
                     min={checkIn}
                     onChange={(e) => setCheckOut(e.target.value)}
-                    className="w-full text-xs font-bold text-[#073161] bg-white border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full text-xs font-bold text-brand-800 bg-white border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
                     required
                   />
                 </div>
@@ -344,7 +344,7 @@ Hotline hỗ trợ: 0981 234 567`;
 
               {/* Số người */}
               <div>
-                <label className="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">
+                <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1">
                   Số lượng người
                 </label>
                 <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-1.5">
@@ -352,7 +352,7 @@ Hotline hỗ trợ: 0981 234 567`;
                   <select
                     value={guests}
                     onChange={(e) => setGuests(parseInt(e.target.value, 10))}
-                    className="w-full text-xs font-bold text-[#073161] bg-transparent border-none focus:outline-none cursor-pointer"
+                    className="w-full text-xs font-bold text-brand-800 bg-transparent border-none focus:outline-none cursor-pointer"
                   >
                     <option value={1}>1 người (Đi một mình)</option>
                     <option value={2}>2 người (Cặp đôi / Bạn thân)</option>
@@ -368,13 +368,13 @@ Hotline hỗ trợ: 0981 234 567`;
               {/* Ngân sách */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-600">
+                  <label className="text-xs font-black uppercase tracking-wider text-slate-600">
                     Ngân sách ({budgetType === 'per_person' ? '₫ / người' : 'Tổng ₫'})
                   </label>
                   <button
                     type="button"
                     onClick={() => setBudgetType(budgetType === 'per_person' ? 'total' : 'per_person')}
-                    className="text-[10px] font-bold text-teal-700 hover:underline cursor-pointer"
+                    className="text-xs font-bold text-teal-700 hover:underline cursor-pointer"
                   >
                     Đổi sang {budgetType === 'per_person' ? 'Tổng cả đoàn' : 'Từng người'}
                   </button>
@@ -386,16 +386,16 @@ Hotline hỗ trợ: 0981 234 567`;
                     value={budgetAmount}
                     onChange={(e) => setBudgetAmount(e.target.value)}
                     placeholder="VD: 1800000"
-                    className="w-full text-xs font-bold text-[#073161] bg-white border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full text-xs font-bold text-brand-800 bg-white border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
                   />
-                  <span className="absolute right-3 top-2.5 text-[11px] font-bold text-slate-400">₫</span>
+                  <span className="absolute right-3 top-2.5 text-xs font-bold text-slate-400">₫</span>
                 </div>
               </div>
             </div>
 
             {/* Điểm đón */}
             <div>
-              <label className="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">
                 Điểm đón khởi hành
               </label>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -415,9 +415,9 @@ Hotline hỗ trợ: 0981 234 567`;
                       key={sug}
                       type="button"
                       onClick={() => setPickupLocation(sug)}
-                      className={`text-[10.5px] font-bold px-2.5 py-1.5 rounded-lg border whitespace-nowrap transition-colors cursor-pointer ${
+                      className={`text-xs font-bold px-2.5 py-1.5 rounded-lg border whitespace-nowrap transition-colors cursor-pointer ${
                         pickupLocation === sug
-                          ? 'bg-[#073161] text-white border-[#073161]'
+                          ? 'bg-brand-800 text-white border-brand-800'
                           : 'bg-white text-slate-700 border-slate-200 hover:border-teal-400'
                       }`}
                     >
@@ -430,7 +430,7 @@ Hotline hỗ trợ: 0981 234 567`;
 
             {/* Sở thích / Tiêu chí ưu tiên */}
             <div>
-              <label className="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">
                 Nhu cầu & Tiêu chí mong muốn
               </label>
               <div className="flex flex-wrap gap-2">
@@ -469,7 +469,7 @@ Hotline hỗ trợ: 0981 234 567`;
                       setBudgetAmount(p.value);
                       setBudgetType(p.type);
                     }}
-                    className="text-[11px] font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-2 py-0.5 rounded-md border border-teal-200/60 cursor-pointer"
+                    className="text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-2 py-0.5 rounded-md border border-teal-200/60 cursor-pointer"
                   >
                     {p.label}
                   </button>
@@ -479,7 +479,7 @@ Hotline hỗ trợ: 0981 234 567`;
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#073161] hover:bg-[#0a3f7c] text-white font-black text-xs sm:text-sm shadow-md transition-all transform active:scale-95 cursor-pointer disabled:opacity-70 ml-auto"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white font-black text-xs sm:text-sm shadow-md transition-all transform active:scale-95 cursor-pointer disabled:opacity-70 ml-auto"
               >
                 {isLoading ? (
                   <>
@@ -502,7 +502,7 @@ Hotline hỗ trợ: 0981 234 567`;
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-teal-600 text-white shadow-md animate-bounce">
                 <Sparkles className="w-6 h-6" />
               </div>
-              <h3 className="text-sm sm:text-base font-black text-[#073161]">
+              <h3 className="text-sm sm:text-base font-black text-brand-800">
                 AI đang rà soát dữ liệu thực tế tại Tà Xùa...
               </h3>
               <div className="max-w-md mx-auto space-y-2 text-xs font-semibold text-slate-600">
@@ -549,7 +549,7 @@ Hotline hỗ trợ: 0981 234 567`;
                     onClick={() => setActiveResultTab(tab.id as any)}
                     className={`inline-flex items-center gap-2 text-xs font-extrabold px-3.5 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
                       activeResultTab === tab.id
-                        ? 'bg-[#073161] text-white shadow-xs'
+                        ? 'bg-brand-800 text-white shadow-xs'
                         : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                     }`}
                   >
@@ -577,7 +577,7 @@ Hotline hỗ trợ: 0981 234 567`;
                         <Bot className="w-5 h-5" />
                       </span>
                       <div className="flex-1">
-                        <h4 className="text-sm font-black text-[#073161]">
+                        <h4 className="text-sm font-black text-brand-800">
                           Đánh giá từ Trợ lý AI Du lịch Tà Xùa:
                         </h4>
                         <p className="text-xs sm:text-sm text-slate-700 mt-1 leading-relaxed">
@@ -590,31 +590,31 @@ Hotline hỗ trợ: 0981 234 567`;
                   {/* Budget Assessment Metric Cards */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                     <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
-                      <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                      <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                         Ngân sách bạn có
                       </div>
-                      <div className="text-lg sm:text-xl font-black text-[#073161] mt-1">
+                      <div className="text-lg sm:text-xl font-black text-brand-800 mt-1">
                         {result.budgetAssessment.userBudget.toLocaleString('vi-VN')} ₫
                       </div>
-                      <div className="text-[11px] text-slate-500 mt-0.5">
+                      <div className="text-xs text-slate-500 mt-0.5">
                         (~{Math.round(result.budgetAssessment.userBudget / guests).toLocaleString('vi-VN')} ₫ / khách)
                       </div>
                     </div>
 
                     <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
-                      <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                      <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                         Tổng chi phí dự tính
                       </div>
                       <div className="text-lg sm:text-xl font-black text-teal-700 mt-1">
                         {result.budgetAssessment.estimatedTotalCost.toLocaleString('vi-VN')} ₫
                       </div>
-                      <div className="text-[11px] font-bold text-teal-600 mt-0.5">
+                      <div className="text-xs font-bold text-teal-600 mt-0.5">
                         {result.budgetAssessment.estimatedCostPerPerson.toLocaleString('vi-VN')} ₫ / khách
                       </div>
                     </div>
 
                     <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
-                      <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                      <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                         Tình trạng ngân sách
                       </div>
                       <div className="flex items-center gap-1.5 mt-1">
@@ -634,7 +634,7 @@ Hotline hỗ trợ: 0981 234 567`;
                           </span>
                         )}
                       </div>
-                      <div className="text-[11px] text-slate-600 mt-1 leading-snug">
+                      <div className="text-xs text-slate-600 mt-1 leading-snug">
                         {result.budgetAssessment.verdictMessage}
                       </div>
                     </div>
@@ -642,46 +642,46 @@ Hotline hỗ trợ: 0981 234 567`;
 
                   {/* Detailed Cost Breakdown */}
                   <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5">
-                    <h4 className="text-xs font-black uppercase tracking-wider text-[#073161] mb-3">
+                    <h4 className="text-xs font-black uppercase tracking-wider text-brand-800 mb-3">
                       Bảng phân bổ chi phí thực tế ({guests} khách · {nights + 1}N{nights}Đ)
                     </h4>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
                       <div className="bg-white p-3 rounded-xl border border-slate-200/80">
                         <BedDouble className="w-4 h-4 mx-auto text-teal-600 mb-1" />
-                        <div className="text-[11px] font-bold text-slate-500">Tiền phòng ({nights}đ)</div>
-                        <div className="text-xs font-black text-[#073161] mt-0.5">
+                        <div className="text-xs font-bold text-slate-500">Tiền phòng ({nights}đ)</div>
+                        <div className="text-xs font-black text-brand-800 mt-0.5">
                           {result.breakdown.stayCost.toLocaleString('vi-VN')} ₫
                         </div>
                       </div>
 
                       <div className="bg-white p-3 rounded-xl border border-slate-200/80">
                         <Car className="w-4 h-4 mx-auto text-blue-600 mb-1" />
-                        <div className="text-[11px] font-bold text-slate-500">Xe khứ hồi</div>
-                        <div className="text-xs font-black text-[#073161] mt-0.5">
+                        <div className="text-xs font-bold text-slate-500">Xe khứ hồi</div>
+                        <div className="text-xs font-black text-brand-800 mt-0.5">
                           {result.breakdown.transportCost.toLocaleString('vi-VN')} ₫
                         </div>
                       </div>
 
                       <div className="bg-white p-3 rounded-xl border border-slate-200/80">
                         <Utensils className="w-4 h-4 mx-auto text-amber-600 mb-1" />
-                        <div className="text-[11px] font-bold text-slate-500">Ăn uống đặc sản</div>
-                        <div className="text-xs font-black text-[#073161] mt-0.5">
+                        <div className="text-xs font-bold text-slate-500">Ăn uống đặc sản</div>
+                        <div className="text-xs font-black text-brand-800 mt-0.5">
                           {result.breakdown.diningCost.toLocaleString('vi-VN')} ₫
                         </div>
                       </div>
 
                       <div className="bg-white p-3 rounded-xl border border-slate-200/80">
                         <Compass className="w-4 h-4 mx-auto text-rose-600 mb-1" />
-                        <div className="text-[11px] font-bold text-slate-500">Tour & Cafe</div>
-                        <div className="text-xs font-black text-[#073161] mt-0.5">
+                        <div className="text-xs font-bold text-slate-500">Tour & Cafe</div>
+                        <div className="text-xs font-black text-brand-800 mt-0.5">
                           {result.breakdown.activitiesCost.toLocaleString('vi-VN')} ₫
                         </div>
                       </div>
 
                       <div className="bg-white p-3 rounded-xl border border-slate-200/80 col-span-2 sm:col-span-1">
                         <Wallet className="w-4 h-4 mx-auto text-slate-600 mb-1" />
-                        <div className="text-[11px] font-bold text-slate-500">Dự phòng phát sinh</div>
-                        <div className="text-xs font-black text-[#073161] mt-0.5">
+                        <div className="text-xs font-bold text-slate-500">Dự phòng phát sinh</div>
+                        <div className="text-xs font-black text-brand-800 mt-0.5">
                           {result.breakdown.contingencyCost.toLocaleString('vi-VN')} ₫
                         </div>
                       </div>
@@ -698,7 +698,7 @@ Hotline hỗ trợ: 0981 234 567`;
                         <div className="text-xs font-black text-slate-900">
                           Ưu đãi thành viên: Tích lũy +{result.memberPointsReward} Điểm Mây
                         </div>
-                        <p className="text-[11px] text-slate-600 mt-0.5">
+                        <p className="text-xs text-slate-600 mt-0.5">
                           Đặt qua Tà Xùa Trip để được đảm bảo phòng thẩm định, hỗ trợ giải quyết khiếu nại 24/7
                         </p>
                       </div>
@@ -706,7 +706,7 @@ Hotline hỗ trợ: 0981 234 567`;
                     {result.applicableVouchers.length > 0 && (
                       <div className="flex items-center gap-1.5 self-start sm:self-auto shrink-0">
                         <Tag className="w-3.5 h-3.5 text-amber-700" />
-                        <span className="text-[11px] font-black text-amber-900 bg-amber-200/80 px-2.5 py-1 rounded-lg">
+                        <span className="text-xs font-black text-amber-900 bg-amber-200/80 px-2.5 py-1 rounded-lg">
                           Mã: {result.applicableVouchers[0].code}
                         </span>
                       </div>
@@ -722,10 +722,10 @@ Hotline hỗ trợ: 0981 234 567`;
                     <div key={day.dayNumber} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
                       <div className="bg-slate-100/80 px-4 sm:px-6 py-3 border-b border-slate-200 flex items-center justify-between">
                         <div>
-                          <h4 className="text-xs sm:text-sm font-black text-[#073161]">
+                          <h4 className="text-xs sm:text-sm font-black text-brand-800">
                             {day.dayTitle}
                           </h4>
-                          <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                          <p className="text-xs text-slate-500 font-medium mt-0.5">
                             {day.theme}
                           </p>
                         </div>
@@ -737,26 +737,26 @@ Hotline hỗ trợ: 0981 234 567`;
                       <div className="p-4 sm:p-5 divide-y divide-slate-100">
                         {day.activities.map((act, actIdx) => (
                           <div key={actIdx} className="py-3.5 first:pt-0 last:pb-0 flex items-start gap-3 sm:gap-4">
-                            <span className="text-[11px] sm:text-xs font-black text-teal-800 bg-teal-50 border border-teal-200/80 px-2.5 py-1 rounded-lg shrink-0 whitespace-nowrap mt-0.5">
+                            <span className="text-xs font-black text-teal-800 bg-teal-50 border border-teal-200/80 px-2.5 py-1 rounded-lg shrink-0 whitespace-nowrap mt-0.5">
                               {act.time}
                             </span>
                             <div className="flex-1 min-w-0">
                               <div className="text-xs sm:text-sm font-extrabold text-slate-900">
                                 {act.activity}
                               </div>
-                              <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mt-1">
+                              <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1">
                                 <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
                                 <span>{act.location}</span>
                               </div>
                               {act.tip && (
-                                <div className="mt-1.5 text-[11px] text-teal-900 bg-teal-50/60 rounded-lg px-2.5 py-1 border border-teal-100">
+                                <div className="mt-1.5 text-xs text-teal-900 bg-teal-50/60 rounded-lg px-2.5 py-1 border border-teal-100">
                                   💡 <strong>Mẹo Tà Xùa:</strong> {act.tip}
                                 </div>
                               )}
                             </div>
                             {act.costEstimate > 0 && (
                               <div className="text-right shrink-0">
-                                <span className="text-[11px] font-bold text-slate-500">Dự tính:</span>
+                                <span className="text-xs font-bold text-slate-500">Dự tính:</span>
                                 <div className="text-xs font-black text-slate-800">
                                   ~{act.costEstimate.toLocaleString('vi-VN')} ₫
                                 </div>
@@ -770,7 +770,7 @@ Hotline hỗ trợ: 0981 234 567`;
 
                   {/* Travel Tips */}
                   <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5">
-                    <h4 className="text-xs font-black uppercase tracking-wider text-[#073161] mb-2.5 flex items-center gap-1.5">
+                    <h4 className="text-xs font-black uppercase tracking-wider text-brand-800 mb-2.5 flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-teal-600" />
                       Lưu ý vàng khi du lịch Tà Xùa
                     </h4>
@@ -790,7 +790,7 @@ Hotline hỗ trợ: 0981 234 567`;
               {activeResultTab === 'homestays' && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-black uppercase tracking-wider text-[#073161]">
+                    <h4 className="text-xs font-black uppercase tracking-wider text-brand-800">
                       Homestay được AI chọn lọc từ 179 cơ sở thẩm định
                     </h4>
                     <span className="text-xs text-slate-500">
@@ -813,7 +813,7 @@ Hotline hỗ trợ: 0981 234 567`;
                               className="w-full h-full object-cover"
                             />
                             {home.hasCloudView && (
-                              <span className="absolute top-2 left-2 text-[10px] font-black uppercase bg-teal-600 text-white px-2 py-0.5 rounded-full shadow-xs">
+                              <span className="absolute top-2 left-2 text-xs font-black uppercase bg-teal-600 text-white px-2 py-0.5 rounded-full shadow-xs">
                                 ☁️ View Mây
                               </span>
                             )}
@@ -824,18 +824,18 @@ Hotline hỗ trợ: 0981 234 567`;
 
                           <div className="p-4 flex-1 flex flex-col justify-between">
                             <div>
-                              <div className="text-[11px] font-bold text-slate-500">{home.area}</div>
-                              <h5 className="text-xs sm:text-sm font-black text-[#073161] line-clamp-1 mt-0.5">
+                              <div className="text-xs font-bold text-slate-500">{home.area}</div>
+                              <h5 className="text-xs sm:text-sm font-black text-brand-800 line-clamp-1 mt-0.5">
                                 {home.name}
                               </h5>
-                              <p className="text-[11px] text-slate-600 line-clamp-2 mt-1.5 leading-snug">
+                              <p className="text-xs text-slate-600 line-clamp-2 mt-1.5 leading-snug">
                                 {home.reason}
                               </p>
                             </div>
 
                             <div className="pt-3 border-t border-slate-100 mt-3">
                               <div className="flex items-center justify-between mb-2">
-                                <span className="text-[11px] text-slate-500">Giá phòng:</span>
+                                <span className="text-xs text-slate-500">Giá phòng:</span>
                                 <span className="text-xs font-black text-teal-800">
                                   {home.pricePerNight.toLocaleString('vi-VN')} ₫ / đêm
                                 </span>
@@ -849,14 +849,14 @@ Hotline hỗ trợ: 0981 234 567`;
                                       onSelectListing(fullListing);
                                       onClose();
                                     }}
-                                    className="flex-1 bg-[#073161] hover:bg-[#0a3f7c] text-white text-xs font-bold py-2 rounded-xl text-center transition-colors cursor-pointer"
+                                    className="flex-1 bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold py-2 rounded-xl text-center transition-colors cursor-pointer"
                                   >
                                     Xem phòng
                                   </button>
                                 ) : (
                                   <a
                                     href={`tel:${home.phone}`}
-                                    className="flex-1 bg-[#073161] hover:bg-[#0a3f7c] text-white text-xs font-bold py-2 rounded-xl text-center transition-colors flex items-center justify-center gap-1"
+                                    className="flex-1 bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold py-2 rounded-xl text-center transition-colors flex items-center justify-center gap-1"
                                   >
                                     <Phone className="w-3 h-3" />
                                     <span>Gọi đặt</span>
@@ -884,11 +884,11 @@ Hotline hỗ trợ: 0981 234 567`;
               {activeResultTab === 'chat' && (
                 <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 flex flex-col h-96">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-200 mb-3">
-                    <span className="text-xs font-black uppercase text-[#073161] flex items-center gap-1.5">
+                    <span className="text-xs font-black uppercase text-brand-800 flex items-center gap-1.5">
                       <Bot className="w-4 h-4 text-teal-600" />
                       Trò chuyện trực tiếp cùng AI Cố vấn
                     </span>
-                    <span className="text-[10px] text-slate-500">
+                    <span className="text-xs text-slate-500">
                       Sẵn sàng giải đáp mọi thắc mắc về đường đi, giá phòng & đèo dốc
                     </span>
                   </div>
@@ -908,13 +908,13 @@ Hotline hỗ trợ: 0981 234 567`;
                         <div
                           className={`max-w-[80%] rounded-2xl p-3 text-xs leading-relaxed ${
                             msg.sender === 'user'
-                              ? 'bg-[#073161] text-white rounded-br-none'
+                              ? 'bg-brand-800 text-white rounded-br-none'
                               : 'bg-white border border-slate-200/90 text-slate-800 rounded-bl-none shadow-2xs'
                           }`}
                         >
                           <div className="whitespace-pre-wrap">{msg.text}</div>
                           <div
-                            className={`text-[9.5px] mt-1 text-right ${
+                            className={`text-xs mt-1 text-right ${
                               msg.sender === 'user' ? 'text-slate-300' : 'text-slate-400'
                             }`}
                           >
@@ -943,7 +943,7 @@ Hotline hỗ trợ: 0981 234 567`;
                     <button
                       type="submit"
                       disabled={isChatSubmitting || !chatInput.trim()}
-                      className="bg-[#073161] hover:bg-[#0a3f7c] text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                      className="bg-brand-800 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
                     >
                       <Send className="w-3.5 h-3.5" />
                       <span>Gửi</span>

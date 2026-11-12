@@ -56,9 +56,9 @@ export const DisputeModal: React.FC<DisputeModalProps> = ({
     >
       <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="bg-gradient-to-r from-rose-900 to-[#073161] text-white p-5 flex items-start justify-between gap-4 shrink-0">
+        <div className="bg-gradient-to-r from-rose-900 to-brand-800 text-white p-5 flex items-start justify-between gap-4 shrink-0">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-400 text-slate-950 text-[10px] font-extrabold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-400 text-slate-950 text-xs font-extrabold uppercase tracking-wider mb-2">
               <Scale className="w-3 h-3" />
               <span>Trung Tâm Hỗ Trợ Khiếu Nại & Trọng Tài</span>
             </div>
@@ -87,7 +87,7 @@ export const DisputeModal: React.FC<DisputeModalProps> = ({
                 <CheckCircle2 className="w-9 h-9" />
               </div>
               <div>
-                <h4 className="text-lg font-black text-[#073161]">
+                <h4 className="text-lg font-black text-brand-800">
                   Khiếu Nại Đã Được Tiếp Nhận
                 </h4>
                 <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto mt-1 leading-relaxed">
@@ -110,7 +110,7 @@ export const DisputeModal: React.FC<DisputeModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full py-3 bg-[#073161] text-white text-xs font-bold rounded-2xl hover:bg-[#0a3f7c] cursor-pointer"
+                className="w-full py-3 bg-brand-800 text-white text-xs font-bold rounded-2xl hover:bg-brand-700 cursor-pointer"
               >
                 Đóng
               </button>
@@ -120,10 +120,10 @@ export const DisputeModal: React.FC<DisputeModalProps> = ({
               {/* Booking Info Box */}
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs space-y-1">
                 <div className="flex items-center justify-between text-slate-500">
-                  <span>Mã đơn: <strong className="text-[#073161]">{booking.id}</strong></span>
+                  <span>Mã đơn: <strong className="text-brand-800">{booking.id}</strong></span>
                   <span className="font-semibold text-teal-700">{booking.checkInDate}</span>
                 </div>
-                <div className="font-bold text-[#073161] text-sm">{booking.listingTitle}</div>
+                <div className="font-bold text-brand-800 text-sm">{booking.listingTitle}</div>
                 {booking.roomName && (
                   <div className="text-slate-600">Hạng phòng: {booking.roomName}</div>
                 )}
@@ -184,7 +184,7 @@ export const DisputeModal: React.FC<DisputeModalProps> = ({
                     required
                     value={guestName}
                     onChange={(e) => setGuestName(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161] text-slate-800"
+                    className="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                   />
                 </div>
                 <div>
@@ -196,7 +196,7 @@ export const DisputeModal: React.FC<DisputeModalProps> = ({
                     required
                     value={guestPhone}
                     onChange={(e) => setGuestPhone(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#073161] text-slate-800"
+                    className="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                   />
                 </div>
               </div>

@@ -274,7 +274,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
         className={`bg-white border rounded-2xl overflow-hidden transition-all duration-200 flex flex-col md:flex-row group cursor-pointer ${
           isCompared
             ? 'border-teal-600 ring-2 ring-teal-500/20 shadow-md'
-            : 'border-slate-200/90 hover:border-[#073161]/50 shadow-2xs hover:shadow-lg'
+            : 'border-slate-200/90 hover:border-brand-800/50 shadow-2xs hover:shadow-lg'
         }`}
       >
         {/* Left Image Column */}
@@ -293,22 +293,22 @@ export const ListingCard: React.FC<ListingCardProps> = ({
           <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-1.5 z-10">
             <div className="flex items-center gap-1 flex-wrap">
               {listing.isAdminFeatured && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-black text-slate-950 bg-amber-400 px-2.5 py-1 rounded-full border border-amber-200 shadow-xs">
+                <span className="inline-flex items-center gap-1 text-xs font-black text-slate-950 bg-amber-400 px-2.5 py-1 rounded-full border border-amber-200 shadow-xs">
                   <span>{listing.adminFeaturedLabel || '👑 Admin Đề Xuất'}</span>
                 </span>
               )}
               {listing.hasCloudView && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-white bg-teal-900/90 px-2.5 py-1 rounded-full border border-teal-300/30">
+                <span className="inline-flex items-center gap-1 text-xs font-extrabold text-white bg-teal-900/90 px-2.5 py-1 rounded-full border border-teal-300/30">
                   ☁️ View Biển Mây
                 </span>
               )}
               {(listing.category === 'bus' || listing.category === 'motorbike') && bikesAvailableCount > 0 && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-white bg-emerald-800/90 px-2.5 py-1 rounded-full border border-emerald-300/30">
+                <span className="inline-flex items-center gap-1 text-xs font-extrabold text-white bg-emerald-800/90 px-2.5 py-1 rounded-full border border-emerald-300/30">
                   🛵 Sẵn {bikesAvailableCount} xe máy
                 </span>
               )}
               {listing.verificationTier === 3 && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-white bg-[#073161]/90 px-2 py-1 rounded-full border border-white/20">
+                <span className="inline-flex items-center gap-1 text-xs font-extrabold text-white bg-brand-800/90 px-2 py-1 rounded-full border border-white/20">
                   <Sparkles className="w-3 h-3 text-amber-400" />
                   <span>Cấp 3</span>
                 </span>
@@ -324,7 +324,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
                     onToggleCompare(listing.id);
                   }}
                   title="So sánh homestay (tối đa 3 cơ sở)"
-                  className={`h-7 px-2 rounded-full text-[10px] font-extrabold flex items-center gap-1 border transition-colors cursor-pointer ${
+                  className={`h-7 px-2 rounded-full text-xs font-extrabold flex items-center gap-1 border transition-colors cursor-pointer ${
                     isCompared
                       ? 'bg-teal-500 text-slate-950 border-teal-300'
                       : 'bg-black/45 hover:bg-black/65 text-white border-white/25'
@@ -350,13 +350,13 @@ export const ListingCard: React.FC<ListingCardProps> = ({
             </div>
           </div>
 
-          <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] z-10">
+          <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-xs z-10">
             <span className="inline-flex items-center gap-1 font-semibold truncate">
               <MapPin className="w-3.5 h-3.5 text-teal-300 shrink-0" />
               <span>{listing.area}</span>
             </span>
             {photoCount > 1 && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/45 text-[10px]">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/45 text-xs">
                 <Camera className="w-3 h-3" />
                 <span>{photoCount} ảnh</span>
               </span>
@@ -368,7 +368,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
         <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between min-w-0">
           <div>
             <div className="flex items-start justify-between gap-2 mb-1">
-              <h3 className="text-base sm:text-lg font-black text-[#073161] group-hover:text-teal-700 transition-colors leading-snug">
+              <h3 className="text-base sm:text-lg font-black text-brand-800 group-hover:text-teal-700 transition-colors leading-snug">
                 {listing.title}
               </h3>
             </div>
@@ -381,7 +381,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
             {/* Room Breakdown Table (For Homestay) */}
             {listing.category === 'homestay' && roomsList.length > 0 && (
               <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 space-y-1.5 mb-3">
-                <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 flex items-center justify-between">
+                <div className="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center justify-between">
                   <span>Hạng phòng đã thẩm định</span>
                   <span>Tình trạng & Giá / đêm</span>
                 </div>
@@ -393,13 +393,13 @@ export const ListingCard: React.FC<ListingCardProps> = ({
                     <div className="min-w-0 flex items-center gap-1.5">
                       <BedDouble className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                       <span className="font-bold text-slate-800 truncate">{rm.name}</span>
-                      <span className="text-[11px] text-slate-500 shrink-0">
+                      <span className="text-xs text-slate-500 shrink-0">
                         · {rm.capacity} khách · {rm.viewType}
                       </span>
                     </div>
                     <div className="shrink-0 flex items-center gap-2">
                       <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                           rm.availableRooms > 0
                             ? 'bg-emerald-100 text-emerald-800'
                             : 'bg-rose-100 text-rose-700'
@@ -407,7 +407,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
                       >
                         {rm.availableRooms > 0 ? `Còn ${rm.availableRooms} căn` : 'Hết phòng'}
                       </span>
-                      <span className="font-extrabold text-[#073161] tabular-nums">
+                      <span className="font-extrabold text-brand-800 tabular-nums">
                         {rm.price ? formatVND(rm.price) : 'Liên hệ'}
                       </span>
                     </div>
@@ -419,7 +419,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
             {/* Service Package Breakdown Table (For Bus / Taxi / Motorbike / Services) */}
             {listing.category !== 'homestay' && packagesList.length > 0 && (
               <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 space-y-1.5 mb-3">
-                <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 flex items-center justify-between">
+                <div className="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center justify-between">
                   <span>Gói dịch vụ & Lịch trình niêm yết</span>
                   <span>Tình trạng & Đơn giá</span>
                 </div>
@@ -431,16 +431,16 @@ export const ListingCard: React.FC<ListingCardProps> = ({
                     <div className="min-w-0">
                       <div className="font-bold text-slate-800 truncate">{pkg.name}</div>
                       {pkg.durationNote && (
-                        <div className="text-[11px] text-slate-500 truncate">{pkg.durationNote}</div>
+                        <div className="text-xs text-slate-500 truncate">{pkg.durationNote}</div>
                       )}
                     </div>
                     <div className="shrink-0 flex items-center gap-2">
                       {pkg.availableCount !== undefined && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
                           Còn {pkg.availableCount} chỗ
                         </span>
                       )}
-                      <span className="font-extrabold text-[#073161] tabular-nums">
+                      <span className="font-extrabold text-brand-800 tabular-nums">
                         {formatVND(pkg.price)}/{pkg.unit}
                       </span>
                     </div>
@@ -454,7 +454,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
             {highlight.pills.map((pill, idx) => (
               <span
                 key={idx}
-                className="text-[10px] font-semibold px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200/80"
+                className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200/80"
               >
                 {pill}
               </span>
@@ -465,32 +465,32 @@ export const ListingCard: React.FC<ListingCardProps> = ({
         {/* Right Pricing & Action Column */}
         <div className="p-4 sm:p-5 md:w-60 border-t md:border-t-0 md:border-l border-slate-100 bg-slate-50/50 flex flex-row md:flex-col items-center md:items-end justify-between gap-3 shrink-0">
           <div className="flex md:flex-col items-center md:items-end gap-2 w-full justify-between">
-            <div className="inline-flex items-center gap-1.5 bg-[#073161] text-white px-2.5 py-1 rounded-xl text-xs font-black tabular-nums">
+            <div className="inline-flex items-center gap-1.5 bg-brand-800 text-white px-2.5 py-1 rounded-xl text-xs font-black tabular-nums">
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
               <span>{listing.rating}</span>
-              <span className="text-[10px] font-medium text-slate-200">({listing.reviewCount})</span>
+              <span className="text-xs font-medium text-slate-200">({listing.reviewCount})</span>
             </div>
 
             {stayAvailabilityBadge && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-800 bg-emerald-100/90 border border-emerald-300 px-2.5 py-1 rounded-lg">
+              <span className="inline-flex items-center gap-1 text-xs font-extrabold text-emerald-800 bg-emerald-100/90 border border-emerald-300 px-2.5 py-1 rounded-lg">
                 <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
                 <span>Còn {stayAvailabilityBadge.availableRoomsCount} phòng trống</span>
               </span>
             )}
 
             {(listing.category === 'bus' || listing.category === 'motorbike') && (
-              <span className="hidden md:inline-flex items-center gap-1 text-[10px] font-extrabold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg">
+              <span className="hidden md:inline-flex items-center gap-1 text-xs font-extrabold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg">
                 <span>🎁 Combo Xe máy -30k · 12h=0.5 ngày</span>
               </span>
             )}
           </div>
 
           <div className="text-right">
-            <span className="text-[10px] text-slate-500 uppercase font-extrabold block whitespace-nowrap">
+            <span className="text-xs text-slate-500 uppercase font-extrabold block whitespace-nowrap">
               {meta.pricePrefix}
             </span>
             <div className="flex items-baseline md:justify-end gap-1 whitespace-nowrap">
-              <span className="text-xl font-black text-[#073161] tabular-nums">
+              <span className="text-xl font-black text-brand-800 tabular-nums">
                 {listing.minPrice > 0 ? formatVND(listing.minPrice) : 'Hỗ trợ 24/7'}
               </span>
               {listing.minPrice > 0 && meta.unitLabel && (
@@ -498,7 +498,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
               )}
             </div>
             {nightsCount > 1 && listing.category === 'homestay' && (
-              <div className="text-[11px] font-bold text-teal-800 mt-0.5 tabular-nums">
+              <div className="text-xs font-bold text-teal-800 mt-0.5 tabular-nums">
                 Tổng {nightsCount} đêm: {formatVND(listing.minPrice * nightsCount)}
               </div>
             )}
@@ -536,7 +536,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
                   e.stopPropagation();
                   onSelect(listing);
                 }}
-                className="bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs px-4 py-2 rounded-xl transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+                className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-4 py-2 rounded-xl transition-all active:scale-95 cursor-pointer whitespace-nowrap"
               >
                 {meta.ctaLabel}
               </button>
@@ -555,16 +555,16 @@ export const ListingCard: React.FC<ListingCardProps> = ({
           ? 'border-teal-600 ring-2 ring-teal-500/20 shadow-md'
           : listing.isAdminFeatured
           ? 'border-amber-400/90 hover:border-amber-500 shadow-sm hover:shadow-lg ring-1 ring-amber-300/40'
-          : 'border-slate-200/90 hover:border-[#073161]/50 shadow-2xs hover:shadow-lg'
+          : 'border-slate-200/90 hover:border-brand-800/50 shadow-2xs hover:shadow-lg'
       }`}
     >
       {/* Admin Featured Priority Strip (Khi Admin ghim ưu tiên cơ sở lên đầu) */}
       {listing.isAdminFeatured && !stayAvailabilityBadge && (
-        <div className="px-3.5 py-1.5 bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-300 text-slate-950 text-[11px] font-black flex items-center justify-between gap-2 border-b border-amber-400/80">
+        <div className="px-3.5 py-1.5 bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-300 text-slate-950 text-xs font-black flex items-center justify-between gap-2 border-b border-amber-400/80">
           <span className="truncate">
             {listing.adminFeaturedLabel || '👑 Admin Đề Xuất · Ưu Tiên Hàng Đầu'}
           </span>
-          <span className="text-[10px] font-extrabold bg-slate-950/90 text-amber-300 px-2 py-0.5 rounded-full shrink-0">
+          <span className="text-xs font-extrabold bg-slate-950/90 text-amber-300 px-2 py-0.5 rounded-full shrink-0">
             Top #{listing.adminPriorityRank ? Math.max(1, 101 - listing.adminPriorityRank) : 1}
           </span>
         </div>
@@ -572,14 +572,14 @@ export const ListingCard: React.FC<ListingCardProps> = ({
 
       {/* Integrated Availability Strip Inside Card when Filtering by Date on /stay */}
       {stayAvailabilityBadge && (
-        <div className="px-3.5 py-2 bg-emerald-50/90 border-b border-emerald-200/80 text-emerald-900 text-[11px] font-bold flex items-center justify-between gap-2">
+        <div className="px-3.5 py-2 bg-emerald-50/90 border-b border-emerald-200/80 text-emerald-900 text-xs font-bold flex items-center justify-between gap-2">
           <span className="flex items-center gap-1.5 truncate">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             <span className="truncate">
               Còn <strong>{stayAvailabilityBadge.availableRoomsCount} phòng trống</strong> ({stayAvailabilityBadge.dateLabel})
             </span>
           </span>
-          <span className="text-[10px] font-extrabold text-emerald-700 bg-white px-2 py-0.5 rounded-full border border-emerald-200 shrink-0">
+          <span className="text-xs font-extrabold text-emerald-700 bg-white px-2 py-0.5 rounded-full border border-emerald-200 shrink-0">
             Sẵn sàng đặt
           </span>
         </div>
@@ -602,19 +602,19 @@ export const ListingCard: React.FC<ListingCardProps> = ({
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10">
           <div className="flex items-center gap-1.5 flex-wrap">
             {listing.hasCloudView && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-white bg-teal-900/85 backdrop-blur-md px-2.5 py-1 rounded-full border border-teal-300/30 shadow-xs">
+              <span className="inline-flex items-center gap-1 text-xs font-extrabold text-white bg-teal-900/85 backdrop-blur-md px-2.5 py-1 rounded-full border border-teal-300/30 shadow-xs">
                 <span>☁️ View Biển Mây</span>
               </span>
             )}
 
             {(listing.category === 'bus' || listing.category === 'motorbike') && bikesAvailableCount > 0 && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-white bg-emerald-800/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-emerald-300/30 shadow-xs">
+              <span className="inline-flex items-center gap-1 text-xs font-extrabold text-white bg-emerald-800/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-emerald-300/30 shadow-xs">
                 <span>🛵 Sẵn {bikesAvailableCount} xe máy</span>
               </span>
             )}
 
             {(listing.category === 'coffee' || listing.category === 'restaurant') && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-white bg-emerald-800/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-emerald-300/30 shadow-xs">
+              <span className="inline-flex items-center gap-1 text-xs font-extrabold text-white bg-emerald-800/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-emerald-300/30 shadow-xs">
                 <Clock className="w-3 h-3 text-emerald-300" />
                 <span>
                   {listing.openingHours
@@ -625,12 +625,12 @@ export const ListingCard: React.FC<ListingCardProps> = ({
             )}
 
             {listing.verificationTier === 3 ? (
-              <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-white bg-[#073161]/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20 shadow-xs">
+              <span className="inline-flex items-center gap-1 text-xs font-extrabold text-white bg-brand-800/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20 shadow-xs">
                 <Sparkles className="w-3 h-3 text-amber-400" />
                 <span>Cấp 3</span>
               </span>
             ) : listing.verificationTier === 2 ? (
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-white bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/15 shadow-xs">
+              <span className="inline-flex items-center gap-1 text-xs font-bold text-white bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/15 shadow-xs">
                 <span>Cấp 2</span>
               </span>
             ) : null}
@@ -645,7 +645,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
                   onToggleCompare(listing.id);
                 }}
                 title="Thêm vào bảng so sánh Homestay (tối đa 3 căn)"
-                className={`h-8 px-2.5 rounded-full text-[10px] font-extrabold flex items-center gap-1 backdrop-blur-md border transition-colors cursor-pointer ${
+                className={`h-8 px-2.5 rounded-full text-xs font-extrabold flex items-center gap-1 backdrop-blur-md border transition-colors cursor-pointer ${
                   isCompared
                     ? 'bg-teal-400 text-slate-950 border-teal-200 shadow-sm'
                     : 'bg-black/40 hover:bg-black/60 text-white border-white/25'
@@ -687,7 +687,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
 
           <div className="flex items-center gap-2 shrink-0">
             {photoCount > 1 && (
-              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-[10px] font-semibold text-white/90">
+              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-xs font-semibold text-white/90">
                 <Camera className="w-3 h-3" />
                 <span>{photoCount} ảnh</span>
               </span>
@@ -696,7 +696,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
             <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/50 backdrop-blur-md border border-white/20 text-white text-xs font-black tabular-nums shadow-xs">
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
               <span>{listing.rating}</span>
-              <span className="text-white/70 text-[10px] font-normal">({listing.reviewCount})</span>
+              <span className="text-white/70 text-xs font-normal">({listing.reviewCount})</span>
             </div>
           </div>
         </div>
@@ -706,7 +706,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
       <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
         <div>
           <h3
-            className="text-base sm:text-lg font-black text-[#073161] group-hover:text-teal-700 transition-colors line-clamp-1 mb-1.5"
+            className="text-base sm:text-lg font-black text-brand-800 group-hover:text-teal-700 transition-colors line-clamp-1 mb-1.5"
             title={listing.title}
           >
             {listing.title}
@@ -719,11 +719,11 @@ export const ListingCard: React.FC<ListingCardProps> = ({
 
           {/* Quick Room Preview on Homestay Cards when on /stay */}
           {stayAvailabilityBadge && listing.roomTypes && listing.roomTypes.length > 1 && (
-            <div className="mb-2.5 px-2.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200/70 text-[11px] text-slate-600 flex items-center justify-between gap-2">
+            <div className="mb-2.5 px-2.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200/70 text-xs text-slate-600 flex items-center justify-between gap-2">
               <span className="truncate font-medium">
                 🛏️ {listing.roomTypes.length} hạng phòng ({listing.roomTypes.map((r) => r.name.split(' ')[0]).slice(0, 2).join(', ')}...)
               </span>
-              <span className="shrink-0 font-bold text-[#073161] inline-flex items-center gap-1">
+              <span className="shrink-0 font-bold text-brand-800 inline-flex items-center gap-1">
                 <Users className="w-3 h-3 text-teal-700" />
                 <span>Tối đa {Math.max(...listing.roomTypes.map((r) => r.capacity || 2))} khách/phòng</span>
               </span>
@@ -732,7 +732,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
 
           {/* Quick Bus & Motorbike Combo Strip on Transport Cards */}
           {listing.category === 'bus' && (
-            <div className="mb-2.5 px-2.5 py-1.5 rounded-xl bg-teal-50/70 border border-teal-200/70 text-[11px] text-teal-900 flex items-center justify-between gap-2">
+            <div className="mb-2.5 px-2.5 py-1.5 rounded-xl bg-teal-50/70 border border-teal-200/70 text-xs text-teal-900 flex items-center justify-between gap-2">
               <span className="truncate font-semibold">
                 🎁 Combo Xe + Xe máy giảm 30k (12h trưa = 0.5 ngày)
               </span>
@@ -743,7 +743,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
                     e.stopPropagation();
                     onOpenSeatMap(listing);
                   }}
-                  className="shrink-0 font-extrabold text-[#073161] hover:underline cursor-pointer"
+                  className="shrink-0 font-extrabold text-brand-800 hover:underline cursor-pointer"
                 >
                   Sơ đồ ghế →
                 </button>
@@ -756,7 +756,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
             {highlight.pills.slice(0, 3).map((pill, idx) => (
               <span
                 key={idx}
-                className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200/80 truncate max-w-[180px]"
+                className="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200/80 truncate max-w-[180px]"
               >
                 {pill}
               </span>
@@ -767,19 +767,19 @@ export const ListingCard: React.FC<ListingCardProps> = ({
         {/* 3. High-Contrast, Non-Wrapping Pricing & Direct CTAs (Bulletproof on 2-col & 3-col grids) */}
         <div className="pt-3 border-t border-slate-100 flex flex-wrap items-end justify-between gap-x-2 gap-y-2">
           <div className="shrink-0">
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider font-extrabold block leading-tight whitespace-nowrap">
+            <span className="text-xs text-slate-500 uppercase tracking-wider font-extrabold block leading-tight whitespace-nowrap">
               {meta.pricePrefix}
             </span>
             <div className="flex items-baseline gap-1 mt-0.5 whitespace-nowrap">
-              <span className="text-base sm:text-lg font-black text-[#073161] tabular-nums tracking-tight">
+              <span className="text-base sm:text-lg font-black text-brand-800 tabular-nums tracking-tight">
                 {listing.minPrice > 0 ? formatVND(listing.minPrice) : 'Hỗ trợ 24/7'}
               </span>
               {listing.minPrice > 0 && meta.unitLabel && (
-                <span className="text-[11px] text-slate-600 font-bold">{meta.unitLabel}</span>
+                <span className="text-xs text-slate-600 font-bold">{meta.unitLabel}</span>
               )}
             </div>
             {stayAvailabilityBadge && nightsCount > 1 && listing.minPrice > 0 && (
-              <div className="text-[11px] font-bold text-teal-700 tabular-nums mt-0.5 whitespace-nowrap">
+              <div className="text-xs font-bold text-teal-700 tabular-nums mt-0.5 whitespace-nowrap">
                 Tổng {nightsCount} đêm: {formatVND(listing.minPrice * nightsCount)}
               </div>
             )}
@@ -819,7 +819,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
                 e.stopPropagation();
                 onSelect(listing);
               }}
-              className="bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs h-8 px-3 rounded-full transition-all active:scale-95 cursor-pointer whitespace-nowrap shadow-xs flex items-center"
+              className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs h-8 px-3 rounded-full transition-all active:scale-95 cursor-pointer whitespace-nowrap shadow-xs flex items-center"
             >
               {meta.ctaLabel}
             </button>

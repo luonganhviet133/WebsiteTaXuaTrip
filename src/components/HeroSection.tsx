@@ -185,7 +185,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   return (
     <div className="relative">
       {/* Deep Navy-to-Teal Hero Section with CMS-configurable Background Image & Content */}
-      <div className="relative bg-gradient-to-br from-[#04244d] via-[#063366] to-[#084d5e] text-white pt-7 sm:pt-14 pb-24 sm:pb-34 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-brand-900 via-[#063366] to-[#084d5e] text-white pt-7 sm:pt-14 pb-24 sm:pb-34 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {heroBgImage && (
           <img
             src={heroBgImage}
@@ -193,7 +193,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-60"
           />
         )}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#04244d]/85 via-[#04244d]/60 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-brand-900/85 via-brand-900/60 to-transparent" />
         {/* Subtle atmospheric radial glow */}
         <div
           className="pointer-events-none absolute -top-24 right-0 w-[550px] h-[550px] rounded-full opacity-25 blur-3xl"
@@ -244,17 +244,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-1">
-                      <span className="text-[10px] font-extrabold text-amber-300 block truncate">
+                      <span className="text-xs font-extrabold text-amber-300 block truncate">
                         {banner.badgeText}
                       </span>
-                      <span className="text-[10px] text-teal-200/80 opacity-0 group-hover:opacity-100 transition-opacity font-bold shrink-0">
+                      <span className="text-xs text-teal-200/80 opacity-0 group-hover:opacity-100 transition-opacity font-bold shrink-0">
                         Mở →
                       </span>
                     </div>
                     <h3 className="text-xs font-extrabold text-white line-clamp-1 mt-0.5">
                       {banner.title}
                     </h3>
-                    <p className="text-[11px] text-teal-200/90 line-clamp-1 mt-0.5">
+                    <p className="text-xs text-teal-200/90 line-clamp-1 mt-0.5">
                       {banner.subtitle}
                     </p>
                   </div>
@@ -280,8 +280,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               }}
               className={`relative flex items-center gap-2 px-4 sm:px-6 py-3.5 sm:py-4 text-xs sm:text-sm font-bold whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                 activeMode === 'stay'
-                  ? 'bg-[#073161] text-white'
-                  : 'text-slate-600 hover:text-[#073161]'
+                  ? 'bg-brand-800 text-white'
+                  : 'text-slate-600 hover:text-brand-800'
               }`}
             >
               <Building2 className="w-4 h-4" />
@@ -299,14 +299,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               }}
               className={`relative flex items-center gap-2 px-4 sm:px-5 py-3.5 sm:py-4 text-xs sm:text-sm font-bold whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                 activeMode === 'combo_trekking'
-                  ? 'bg-[#073161] text-white'
-                  : 'text-slate-600 hover:text-[#073161]'
+                  ? 'bg-brand-800 text-white'
+                  : 'text-slate-600 hover:text-brand-800'
               }`}
             >
               <Package className="w-4 h-4" />
               <span>Combo & Trekking</span>
               <span
-                className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                className={`text-xs font-bold px-2 py-0.5 rounded-full border ${
                   activeMode === 'combo_trekking'
                     ? 'bg-amber-400 text-slate-950 border-amber-300'
                     : 'bg-slate-100 text-slate-600 border-slate-200'
@@ -326,14 +326,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               }}
               className={`relative flex items-center gap-2 px-4 sm:px-5 py-3.5 sm:py-4 text-xs sm:text-sm font-bold whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                 activeMode === 'bus_shuttle'
-                  ? 'bg-[#073161] text-white'
-                  : 'text-slate-600 hover:text-[#073161]'
+                  ? 'bg-brand-800 text-white'
+                  : 'text-slate-600 hover:text-brand-800'
               }`}
             >
               <Bus className="w-4 h-4" />
               <span>Xe khách</span>
               <span
-                className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                className={`text-xs font-bold px-2 py-0.5 rounded-full border ${
                   activeMode === 'bus_shuttle'
                     ? 'bg-emerald-400 text-slate-950 border-emerald-300'
                     : 'bg-emerald-50 text-emerald-700 border-emerald-200'
@@ -354,14 +354,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               }}
               className={`relative flex items-center gap-2 px-4 sm:px-5 py-3.5 sm:py-4 text-xs sm:text-sm font-bold whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                 activeMode === 'motorbike'
-                  ? 'bg-[#073161] text-white'
-                  : 'text-slate-600 hover:text-[#073161]'
+                  ? 'bg-brand-800 text-white'
+                  : 'text-slate-600 hover:text-brand-800'
               }`}
             >
               <Bike className="w-4 h-4" />
               <span>Xe máy</span>
               <span
-                className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                className={`text-xs font-bold px-2 py-0.5 rounded-full border ${
                   activeMode === 'motorbike'
                     ? 'bg-amber-400 text-slate-950 border-amber-300'
                     : 'bg-amber-50 text-amber-800 border-amber-200'
@@ -392,7 +392,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="grid grid-cols-2 lg:grid-cols-12 gap-2.5 sm:gap-4 items-center">
                 {/* Check-in Date */}
                 <div className="col-span-1 lg:col-span-3 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 sm:border-r sm:border-slate-200/80 sm:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                     <Calendar className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>NHẬN PHÒNG</span>
                   </label>
@@ -400,13 +400,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     type="date"
                     value={checkInDate}
                     onChange={(e) => setCheckInDate(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none cursor-pointer"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer"
                   />
                 </div>
 
                 {/* Check-out Date */}
                 <div className="col-span-1 lg:col-span-3 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 lg:border-r lg:border-slate-200/80 lg:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                     <Calendar className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>TRẢ PHÒNG</span>
                   </label>
@@ -414,13 +414,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     type="date"
                     value={checkOutDate}
                     onChange={(e) => setCheckOutDate(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none cursor-pointer"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer"
                   />
                 </div>
 
                 {/* Guests Count */}
                 <div className="col-span-1 lg:col-span-2 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 sm:border-r sm:border-slate-200/80 sm:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                     <Users className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>SỐ KHÁCH</span>
                   </label>
@@ -431,13 +431,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     value={guestCount}
                     onChange={(e) => setGuestCount(Math.max(1, Number(e.target.value)))}
                     aria-label="Số khách"
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none"
                   />
                 </div>
 
                 {/* Area Selector */}
                 <div className="col-span-1 lg:col-span-2 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 lg:border-r lg:border-slate-200/80 lg:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                     <Building2 className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>KHU VỰC</span>
                   </label>
@@ -445,7 +445,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     value={selectedArea}
                     onChange={(e) => setSelectedArea(e.target.value)}
                     aria-label="Chọn khu vực Tà Xùa"
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="all">{roomCount} phòng · Toàn Tà Xùa</option>
                     {areas
@@ -463,7 +463,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <button
                     type="button"
                     onClick={handleStaySearchSubmit}
-                    className="w-full min-h-[46px] bg-[#073161] hover:bg-[#0a3f7c] text-white font-bold text-sm py-3 px-6 rounded-full shadow-md transition-all cursor-pointer whitespace-nowrap"
+                    className="w-full min-h-[46px] bg-brand-800 hover:bg-brand-700 text-white font-bold text-sm py-3 px-6 rounded-full shadow-md transition-all cursor-pointer whitespace-nowrap"
                   >
                     Tìm phòng
                   </button>
@@ -473,7 +473,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               {/* Bottom Interest Filter Chips + Quick Keyword Input */}
               <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0">
-                  <span className="text-xs font-bold text-[#073161] mr-1 whitespace-nowrap shrink-0">
+                  <span className="text-xs font-bold text-brand-800 mr-1 whitespace-nowrap shrink-0">
                     Bạn quan tâm:
                   </span>
 
@@ -482,8 +482,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     onClick={() => setOnlyAvailable(!onlyAvailable)}
                     className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                       onlyAvailable
-                        ? 'bg-[#073161] text-white border-[#073161]'
-                        : 'bg-white hover:bg-slate-50 text-[#073161] border-slate-200'
+                        ? 'bg-brand-800 text-white border-brand-800'
+                        : 'bg-white hover:bg-slate-50 text-brand-800 border-slate-200'
                     }`}
                   >
                     <CheckCircle2 className="w-3.5 h-3.5 text-teal-600" />
@@ -495,8 +495,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     onClick={() => setOnlyCloudView(!onlyCloudView)}
                     className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                       onlyCloudView
-                        ? 'bg-[#073161] text-white border-[#073161]'
-                        : 'bg-white hover:bg-slate-50 text-[#073161] border-slate-200'
+                        ? 'bg-brand-800 text-white border-brand-800'
+                        : 'bg-white hover:bg-slate-50 text-brand-800 border-slate-200'
                     }`}
                   >
                     <CloudSun className="w-3.5 h-3.5 text-teal-600" />
@@ -511,8 +511,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     }}
                     className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                       bedViewFilter
-                        ? 'bg-[#073161] text-white border-[#073161]'
-                        : 'bg-white hover:bg-slate-50 text-[#073161] border-slate-200'
+                        ? 'bg-brand-800 text-white border-brand-800'
+                        : 'bg-white hover:bg-slate-50 text-brand-800 border-slate-200'
                     }`}
                   >
                     <Eye className="w-3.5 h-3.5 text-teal-600" />
@@ -531,8 +531,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     }}
                     className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                       carAccessFilter
-                        ? 'bg-[#073161] text-white border-[#073161]'
-                        : 'bg-white hover:bg-slate-50 text-[#073161] border-slate-200'
+                        ? 'bg-brand-800 text-white border-brand-800'
+                        : 'bg-white hover:bg-slate-50 text-brand-800 border-slate-200'
                     }`}
                   >
                     <Car className="w-3.5 h-3.5 text-teal-600" />
@@ -548,7 +548,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Tìm tên homestay, khu vực..."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-full pl-8 pr-3 py-2 sm:py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#073161]"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-full pl-8 pr-3 py-2 sm:py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-800"
                   />
                 </div>
               </div>
@@ -561,7 +561,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="grid grid-cols-2 lg:grid-cols-12 gap-2.5 sm:gap-4 items-center">
                 {/* Loại Gói Combo / Trekking */}
                 <div className="col-span-2 lg:col-span-4 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 sm:border-r sm:border-slate-200/80 sm:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-teal-800 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-teal-800 mb-1">
                     <Package className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>LOẠI COMBO / TOUR THẨM ĐỊNH</span>
                   </label>
@@ -572,7 +572,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         onChangeComboCategory(e.target.value as 'all' | CuratedComboCategory);
                       }
                     }}
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="all">Tất cả Gói Combo & Trekking Đặc Biệt</option>
                     <option value="combo_2n1d">👑 Combo 2N1Đ (Xe Cabin + Phòng Kính + Xe Máy)</option>
@@ -585,7 +585,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
                 {/* Ngày Khởi Hành */}
                 <div className="col-span-1 lg:col-span-2 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 lg:border-r lg:border-slate-200/80 lg:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                     <Calendar className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>NGÀY KHỞI HÀNH</span>
                   </label>
@@ -593,13 +593,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     type="date"
                     value={comboDepartureDate}
                     onChange={(e) => setComboDepartureDate(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none cursor-pointer"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer"
                   />
                 </div>
 
                 {/* Số Người Đi */}
                 <div className="col-span-1 lg:col-span-2 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 sm:border-r sm:border-slate-200/80 sm:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                     <Users className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>SỐ NGƯỜI ĐI</span>
                   </label>
@@ -609,20 +609,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     max={30}
                     value={comboGuests}
                     onChange={(e) => setComboGuests(Math.max(1, Number(e.target.value)))}
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none"
                   />
                 </div>
 
                 {/* Khu Vực Tuyến */}
                 <div className="col-span-2 lg:col-span-2 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 lg:border-r lg:border-slate-200/80 lg:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                     <Compass className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>ĐIỂM ĐẾN CHÍNH</span>
                   </label>
                   <select
                     value={selectedArea}
                     onChange={(e) => setSelectedArea(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="all">Toàn tuyến Tà Xùa</option>
                     <option value="Đỉnh Gió">Đỉnh Gió & Mị Ơi</option>
@@ -637,7 +637,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <button
                     type="button"
                     onClick={handleComboSearchSubmit}
-                    className="w-full min-h-[46px] bg-[#073161] hover:bg-[#0a3f7c] text-white font-bold text-xs sm:text-sm py-3 px-5 rounded-full shadow-md transition-all cursor-pointer whitespace-nowrap"
+                    className="w-full min-h-[46px] bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm py-3 px-5 rounded-full shadow-md transition-all cursor-pointer whitespace-nowrap"
                   >
                     Xem Gói Combo →
                   </button>
@@ -647,7 +647,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               {/* Bottom Quick Chips for Combo & Trekking */}
               <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-                  <span className="text-xs font-bold text-[#073161] whitespace-nowrap">
+                  <span className="text-xs font-bold text-brand-800 whitespace-nowrap">
                     Quyền lợi thẩm định:
                   </span>
                   <button
@@ -667,7 +667,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       if (onChangeComboCategory) onChangeComboCategory('trekking_tour');
                       handleComboSearchSubmit();
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white hover:bg-slate-50 text-[#073161] border border-slate-200 cursor-pointer whitespace-nowrap"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white hover:bg-slate-50 text-brand-800 border border-slate-200 cursor-pointer whitespace-nowrap"
                   >
                     <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
                     <span>🥾 Có Porter H’Mông & Bảo hiểm</span>
@@ -684,7 +684,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   </button>
                 </div>
 
-                <span className="text-[11px] font-bold text-teal-800">
+                <span className="text-xs font-bold text-teal-800">
                   ✓ Giá trọn gói niêm yết · Không phụ phí ẩn
                 </span>
               </div>
@@ -697,14 +697,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="grid grid-cols-2 lg:grid-cols-12 gap-2.5 sm:gap-4 items-center">
                 {/* Điểm Đón */}
                 <div className="col-span-2 lg:col-span-4 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 sm:border-r sm:border-slate-200/80 sm:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                     <MapPin className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>ĐIỂM ĐÓN TẠI HÀ NỘI & DỌC TUYẾN</span>
                   </label>
                   <select
                     value={busPickupZone}
                     onChange={(e) => setBusPickupZone(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="my_dinh_cau_giay">Bến xe Mỹ Đình · Công viên Cầu Giấy · Nhổn</option>
                     <option value="yen_nghia_bigc">Bến xe Yên Nghĩa · BigC Thăng Long · Hòa Lạc</option>
@@ -715,14 +715,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
                 {/* Khung Giờ */}
                 <div className="col-span-1 lg:col-span-3 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 lg:border-r lg:border-slate-200/80 lg:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                     <Clock className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>GIỜ KHỞI HÀNH</span>
                   </label>
                   <select
                     value={busTimeSlot}
                     onChange={(e) => setBusTimeSlot(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="night_22h">🌙 Đêm 21:30 – 22:30 (Đón bình minh)</option>
                     <option value="morning_06h">🌅 Sáng 06:30 – 07:00 (Lên thẳng Đỉnh Gió)</option>
@@ -732,14 +732,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
                 {/* Dòng Xe */}
                 <div className="col-span-1 lg:col-span-3 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 lg:border-r lg:border-slate-200/80 lg:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                     <Bus className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>DÒNG XE CHUYÊN TUYẾN</span>
                   </label>
                   <select
                     value={busVehicleType}
                     onChange={(e) => setBusVehicleType(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="cabin_vip">Giường nằm Cabin Đôi VIP (360k–380k)</option>
                     <option value="limousine">Limousine 9–11 ghế Massage (340k–350k)</option>
@@ -758,7 +758,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         onNavigateTab('transport');
                       }
                     }}
-                    className="w-full min-h-[46px] bg-[#073161] hover:bg-[#0a3f7c] text-white font-bold text-xs sm:text-sm py-3 px-5 rounded-full shadow-md transition-all cursor-pointer whitespace-nowrap"
+                    className="w-full min-h-[46px] bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm py-3 px-5 rounded-full shadow-md transition-all cursor-pointer whitespace-nowrap"
                   >
                     Chọn Ghế Đón →
                   </button>
@@ -782,13 +782,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     onClick={() => {
                       if (onNavigateTab) onNavigateTab('transport');
                     }}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white hover:bg-slate-50 text-[#073161] border border-slate-200 cursor-pointer whitespace-nowrap"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white hover:bg-slate-50 text-brand-800 border border-slate-200 cursor-pointer whitespace-nowrap"
                   >
                     <Route className="w-3.5 h-3.5 text-teal-600" />
                     <span>Xem đầy đủ 16 Nhà xe & 6 khung giờ chạy →</span>
                   </button>
                 </div>
-                <span className="text-[11px] font-bold text-emerald-700">
+                <span className="text-xs font-bold text-emerald-700">
                   ✓ Giữ chỗ 30 phút · Chọn đúng ghế tầng 1 / tầng 2
                 </span>
               </div>
@@ -801,14 +801,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="grid grid-cols-2 lg:grid-cols-12 gap-2.5 sm:gap-4 items-center">
                 {/* Dòng Xe Phượt Đèo */}
                 <div className="col-span-2 lg:col-span-4 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 sm:border-r sm:border-slate-200/80 sm:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-amber-900 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-900 mb-1">
                     <Bike className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>DÒNG XE PHƯỢT ĐÈO ĐÃ KIỂM ĐỊNH PHANH</span>
                   </label>
                   <select
                     value={bikeModelType}
                     onChange={(e) => setBikeModelType(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="wave_blade">Xe số leo đèo khỏe: Wave Alpha / Honda Blade / Sirius (150k/ngày)</option>
                     <option value="airblade_vision">Xe tay ga đời mới: AirBlade / Vision (180k/ngày · Đi Thảo Nguyên)</option>
@@ -818,14 +818,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
                 {/* Điểm Giao Nhận Xe */}
                 <div className="col-span-1 lg:col-span-3 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 lg:border-r lg:border-slate-200/80 lg:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                     <MapPin className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>ĐIỂM NHẬN XE</span>
                   </label>
                   <select
                     value={bikeDeliverySpot}
                     onChange={(e) => setBikeDeliverySpot(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="homestay_dinh_gio">Giao tận Homestay Đỉnh Gió / Trung Tâm</option>
                     <option value="bus_dropoff">Nhận tại điểm xuống Xe Khách lúc 04:30 sáng</option>
@@ -835,14 +835,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
                 {/* Thời Gian Thuê & Quy Tắc 12h Trưa */}
                 <div className="col-span-1 lg:col-span-3 bg-slate-50/80 sm:bg-transparent p-2.5 sm:p-0 rounded-2xl border border-slate-200/80 sm:border-0 lg:border-r lg:border-slate-200/80 lg:pr-4">
-                  <label className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                     <Clock className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                     <span>GÓI THUÊ ({bikeQuantity} XE)</span>
                   </label>
                   <select
                     value={bikeRentalDuration}
                     onChange={(e) => setBikeRentalDuration(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-[#073161] bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="1.5_days_noon">1.5 Ngày (Trả trước 12h trưa ngày về = 225k)</option>
                     <option value="1_day">Thuê 1 Ngày tiêu chuẩn (150k/ngày)</option>
@@ -855,7 +855,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <button
                     type="button"
                     onClick={handleMotorbikeSearchSubmit}
-                    className="w-full min-h-[46px] bg-[#073161] hover:bg-[#0a3f7c] text-white font-bold text-xs sm:text-sm py-3 px-5 rounded-full shadow-md transition-all cursor-pointer whitespace-nowrap"
+                    className="w-full min-h-[46px] bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm py-3 px-5 rounded-full shadow-md transition-all cursor-pointer whitespace-nowrap"
                   >
                     Xem Trạm Xe →
                   </button>
@@ -869,7 +869,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     <Clock className="w-3.5 h-3.5 text-amber-700" />
                     <span>Trả xe trước 12:00 trưa hôm sau chỉ tính 0.5 ngày</span>
                   </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white text-[#073161] border border-slate-200 whitespace-nowrap">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white text-brand-800 border border-slate-200 whitespace-nowrap">
                     <Wrench className="w-3.5 h-3.5 text-teal-600" />
                     <span>Kiểm tra phanh & lốp đèo 100% + Kèm 2 mũ & áo mưa</span>
                   </span>

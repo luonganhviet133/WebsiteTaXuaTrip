@@ -493,7 +493,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md flex items-center justify-center text-slate-700 hover:text-[#073161] transition-colors cursor-pointer"
+          className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md flex items-center justify-center text-slate-700 hover:text-brand-800 transition-colors cursor-pointer"
           aria-label="Đóng"
         >
           <X className="w-5 h-5" />
@@ -514,12 +514,12 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
             <div>
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                 {listing.hasCloudView && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold bg-teal-600 text-white shadow-xs">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-teal-600 text-white shadow-xs">
                     <Cloud className="w-3.5 h-3.5" />
                     Cloud View đã xác minh
                   </span>
                 )}
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold bg-white/95 text-[#073161] shadow-xs">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-white/95 text-brand-800 shadow-xs">
                   <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
                   Thẩm định Cấp {listing.verificationTier}
                 </span>
@@ -534,7 +534,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
             <div className="flex items-center gap-1.5 sm:gap-2 bg-white/95 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl shadow-md text-xs">
               <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-              <span className="font-extrabold text-[#073161] text-sm">{listing.rating}</span>
+              <span className="font-extrabold text-brand-800 text-sm">{listing.rating}</span>
               <span className="text-slate-600 font-medium">
                 ({listing.reviewCount} đánh giá thực tế)
               </span>
@@ -576,7 +576,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                 .getElementById('listing-service-options-section')
                 ?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[#073161] text-xs font-bold whitespace-nowrap shrink-0 cursor-pointer"
+            className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-brand-800 text-xs font-bold whitespace-nowrap shrink-0 cursor-pointer"
           >
             {labels.sectionJumpLabel}
           </button>
@@ -587,7 +587,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                 .getElementById('listing-reviews-section')
                 ?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[#073161] text-xs font-bold whitespace-nowrap shrink-0 cursor-pointer"
+            className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-brand-800 text-xs font-bold whitespace-nowrap shrink-0 cursor-pointer"
           >
             ⭐ Đánh giá ({reviews.length})
           </button>
@@ -598,7 +598,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                 .getElementById('listing-booking-console')
                 ?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="ml-auto px-3.5 py-1.5 rounded-full bg-[#073161] text-white text-xs font-extrabold whitespace-nowrap shrink-0 cursor-pointer"
+            className="ml-auto px-3.5 py-1.5 rounded-full bg-brand-800 text-white text-xs font-extrabold whitespace-nowrap shrink-0 cursor-pointer"
           >
             Đặt ngay ↓
           </button>
@@ -619,7 +619,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
               <div className="pt-3 border-t border-slate-200/80 space-y-3 text-xs">
                 <div>
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+                  <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
                     4 Kênh Liên Hệ Trực Tiếp Với Cơ Sở:
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -636,7 +636,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
                     <a
                       href={`tel:${listing.phone.replace(/\s+/g, '')}`}
-                      className="bg-slate-100 hover:bg-slate-200 text-[#073161] border border-slate-200 px-3 py-2 rounded-xl font-extrabold flex items-center justify-center gap-1.5 transition-colors"
+                      className="bg-slate-100 hover:bg-slate-200 text-brand-800 border border-slate-200 px-3 py-2 rounded-xl font-extrabold flex items-center justify-center gap-1.5 transition-colors"
                     >
                       <Phone className="w-3.5 h-3.5 text-teal-700" />
                       <span>{listing.phone}</span>
@@ -713,7 +713,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           : 'Mở cửa từ sáng sớm đón bình minh săn mây đến đêm muộn'}
                       </p>
                     </div>
-                    <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 self-start sm:self-auto flex items-center gap-1">
+                    <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 self-start sm:self-auto flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       <span>Đang mở cửa đón khách</span>
                     </span>
@@ -721,7 +721,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
                   {listing.menuItems && listing.menuItems.length > 0 && (
                     <div className="space-y-2">
-                      <span className="text-[11px] font-bold text-slate-600 block">
+                      <span className="text-xs font-bold text-slate-600 block">
                         Chạm để chọn món đặt trước (Chuẩn bị sẵn khi bạn tới bàn):
                       </span>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -747,20 +747,20 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                             >
                               <div>
                                 <div className="flex items-center gap-1.5 flex-wrap">
-                                  <span className="font-bold text-[#073161] text-xs">
+                                  <span className="font-bold text-brand-800 text-xs">
                                     {item.name}
                                   </span>
                                   {item.isBestSeller && (
-                                    <span className="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">
+                                    <span className="text-xs bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">
                                       ⭐ Best Seller
                                     </span>
                                   )}
                                 </div>
-                                <div className="text-[11px] text-slate-500 mt-0.5">
+                                <div className="text-xs text-slate-500 mt-0.5">
                                   {item.unit}
                                 </div>
                                 {item.description && (
-                                  <p className="text-[10px] text-slate-600 mt-0.5 line-clamp-2">
+                                  <p className="text-xs text-slate-600 mt-0.5 line-clamp-2">
                                     {item.description}
                                   </p>
                                 )}
@@ -770,7 +770,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                                   {formatVND(item.price)}
                                 </span>
                                 <span
-                                  className={`text-[10px] font-bold mt-1 inline-block ${
+                                  className={`text-xs font-bold mt-1 inline-block ${
                                     isChosen ? 'text-teal-700' : 'text-slate-400'
                                   }`}
                                 >
@@ -817,10 +817,10 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                               <div className="space-y-1.5">
                                 <div className="flex flex-wrap items-center gap-2">
-                                  <h4 className="font-extrabold text-[#073161] text-sm">
+                                  <h4 className="font-extrabold text-brand-800 text-sm">
                                     {room.name}
                                   </h4>
-                                  <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-semibold">
+                                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-semibold">
                                     {summary.viewText}
                                   </span>
                                 </div>
@@ -838,7 +838,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                                   {summary.features.map((feat, i) => (
                                     <span
                                       key={i}
-                                      className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-medium border border-slate-200"
+                                      className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-medium border border-slate-200"
                                     >
                                       ✓ {feat}
                                     </span>
@@ -847,10 +847,10 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                               </div>
 
                               <div className="text-right sm:shrink-0">
-                                <div className="text-base font-extrabold text-[#073161] tabular-nums">
+                                <div className="text-base font-extrabold text-brand-800 tabular-nums">
                                   {formatVND(room.priceWeekend)}
                                 </div>
-                                <div className="text-[11px] text-slate-500">
+                                <div className="text-xs text-slate-500">
                                   Ngày thường: {formatVND(room.priceWeekday)}
                                 </div>
                               </div>
@@ -903,10 +903,10 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                               <div className="space-y-1.5">
                                 <div className="flex flex-wrap items-center gap-2">
-                                  <h4 className="font-extrabold text-[#073161] text-sm">
+                                  <h4 className="font-extrabold text-brand-800 text-sm">
                                     {pkg.name}
                                   </h4>
-                                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
+                                  <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
                                     Còn {pkg.availableCount} suất trống
                                   </span>
                                 </div>
@@ -919,7 +919,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                                   {(pkg.includedFeatures || []).map((feat, idx) => (
                                     <span
                                       key={idx}
-                                      className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-medium border border-slate-200"
+                                      className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-medium border border-slate-200"
                                     >
                                       ✓ {feat}
                                     </span>
@@ -928,10 +928,10 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                               </div>
 
                               <div className="text-right sm:shrink-0">
-                                <div className="text-base font-extrabold text-[#073161] tabular-nums">
+                                <div className="text-base font-extrabold text-brand-800 tabular-nums">
                                   {formatVND(pkg.price)}
                                 </div>
-                                <div className="text-[11px] text-slate-500">
+                                <div className="text-xs text-slate-500">
                                   / {pkg.unit}
                                 </div>
                               </div>
@@ -945,7 +945,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     {listing.category === 'bus' && listing.motorbikeFleet && (
                       <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="space-y-1">
-                          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black uppercase">
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-black uppercase">
                             <Sparkles className="w-3 h-3" />
                             <span>Combo Nhà Xe + Thuê Xe Máy Đi Kèm</span>
                           </div>
@@ -953,7 +953,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                             Nhận xe máy ngay khi xuống xe khách tại Tà Xùa (Giảm ngay{' '}
                             {formatVND(listing.motorbikeFleet.comboDiscountAmount || listing.motorbikeFleet.comboDiscountPerBike || 30000)})
                           </h4>
-                          <p className="text-[11px] text-slate-600">
+                          <p className="text-xs text-slate-600">
                             Kho xe nhà xe hiện còn{' '}
                             <strong>
                               {Math.max(
@@ -968,12 +968,12 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                             nửa ngày.
                           </p>
                         </div>
-                        <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-amber-400 text-xs font-extrabold text-[#073161] cursor-pointer shrink-0 shadow-2xs">
+                        <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-amber-400 text-xs font-extrabold text-brand-800 cursor-pointer shrink-0 shadow-2xs">
                           <input
                             type="checkbox"
                             checked={includeBusMotorbikeCombo}
                             onChange={(e) => setIncludeBusMotorbikeCombo(e.target.checked)}
-                            className="rounded border-slate-300 text-[#073161]"
+                            className="rounded border-slate-300 text-brand-800"
                           />
                           <span>Gộp thuê xe máy (+{formatVND((listing.motorbikeFleet.dailyRate || listing.motorbikeFleet.pricePerDay || 150000) - (listing.motorbikeFleet.comboDiscountAmount || listing.motorbikeFleet.comboDiscountPerBike || 30000))})</span>
                         </label>
@@ -985,7 +985,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
             {/* Benefits Box */}
             <div className="bg-[#f8fafc] border border-slate-200 rounded-2xl p-4 text-xs">
-              <h4 className="font-extrabold text-[#073161] mb-2.5 flex items-center gap-1.5">
+              <h4 className="font-extrabold text-brand-800 mb-2.5 flex items-center gap-1.5">
                 <Gift className="w-4 h-4 text-teal-700" />
                 <span>Quyền lợi bảo vệ khách hàng trên Tà Xùa Trip:</span>
               </h4>
@@ -1020,10 +1020,10 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-teal-700 block mb-1">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-teal-700 block mb-1">
                     BẰNG CHỨNG TRẢI NGHIỆM THỰC TẾ
                   </span>
-                  <h3 className="text-lg font-extrabold text-[#073161] flex items-center gap-2">
+                  <h3 className="text-lg font-extrabold text-brand-800 flex items-center gap-2">
                     <span>Đánh giá từ khách đã sử dụng dịch vụ</span>
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-50 text-amber-800 border border-amber-200">
                       <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -1044,15 +1044,15 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                         <Award className="w-4 h-4" />
                       </span>
                       <div>
-                        <h4 className="text-sm font-extrabold text-[#073161]">
+                        <h4 className="text-sm font-extrabold text-brand-800">
                           Viết đánh giá trải nghiệm đã hoàn tất của bạn
                         </h4>
-                        <p className="text-[11px] text-slate-600">
+                        <p className="text-xs text-slate-600">
                           Đơn dịch vụ của bạn tại cơ sở này đã hoàn tất. Hãy chia sẻ trải nghiệm thực tế!
                         </p>
                       </div>
                     </div>
-                    <span className="text-[11px] font-bold text-teal-800 bg-teal-100/80 px-2.5 py-1 rounded-full shrink-0">
+                    <span className="text-xs font-bold text-teal-800 bg-teal-100/80 px-2.5 py-1 rounded-full shrink-0">
                       +50 Điểm Mây
                     </span>
                   </div>
@@ -1071,7 +1071,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                         value={reviewerName}
                         onChange={(e) => setReviewerName(e.target.value)}
                         placeholder="Nhập họ tên của bạn"
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#073161]"
+                        className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-800"
                         required
                       />
                     </div>
@@ -1103,7 +1103,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                             </button>
                           );
                         })}
-                        <span className="ml-2 text-xs font-extrabold text-[#073161]">
+                        <span className="ml-2 text-xs font-extrabold text-brand-800">
                           {reviewRating}/5 sao
                         </span>
                       </div>
@@ -1123,7 +1123,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                       value={reviewComment}
                       onChange={(e) => setReviewComment(e.target.value)}
                       placeholder="Chia sẻ trải nghiệm thực tế của bạn sau chuyến đi..."
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#073161]"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-800"
                       required
                     />
                   </div>
@@ -1134,7 +1134,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
                   <button
                     type="submit"
-                    className="bg-[#073161] hover:bg-[#0a3f7c] text-white font-bold text-xs px-5 py-2.5 rounded-xl inline-flex items-center gap-2 transition-colors cursor-pointer"
+                    className="bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl inline-flex items-center gap-2 transition-colors cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Gửi Đánh Giá Xác Thực</span>
@@ -1143,7 +1143,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
               ) : (
                 <div className="bg-[#f8fafc] border border-slate-200 rounded-2xl p-4 text-xs text-slate-600 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <p className="font-bold text-[#073161] mb-0.5">
+                    <p className="font-bold text-brand-800 mb-0.5">
                       Chỉ mở đánh giá cho khách đã hoàn tất đơn dịch vụ
                     </p>
                     <p className="text-slate-500">
@@ -1177,23 +1177,23 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full bg-[#073161] text-white font-extrabold text-xs flex items-center justify-center uppercase">
+                          <div className="w-8 h-8 rounded-full bg-brand-800 text-white font-extrabold text-xs flex items-center justify-center uppercase">
                             {rev.reviewerName.slice(0, 1)}
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="font-extrabold text-xs text-[#073161]">
+                              <span className="font-extrabold text-xs text-brand-800">
                                 {rev.reviewerName}
                               </span>
                               {rev.isVerifiedStay && (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                   <CheckCircle2 className="w-3 h-3" />
                                   Đã xác thực {rev.bookingId ? `(#${rev.bookingId})` : ''}
                                 </span>
                               )}
                             </div>
                             {rev.roomName && (
-                              <p className="text-[11px] text-slate-500">{rev.roomName}</p>
+                              <p className="text-xs text-slate-500">{rev.roomName}</p>
                             )}
                           </div>
                         </div>
@@ -1211,7 +1211,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                               />
                             ))}
                           </div>
-                          <span className="text-[11px] text-slate-400">{rev.createdAt}</span>
+                          <span className="text-xs text-slate-400">{rev.createdAt}</span>
                         </div>
                       </div>
 
@@ -1230,7 +1230,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
             <div className="bg-[#f8fafc] border border-slate-200 rounded-3xl p-5 sm:p-6 sticky top-6">
               <form onSubmit={handleSubmitBooking} className="space-y-4">
                 <div>
-                  <h3 className="text-base font-extrabold text-[#073161] mb-1">
+                  <h3 className="text-base font-extrabold text-brand-800 mb-1">
                     {labels.consoleTitle}
                   </h3>
                   <p className="text-xs text-slate-500">{labels.consoleSubtitle}</p>
@@ -1248,7 +1248,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           type="date"
                           value={checkIn}
                           onChange={(e) => setCheckIn(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#073161]"
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
                           required
                         />
                       </div>
@@ -1261,7 +1261,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           value={checkOut}
                           min={checkIn}
                           onChange={(e) => setCheckOut(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#073161]"
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
                           required
                         />
                       </div>
@@ -1274,7 +1274,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                       <select
                         value={guestsCount}
                         onChange={(e) => setGuestsCount(Number(e.target.value))}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#073161]"
+                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
                       >
                         <option value={1}>1 khách (Solo săn mây)</option>
                         <option value={2}>2 khách (Cặp đôi / Bạn thân)</option>
@@ -1297,7 +1297,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           type="date"
                           value={checkIn}
                           onChange={(e) => setCheckIn(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#073161]"
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
                           required
                         />
                       </div>
@@ -1310,7 +1310,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           value={checkOut}
                           min={checkIn}
                           onChange={(e) => setCheckOut(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#073161]"
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
                           required
                         />
                       </div>
@@ -1323,10 +1323,10 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           type="checkbox"
                           checked={returnBeforeNoon}
                           onChange={(e) => setReturnBeforeNoon(e.target.checked)}
-                          className="rounded border-amber-400 text-[#073161]"
+                          className="rounded border-amber-400 text-brand-800"
                         />
                       </label>
-                      <p className="text-[11px] text-amber-800">
+                      <p className="text-xs text-amber-800">
                         Thời gian tính phí hiện tại: <strong>{bikeCost.daysLabel}</strong>
                       </p>
                     </div>
@@ -1593,7 +1593,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     value={guestName}
                     onChange={(e) => setGuestName(e.target.value)}
                     placeholder="Ví dụ: Nguyễn Văn A"
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#073161]"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-800"
                     required
                   />
                 </div>
@@ -1607,7 +1607,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     value={guestPhone}
                     onChange={(e) => setGuestPhone(e.target.value)}
                     placeholder="Ví dụ: 0912 345 678"
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#073161]"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-800"
                     required
                   />
                 </div>
@@ -1621,7 +1621,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Ghi chú điểm đón tại homestay, size váy, món ăn kiêng..."
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#073161]"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-800"
                   />
                 </div>
 
@@ -1632,7 +1632,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                       <Tag className="w-3.5 h-3.5 text-teal-700" />
                       <span>Mã Voucher giảm giá (nếu có)</span>
                     </span>
-                    <span className="text-[10px] text-slate-400">Gợi ý: TAXUA10, SANMAY50K</span>
+                    <span className="text-xs text-slate-400">Gợi ý: TAXUA10, SANMAY50K</span>
                   </label>
                   <div className="flex gap-2">
                     <input
@@ -1640,19 +1640,19 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                       value={voucherCodeInput}
                       onChange={(e) => setVoucherCodeInput(e.target.value.toUpperCase())}
                       placeholder="Nhập mã: TAXUA10 / SANMAY50K"
-                      className="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs uppercase font-bold text-slate-800 placeholder:normal-case placeholder:font-normal focus:outline-none focus:border-[#073161]"
+                      className="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs uppercase font-bold text-slate-800 placeholder:normal-case placeholder:font-normal focus:outline-none focus:border-brand-800"
                     />
                     <button
                       type="button"
                       onClick={() => handleApplyVoucher()}
-                      className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-[#073161] border border-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                      className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-brand-800 border border-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer"
                     >
                       Áp dụng
                     </button>
                   </div>
                   {voucherMessage && (
                     <p
-                      className={`text-[11px] mt-1.5 font-semibold ${
+                      className={`text-xs mt-1.5 font-semibold ${
                         voucherMessage.type === 'success' ? 'text-emerald-700' : 'text-rose-600'
                       }`}
                     >
@@ -1669,9 +1669,9 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
                       <span>Đính kèm ảnh chuyển khoản (Cọc 30%)</span>
                     </span>
-                    <span className="text-[10px] text-slate-400">Bảo vệ quyền lợi</span>
+                    <span className="text-xs text-slate-400">Bảo vệ quyền lợi</span>
                   </div>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-xs text-slate-500">
                     Lưu ảnh UNC chuyển khoản trên hệ thống để đối tác xác nhận nhận tiền và bảo vệ khiếu nại.
                   </p>
 
@@ -1733,7 +1733,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     </span>
                   </div>
                   <div className="flex justify-between text-sm font-extrabold pt-2 border-t border-slate-200">
-                    <span className="text-[#073161]">Tổng thanh toán:</span>
+                    <span className="text-brand-800">Tổng thanh toán:</span>
                     <span className="text-teal-700 text-lg tabular-nums">
                       {formatVND(totalAmount)}
                     </span>
@@ -1747,7 +1747,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full min-h-[48px] bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold py-3.5 rounded-2xl text-sm transition-all shadow-md active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full min-h-[48px] bg-brand-800 hover:bg-brand-700 text-white font-extrabold py-3.5 rounded-2xl text-sm transition-all shadow-md active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <span>Đang xử lý đơn đặt...</span>
@@ -1759,7 +1759,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                   )}
                 </button>
 
-                <div className="text-[11px] text-center text-slate-500">
+                <div className="text-xs text-center text-slate-500">
                   🔒 Thông tin được bảo mật và chuyển thẳng đến chủ cơ sở
                 </div>
               </form>
@@ -1770,10 +1770,10 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
         {/* Sticky Mobile Bottom Booking Bar (< lg) */}
         <div className="lg:hidden sticky bottom-0 z-20 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-3 flex items-center justify-between gap-3 shadow-[0_-8px_24px_rgba(7,49,97,0.08)]">
           <div className="min-w-0">
-            <div className="text-[11px] font-semibold text-slate-500 truncate">
+            <div className="text-xs font-semibold text-slate-500 truncate">
               {labels.selectedItemLabel}
             </div>
-            <div className="text-base font-extrabold text-[#073161] tabular-nums">
+            <div className="text-base font-extrabold text-brand-800 tabular-nums">
               {formatVND(totalAmount)}
             </div>
           </div>
@@ -1785,7 +1785,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
               const input = document.getElementById('booking-guest-name-input');
               if (input) setTimeout(() => input.focus(), 350);
             }}
-            className="min-h-[44px] bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs px-5 py-2.5 rounded-full shadow-md flex items-center gap-1.5 shrink-0 cursor-pointer"
+            className="min-h-[44px] bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-5 py-2.5 rounded-full shadow-md flex items-center gap-1.5 shrink-0 cursor-pointer"
           >
             <span>Đặt ngay</span>
             <ArrowRight className="w-3.5 h-3.5" />

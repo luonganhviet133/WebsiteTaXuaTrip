@@ -168,11 +168,11 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
         {/* 1. Header & Quick Actions */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-[11px] font-black uppercase tracking-wider mb-2 border border-teal-200/60">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-black uppercase tracking-wider mb-2 border border-teal-200/60">
               <CloudSun className="w-3.5 h-3.5 text-teal-600" />
               <span>DỮ LIỆU KHÍ TƯỢNG ĐỘ CAO 1.500M – 1.850M</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-[#073161] tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-brand-800 tracking-tight">
               Trung Tâm Dự Báo Săn Mây & Tọa Độ Cloud View Tà Xùa
             </h1>
             <p className="text-slate-600 text-xs sm:text-sm mt-1.5 max-w-2xl leading-relaxed">
@@ -228,11 +228,11 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                 }`}
               >
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className={`text-xs font-extrabold truncate ${isSelected ? 'text-[#073161]' : 'text-slate-800'}`}>
+                  <span className={`text-xs font-extrabold truncate ${isSelected ? 'text-brand-800' : 'text-slate-800'}`}>
                     {f.location}
                   </span>
                   <span
-                    className={`px-2 py-0.5 rounded-full text-[11px] font-black tabular-nums ${
+                    className={`px-2 py-0.5 rounded-full text-xs font-black tabular-nums ${
                       f.cloudProbability >= 85
                         ? 'bg-teal-100 text-teal-800 border border-teal-300'
                         : 'bg-amber-100 text-amber-900 border border-amber-300'
@@ -241,7 +241,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                     {f.cloudProbability}%
                   </span>
                 </div>
-                <div className="text-[11px] text-slate-500 flex items-center justify-between">
+                <div className="text-xs text-slate-500 flex items-center justify-between">
                   <span>🌡️ {f.tempMin}°–{f.tempMax}°C</span>
                   <span className="text-teal-700 font-bold">{f.goldenHours.split('&')[0]}</span>
                 </div>
@@ -260,7 +260,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                   <MapPin className="w-3.5 h-3.5 text-teal-600" />
                   <span>Đang xem dữ liệu khí tượng tại tọa độ</span>
                 </div>
-                <h2 className="text-2xl font-black text-[#073161] flex flex-wrap items-center gap-2.5">
+                <h2 className="text-2xl font-black text-brand-800 flex flex-wrap items-center gap-2.5">
                   <span>{activeForecast.location}</span>
                   <span className="text-xs px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold">
                     {activeForecast.condition}
@@ -270,7 +270,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
 
               <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl shrink-0">
                 <div className="text-right">
-                  <div className="text-[11px] text-slate-500 font-semibold">Xác suất biển mây hôm nay</div>
+                  <div className="text-xs text-slate-500 font-semibold">Xác suất biển mây hôm nay</div>
                   <div className="text-2xl font-black text-teal-700 tabular-nums leading-none mt-0.5">
                     {activeForecast.cloudProbability}%
                   </div>
@@ -288,8 +288,8 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                   <Droplets className="w-3.5 h-3.5 text-sky-600" />
                   <span>Độ ẩm thung lũng</span>
                 </div>
-                <div className="text-lg font-black text-[#073161] tabular-nums">{activeForecast.humidity}%</div>
-                <div className="text-[11px] text-emerald-700 font-bold mt-0.5">Đạt ngưỡng ngưng tụ</div>
+                <div className="text-lg font-black text-brand-800 tabular-nums">{activeForecast.humidity}%</div>
+                <div className="text-xs text-emerald-700 font-bold mt-0.5">Đạt ngưỡng ngưng tụ</div>
               </div>
 
               <div className="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl">
@@ -297,8 +297,8 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                   <Wind className="w-3.5 h-3.5 text-indigo-600" />
                   <span>Tốc độ gió</span>
                 </div>
-                <div className="text-lg font-black text-[#073161] tabular-nums">{activeForecast.windSpeedKmH} km/h</div>
-                <div className="text-[11px] text-teal-700 font-bold mt-0.5">Gió êm giữ biển mây</div>
+                <div className="text-lg font-black text-brand-800 tabular-nums">{activeForecast.windSpeedKmH} km/h</div>
+                <div className="text-xs text-teal-700 font-bold mt-0.5">Gió êm giữ biển mây</div>
               </div>
 
               <div className="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl">
@@ -306,10 +306,10 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                   <Thermometer className="w-3.5 h-3.5 text-amber-600" />
                   <span>Biên độ nhiệt</span>
                 </div>
-                <div className="text-lg font-black text-[#073161] tabular-nums">
+                <div className="text-lg font-black text-brand-800 tabular-nums">
                   {activeForecast.tempMin}°C – {activeForecast.tempMax}°C
                 </div>
-                <div className="text-[11px] text-amber-800 font-bold mt-0.5">Nghịch nhiệt mạnh</div>
+                <div className="text-xs text-amber-800 font-bold mt-0.5">Nghịch nhiệt mạnh</div>
               </div>
 
               <div className="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl">
@@ -318,7 +318,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                   <span>Khung giờ vàng</span>
                 </div>
                 <div className="text-sm font-black text-rose-700 mt-1">{activeForecast.goldenHours}</div>
-                <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Đẹp nhất trong ngày</div>
+                <div className="text-xs text-slate-500 font-semibold mt-0.5">Đẹp nhất trong ngày</div>
               </div>
             </div>
 
@@ -339,12 +339,12 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                   >
                     <div className="flex items-center justify-between gap-2 mb-1">
                       <span className="text-xs font-black text-amber-800 tabular-nums">{gw.window}</span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-teal-800 border border-teal-200">
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-white text-teal-800 border border-teal-200">
                         {gw.chanceBonus}
                       </span>
                     </div>
-                    <div className="text-xs font-extrabold text-[#073161] mb-1">{gw.title}</div>
-                    <p className="text-[11px] text-slate-600 leading-relaxed">{gw.desc}</p>
+                    <div className="text-xs font-extrabold text-brand-800 mb-1">{gw.title}</div>
+                    <p className="text-xs text-slate-600 leading-relaxed">{gw.desc}</p>
                   </div>
                 ))}
               </div>
@@ -354,7 +354,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
             <div className="bg-teal-50/70 border border-teal-200 rounded-2xl p-4 flex items-start gap-3">
               <Sparkles className="w-5 h-5 text-teal-700 shrink-0 mt-0.5" />
               <div>
-                <h4 className="text-xs font-extrabold text-[#073161] mb-1">
+                <h4 className="text-xs font-extrabold text-brand-800 mb-1">
                   Lời khuyên thực địa từ Thổ địa Tà Xùa tại {activeForecast.location}:
                 </h4>
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -368,9 +368,9 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
           <div className="lg:col-span-4 flex flex-col gap-4">
             {/* 3-Day Cloud Trend */}
             <div className="bg-white border border-slate-200/90 rounded-3xl p-5 space-y-3 shadow-2xs">
-              <h3 className="font-extrabold text-[#073161] text-sm flex items-center justify-between">
+              <h3 className="font-extrabold text-brand-800 text-sm flex items-center justify-between">
                 <span>Dự báo xu hướng 3 ngày tới</span>
-                <span className="text-[11px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
+                <span className="text-xs font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
                   Mùa mây đẹp
                 </span>
               </h3>
@@ -383,17 +383,17 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                     <div className="flex items-center justify-between">
                       <div>
                         <span className="text-xs font-extrabold text-slate-800">{d.dayLabel}</span>
-                        <span className="text-[11px] text-slate-500 ml-2">· {d.dateNote}</span>
+                        <span className="text-xs text-slate-500 ml-2">· {d.dateNote}</span>
                       </div>
                       <span className="text-xs font-black text-teal-800 bg-teal-100 border border-teal-300 px-2.5 py-0.5 rounded-full tabular-nums">
                         {d.prob}% có mây
                       </span>
                     </div>
-                    <div className="text-[11px] text-slate-600 flex items-center justify-between">
+                    <div className="text-xs text-slate-600 flex items-center justify-between">
                       <span>{d.temp}</span>
                       <span>Gió: {d.wind}</span>
                     </div>
-                    <div className="text-[11px] text-teal-700 font-bold">{d.verdict}</div>
+                    <div className="text-xs text-teal-700 font-bold">{d.verdict}</div>
                   </div>
                 ))}
               </div>
@@ -403,7 +403,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
             <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-2xs">
               <div className="flex items-center gap-2 mb-1.5">
                 <BellRing className="w-4 h-4 text-amber-600" />
-                <h4 className="font-extrabold text-[#073161] text-sm">Bật Báo Thức & Cảnh Báo Biển Mây</h4>
+                <h4 className="font-extrabold text-brand-800 text-sm">Bật Báo Thức & Cảnh Báo Biển Mây</h4>
               </div>
               <p className="text-xs text-slate-600 mb-3.5 leading-relaxed">
                 Nhận thông báo Zalo/Email lúc 05:00 sáng khi camera thực địa xác nhận biển mây đạt trên 85%.
@@ -426,7 +426,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                   />
                   <button
                     type="submit"
-                    className="w-full bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-2xs"
+                    className="w-full bg-brand-800 hover:bg-brand-700 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-2xs"
                   >
                     Đăng Ký Nhận Báo Mây Miễn Phí
                   </button>
@@ -436,7 +436,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
 
             {/* Practical Checklist */}
             <div className="bg-white border border-slate-200/90 rounded-3xl p-5 text-xs shadow-2xs">
-              <h4 className="font-extrabold text-[#073161] text-sm mb-2.5 flex items-center gap-1.5">
+              <h4 className="font-extrabold text-brand-800 text-sm mb-2.5 flex items-center gap-1.5">
                 <Info className="w-4 h-4 text-sky-600" />
                 <span>Lưu ý quan trọng khi đi săn mây sớm:</span>
               </h4>
@@ -454,7 +454,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
           <div className="bg-white border border-teal-200 rounded-3xl p-6 transition-all shadow-2xs">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <div>
-                <h4 className="text-base font-extrabold text-[#073161] flex items-center gap-2">
+                <h4 className="text-base font-extrabold text-brand-800 flex items-center gap-2">
                   <Sliders className="w-4 h-4 text-teal-600" />
                   <span>Bộ Mô Phỏng Hình Thành Biển Mây Tà Xùa</span>
                 </h4>
@@ -518,7 +518,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
 
             <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
               <span className="text-slate-700">
-                <strong className="text-[#073161]">Nhận định khí tượng:</strong> {simulatedResult.verdict}
+                <strong className="text-brand-800">Nhận định khí tượng:</strong> {simulatedResult.verdict}
               </span>
               <span className="text-slate-500">Mô hình nghịch nhiệt thung lũng Bắc Yên – Tà Xùa</span>
             </div>
@@ -533,7 +533,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                 <Eye className="w-4 h-4 text-amber-600" />
                 <span>Đã thẩm định góc nhìn thực tế (Cloud View Verified)</span>
               </div>
-              <h3 className="text-lg sm:text-xl font-black text-[#073161]">
+              <h3 className="text-lg sm:text-xl font-black text-brand-800">
                 Homestay Ngắm Mây Tại Giường & Quán Cafe Săn Mây Đẹp Nhất Khu Vực {selectedLocation}
               </h3>
               <p className="text-xs text-slate-600 mt-0.5">
@@ -555,7 +555,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                   onClick={() => setSpotCategoryFilter(tab.id)}
                   className={`px-3.5 py-2 rounded-xl text-xs font-extrabold cursor-pointer transition-all ${
                     spotCategoryFilter === tab.id
-                      ? 'bg-[#073161] text-white shadow-2xs'
+                      ? 'bg-brand-800 text-white shadow-2xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 border border-slate-200'
                   }`}
                 >
@@ -581,26 +581,26 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                     />
                     <div className="absolute top-2.5 left-2.5 flex flex-wrap items-center gap-1.5">
                       {item.isAdminFeatured && (
-                        <span className="bg-amber-400 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-2xs">
+                        <span className="bg-amber-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full shadow-2xs">
                           {item.adminFeaturedLabel || '👑 Admin Đề Xuất'}
                         </span>
                       )}
-                      <span className="bg-white/95 text-teal-800 border border-teal-300 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-2xs">
+                      <span className="bg-white/95 text-teal-800 border border-teal-300 text-xs font-extrabold px-2.5 py-0.5 rounded-full shadow-2xs">
                         ☁️ Cloud View {item.hasCloudView ? '9.6' : '9.2'}/10
                       </span>
                     </div>
-                    <span className="absolute bottom-2 right-2 bg-slate-950/75 text-amber-300 text-[11px] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">
+                    <span className="absolute bottom-2 right-2 bg-slate-950/75 text-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">
                       <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                       <span>{item.rating}</span>
                     </span>
                   </div>
 
                   <div className="p-4 space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px] text-slate-500">
+                    <div className="flex items-center justify-between text-xs text-slate-500">
                       <span>📍 {item.area}</span>
                       <span>{item.category === 'coffee' ? '☕ Quán Cafe Săn Mây' : '🏡 Homestay Cloud View'}</span>
                     </div>
-                    <h4 className="font-extrabold text-[#073161] text-sm line-clamp-1 group-hover:text-teal-700 transition-colors">
+                    <h4 className="font-extrabold text-brand-800 text-sm line-clamp-1 group-hover:text-teal-700 transition-colors">
                       {item.title}
                     </h4>
                     <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
@@ -611,11 +611,11 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
 
                 <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between">
                   <div>
-                    <span className="text-[10px] text-slate-400 block">Giá niêm yết từ</span>
-                    <span className="text-sm font-black text-[#073161] tabular-nums">
+                    <span className="text-xs text-slate-400 block">Giá niêm yết từ</span>
+                    <span className="text-sm font-black text-brand-800 tabular-nums">
                       {formatVND(item.minPrice)}
                     </span>
-                    <span className="text-[11px] text-slate-500">
+                    <span className="text-xs text-slate-500">
                       /{item.category === 'coffee' ? 'đồ uống' : 'đêm'}
                     </span>
                   </div>

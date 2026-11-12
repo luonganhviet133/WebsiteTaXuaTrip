@@ -144,7 +144,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <header
         className={`sticky top-0 z-40 w-full transition-colors duration-200 ${
           isNavyHeader
-            ? 'bg-[#04244d]/95 backdrop-blur-md border-b border-white/10 text-white'
+            ? 'bg-brand-900/95 backdrop-blur-md border-b border-white/10 text-white'
             : 'bg-white/95 backdrop-blur-md border-b border-slate-200/90 text-slate-900 shadow-xs'
         }`}
       >
@@ -163,23 +163,23 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div
                 className={`relative w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-transform group-hover:scale-105 shrink-0 ${
                   isNavyHeader
-                    ? 'bg-white text-[#073161]'
-                    : 'bg-[#073161] text-white'
+                    ? 'bg-white text-brand-800'
+                    : 'bg-brand-800 text-white'
                 }`}
               >
                 <Mountain className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
-                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-500 ring-2 ring-[#04244d]" />
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-500 ring-2 ring-brand-900" />
               </div>
               <div className="min-w-0">
                 <div
                   className={`font-black text-xs sm:text-sm tracking-wider uppercase leading-tight whitespace-nowrap ${
-                    isNavyHeader ? 'text-white' : 'text-[#073161]'
+                    isNavyHeader ? 'text-white' : 'text-brand-800'
                   }`}
                 >
                   TÀ XÙA TRIP
                 </div>
                 <div
-                  className={`hidden xl:block text-[10px] font-normal tracking-wide whitespace-nowrap ${
+                  className={`hidden xl:block text-xs font-normal tracking-wide whitespace-nowrap ${
                     isNavyHeader ? 'text-slate-300' : 'text-slate-500'
                   }`}
                 >
@@ -204,10 +204,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                       isActive
                         ? isNavyHeader
                           ? 'text-white border-amber-400'
-                          : 'text-[#073161] border-[#073161]'
+                          : 'text-brand-800 border-brand-800'
                         : isNavyHeader
                         ? 'text-white/80 hover:text-white border-transparent'
-                        : 'text-slate-700 hover:text-[#073161] border-transparent'
+                        : 'text-slate-700 hover:text-brand-800 border-transparent'
                     }`}
                   >
                     {item.label}
@@ -227,7 +227,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         : 'text-teal-700 border-teal-700'
                       : isNavyHeader
                       ? 'text-white/80 hover:text-white border-transparent'
-                      : 'text-slate-700 hover:text-[#073161] border-transparent'
+                      : 'text-slate-700 hover:text-brand-800 border-transparent'
                   }`}
                 >
                   <span>Thêm</span>
@@ -257,7 +257,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           }}
                           className={`w-full flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-colors cursor-pointer ${
                             active
-                              ? 'bg-teal-50 text-[#073161] font-bold'
+                              ? 'bg-teal-50 text-brand-800 font-bold'
                               : 'hover:bg-slate-50 text-slate-700 font-medium'
                           }`}
                         >
@@ -265,8 +265,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                             <Icon className="w-4 h-4" />
                           </div>
                           <div className="min-w-0">
-                            <div className="text-xs font-bold text-[#073161]">{sec.label}</div>
-                            <div className="text-[10.5px] text-slate-500 leading-tight">{sec.desc}</div>
+                            <div className="text-xs font-bold text-brand-800">{sec.label}</div>
+                            <div className="text-xs text-slate-500 leading-tight">{sec.desc}</div>
                           </div>
                         </button>
                       );
@@ -285,11 +285,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                   type="button"
                   onClick={onOpenSavedModal}
                   aria-label={`Danh sách đã lưu (${savedCount})`}
-                  className="relative inline-flex items-center justify-center w-8 h-8 sm:w-auto sm:px-2.5 sm:min-h-[36px] rounded-full text-xs font-bold transition-colors cursor-pointer border shrink-0 bg-slate-100 hover:bg-slate-200 text-[#073161] border-slate-200"
+                  className="relative inline-flex items-center justify-center w-8 h-8 sm:w-auto sm:px-2.5 sm:min-h-[36px] rounded-full text-xs font-bold transition-colors cursor-pointer border shrink-0 bg-slate-100 hover:bg-slate-200 text-brand-800 border-slate-200"
                 >
                   <Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500" />
                   <span className="hidden md:inline ml-1">Đã lưu</span>
-                  <span className="absolute -top-1 -right-1 sm:static sm:ml-1.5 px-1.5 min-w-[16px] h-4 rounded-full bg-rose-500 text-white text-[9.5px] font-extrabold flex items-center justify-center tabular-nums shadow-xs">
+                  <span className="absolute -top-1 -right-1 sm:static sm:ml-1.5 px-1.5 min-w-[16px] h-4 rounded-full bg-rose-500 text-white text-xs font-extrabold flex items-center justify-center tabular-nums shadow-xs">
                     {savedCount}
                   </span>
                 </button>
@@ -301,7 +301,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   type="button"
                   onClick={onOpenAiAdvisor}
                   aria-label="Trợ lý AI tư vấn giá phòng, tour và lịch trình"
-                  className="inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-1.5 min-h-[36px] rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs shrink-0 bg-[#073161] hover:bg-[#052243] text-white"
+                  className="inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-1.5 min-h-[36px] rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs shrink-0 bg-brand-800 hover:bg-[#052243] text-white"
                 >
                   <Sparkles className="w-3.5 h-3.5 shrink-0 text-amber-300" />
                   <span className="whitespace-nowrap font-black">Tư vấn AI</span>
@@ -328,8 +328,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                       )}
                     </div>
                     <div className="flex flex-col items-start text-left leading-tight">
-                      <span className="font-extrabold text-[11px] max-w-[85px] truncate">{currentUser.name}</span>
-                      <span className={`text-[9px] font-black uppercase tracking-wider px-1 rounded-xs ${
+                      <span className="font-extrabold text-xs max-w-[85px] truncate">{currentUser.name}</span>
+                      <span className={`text-xs font-black uppercase tracking-wider px-1 rounded-xs ${
                         currentUser.role === 'admin'
                           ? 'bg-rose-100 text-rose-700'
                           : currentUser.role === 'partner'
@@ -357,8 +357,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                           />
                           <div className="min-w-0 flex-1">
                             <p className="font-extrabold text-xs text-slate-900 truncate">{currentUser.name}</p>
-                            <p className="text-[11px] text-slate-500 truncate">{currentUser.email}</p>
-                            <span className={`inline-block mt-0.5 text-[10px] font-black px-2 py-0.5 rounded-full ${
+                            <p className="text-xs text-slate-500 truncate">{currentUser.email}</p>
+                            <span className={`inline-block mt-0.5 text-xs font-black px-2 py-0.5 rounded-full ${
                               currentUser.role === 'admin'
                                 ? 'bg-rose-100 text-rose-700'
                                 : currentUser.role === 'partner'
@@ -371,7 +371,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         </div>
 
                         {currentUser.facilityName && (
-                          <div className="mt-2 p-2 bg-amber-50 rounded-xl border border-amber-200 text-[11px] text-amber-900">
+                          <div className="mt-2 p-2 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900">
                             <span className="font-bold">Cơ sở: </span>{currentUser.facilityName}
                           </div>
                         )}
@@ -390,7 +390,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                               <Heart className={`w-3.5 h-3.5 ${savedCount > 0 ? 'fill-rose-500 text-rose-500' : 'text-slate-400'}`} />
                               <span>Cơ sở đã lưu</span>
                             </span>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-50 text-rose-600 border border-rose-200 tabular-nums">
+                            <span className="px-2 py-0.5 rounded-full text-xs font-extrabold bg-rose-50 text-rose-600 border border-rose-200 tabular-nums">
                               {savedCount}
                             </span>
                           </button>
@@ -408,7 +408,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                                 <CalendarCheck className="w-3.5 h-3.5 text-teal-600" />
                                 <span>Đơn đặt của tôi</span>
                               </span>
-                              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-teal-50 text-teal-700 border border-teal-200 tabular-nums">
+                              <span className="px-2 py-0.5 rounded-full text-xs font-extrabold bg-teal-50 text-teal-700 border border-teal-200 tabular-nums">
                                 {bookingsCount}
                               </span>
                             </button>
@@ -497,7 +497,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className={`hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[36px] rounded-full text-xs font-bold transition-all cursor-pointer border shrink-0 ${
                     isNavyHeader
                       ? 'bg-white text-slate-900 hover:bg-slate-100 border-white'
-                      : 'bg-[#073161] text-white hover:bg-[#052243] border-[#073161]'
+                      : 'bg-brand-800 text-white hover:bg-[#052243] border-brand-800'
                   }`}
                 >
                   <LogIn className="w-3.5 h-3.5" />
@@ -538,8 +538,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setCurrentTab(tab.id)}
               className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl transition-colors cursor-pointer min-w-0 ${
                 isActive
-                  ? 'text-[#073161] font-extrabold'
-                  : 'text-slate-500 hover:text-[#073161] font-semibold'
+                  ? 'text-brand-800 font-extrabold'
+                  : 'text-slate-500 hover:text-brand-800 font-semibold'
               }`}
             >
               <div
@@ -549,7 +549,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <IconComponent className="w-4 h-4" />
               </div>
-              <span className="text-[10px] tracking-tight mt-0.5 whitespace-nowrap">
+              <span className="text-xs tracking-tight mt-0.5 whitespace-nowrap">
                 {tab.label}
               </span>
             </button>
@@ -562,8 +562,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           onClick={() => setIsMobileMenuOpen(true)}
           className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl transition-colors cursor-pointer min-w-0 mr-1 sm:mr-1.5 ${
             isMobileMenuOpen || ['services', 'dining', 'itinerary', 'partner', 'admin', 'verified'].includes(currentTab)
-              ? 'text-[#073161] font-extrabold'
-              : 'text-slate-500 hover:text-[#073161] font-semibold'
+              ? 'text-brand-800 font-extrabold'
+              : 'text-slate-500 hover:text-brand-800 font-semibold'
           }`}
         >
           <div
@@ -575,7 +575,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Menu className="w-4 h-4" />
           </div>
-          <span className="text-[10px] tracking-tight mt-0.5 whitespace-nowrap font-bold">
+          <span className="text-xs tracking-tight mt-0.5 whitespace-nowrap font-bold">
             Menu
           </span>
         </button>
@@ -595,7 +595,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div>
-                <h2 className="text-base font-extrabold text-[#073161]">
+                <h2 className="text-base font-extrabold text-brand-800">
                   Menu & Tiện ích Tà Xùa Trip
                 </h2>
                 <p className="text-xs text-slate-500">Đi thật · Biết trước · Hỗ trợ 24/7</p>
@@ -618,20 +618,20 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setIsMobileMenuOpen(false);
                   onOpenAiAdvisor();
                 }}
-                className="w-full text-left p-3.5 rounded-2xl bg-linear-to-r from-[#073161] to-teal-900 text-white flex items-center justify-between gap-3 shadow-md border border-teal-500/30 cursor-pointer transition-transform active:scale-98"
+                className="w-full text-left p-3.5 rounded-2xl bg-linear-to-r from-brand-800 to-teal-900 text-white flex items-center justify-between gap-3 shadow-md border border-teal-500/30 cursor-pointer transition-transform active:scale-98"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center font-black shrink-0 shadow-xs">
                     <Sparkles className="w-5 h-5 text-slate-950" />
                   </div>
                   <div>
-                    <div className="text-[10px] font-black uppercase tracking-wider text-amber-300">
+                    <div className="text-xs font-black uppercase tracking-wider text-amber-300">
                       Tính năng AI mới
                     </div>
                     <div className="text-sm font-extrabold leading-tight">
                       Hỏi Trợ Lý AI Tư Vấn
                     </div>
-                    <div className="text-[11px] text-teal-200">
+                    <div className="text-xs text-teal-200">
                       Check ngày, số người, đón xe & ngân sách
                     </div>
                   </div>
@@ -644,7 +644,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Primary Mobile Destinations Grid */}
             <div className="space-y-1.5">
-              <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">
+              <div className="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-2">
                 Danh Mục Khám Phá & Dịch Vụ:
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -672,8 +672,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                       }}
                       className={`flex items-center gap-2 p-2.5 rounded-2xl border text-left text-xs font-bold min-h-[46px] transition-colors cursor-pointer ${
                         active
-                          ? 'bg-[#073161] text-white border-[#073161]'
-                          : 'bg-slate-50 hover:bg-slate-100 text-[#073161] border-slate-200'
+                          ? 'bg-brand-800 text-white border-brand-800'
+                          : 'bg-slate-50 hover:bg-slate-100 text-brand-800 border-slate-200'
                       }`}
                     >
                       <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-amber-300' : 'text-teal-700'}`} />
@@ -686,7 +686,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Mountain Pass Utilities: SOS, Cloud Points, Low-Data Mode & PWA */}
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2.5">
-              <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+              <div className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
                 An toàn đèo núi & Chế độ Offline
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -735,7 +735,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="font-extrabold text-xs text-slate-900 truncate">{currentUser.name}</span>
-                        <span className={`text-[10px] font-black px-2 py-0.2 rounded-full ${
+                        <span className={`text-xs font-black px-2 py-0.2 rounded-full ${
                           currentUser.role === 'admin'
                             ? 'bg-rose-100 text-rose-700'
                             : currentUser.role === 'partner'
@@ -745,12 +745,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                           {currentUser.roleName}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-500 truncate">{currentUser.email}</p>
+                      <p className="text-xs text-slate-500 truncate">{currentUser.email}</p>
                     </div>
                   </div>
 
                   {currentUser.facilityName && (
-                    <div className="text-[11px] font-medium text-amber-900 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
+                    <div className="text-xs font-medium text-amber-900 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
                       🏡 <span className="font-bold">Cơ sở:</span> {currentUser.facilityName}
                     </div>
                   )}
@@ -781,10 +781,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </div>
                 </div>
               ) : (
-                <div className="p-3 bg-linear-to-br from-slate-900 to-[#073161] text-white rounded-2xl space-y-2">
+                <div className="p-3 bg-linear-to-br from-slate-900 to-brand-800 text-white rounded-2xl space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-extrabold">Đăng nhập tài khoản:</span>
-                    <span className="text-[10px] text-teal-300">Khách / Chủ nhà / Admin</span>
+                    <span className="text-xs text-teal-300">Khách / Chủ nhà / Admin</span>
                   </div>
                   <div className="grid grid-cols-3 gap-1.5">
                     <button
@@ -793,7 +793,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsMobileMenuOpen(false);
                         onOpenAuthModal?.('traveler', 'login');
                       }}
-                      className="bg-white/10 hover:bg-white/20 text-white rounded-lg py-2 text-[11px] font-bold cursor-pointer text-center"
+                      className="bg-white/10 hover:bg-white/20 text-white rounded-lg py-2 text-xs font-bold cursor-pointer text-center"
                     >
                       Khách hàng
                     </button>
@@ -803,7 +803,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsMobileMenuOpen(false);
                         onOpenAuthModal?.('partner', 'login');
                       }}
-                      className="bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg py-2 text-[11px] font-bold cursor-pointer text-center"
+                      className="bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg py-2 text-xs font-bold cursor-pointer text-center"
                     >
                       Chủ cơ sở
                     </button>
@@ -813,7 +813,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsMobileMenuOpen(false);
                         onOpenAuthModal?.('admin', 'login');
                       }}
-                      className="bg-rose-500 hover:bg-rose-600 text-white rounded-lg py-2 text-[11px] font-bold cursor-pointer text-center"
+                      className="bg-rose-500 hover:bg-rose-600 text-white rounded-lg py-2 text-xs font-bold cursor-pointer text-center"
                     >
                       Admin
                     </button>

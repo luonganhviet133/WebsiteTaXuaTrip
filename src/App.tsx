@@ -1064,10 +1064,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f8fafc] text-slate-900 flex flex-col font-sans selection:bg-[#073161] selection:text-white">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f8fafc] text-slate-900 flex flex-col font-sans selection:bg-brand-800 selection:text-white">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-24 right-6 z-50 bg-[#073161] text-white font-bold text-xs px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 border border-white/15">
+        <div className="fixed top-24 right-6 z-50 bg-brand-800 text-white font-bold text-xs px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 border border-white/15">
           <CheckCircle2 className="w-4 h-4 text-teal-300" />
           <span>{toastMessage}</span>
         </div>
@@ -1119,7 +1119,7 @@ export default function App() {
           <span>{siteContent.emergencyBanner.message}</span>
         </div>
       ) : (
-        <div className="bg-[#043328] text-emerald-100 px-3.5 sm:px-6 py-1.5 text-[11px] font-bold border-b border-emerald-900/60 shadow-2xs">
+        <div className="bg-[#043328] text-emerald-100 px-3.5 sm:px-6 py-1.5 text-xs font-bold border-b border-emerald-900/60 shadow-2xs">
           <div className="max-w-6xl mx-auto flex items-center justify-center gap-2 text-center flex-wrap">
             <span className="font-black uppercase tracking-wider text-emerald-300">
               CẬP NHẬT THỜI TIẾT & ĐÈO TÀ XÙA HÔM NAY:
@@ -1140,7 +1140,7 @@ export default function App() {
           <button
             type="button"
             onClick={() => setIsSosModalOpen(true)}
-            className="bg-slate-950 text-amber-300 px-3 py-1 rounded-full text-[11px] cursor-pointer"
+            className="bg-slate-950 text-amber-300 px-3 py-1 rounded-full text-xs cursor-pointer"
           >
             Xem SĐT Cứu hộ Offline →
           </button>
@@ -1232,11 +1232,11 @@ export default function App() {
                   <div className="max-w-6xl mx-auto">
                     <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-5">
                       <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-[11px] font-black uppercase tracking-wider text-amber-950 mb-2">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-xs font-black uppercase tracking-wider text-amber-950 mb-2">
                           <Package className="w-3.5 h-3.5 text-amber-700" />
                           <span>Gói Đặc Biệt Do Admin Thẩm Định & Quản Lý Trực Tiếp</span>
                         </div>
-                        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#073161] tracking-tight">
+                        <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-800 tracking-tight">
                           Combo Săn Mây Trọn Gói & Tour Trekking Sống Lưng Khủng Long
                         </h2>
                         <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
@@ -1264,7 +1264,7 @@ export default function App() {
                             }
                             className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer ${
                               selectedComboCategory === tab.id
-                                ? 'bg-[#073161] text-white border-[#073161] shadow-2xs'
+                                ? 'bg-brand-800 text-white border-brand-800 shadow-2xs'
                                 : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
                             }`}
                           >
@@ -1299,18 +1299,18 @@ export default function App() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/25" />
 
                                 <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-                                  <span className="px-3 py-1 rounded-full text-[11px] font-black bg-amber-400 text-slate-950 shadow-xs truncate">
+                                  <span className="px-3 py-1 rounded-full text-xs font-black bg-amber-400 text-slate-950 shadow-xs truncate">
                                     {combo.badgeText}
                                   </span>
                                   {savedAmount > 0 && (
-                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-600 text-white shrink-0">
+                                    <span className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-emerald-600 text-white shrink-0">
                                       Tiết kiệm {Math.round(savedAmount / 1000)}k
                                     </span>
                                   )}
                                 </div>
 
                                 <div className="absolute bottom-3 left-3.5 right-3.5 text-white">
-                                  <div className="flex items-center gap-2 text-[11px] font-bold text-teal-200 mb-1">
+                                  <div className="flex items-center gap-2 text-xs font-bold text-teal-200 mb-1">
                                     <span>⏱️ {combo.duration}</span>
                                     <span>·</span>
                                     <span>📍 {combo.area}</span>
@@ -1328,7 +1328,7 @@ export default function App() {
                                 </p>
 
                                 <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 space-y-1.5">
-                                  <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#073161]">
+                                  <div className="text-xs font-extrabold uppercase tracking-wider text-brand-800">
                                     Quyền lợi trọn gói đã bao gồm:
                                   </div>
                                   <ul className="space-y-1 text-xs text-slate-700">
@@ -1347,14 +1347,14 @@ export default function App() {
                             <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
                               <div>
                                 {combo.originalPrice > combo.comboPrice && (
-                                  <span className="text-[11px] text-slate-400 line-through block tabular-nums">
+                                  <span className="text-xs text-slate-400 line-through block tabular-nums">
                                     Giá lẻ: {formatVND(combo.originalPrice)}
                                   </span>
                                 )}
-                                <div className="text-base sm:text-lg font-black text-[#073161] tabular-nums">
+                                <div className="text-base sm:text-lg font-black text-brand-800 tabular-nums">
                                   {formatVND(combo.comboPrice)}
                                 </div>
-                                <span className="text-[10px] text-slate-500 font-semibold block">
+                                <span className="text-xs text-slate-500 font-semibold block">
                                   / {combo.unit}
                                 </span>
                               </div>
@@ -1371,7 +1371,7 @@ export default function App() {
                                 <button
                                   type="button"
                                   onClick={() => handleSelectComboAction(combo)}
-                                  className="px-4 py-2.5 rounded-xl bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                                  className="px-4 py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
                                 >
                                   Đặt Gói Combo →
                                 </button>
@@ -1388,7 +1388,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={() => setShowAllCuratedCombos(true)}
-                          className="px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[#073161] font-extrabold text-xs transition-colors cursor-pointer"
+                          className="px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-brand-800 font-extrabold text-xs transition-colors cursor-pointer"
                         >
                           Xem toàn bộ {allActiveCombos.length} Gói Combo & Tour Trekking Đặc Biệt →
                         </button>
@@ -1429,11 +1429,11 @@ export default function App() {
                   <div className="max-w-6xl mx-auto space-y-5">
                     <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
                       <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-[11px] font-black uppercase tracking-wider mb-2">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-xs font-black uppercase tracking-wider mb-2">
                           <Bike className="w-3.5 h-3.5" />
                           <span>Tà Xùa Biker · Hệ Thống Xe Máy Kiểm Định Phanh Đèo 100%</span>
                         </div>
-                        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#073161] tracking-tight">
+                        <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-800 tracking-tight">
                           Thuê Xe Máy Phượt Đèo Đỉnh Gió – Sống Lưng – Thảo Nguyên
                         </h2>
                         <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
@@ -1445,7 +1445,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={() => handleOpenBusBookingModal(undefined, true)}
-                          className="px-4 py-2.5 rounded-full bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs shadow-sm cursor-pointer"
+                          className="px-4 py-2.5 rounded-full bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs shadow-sm cursor-pointer"
                         >
                           🚌 Đặt Combo Vé Xe + Xe Máy (-30k/xe) →
                         </button>
@@ -1465,7 +1465,7 @@ export default function App() {
                     {/* 3 Cam Kết Vàng Tà Xùa Biker */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div className="bg-white border border-amber-200/90 rounded-2xl p-4 shadow-2xs">
-                        <div className="text-xs font-extrabold text-[#073161] mb-1">
+                        <div className="text-xs font-extrabold text-brand-800 mb-1">
                           ⏱️ 1. Trả Trước 12:00 Trưa = Tính 0.5 Ngày
                         </div>
                         <p className="text-xs text-slate-600">
@@ -1473,7 +1473,7 @@ export default function App() {
                         </p>
                       </div>
                       <div className="bg-white border border-amber-200/90 rounded-2xl p-4 shadow-2xs">
-                        <div className="text-xs font-extrabold text-[#073161] mb-1">
+                        <div className="text-xs font-extrabold text-brand-800 mb-1">
                           🛠️ 2. Bảo Dưỡng Phanh Đĩa & Nhông Xích Đổ Đèo
                         </div>
                         <p className="text-xs text-slate-600">
@@ -1481,7 +1481,7 @@ export default function App() {
                         </p>
                       </div>
                       <div className="bg-white border border-amber-200/90 rounded-2xl p-4 shadow-2xs">
-                        <div className="text-xs font-extrabold text-[#073161] mb-1">
+                        <div className="text-xs font-extrabold text-brand-800 mb-1">
                           🚨 3. Đổi Xe & Cứu Hộ Đèo Tà Xùa 24/7
                         </div>
                         <p className="text-xs text-slate-600">
@@ -1520,7 +1520,7 @@ export default function App() {
                     <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-teal-700 mb-2">
                       DỮ LIỆU THẬT ĐANG CÔNG KHAI · ƯU TIÊN ĐỀ XUẤT BỞI ADMIN
                     </p>
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-[#073161] tracking-tight">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-800 tracking-tight">
                       {selectedCategory === 'tour'
                         ? 'Tour Trekking & Trải Nghiệm Bản Địa Đã Thẩm Định'
                         : selectedCategory === 'motorbike'
@@ -1547,7 +1547,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => setCurrentTab('stay')}
-                      className="text-sm font-extrabold text-[#073161] hover:text-teal-700 transition-colors cursor-pointer whitespace-nowrap"
+                      className="text-sm font-extrabold text-brand-800 hover:text-teal-700 transition-colors cursor-pointer whitespace-nowrap"
                     >
                       Xem toàn bộ Lưu trú ({listings.filter((l) => l.category === 'homestay').length}) →
                     </button>
@@ -1555,9 +1555,9 @@ export default function App() {
                 </div>
 
                 {/* AI Trip Consultation Banner - Compact, elegant and high-converting */}
-                <div className="mb-6 bg-gradient-to-r from-[#073161] via-[#0b4382] to-teal-800 rounded-3xl p-4 sm:p-5 text-white shadow-md relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 border border-teal-500/30">
+                <div className="mb-6 bg-gradient-to-r from-brand-800 via-[#0b4382] to-teal-800 rounded-3xl p-4 sm:p-5 text-white shadow-md relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 border border-teal-500/30">
                   <div className="relative z-10 max-w-2xl min-w-0">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[11px] font-black uppercase tracking-wider mb-2">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-black uppercase tracking-wider mb-2">
                       <Sparkles className="w-3 h-3" />
                       <span>Trợ lý AI Thông Minh</span>
                     </div>
@@ -1590,10 +1590,10 @@ export default function App() {
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-black uppercase tracking-wider text-[#073161]">
+                        <span className="text-xs font-black uppercase tracking-wider text-brand-800">
                           GỢI Ý NHANH
                         </span>
-                        <span className="text-[11px] font-bold text-teal-800 bg-teal-50 border border-teal-200/60 px-2.5 py-0.5 rounded-full">
+                        <span className="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200/60 px-2.5 py-0.5 rounded-full">
                           Tiêu chí Homestay Hot
                         </span>
                         {selectedQuickSuggestions.length > 0 && (
@@ -1605,14 +1605,14 @@ export default function App() {
                               type="button"
                               onClick={() => setSelectedQuickSuggestions([])}
                               aria-label={`Bỏ tất cả ${selectedQuickSuggestions.length} bộ lọc gợi ý nhanh`}
-                              className="text-[11px] font-bold text-rose-700 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-2.5 py-0.5 rounded-full transition-colors cursor-pointer border border-rose-300/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+                              className="text-xs font-bold text-rose-700 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-2.5 py-0.5 rounded-full transition-colors cursor-pointer border border-rose-300/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
                             >
                               Bỏ lọc ({selectedQuickSuggestions.length})
                             </button>
                           </div>
                         )}
                       </div>
-                      <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5 leading-snug">
+                      <p className="text-xs text-slate-500 mt-0.5 leading-snug">
                         Chạm để lọc nhanh danh sách homestay bên dưới theo nhu cầu thực tế của bạn
                       </p>
                     </div>
@@ -1664,7 +1664,7 @@ export default function App() {
                           aria-label={buttonAriaLabel}
                           className={`group relative flex items-center justify-between gap-2 p-2.5 sm:p-3.5 rounded-2xl border text-left transition-all duration-300 ease-out cursor-pointer transform hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 ${
                             isActive
-                              ? 'bg-[#073161] text-white border-teal-400 shadow-md ring-2 ring-teal-400/50 shadow-[0_0_18px_rgba(20,184,166,0.35)]'
+                              ? 'bg-brand-800 text-white border-teal-400 shadow-md ring-2 ring-teal-400/50 shadow-[0_0_18px_rgba(20,184,166,0.35)]'
                               : 'bg-white hover:bg-slate-50/80 text-slate-800 border-slate-200/90 hover:border-teal-400 hover:ring-2 hover:ring-teal-400/30 hover:shadow-[0_0_16px_rgba(20,184,166,0.25)]'
                           }`}
                         >
@@ -1681,14 +1681,14 @@ export default function App() {
                             </div>
                             <div className="min-w-0 flex-1">
                               <div
-                                className={`text-[11px] sm:text-xs md:text-sm font-black leading-tight transition-colors duration-300 break-words ${
-                                  isActive ? 'text-white' : 'text-[#073161] group-hover:text-teal-700'
+                                className={`text-xs md:text-sm font-black leading-tight transition-colors duration-300 break-words ${
+                                  isActive ? 'text-white' : 'text-brand-800 group-hover:text-teal-700'
                                 }`}
                               >
                                 {item.label}
                               </div>
                               <div
-                                className={`text-[9.5px] sm:text-[11px] leading-tight mt-0.5 transition-colors duration-300 line-clamp-2 break-words ${
+                                className={`text-xs leading-tight mt-0.5 transition-colors duration-300 line-clamp-2 break-words ${
                                   isActive ? 'text-teal-100 font-medium' : 'text-slate-500 group-hover:text-slate-600'
                                 }`}
                               >
@@ -1700,13 +1700,13 @@ export default function App() {
                           <div className="shrink-0 flex items-center self-center pl-0.5">
                             {isActive ? (
                               <span
-                                className="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-black bg-amber-400 text-slate-950 shadow-xs shadow-amber-400/50 ring-1 ring-amber-500/60"
+                                className="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs font-black bg-amber-400 text-slate-950 shadow-xs shadow-amber-400/50 ring-1 ring-amber-500/60"
                                 aria-label={`Đang áp dụng bộ lọc, ${matchCount} phòng homestay phù hợp`}
                               >
                                 {matchCount}
                               </span>
                             ) : (
-                              <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold bg-white text-slate-700 border border-slate-200/90 shadow-2xs transition-all duration-300 group-hover:border-teal-400 group-hover:text-teal-800 group-hover:shadow-[0_0_6px_rgba(20,184,166,0.2)]">
+                              <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs font-bold bg-white text-slate-700 border border-slate-200/90 shadow-2xs transition-all duration-300 group-hover:border-teal-400 group-hover:text-teal-800 group-hover:shadow-[0_0_6px_rgba(20,184,166,0.2)]">
                                 {matchCount}
                               </span>
                             )}
@@ -1745,7 +1745,7 @@ export default function App() {
                       }}
                       className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
                         selectedCategory === cat.id
-                          ? 'bg-[#073161] text-white border-[#073161] shadow-xs'
+                          ? 'bg-brand-800 text-white border-brand-800 shadow-xs'
                           : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
                       }`}
                     >
@@ -1757,7 +1757,7 @@ export default function App() {
 
                 {filteredListings.length === 0 ? (
                   <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center max-w-2xl mx-auto shadow-2xs">
-                    <h3 className="text-lg font-extrabold text-[#073161] mb-2">
+                    <h3 className="text-lg font-extrabold text-brand-800 mb-2">
                       Chưa có phòng Cloud View khớp điều kiện lọc hiện tại
                     </h3>
                     <p className="text-sm text-slate-600 mb-6">
@@ -1773,7 +1773,7 @@ export default function App() {
                         setOnlyAvailable(false);
                         setSelectedQuickSuggestions([]);
                       }}
-                      className="px-6 py-2.5 rounded-full border border-slate-300 hover:border-[#073161] text-xs font-bold text-[#073161] transition-colors cursor-pointer"
+                      className="px-6 py-2.5 rounded-full border border-slate-300 hover:border-brand-800 text-xs font-bold text-brand-800 transition-colors cursor-pointer"
                     >
                       Mở toàn bộ danh sách Lưu trú
                     </button>
@@ -1802,7 +1802,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={() => setVisibleExploreCount((prev) => prev + 18)}
-                          className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#073161] hover:bg-[#0a3f7c] text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer"
+                          className="w-full sm:w-auto px-6 py-3 rounded-full bg-brand-800 hover:bg-brand-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer"
                         >
                           Xem thêm 18 cơ sở tiếp theo ({Math.min(visibleExploreCount, filteredListings.length)} / {filteredListings.length})
                         </button>
@@ -1819,7 +1819,7 @@ export default function App() {
                             setCurrentTab('stay');
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                           }}
-                          className="w-full sm:w-auto px-6 py-3 rounded-full border border-slate-300 hover:border-[#073161] bg-white text-[#073161] text-xs sm:text-sm font-bold transition-all cursor-pointer"
+                          className="w-full sm:w-auto px-6 py-3 rounded-full border border-slate-300 hover:border-brand-800 bg-white text-brand-800 text-xs sm:text-sm font-bold transition-all cursor-pointer"
                         >
                           Bộ lọc Lưu trú nâng cao →
                         </button>
@@ -1829,9 +1829,9 @@ export default function App() {
                 )}
 
                 {/* Owner Claim Registration Banner */}
-                <div className="mt-10 sm:mt-12 bg-gradient-to-r from-[#04244d] via-[#06366d] to-[#084d5e] rounded-3xl p-6 sm:p-8 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-md border border-white/10">
+                <div className="mt-10 sm:mt-12 bg-gradient-to-r from-brand-900 via-[#06366d] to-[#084d5e] rounded-3xl p-6 sm:p-8 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-md border border-white/10">
                   <div className="max-w-2xl">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-slate-950 font-extrabold text-[11px] mb-2.5">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-slate-950 font-extrabold text-xs mb-2.5">
                       <Building2 className="w-3.5 h-3.5" />
                       <span>DÀNH CHO CHỦ CƠ SỞ DU LỊCH</span>
                     </div>
@@ -1902,7 +1902,7 @@ export default function App() {
           return (
           <div className="bg-[#f8fafc] pb-20">
             {/* 1. Compact Command Hero + Above-the-Fold Quick Booking Bar */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-[#04244d] via-[#06366d] to-[#0a6b6e] text-white py-5 sm:py-7 px-4 sm:px-6 lg:px-8 border-b border-white/10">
+            <div className="relative overflow-hidden bg-gradient-to-br from-brand-900 via-[#06366d] to-[#0a6b6e] text-white py-5 sm:py-7 px-4 sm:px-6 lg:px-8 border-b border-white/10">
               {staySecBanner?.isActive && staySecBanner.bannerImageUrl && (
                 <img
                   src={staySecBanner.bannerImageUrl}
@@ -1914,11 +1914,11 @@ export default function App() {
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3">
                   <div>
                     <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-teal-400/20 border border-teal-300/40 text-teal-200">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-teal-400/20 border border-teal-300/40 text-teal-200">
                         <ShieldCheck className="w-3.5 h-3.5 text-teal-300" />
                         <span>{allHomestays.length} Homestay & Bungalow Đã Thẩm Định Thực Tế</span>
                       </span>
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-white/10 border border-white/15 text-slate-200">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/10 border border-white/15 text-slate-200">
                         <span>✓ Giá & lịch phòng trống đối chiếu độc lập từng đêm</span>
                       </span>
                     </div>
@@ -1958,7 +1958,7 @@ export default function App() {
                 <div className="bg-white text-slate-900 rounded-2xl p-2.5 sm:p-3 shadow-lg border border-slate-200/90 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2.5 items-center">
                   {/* Search by Homestay Name */}
                   <div className="lg:col-span-3 relative">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block mb-0.5 px-1">
+                    <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500 block mb-0.5 px-1">
                       Tìm tên Homestay / Hạng phòng
                     </label>
                     <div className="relative flex items-center">
@@ -1971,7 +1971,7 @@ export default function App() {
                           setVisibleStayCount(12);
                         }}
                         placeholder="VD: Mẩy, Lu Trế, Bungalow kính..."
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-7 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#073161]"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-7 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-brand-800"
                       />
                       {staySearchQuery && (
                         <button
@@ -1987,7 +1987,7 @@ export default function App() {
 
                   {/* Check-in Date */}
                   <div className="lg:col-span-2">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block mb-0.5 px-1">
+                    <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500 block mb-0.5 px-1">
                       Nhận phòng
                     </label>
                     <input
@@ -2001,13 +2001,13 @@ export default function App() {
                           setStayCheckOut(nextIn);
                         }
                       }}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-[#073161] focus:outline-none focus:border-[#073161]"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                     />
                   </div>
 
                   {/* Check-out Date */}
                   <div className="lg:col-span-2">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 flex items-center justify-between mb-0.5 px-1">
+                    <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center justify-between mb-0.5 px-1">
                       <span>Trả phòng</span>
                       <span className="text-teal-700 font-black">{stayNightsCount} đêm</span>
                     </label>
@@ -2019,13 +2019,13 @@ export default function App() {
                         setStayCheckOut(e.target.value);
                         setStayFilterByAvailableDates(true);
                       }}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-[#073161] focus:outline-none focus:border-[#073161]"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                     />
                   </div>
 
                   {/* Guests Selector */}
                   <div className="lg:col-span-2">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block mb-0.5 px-1">
+                    <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500 block mb-0.5 px-1">
                       Số lượng khách
                     </label>
                     <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5">
@@ -2046,7 +2046,7 @@ export default function App() {
 
                   {/* Area Selector */}
                   <div className="lg:col-span-2">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block mb-0.5 px-1">
+                    <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500 block mb-0.5 px-1">
                       Tọa độ khu vực
                     </label>
                     <select
@@ -2055,7 +2055,7 @@ export default function App() {
                         setSelectedArea(e.target.value);
                         setVisibleStayCount(12);
                       }}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-[#073161] cursor-pointer"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-brand-800 cursor-pointer"
                     >
                       <option value="all">Tất cả khu vực ({allHomestays.length})</option>
                       <option value="Đỉnh Gió">Đỉnh Gió Trung Tâm</option>
@@ -2077,7 +2077,7 @@ export default function App() {
                           `Tìm thấy ${stayFilteredListings.length} homestay phù hợp (${shortInGlobal} – ${shortOutGlobal})!`
                         );
                       }}
-                      className="w-full h-[38px] lg:mt-3.5 rounded-xl bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs flex items-center justify-center gap-1 shadow-xs transition-colors cursor-pointer"
+                      className="w-full h-[38px] lg:mt-3.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs flex items-center justify-center gap-1 shadow-xs transition-colors cursor-pointer"
                     >
                       <span>Lọc ({stayFilteredListings.length})</span>
                     </button>
@@ -2091,7 +2091,7 @@ export default function App() {
               <div className="max-w-6xl mx-auto flex flex-col gap-2.5">
                 {/* Row A: Area Quick Pills with Real Counts */}
                 <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-                  <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider shrink-0 mr-1">
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider shrink-0 mr-1">
                     Khu vực:
                   </span>
                   {[
@@ -2118,14 +2118,14 @@ export default function App() {
                         }}
                         className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer border inline-flex items-center gap-1.5 shrink-0 ${
                           isSelected
-                            ? 'bg-[#073161] text-white border-[#073161] shadow-2xs'
+                            ? 'bg-brand-800 text-white border-brand-800 shadow-2xs'
                             : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
                         }`}
                       >
                         <span>{areaItem.icon}</span>
                         <span>{areaItem.label}</span>
                         <span
-                          className={`text-[10px] px-1.5 py-0.2 rounded-full tabular-nums ${
+                          className={`text-xs px-1.5 py-0.2 rounded-full tabular-nums ${
                             isSelected ? 'bg-white/20 text-white' : 'bg-slate-200/80 text-slate-600'
                           }`}
                         >
@@ -2138,13 +2138,13 @@ export default function App() {
 
                 {/* Row B: 1-Tap Mountain Vibe & Comfort Chips */}
                 <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 border-t border-slate-100">
-                  <span className="text-[11px] font-extrabold text-teal-800 uppercase tracking-wider shrink-0 mr-1">
+                  <span className="text-xs font-extrabold text-teal-800 uppercase tracking-wider shrink-0 mr-1">
                     Chọn nhanh:
                   </span>
                   <button
                     type="button"
                     onClick={() => setOnlyCloudView((p) => !p)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap border cursor-pointer transition-colors shrink-0 ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap border cursor-pointer transition-colors shrink-0 ${
                       onlyCloudView
                         ? 'bg-teal-700 text-white border-teal-700'
                         : 'bg-white hover:bg-teal-50 text-slate-700 border-slate-200'
@@ -2158,7 +2158,7 @@ export default function App() {
                     onClick={() =>
                       setStayRoomCategory((prev) => (prev === 'bungalow' ? 'all' : 'bungalow'))
                     }
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap border cursor-pointer transition-colors shrink-0 ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap border cursor-pointer transition-colors shrink-0 ${
                       stayRoomCategory === 'bungalow'
                         ? 'bg-teal-700 text-white border-teal-700'
                         : 'bg-white hover:bg-teal-50 text-slate-700 border-slate-200'
@@ -2170,7 +2170,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => handleToggleStayAmenity('heating')}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap border cursor-pointer transition-colors shrink-0 ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap border cursor-pointer transition-colors shrink-0 ${
                       stayAmenities.includes('heating')
                         ? 'bg-teal-700 text-white border-teal-700'
                         : 'bg-white hover:bg-teal-50 text-slate-700 border-slate-200'
@@ -2184,7 +2184,7 @@ export default function App() {
                     onClick={() =>
                       setStayCarAccess((prev) => (prev === 'yes' ? 'all' : 'yes'))
                     }
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap border cursor-pointer transition-colors shrink-0 ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap border cursor-pointer transition-colors shrink-0 ${
                       stayCarAccess === 'yes'
                         ? 'bg-teal-700 text-white border-teal-700'
                         : 'bg-white hover:bg-teal-50 text-slate-700 border-slate-200'
@@ -2200,7 +2200,7 @@ export default function App() {
                         prev === 'under_600k' ? 'all' : 'under_600k'
                       )
                     }
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap border cursor-pointer transition-colors shrink-0 ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap border cursor-pointer transition-colors shrink-0 ${
                       stayPriceRange === 'under_600k'
                         ? 'bg-teal-700 text-white border-teal-700'
                         : 'bg-white hover:bg-teal-50 text-slate-700 border-slate-200'
@@ -2212,7 +2212,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => handleToggleStayAmenity('bbq')}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap border cursor-pointer transition-colors shrink-0 ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap border cursor-pointer transition-colors shrink-0 ${
                       stayAmenities.includes('bbq')
                         ? 'bg-teal-700 text-white border-teal-700'
                         : 'bg-white hover:bg-teal-50 text-slate-700 border-slate-200'
@@ -2233,26 +2233,26 @@ export default function App() {
                   className="lg:col-span-4 lg:sticky lg:top-20 bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-4 max-h-none lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
                 >
                   <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                    <div className="flex items-center gap-2 font-extrabold text-[#073161] text-sm sm:text-base">
+                    <div className="flex items-center gap-2 font-extrabold text-brand-800 text-sm sm:text-base">
                       <div className="w-8 h-8 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 shrink-0">
                         <SlidersHorizontal className="w-4 h-4" />
                       </div>
                       <div>
                         <span className="block leading-tight">Bộ lọc chuyên sâu</span>
-                        <span className="block text-[11px] font-medium text-slate-500">
+                        <span className="block text-xs font-medium text-slate-500">
                           Khớp đúng phòng trống & tiện nghi
                         </span>
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-teal-50 text-teal-800 border border-teal-200/60 tabular-nums">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-teal-50 text-teal-800 border border-teal-200/60 tabular-nums">
                         {stayFilteredListings.length} căn
                       </span>
                       {activeFilterCount > 0 && (
                         <button
                           type="button"
                           onClick={handleResetAllStayFilters}
-                          className="text-[11px] font-bold text-rose-600 hover:text-rose-700 underline cursor-pointer"
+                          className="text-xs font-bold text-rose-600 hover:text-rose-700 underline cursor-pointer"
                         >
                           Đặt lại
                         </button>
@@ -2265,7 +2265,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => setIsMobileFilterCollapsed(!isMobileFilterCollapsed)}
-                      className="min-h-[38px] px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-[#073161] cursor-pointer"
+                      className="min-h-[38px] px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-brand-800 cursor-pointer"
                     >
                       {isMobileFilterCollapsed ? 'Mở bộ lọc chi tiết ↓' : 'Thu gọn bộ lọc ↑'}
                     </button>
@@ -2276,7 +2276,7 @@ export default function App() {
                           .getElementById('stay-results-list')
                           ?.scrollIntoView({ behavior: 'smooth' });
                       }}
-                      className="flex-1 min-h-[38px] px-3 py-1.5 rounded-lg bg-[#073161] text-white text-xs font-extrabold text-center cursor-pointer"
+                      className="flex-1 min-h-[38px] px-3 py-1.5 rounded-lg bg-brand-800 text-white text-xs font-extrabold text-center cursor-pointer"
                     >
                       Xem {stayFilteredListings.length} căn trống →
                     </button>
@@ -2285,7 +2285,7 @@ export default function App() {
                   <div className={`${isMobileFilterCollapsed ? 'hidden lg:block' : 'block'} space-y-4`}>
                     {/* Filter Group 1: Khoảng giá / đêm */}
                     <fieldset className="bg-[#f8fafc] border border-slate-200 rounded-2xl p-3.5 pt-2.5">
-                      <legend className="px-1.5 text-xs font-extrabold text-[#073161]">
+                      <legend className="px-1.5 text-xs font-extrabold text-brand-800">
                         💰 Ngân sách / đêm
                       </legend>
                       <div className="grid grid-cols-2 gap-1.5 pt-1">
@@ -2302,9 +2302,9 @@ export default function App() {
                               setStayPriceRange(pr.id as any);
                               setVisibleStayCount(12);
                             }}
-                            className={`px-2.5 py-2 rounded-xl text-[11px] font-bold text-left border transition-colors cursor-pointer ${
+                            className={`px-2.5 py-2 rounded-xl text-xs font-bold text-left border transition-colors cursor-pointer ${
                               stayPriceRange === pr.id
-                                ? 'bg-[#073161] text-white border-[#073161]'
+                                ? 'bg-brand-800 text-white border-brand-800'
                                 : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
                             }`}
                           >
@@ -2316,7 +2316,7 @@ export default function App() {
 
                     {/* Filter Group 2: Loại hình phòng */}
                     <fieldset className="bg-[#f8fafc] border border-slate-200 rounded-2xl p-3.5 pt-2.5">
-                      <legend className="px-1.5 text-xs font-extrabold text-[#073161]">
+                      <legend className="px-1.5 text-xs font-extrabold text-brand-800">
                         🏡 Loại hình phòng ở
                       </legend>
                       <div className="space-y-1.5 pt-1">
@@ -2351,7 +2351,7 @@ export default function App() {
 
                     {/* Filter Group 3: Tiện nghi sống còn vùng cao Tà Xùa */}
                     <fieldset className="bg-[#f8fafc] border border-slate-200 rounded-2xl p-3.5 pt-2.5">
-                      <legend className="px-1.5 text-xs font-extrabold text-[#073161]">
+                      <legend className="px-1.5 text-xs font-extrabold text-brand-800">
                         ♨️ Tiện nghi sưởi ấm & săn mây
                       </legend>
                       <div className="space-y-2 pt-1">
@@ -2371,7 +2371,7 @@ export default function App() {
                                 type="checkbox"
                                 checked={checked}
                                 onChange={() => handleToggleStayAmenity(am.key)}
-                                className="rounded border-slate-300 text-[#073161] shrink-0"
+                                className="rounded border-slate-300 text-brand-800 shrink-0"
                               />
                               <span>{am.label}</span>
                             </label>
@@ -2382,7 +2382,7 @@ export default function App() {
 
                     {/* Filter Group 4: Lịch trống & Chọn nhanh cuối tuần */}
                     <fieldset className="bg-[#f8fafc] border border-teal-200/90 rounded-2xl p-3.5 pt-2.5">
-                      <legend className="px-1.5 text-xs font-extrabold text-[#073161] flex items-center gap-1">
+                      <legend className="px-1.5 text-xs font-extrabold text-brand-800 flex items-center gap-1">
                         <Calendar className="w-3.5 h-3.5 text-teal-700" />
                         <span>Lịch trống & Cuối tuần</span>
                       </legend>
@@ -2395,7 +2395,7 @@ export default function App() {
                             type="checkbox"
                             checked={stayFilterByAvailableDates}
                             onChange={(e) => setStayFilterByAvailableDates(e.target.checked)}
-                            className="rounded border-slate-300 text-[#073161] cursor-pointer"
+                            className="rounded border-slate-300 text-brand-800 cursor-pointer"
                           />
                         </label>
 
@@ -2418,9 +2418,9 @@ export default function App() {
                                   setStayCheckOut(preset.outDate);
                                   setStayFilterByAvailableDates(true);
                                 }}
-                                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer border ${
                                   isSelectedPreset
-                                    ? 'bg-[#073161] text-white border-[#073161]'
+                                    ? 'bg-brand-800 text-white border-brand-800'
                                     : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
                                 }`}
                               >
@@ -2434,11 +2434,11 @@ export default function App() {
 
                     {/* Filter Group 5: View nhìn & Đường ô tô */}
                     <fieldset className="bg-[#f8fafc] border border-slate-200 rounded-2xl p-3.5 pt-2.5 space-y-2.5">
-                      <legend className="px-1.5 text-xs font-extrabold text-[#073161]">
+                      <legend className="px-1.5 text-xs font-extrabold text-brand-800">
                         🏔️ Hướng nhìn & Đường vào
                       </legend>
                       <div>
-                        <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                        <label className="text-xs font-bold text-slate-600 block mb-1">
                           Hướng nhìn từ phòng
                         </label>
                         <select
@@ -2453,7 +2453,7 @@ export default function App() {
                       </div>
 
                       <div>
-                        <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                        <label className="text-xs font-bold text-slate-600 block mb-1">
                           Phương tiện tiếp cận tận nơi
                         </label>
                         <select
@@ -2469,7 +2469,7 @@ export default function App() {
 
                       <div className="grid grid-cols-2 gap-2 pt-1">
                         <div>
-                          <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                          <label className="text-xs font-bold text-slate-600 block mb-1">
                             Người lớn
                           </label>
                           <input
@@ -2481,7 +2481,7 @@ export default function App() {
                           />
                         </div>
                         <div>
-                          <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                          <label className="text-xs font-bold text-slate-600 block mb-1">
                             Trẻ em
                           </label>
                           <input
@@ -2498,7 +2498,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={handleResetAllStayFilters}
-                      className="w-full text-xs font-bold text-slate-500 hover:text-[#073161] py-2 cursor-pointer flex items-center justify-center gap-1.5 transition-colors border border-slate-200 rounded-xl bg-slate-50"
+                      className="w-full text-xs font-bold text-slate-500 hover:text-brand-800 py-2 cursor-pointer flex items-center justify-center gap-1.5 transition-colors border border-slate-200 rounded-xl bg-slate-50"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
                       <span>Xóa toàn bộ bộ lọc</span>
@@ -2513,11 +2513,11 @@ export default function App() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-base sm:text-lg font-black text-[#073161] tabular-nums">
+                          <span className="text-base sm:text-lg font-black text-brand-800 tabular-nums">
                             {stayFilteredListings.length} Homestay phù hợp
                           </span>
                           {stayFilterByAvailableDates && (
-                            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200">
                               ✓ Còn phòng {shortInGlobal} → {shortOutGlobal} ({stayNightsCount} đêm)
                             </span>
                           )}
@@ -2533,7 +2533,7 @@ export default function App() {
                           aria-label="Sắp xếp danh sách homestay"
                           value={staySortBy}
                           onChange={(e) => setStaySortBy(e.target.value as any)}
-                          className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-[#073161] focus:outline-none focus:border-[#073161] cursor-pointer"
+                          className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800 cursor-pointer"
                         >
                           <option value="recommended">⭐ Đề xuất & Cấp 3</option>
                           <option value="price_asc">💰 Giá: Thấp đến Cao</option>
@@ -2548,7 +2548,7 @@ export default function App() {
                             onClick={() => setStayViewMode('grid')}
                             className={`px-2.5 py-1.5 rounded-lg text-xs font-extrabold cursor-pointer transition-colors ${
                               stayViewMode === 'grid'
-                                ? 'bg-white text-[#073161] shadow-2xs'
+                                ? 'bg-white text-brand-800 shadow-2xs'
                                 : 'text-slate-600 hover:text-slate-900'
                             }`}
                             title="Xem dạng Lưới 2 cột"
@@ -2560,7 +2560,7 @@ export default function App() {
                             onClick={() => setStayViewMode('list')}
                             className={`px-2.5 py-1.5 rounded-lg text-xs font-extrabold cursor-pointer transition-colors ${
                               stayViewMode === 'list'
-                                ? 'bg-white text-[#073161] shadow-2xs'
+                                ? 'bg-white text-brand-800 shadow-2xs'
                                 : 'text-slate-600 hover:text-slate-900'
                             }`}
                             title="Xem dạng Danh sách ngang chi tiết từng hạng phòng (Booking style)"
@@ -2572,7 +2572,7 @@ export default function App() {
                             onClick={() => setStayViewMode('map')}
                             className={`px-2.5 py-1.5 rounded-lg text-xs font-extrabold cursor-pointer transition-colors ${
                               stayViewMode === 'map'
-                                ? 'bg-white text-[#073161] shadow-2xs'
+                                ? 'bg-white text-brand-800 shadow-2xs'
                                 : 'text-slate-600 hover:text-slate-900'
                             }`}
                             title="Xem kèm Bản đồ tọa độ săn mây"
@@ -2586,14 +2586,14 @@ export default function App() {
                     {/* Active Filter Chips Bar */}
                     {activeFilterCount > 0 && (
                       <div className="flex flex-wrap items-center gap-1.5 pt-2.5 border-t border-slate-100">
-                        <span className="text-[11px] font-bold text-slate-500 mr-1">
+                        <span className="text-xs font-bold text-slate-500 mr-1">
                           Đang lọc:
                         </span>
                         {selectedArea !== 'all' && (
                           <button
                             type="button"
                             onClick={() => setSelectedArea('all')}
-                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-[11px] font-bold cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-xs font-bold cursor-pointer"
                           >
                             <span>📍 {selectedArea}</span>
                             <span>✕</span>
@@ -2603,7 +2603,7 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => setStayPriceRange('all')}
-                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-[11px] font-bold cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-xs font-bold cursor-pointer"
                           >
                             <span>
                               💰{' '}
@@ -2620,7 +2620,7 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => setStayRoomCategory('all')}
-                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-[11px] font-bold cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-xs font-bold cursor-pointer"
                           >
                             <span>🏡 {stayRoomCategory}</span>
                             <span>✕</span>
@@ -2630,7 +2630,7 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => setOnlyCloudView(false)}
-                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-[11px] font-bold cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-xs font-bold cursor-pointer"
                           >
                             <span>☁️ Săn mây tại giường</span>
                             <span>✕</span>
@@ -2640,7 +2640,7 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => setStayCarAccess('all')}
-                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-[11px] font-bold cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-xs font-bold cursor-pointer"
                           >
                             <span>🚗 Ô tô tận nơi</span>
                             <span>✕</span>
@@ -2651,7 +2651,7 @@ export default function App() {
                             key={am}
                             type="button"
                             onClick={() => handleToggleStayAmenity(am)}
-                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-[11px] font-bold cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-xs font-bold cursor-pointer"
                           >
                             <span>✓ {am}</span>
                             <span>✕</span>
@@ -2675,7 +2675,7 @@ export default function App() {
                   {/* Verified Homestays List Filtered by Date Range & Criteria */}
                   {stayFilteredListings.length === 0 ? (
                     <div className="bg-white border border-slate-200 rounded-2xl p-10 text-center space-y-3">
-                      <h3 className="text-lg font-extrabold text-[#073161]">
+                      <h3 className="text-lg font-extrabold text-brand-800">
                         Chưa có homestay khớp toàn bộ điều kiện lọc hiện tại
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto">
@@ -2685,7 +2685,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={handleResetAllStayFilters}
-                          className="px-5 py-2.5 rounded-full bg-[#073161] text-white text-xs font-bold cursor-pointer"
+                          className="px-5 py-2.5 rounded-full bg-brand-800 text-white text-xs font-bold cursor-pointer"
                         >
                           Khôi phục toàn bộ {allHomestays.length} Homestay
                         </button>
@@ -2747,14 +2747,14 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => setVisibleStayCount((prev) => prev + 12)}
-                            className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#073161] hover:bg-[#0a3f7c] text-white text-xs sm:text-sm font-extrabold shadow-xs transition-all cursor-pointer"
+                            className="w-full sm:w-auto px-6 py-3 rounded-full bg-brand-800 hover:bg-brand-700 text-white text-xs sm:text-sm font-extrabold shadow-xs transition-all cursor-pointer"
                           >
                             Xem thêm 12 homestay tiếp theo ({Math.min(visibleStayCount, stayFilteredListings.length)} / {stayFilteredListings.length})
                           </button>
                           <button
                             type="button"
                             onClick={() => setVisibleStayCount(stayFilteredListings.length)}
-                            className="w-full sm:w-auto px-6 py-3 rounded-full bg-white hover:bg-slate-100 text-[#073161] border border-slate-300 text-xs sm:text-sm font-bold transition-all cursor-pointer"
+                            className="w-full sm:w-auto px-6 py-3 rounded-full bg-white hover:bg-slate-100 text-brand-800 border border-slate-300 text-xs sm:text-sm font-bold transition-all cursor-pointer"
                           >
                             Hiển thị toàn bộ {stayFilteredListings.length} homestay
                           </button>
@@ -2765,7 +2765,7 @@ export default function App() {
 
                   {/* Quick Curated Collections at Bottom */}
                   <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 mt-6">
-                    <h2 className="text-base sm:text-lg font-extrabold text-[#073161] mb-3">
+                    <h2 className="text-base sm:text-lg font-extrabold text-brand-800 mb-3">
                       Bộ sưu tập lưu trú Tà Xùa được tìm nhiều nhất
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -2808,7 +2808,7 @@ export default function App() {
                           key={idx}
                           type="button"
                           onClick={item.action}
-                          className="text-left p-3 rounded-xl border border-slate-200 hover:border-[#073161] hover:bg-slate-50 text-xs font-bold text-[#073161] transition-colors cursor-pointer"
+                          className="text-left p-3 rounded-xl border border-slate-200 hover:border-brand-800 hover:bg-slate-50 text-xs font-bold text-brand-800 transition-colors cursor-pointer"
                         >
                           {item.label}
                         </button>
@@ -3005,7 +3005,7 @@ export default function App() {
           return (
           <div className="bg-[#f8fafc] pb-14">
             {/* 1. COMPACT TRANSPORT COMMAND HERO + QUICK ROUTE & SCHEDULE FILTER BAR */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-[#04244d] via-[#06366d] to-[#0a6b6e] text-white pt-7 pb-8 px-4 sm:px-6 lg:px-8">
+            <div className="relative overflow-hidden bg-gradient-to-br from-brand-900 via-[#06366d] to-[#0a6b6e] text-white pt-7 pb-8 px-4 sm:px-6 lg:px-8">
               {transportSecBanner?.isActive && transportSecBanner.bannerImageUrl && (
                 <img
                   src={transportSecBanner.bannerImageUrl}
@@ -3017,7 +3017,7 @@ export default function App() {
               <div className="max-w-7xl mx-auto relative z-10 space-y-5">
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
                   <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[11px] font-extrabold uppercase tracking-wider text-teal-200 mb-2.5">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-extrabold uppercase tracking-wider text-teal-200 mb-2.5">
                       <Bus className="w-3.5 h-3.5 text-teal-300" />
                       <span>
                         {transportSecBanner?.isActive
@@ -3061,7 +3061,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => handleOpenBusBookingModal(trips[0]?.id, false)}
-                      className="bg-white hover:bg-teal-50 text-[#073161] font-black px-4 py-2.5 rounded-full text-xs transition-all shadow-md cursor-pointer flex items-center gap-1.5"
+                      className="bg-white hover:bg-teal-50 text-brand-800 font-black px-4 py-2.5 rounded-full text-xs transition-all shadow-md cursor-pointer flex items-center gap-1.5"
                     >
                       <Bus className="w-4 h-4 text-teal-700" />
                       <span>Mở Sơ Đồ Ghế 2 Tầng</span>
@@ -3074,7 +3074,7 @@ export default function App() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2.5 items-center">
                     {/* 1. Search by Bus Operator / Route / Phone */}
                     <div className="lg:col-span-3 relative">
-                      <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
+                      <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">
                         Tìm nhà xe / Tuyến / SĐT
                       </label>
                       <div className="relative">
@@ -3084,7 +3084,7 @@ export default function App() {
                           value={transportSearchQuery}
                           onChange={(e) => setTransportSearchQuery(e.target.value)}
                           placeholder="VD: Thành Mỹ, Hiền Hựu, Nội Bài..."
-                          className="w-full pl-9 pr-7 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-xs font-bold text-[#073161] focus:outline-none focus:border-[#073161]"
+                          className="w-full pl-9 pr-7 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                         />
                         {transportSearchQuery && (
                           <button
@@ -3100,13 +3100,13 @@ export default function App() {
 
                     {/* 2. Pickup Point in Hanoi / Nearby Provinces */}
                     <div className="lg:col-span-3">
-                      <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
+                      <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">
                         Điểm đón khách xuất phát
                       </label>
                       <select
                         value={transportPickupZone}
                         onChange={(e) => setTransportPickupZone(e.target.value as any)}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-[#073161] focus:outline-none focus:border-[#073161]"
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                       >
                         <option value="all">📍 Tất cả điểm đón (Hà Nội · Bắc Yên · Tỉnh)</option>
                         <option value="my_dinh_cau_giay">🚌 Bến xe Mỹ Đình · Cầu Giấy · Hòa Lạc</option>
@@ -3119,13 +3119,13 @@ export default function App() {
 
                     {/* 3. Departure Time Slot */}
                     <div className="lg:col-span-3">
-                      <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
+                      <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">
                         Khung giờ khởi hành
                       </label>
                       <select
                         value={transportTimeSlot}
                         onChange={(e) => setTransportTimeSlot(e.target.value as any)}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-[#073161] focus:outline-none focus:border-[#073161]"
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                       >
                         <option value="all">🕒 Mọi khung giờ (Sáng · Chiều · Đêm)</option>
                         <option value="morning">🌅 Chuyến Sáng (06:00 – 08:30 · Check-in trưa)</option>
@@ -3136,14 +3136,14 @@ export default function App() {
 
                     {/* 4. Vehicle Type */}
                     <div className="lg:col-span-3">
-                      <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
+                      <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">
                         Dòng xe & Sắp xếp
                       </label>
                       <div className="flex items-center gap-1.5">
                         <select
                           value={transportVehicleType}
                           onChange={(e) => setTransportVehicleType(e.target.value as any)}
-                          className="w-full px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-[#073161] focus:outline-none focus:border-[#073161]"
+                          className="w-full px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                         >
                           <option value="all">🚐 Mọi dòng xe</option>
                           <option value="cabin_vip">🛏️ Cabin Đôi VIP</option>
@@ -3155,7 +3155,7 @@ export default function App() {
                           value={transportSortBy}
                           onChange={(e) => setTransportSortBy(e.target.value as any)}
                           aria-label="Sắp xếp phương tiện"
-                          className="px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-[#073161] focus:outline-none focus:border-[#073161] shrink-0"
+                          className="px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800 shrink-0"
                         >
                           <option value="recommended">★ Đề xuất</option>
                           <option value="price_asc">Giá ↑</option>
@@ -3175,10 +3175,10 @@ export default function App() {
                 <div className="bg-gradient-to-r from-amber-50 via-white to-teal-50 border-2 border-amber-300/80 rounded-3xl p-5 sm:p-6 shadow-sm animate-fade-in">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
                     <div className="space-y-1.5 max-w-2xl">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-950 text-[11px] font-black uppercase tracking-wider">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-950 text-xs font-black uppercase tracking-wider">
                         <span>⚡ Độc quyền Tà Xùa Trip · Quy tắc 12h trưa = 0.5 ngày</span>
                       </div>
-                      <h3 className="text-base sm:text-lg font-black text-[#073161]">
+                      <h3 className="text-base sm:text-lg font-black text-brand-800">
                         Công Cụ Ước Tính Nhanh Combo Vé Xe Khách Khứ Hồi + Thuê Xe Máy Tại Bản
                       </h3>
                       <p className="text-xs text-slate-600 leading-relaxed">
@@ -3191,15 +3191,15 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => setCalcPassengers((p) => Math.max(1, p - 1))}
-                            className="w-6 h-6 rounded-lg bg-slate-100 font-black text-[#073161] cursor-pointer"
+                            className="w-6 h-6 rounded-lg bg-slate-100 font-black text-brand-800 cursor-pointer"
                           >
                             -
                           </button>
-                          <span className="font-black text-[#073161] tabular-nums w-4 text-center">{calcPassengers}</span>
+                          <span className="font-black text-brand-800 tabular-nums w-4 text-center">{calcPassengers}</span>
                           <button
                             type="button"
                             onClick={() => setCalcPassengers((p) => Math.min(10, p + 1))}
-                            className="w-6 h-6 rounded-lg bg-slate-100 font-black text-[#073161] cursor-pointer"
+                            className="w-6 h-6 rounded-lg bg-slate-100 font-black text-brand-800 cursor-pointer"
                           >
                             +
                           </button>
@@ -3210,15 +3210,15 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => setCalcBikes((b) => Math.max(1, b - 1))}
-                            className="w-6 h-6 rounded-lg bg-slate-100 font-black text-[#073161] cursor-pointer"
+                            className="w-6 h-6 rounded-lg bg-slate-100 font-black text-brand-800 cursor-pointer"
                           >
                             -
                           </button>
-                          <span className="font-black text-[#073161] tabular-nums w-4 text-center">{calcBikes}</span>
+                          <span className="font-black text-brand-800 tabular-nums w-4 text-center">{calcBikes}</span>
                           <button
                             type="button"
                             onClick={() => setCalcBikes((b) => Math.min(6, b + 1))}
-                            className="w-6 h-6 rounded-lg bg-slate-100 font-black text-[#073161] cursor-pointer"
+                            className="w-6 h-6 rounded-lg bg-slate-100 font-black text-brand-800 cursor-pointer"
                           >
                             +
                           </button>
@@ -3240,20 +3240,20 @@ export default function App() {
 
                     <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-3 shrink-0 min-w-[260px]">
                       <div className="lg:text-right">
-                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block">
+                        <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 block">
                           Tổng Combo {calcPassengers} khách khứ hồi + {calcBikes} xe máy
                         </span>
-                        <div className="text-2xl font-black text-[#073161] tabular-nums">
+                        <div className="text-2xl font-black text-brand-800 tabular-nums">
                           {finalComboDemo.toLocaleString()}đ
                         </div>
-                        <div className="text-[11px] font-bold text-emerald-700">
+                        <div className="text-xs font-bold text-emerald-700">
                           Đã tiết kiệm {comboDiscountDemo.toLocaleString()}đ (~{Math.round(finalComboDemo / calcPassengers).toLocaleString()}đ/người)
                         </div>
                       </div>
                       <button
                         type="button"
                         onClick={() => handleOpenBusBookingModal(trips[0]?.id, true)}
-                        className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#073161] hover:bg-[#0a3f7c] text-white text-xs font-extrabold cursor-pointer whitespace-nowrap"
+                        className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-extrabold cursor-pointer whitespace-nowrap"
                       >
                         Áp dụng Combo & Chọn Ghế →
                       </button>
@@ -3296,7 +3296,7 @@ export default function App() {
                         onClick={() => setTransportSubCategory(sub.id as any)}
                         className={`px-3.5 py-2 rounded-full text-xs font-extrabold whitespace-nowrap shrink-0 transition-all cursor-pointer ${
                           transportSubCategory === sub.id
-                            ? 'bg-[#073161] text-white shadow-xs'
+                            ? 'bg-brand-800 text-white shadow-xs'
                             : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
                         }`}
                       >
@@ -3326,7 +3326,7 @@ export default function App() {
                         onClick={() => setTransportViewMode('grid')}
                         className={`px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition-colors cursor-pointer ${
                           transportViewMode === 'grid'
-                            ? 'bg-[#073161] text-white shadow-2xs'
+                            ? 'bg-brand-800 text-white shadow-2xs'
                             : 'text-slate-600 hover:text-slate-900'
                         }`}
                       >
@@ -3337,7 +3337,7 @@ export default function App() {
                         onClick={() => setTransportViewMode('list')}
                         className={`px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition-colors cursor-pointer ${
                           transportViewMode === 'list'
-                            ? 'bg-[#073161] text-white shadow-2xs'
+                            ? 'bg-brand-800 text-white shadow-2xs'
                             : 'text-slate-600 hover:text-slate-900'
                         }`}
                       >
@@ -3349,7 +3349,7 @@ export default function App() {
 
                 {/* Quick Time-Slot & Vehicle Filter Pills */}
                 <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-2 border-t border-slate-100">
-                  <span className="text-[11px] font-extrabold text-slate-400 shrink-0 mr-1">
+                  <span className="text-xs font-extrabold text-slate-400 shrink-0 mr-1">
                     Chọn nhanh:
                   </span>
                   {[
@@ -3388,7 +3388,7 @@ export default function App() {
                       key={idx}
                       type="button"
                       onClick={chip.onClick}
-                      className={`px-3 py-1 rounded-full text-[11px] font-bold whitespace-nowrap transition-all cursor-pointer border ${
+                      className={`px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
                         chip.active
                           ? 'bg-teal-700 text-white border-teal-700 shadow-2xs'
                           : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
@@ -3402,7 +3402,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={handleResetTransportFilters}
-                      className="px-3 py-1 rounded-full text-[11px] font-extrabold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 whitespace-nowrap cursor-pointer ml-auto"
+                      className="px-3 py-1 rounded-full text-xs font-extrabold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 whitespace-nowrap cursor-pointer ml-auto"
                     >
                       ✕ Xóa bộ lọc
                     </button>
@@ -3414,7 +3414,7 @@ export default function App() {
               {(transportSubCategory === 'all' || transportSubCategory === 'bus') && filteredTrips.length > 0 && (
                 <div className="space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <h2 className="text-base sm:text-lg font-extrabold text-[#073161] flex items-center gap-2">
+                    <h2 className="text-base sm:text-lg font-extrabold text-brand-800 flex items-center gap-2">
                       <Bus className="w-5 h-5 text-teal-700" />
                       <span>
                         Lịch Xe Chọn Ghế Trực Tuyến Hàng Ngày ({filteredTrips.length} chuyến khớp lộ trình)
@@ -3441,13 +3441,13 @@ export default function App() {
                       return (
                         <div
                           key={trip.id}
-                          className="bg-white border border-slate-200 hover:border-[#073161]/50 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between"
+                          className="bg-white border border-slate-200 hover:border-brand-800/50 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between"
                         >
                           <div>
                             {/* Top Row: Time Slot Badge & Vehicle Type */}
                             <div className="flex items-center justify-between gap-2 mb-3">
                               <span
-                                className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full border ${
+                                className={`text-xs font-extrabold px-2.5 py-1 rounded-full border ${
                                   isNightTrip
                                     ? 'bg-indigo-50 text-indigo-900 border-indigo-200'
                                     : isMorningTrip
@@ -3461,7 +3461,7 @@ export default function App() {
                                   ? '🌅 Chuyến Sáng · Check-in trưa'
                                   : '☀️ Chuyến Chiều · Ngắm hoàng hôn'}
                               </span>
-                              <span className="bg-teal-50 text-teal-800 border border-teal-200/80 px-2.5 py-1 rounded-full text-[11px] font-extrabold">
+                              <span className="bg-teal-50 text-teal-800 border border-teal-200/80 px-2.5 py-1 rounded-full text-xs font-extrabold">
                                 {trip.busType}
                               </span>
                             </div>
@@ -3469,49 +3469,49 @@ export default function App() {
                             {/* Visual Departure -> Arrival Timeline */}
                             <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3 mb-3 flex items-center justify-between gap-2">
                               <div>
-                                <div className="text-xl font-black text-[#073161] tabular-nums leading-none">
+                                <div className="text-xl font-black text-brand-800 tabular-nums leading-none">
                                   {trip.departureTime}
                                 </div>
-                                <div className="text-[11px] font-bold text-slate-500 mt-1">
+                                <div className="text-xs font-bold text-slate-500 mt-1">
                                   {trip.originCity}
                                 </div>
                               </div>
 
                               <div className="flex-1 flex flex-col items-center px-2">
-                                <span className="text-[10px] font-bold text-teal-700">
+                                <span className="text-xs font-bold text-teal-700">
                                   ~{Math.floor(travelMins / 60)}h{travelMins % 60 > 0 ? `${travelMins % 60}p` : ''}
                                 </span>
                                 <div className="w-full h-0.5 bg-slate-300 relative my-1">
-                                  <span className="w-2 h-2 rounded-full bg-[#073161] absolute left-0 -top-[3px]" />
+                                  <span className="w-2 h-2 rounded-full bg-brand-800 absolute left-0 -top-[3px]" />
                                   <span className="w-2 h-2 rounded-full bg-teal-600 absolute right-0 -top-[3px]" />
                                 </div>
-                                <span className="text-[10px] text-slate-500">Đón trả tận nơi</span>
+                                <span className="text-xs text-slate-500">Đón trả tận nơi</span>
                               </div>
 
                               <div className="text-right">
                                 <div className="text-xl font-black text-teal-800 tabular-nums leading-none">
                                   {arrivalTimeStr}
                                 </div>
-                                <div className="text-[11px] font-bold text-slate-500 mt-1">
+                                <div className="text-xs font-bold text-slate-500 mt-1">
                                   {trip.destinationCity}
                                 </div>
                               </div>
                             </div>
 
-                            <h3 className="font-black text-[#073161] text-sm sm:text-base mb-0.5 line-clamp-1">
+                            <h3 className="font-black text-brand-800 text-sm sm:text-base mb-0.5 line-clamp-1">
                               {trip.operatorName}
                             </h3>
                             <p className="text-xs text-slate-500 mb-3 line-clamp-1">{trip.route}</p>
 
                             {/* Pickup & Dropoff Stops */}
                             <div className="bg-slate-50/70 rounded-xl p-3 border border-slate-200/70 text-xs space-y-1 mb-3">
-                              <div className="flex items-center justify-between text-[11px]">
-                                <span className="text-[#073161] font-extrabold">Điểm đón & trả chính:</span>
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-brand-800 font-extrabold">Điểm đón & trả chính:</span>
                                 <span className="font-extrabold text-emerald-700">
                                   Còn {availableSeatsCount}/{trip.totalSeats} ghế trống
                                 </span>
                               </div>
-                              <ul className="text-slate-600 space-y-0.5 text-[11px]">
+                              <ul className="text-slate-600 space-y-0.5 text-xs">
                                 {trip.stops.slice(0, 3).map((s, idx) => (
                                   <li key={idx} className="truncate">
                                     · {s.name} ({s.type === 'dropoff' ? 'Điểm trả' : `+${s.minuteOffset}p`})
@@ -3524,14 +3524,14 @@ export default function App() {
                           {/* Card Footer: Price + Combo Button + Seat Selection Button */}
                           <div className="pt-3 border-t border-slate-100 flex flex-wrap items-end justify-between gap-2">
                             <div className="shrink-0">
-                              <span className="text-[10px] text-slate-500 uppercase font-extrabold block whitespace-nowrap">
+                              <span className="text-xs text-slate-500 uppercase font-extrabold block whitespace-nowrap">
                                 Giá vé 1 chiều
                               </span>
                               <div className="flex items-baseline gap-0.5 whitespace-nowrap">
-                                <span className="text-lg font-black text-[#073161] tabular-nums">
+                                <span className="text-lg font-black text-brand-800 tabular-nums">
                                   {trip.baseFare.toLocaleString()}đ
                                 </span>
-                                <span className="text-[11px] text-slate-500 font-bold">/ghế</span>
+                                <span className="text-xs text-slate-500 font-bold">/ghế</span>
                               </div>
                             </div>
 
@@ -3540,14 +3540,14 @@ export default function App() {
                                 type="button"
                                 onClick={() => handleOpenBusBookingModal(trip.id, true)}
                                 title="Đặt vé kèm thuê xe máy giảm ngay 30.000đ"
-                                className="h-8 px-2.5 rounded-full bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 font-extrabold text-[11px] transition-colors cursor-pointer whitespace-nowrap"
+                                className="h-8 px-2.5 rounded-full bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 font-extrabold text-xs transition-colors cursor-pointer whitespace-nowrap"
                               >
                                 🛵 +Xe máy (-30k)
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleOpenBusBookingModal(trip.id, false)}
-                                className="h-8 bg-[#073161] hover:bg-[#0a3f7c] text-white font-extrabold text-xs px-3.5 rounded-full transition-colors cursor-pointer whitespace-nowrap flex items-center"
+                                className="h-8 bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-3.5 rounded-full transition-colors cursor-pointer whitespace-nowrap flex items-center"
                               >
                                 Chọn Ghế Đón →
                               </button>
@@ -3563,7 +3563,7 @@ export default function App() {
               {/* 4. VERIFIED TRANSPORT OPERATORS DIRECTORY (16 Bus Operators, 4 Local Taxis, 4 Motorbike Hubs) */}
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <h2 className="text-base sm:text-lg font-extrabold text-[#073161] flex items-center gap-2">
+                  <h2 className="text-base sm:text-lg font-extrabold text-brand-800 flex items-center gap-2">
                     <Car className="w-5 h-5 text-teal-700" />
                     <span>
                       {transportSubCategory === 'bus'
@@ -3582,7 +3582,7 @@ export default function App() {
 
                 {filteredTransportListings.length === 0 ? (
                   <div className="bg-white border border-slate-200 rounded-2xl p-10 text-center space-y-3">
-                    <h3 className="text-lg font-extrabold text-[#073161]">
+                    <h3 className="text-lg font-extrabold text-brand-800">
                       Không tìm thấy nhà xe hoặc phương tiện khớp bộ lọc hiện tại
                     </h3>
                     <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">
@@ -3591,7 +3591,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={handleResetTransportFilters}
-                      className="px-5 py-2.5 rounded-full bg-[#073161] text-white text-xs font-extrabold cursor-pointer"
+                      className="px-5 py-2.5 rounded-full bg-brand-800 text-white text-xs font-extrabold cursor-pointer"
                     >
                       Khôi phục toàn bộ phương tiện
                     </button>
@@ -3637,7 +3637,7 @@ export default function App() {
                   <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-teal-700 mb-2">
                     {servicesSecBanner?.isActive ? servicesSecBanner.badgeText : 'HỆ SINH THÁI DỊCH VỤ TRẢI NGHIỆM CHUYÊN NGHIỆP'}
                   </p>
-                  <h2 className="text-3xl sm:text-4xl font-extrabold text-[#073161]">
+                  <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-800">
                     {servicesSecBanner?.isActive ? servicesSecBanner.title : 'Dịch Vụ Du Lịch & Trải Nghiệm Tà Xùa'}
                   </h2>
                   <p className="text-sm text-slate-600 mt-1 max-w-2xl">
@@ -3672,7 +3672,7 @@ export default function App() {
                     onClick={() => setServicesSubCategory(sub.id as any)}
                     className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
                       servicesSubCategory === sub.id
-                        ? 'bg-[#073161] text-white shadow-sm'
+                        ? 'bg-brand-800 text-white shadow-sm'
                         : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
                     }`}
                   >
@@ -3718,7 +3718,7 @@ export default function App() {
                   <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-teal-700 mb-2">
                     {diningSecBanner?.isActive ? diningSecBanner.badgeText : 'ẨM THỰC BẢN ĐỊA & CÀ PHÊ MÂY'}
                   </p>
-                  <h2 className="text-3xl sm:text-4xl font-extrabold text-[#073161]">
+                  <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-800">
                     {diningSecBanner?.isActive ? diningSecBanner.title : 'Ăn Uống: Nhà Hàng & Cà Phê Tà Xùa'}
                   </h2>
                   <p className="text-sm text-slate-600 mt-1 max-w-2xl">
@@ -3751,7 +3751,7 @@ export default function App() {
                     onClick={() => setDiningSubCategory(sub.id as any)}
                     className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
                       diningSubCategory === sub.id
-                        ? 'bg-[#073161] text-white shadow-sm'
+                        ? 'bg-brand-800 text-white shadow-sm'
                         : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
                     }`}
                   >
@@ -3840,7 +3840,7 @@ export default function App() {
                   <div className="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-xs text-slate-300 text-left space-y-2">
                     <div className="flex items-center gap-2 text-amber-400 font-bold">
                       <span>• Trạng thái tài khoản:</span>
-                      <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono text-[11px]">unverified (Chờ thẩm định thực địa)</span>
+                      <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono text-xs">unverified (Chờ thẩm định thực địa)</span>
                     </div>
                     <p>
                       Theo quy trình thẩm định thực địa Tà Xùa Trip, Quản trị viên hệ thống sẽ kiểm tra cơ sở, đối soát thông tin và cấp quyền quản lý cơ sở tương ứng cho tài khoản đối tác của bạn.
@@ -3986,7 +3986,7 @@ export default function App() {
       <div className="fixed bottom-20 lg:bottom-4 right-3 sm:right-4 z-30 flex flex-col items-end gap-1.5 pointer-events-none">
         {isFloatingSocialExpanded &&
           (siteContent.socialChannels || []).some((ch) => ch.isActive && ch.placements.includes('floating_dock')) && (
-            <div className="pointer-events-auto flex items-center gap-1.5 bg-slate-900/95 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-full shadow-lg text-[11px] text-white">
+            <div className="pointer-events-auto flex items-center gap-1.5 bg-slate-900/95 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-full shadow-lg text-xs text-white">
               <span className="font-extrabold text-amber-300 mr-0.5">Kênh:</span>
               {(siteContent.socialChannels || [])
                 .filter((ch) => ch.isActive && ch.placements.includes('floating_dock'))
@@ -4067,7 +4067,7 @@ export default function App() {
             </span>
             <MessageCircle className="w-3.5 h-3.5 text-white" />
             <span>Cộng Đồng</span>
-            <span className="px-1.5 py-0.5 rounded-full bg-white/20 text-[10px] font-black tabular-nums">
+            <span className="px-1.5 py-0.5 rounded-full bg-white/20 text-xs font-black tabular-nums">
               185
             </span>
           </button>
@@ -4076,7 +4076,7 @@ export default function App() {
             type="button"
             onClick={() => setIsAiAdvisorOpen(true)}
             aria-label="Mở Trợ lý AI Tà Xùa Trip"
-            className="flex h-9 bg-[#073161] hover:bg-[#0a3f7c] text-white font-bold text-xs px-3.5 rounded-full items-center gap-1.5 border border-white/15 transition-transform active:scale-95 cursor-pointer shrink-0"
+            className="flex h-9 bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs px-3.5 rounded-full items-center gap-1.5 border border-white/15 transition-transform active:scale-95 cursor-pointer shrink-0"
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
             <span>Tư vấn AI</span>
@@ -4297,11 +4297,11 @@ export default function App() {
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="space-y-4 max-w-2xl flex-1">
               <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-[11px] font-black uppercase tracking-wider mb-2 border border-teal-200/60">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-black uppercase tracking-wider mb-2 border border-teal-200/60">
                   <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
                   <span>KÊNH CHÍNH CHỦ TÀ XÙA TRIP · ĐÃ THẨM ĐỊNH</span>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black text-[#073161] tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-black text-brand-800 tracking-tight">
                   Hệ Sinh Thái Kênh Liên Lạc & Bản Đồ QR Toàn Tuyến
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
@@ -4319,7 +4319,7 @@ export default function App() {
                     className="p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 transition-all flex flex-col justify-between group"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                         {ch.platform === 'tiktok'
                           ? '🎵 TikTok'
                           : ch.platform.startsWith('facebook')
@@ -4330,11 +4330,11 @@ export default function App() {
                           ? '🚨 Cứu hộ'
                           : '📞 Hotline'}
                       </span>
-                      <span className="text-[10px] text-teal-600 font-extrabold group-hover:translate-x-0.5 transition-transform">
+                      <span className="text-xs text-teal-600 font-extrabold group-hover:translate-x-0.5 transition-transform">
                         ↗
                       </span>
                     </div>
-                    <div className="text-xs font-black text-[#073161] truncate mt-1">
+                    <div className="text-xs font-black text-brand-800 truncate mt-1">
                       {ch.handleOrNumber}
                     </div>
                   </a>
@@ -4348,14 +4348,14 @@ export default function App() {
                 alt="QR Bản Đồ & Kênh Chính Chủ"
                 className="w-28 h-28 rounded-xl bg-white p-1 border border-slate-200 shadow-2xs"
               />
-              <span className="text-xs font-black text-[#073161] mt-2">Mã QR Kết Nối 1-Chạm</span>
-              <p className="text-[10px] text-slate-500 max-w-[150px] mt-0.5">
+              <span className="text-xs font-black text-brand-800 mt-2">Mã QR Kết Nối 1-Chạm</span>
+              <p className="text-xs text-slate-500 max-w-[150px] mt-0.5">
                 Quét bằng Zalo hoặc Camera điện thoại để lưu danh bạ Tà Xùa
               </p>
               <button
                 type="button"
                 onClick={() => setIsCommunityPopupOpen(true)}
-                className="mt-3 w-full px-4 py-2 rounded-xl bg-[#073161] hover:bg-[#0a3f7c] text-white text-xs font-bold transition-colors cursor-pointer shadow-2xs"
+                className="mt-3 w-full px-4 py-2 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold transition-colors cursor-pointer shadow-2xs"
               >
                 Mở Bản Đồ Kênh & QR →
               </button>
@@ -4369,14 +4369,14 @@ export default function App() {
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
           <div>
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-full bg-[#073161] text-white flex items-center justify-center">
+              <div className="w-9 h-9 rounded-full bg-brand-800 text-white flex items-center justify-center">
                 <Mountain className="w-4 h-4" />
               </div>
               <div>
-                <div className="font-extrabold text-sm tracking-[0.1em] text-[#073161] uppercase">
+                <div className="font-extrabold text-sm tracking-[0.1em] text-brand-800 uppercase">
                   TÀ XÙA TRIP
                 </div>
-                <div className="text-[11px] text-slate-500">
+                <div className="text-xs text-slate-500">
                   {siteContent.footerConfig?.brandTagline || 'Đi thật. Biết trước.'}
                 </div>
               </div>
@@ -4385,21 +4385,21 @@ export default function App() {
               {siteContent.footerConfig?.description ||
                 'Nền tảng du lịch địa phương giúp bạn biết rõ nơi ở, bằng chứng và điều cần lưu ý trước khi lên đường.'}
             </p>
-            <div className="text-[11px] text-slate-500 space-y-1 mb-2">
+            <div className="text-xs text-slate-500 space-y-1 mb-2">
               <div>📍 {siteContent.footerConfig?.address || 'Trung tâm Xã Tà Xùa, Bắc Yên, Sơn La'}</div>
               <div>
                 🚨 Cứu hộ 24/7:{' '}
                 <span className="font-bold text-rose-600">{siteContent.footerConfig?.rescueHotline || '0981 119 115'}</span> · Zalo:{' '}
-                <span className="font-bold text-[#073161]">{siteContent.footerConfig?.supportZalo || '0981 234 567'}</span>
+                <span className="font-bold text-brand-800">{siteContent.footerConfig?.supportZalo || '0981 234 567'}</span>
               </div>
             </div>
-            <p className="text-[11px] font-extrabold tracking-widest text-teal-700">
+            <p className="text-xs font-extrabold tracking-widest text-teal-700">
               THẬT · HIỂU · TRỌN VẸN
             </p>
           </div>
 
           <div>
-            <h2 className="font-extrabold text-[#073161] uppercase tracking-wider mb-3 text-xs">
+            <h2 className="font-extrabold text-brand-800 uppercase tracking-wider mb-3 text-xs">
               DỊCH VỤ
             </h2>
             <ul className="space-y-2 text-slate-600">
@@ -4418,7 +4418,7 @@ export default function App() {
                       }
                     }, 80);
                   }}
-                  className="hover:text-[#073161] cursor-pointer text-left"
+                  className="hover:text-brand-800 cursor-pointer text-left"
                 >
                   Tìm chuyến đi & Combo trọn gói
                 </button>
@@ -4430,7 +4430,7 @@ export default function App() {
                     setCurrentTab('stay');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="hover:text-[#073161] cursor-pointer text-left"
+                  className="hover:text-brand-800 cursor-pointer text-left"
                 >
                   Lưu trú Homestay & Bungalow
                 </button>
@@ -4442,7 +4442,7 @@ export default function App() {
                     setCurrentTab('map');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="hover:text-[#073161] cursor-pointer text-left"
+                  className="hover:text-brand-800 cursor-pointer text-left"
                 >
                   Bản đồ tọa độ săn mây
                 </button>
@@ -4455,7 +4455,7 @@ export default function App() {
                     setCurrentTab('transport');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="hover:text-[#073161] cursor-pointer text-left"
+                  className="hover:text-brand-800 cursor-pointer text-left"
                 >
                   Xe khách · Đón dọc tuyến
                 </button>
@@ -4476,7 +4476,7 @@ export default function App() {
                       }
                     }, 80);
                   }}
-                  className="hover:text-[#073161] cursor-pointer text-left"
+                  className="hover:text-brand-800 cursor-pointer text-left"
                 >
                   Xe máy · Giao tận Homestay
                 </button>
@@ -4488,7 +4488,7 @@ export default function App() {
                     setCurrentTab('weather');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="hover:text-[#073161] cursor-pointer text-left"
+                  className="hover:text-brand-800 cursor-pointer text-left"
                 >
                   Săn mây / Cloud View
                 </button>
@@ -4497,7 +4497,7 @@ export default function App() {
           </div>
 
           <div>
-            <h2 className="font-extrabold text-[#073161] uppercase tracking-wider mb-3 text-xs">
+            <h2 className="font-extrabold text-brand-800 uppercase tracking-wider mb-3 text-xs">
               HỖ TRỢ
             </h2>
             <ul className="space-y-2 text-slate-600">
@@ -4517,7 +4517,7 @@ export default function App() {
                     setCurrentTab('itinerary');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="hover:text-[#073161] cursor-pointer text-left"
+                  className="hover:text-brand-800 cursor-pointer text-left"
                 >
                   Trợ lý AI Lịch trình Offline
                 </button>
@@ -4529,7 +4529,7 @@ export default function App() {
                     setCurrentTab('community');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="hover:text-[#073161] cursor-pointer text-left"
+                  className="hover:text-brand-800 cursor-pointer text-left"
                 >
                   Cộng đồng ghép xe & review
                 </button>
@@ -4538,7 +4538,7 @@ export default function App() {
           </div>
 
           <div>
-            <h2 className="font-extrabold text-[#073161] uppercase tracking-wider mb-3 text-xs">
+            <h2 className="font-extrabold text-brand-800 uppercase tracking-wider mb-3 text-xs">
               VỀ CHÚNG TÔI & KÊNH CHÍNH THỨC
             </h2>
             <ul className="space-y-2 text-slate-600 mb-4">
@@ -4549,7 +4549,7 @@ export default function App() {
                     setCurrentTab('verified');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="hover:text-[#073161] cursor-pointer text-left"
+                  className="hover:text-brand-800 cursor-pointer text-left"
                 >
                   Phương pháp thẩm định
                 </button>
@@ -4562,7 +4562,7 @@ export default function App() {
                     setCurrentTab('partner');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="hover:text-[#073161] cursor-pointer text-left"
+                  className="hover:text-brand-800 cursor-pointer text-left"
                 >
                   Cổng Đối tác / Chủ cơ sở
                 </button>
@@ -4575,7 +4575,7 @@ export default function App() {
                     setCurrentTab('admin');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="hover:text-[#073161] cursor-pointer text-left"
+                  className="hover:text-brand-800 cursor-pointer text-left"
                 >
                   Quản trị thẩm định (Admin)
                 </button>
@@ -4584,7 +4584,7 @@ export default function App() {
 
             {(siteContent.socialChannels || []).some((ch) => ch.isActive && ch.placements.includes('footer')) && (
               <div className="pt-3 border-t border-slate-100 space-y-2">
-                <div className="text-[11px] font-extrabold text-[#073161] uppercase tracking-wider">
+                <div className="text-xs font-extrabold text-brand-800 uppercase tracking-wider">
                   ✓ Kênh Social & SĐT Chính Thức
                 </div>
                 <div className="flex flex-wrap gap-1.5">
@@ -4616,7 +4616,7 @@ export default function App() {
                           target={ch.url.startsWith('tel:') ? undefined : '_blank'}
                           rel="noopener noreferrer"
                           title={`${ch.title} — ${ch.handleOrNumber}`}
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-colors ${
+                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors ${
                             ch.platform === 'phone_sos'
                               ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200'
                               : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
@@ -4634,7 +4634,7 @@ export default function App() {
 
         <div className="max-w-6xl mx-auto mt-10 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>{siteContent.footerConfig?.copyrightText || '© 2026 Tà Xùa Trip.'}</p>
-          <p className="font-semibold text-[#073161]">Đi thật. Biết trước.</p>
+          <p className="font-semibold text-brand-800">Đi thật. Biết trước.</p>
         </div>
       </footer>
     </div>
