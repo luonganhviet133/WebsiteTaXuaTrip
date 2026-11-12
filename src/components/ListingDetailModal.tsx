@@ -46,8 +46,13 @@ import {
   getHomestayRoomSummary
 } from '../utils/rules.ts';
 import { verificationLabel } from '../utils/listingDisplay.ts';
+import { requestQuote, nightLabel, type QuoteResponse } from '../api/quotesApi.ts';
+import { defaultStayDates, nightsBetween, todayInVietnam } from '../search/searchIntent.ts';
 
 interface ListingDetailModalProps {
+  /** N04.1: lựa chọn ngày/khách/phòng dùng chung với trang chủ và danh sách. */
+  searchIntent?: { checkIn: string; checkOut: string; adults: number; children: number; rooms: number };
+  onChangeSearchIntent?: (patch: Partial<{ checkIn: string; checkOut: string; adults: number; children: number; rooms: number }>) => void;
   listing: Listing | null;
   reviews?: Review[];
   userBookings?: Booking[];
@@ -67,6 +72,8 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
   userBookings = [],
   vouchers = [],
   rewardSettings = [],
+  searchIntent,
+  onChangeSearchIntent,
   onClose,
   onBookSuccess,
   onAddReview,
@@ -91,8 +98,20 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
       : null
   );
 
-  const [checkIn, setCheckIn] = useState('2026-11-14');
-  const [checkOut, setCheckOut] = useState('2026-11-15');
+  // N04.1: ngày lấy từ lựa chọn chung (không còn ngày cố định 14/11/2026); đổi ở đây thì báo ngược lên App.
+  const fallbackDates = defaultStayDates();
+  const [localCheckIn, setLocalCheckIn] = useState(searchIntent?.checkIn ?? fallbackDates.checkIn);
+  const [localCheckOut, setLocalCheckOut] = useState(searchIntent?.checkOut ?? fallbackDates.checkOut);
+  const checkIn = searchIntent?.checkIn ?? localCheckIn;
+  const checkOut = searchIntent?.checkOut ?? localCheckOut;
+  const setCheckIn = (v: string) => (onChangeSearchIntent ? onChangeSearchIntent({ checkIn: v }) : setLocalCheckIn(v));
+  const setCheckOut = (v: string) => (onChangeSearchIntent ? onChangeSearchIntent({ checkOut: v }) : setLocalCheckOut(v));
+  const [localStay, setLocalStay] = useState({ adults: searchIntent?.adults ?? 2, children: searchIntent?.children ?? 0, rooms: searchIntent?.rooms ?? 1 });
+  const stayAdults = searchIntent?.adults ?? localStay.adults;
+  const stayChildren = searchIntent?.children ?? localStay.children;
+  const stayRooms = searchIntent?.rooms ?? localStay.rooms;
+  const setStayGuests = (patch: Partial<{ adults: number; children: number; rooms: number }>) =>
+    onChangeSearchIntent ? onChangeSearchIntent(patch) : setLocalStay((p) => ({ ...p, ...patch }));
   const [returnBeforeNoon, setReturnBeforeNoon] = useState<boolean>(true);
   const [serviceTimeSlot, setServiceTimeSlot] = useState<string>('05:30 - Khung giờ vàng săn mây');
   const [busPickupPoint, setBusPickupPoint] = useState<string>('Bến xe Mỹ Đình / Cầu Giấy (Hà Nội)');
@@ -169,13 +188,42 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
   // Pre-ordered menu items if dining
   const [selectedMenuItemIds, setSelectedMenuItemIds] = useState<string[]>([]);
 
-  // 1. Homestay stay cost
-  const stayCost = calculateHomestayStayCost(
-    checkIn,
-    checkOut,
-    selectedRoom ? selectedRoom.priceWeekend : listing.minPrice,
-    1
-  );
+  // 1. Homestay: tổng tiền do server báo giá (N04.2), trình duyệt chỉ hiển thị.
+  const [appliedVoucherCode, setAppliedVoucherCode] = useState<string>('');
+  const [quoteState, setQuoteState] = useState<{ status: 'idle' | 'loading' | 'ok' | 'error'; quote?: QuoteResponse; code?: string; message?: string }>({ status: 'idle' });
+  const [quoteRefresh, setQuoteRefresh] = useState(0);
+  useEffect(() => {
+    if (listing.category !== 'homestay') return;
+    if (!selectedRoom) {
+      setQuoteState({ status: 'error', code: 'NOT_QUOTABLE', message: 'Cơ sở chưa cập nhật hạng phòng và giá trên Tà Xùa Trip.' });
+      return;
+    }
+    const controller = new AbortController();
+    setQuoteState((prev) => ({ ...prev, status: 'loading' }));
+    const timer = setTimeout(() => {
+      requestQuote(
+        {
+          listingId: listing.id,
+          roomTypeId: selectedRoom.id,
+          checkIn,
+          checkOut,
+          adults: stayAdults,
+          children: stayChildren,
+          rooms: stayRooms,
+          voucherCode: appliedVoucherCode || undefined
+        },
+        controller.signal
+      )
+        .then((r) => setQuoteState(r.ok ? { status: 'ok', quote: r.quote } : { status: 'error', code: r.code, message: r.message }))
+        .catch(() => {});
+    }, 300);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [listing.id, listing.category, selectedRoom?.id, checkIn, checkOut, stayAdults, stayChildren, stayRooms, appliedVoucherCode, quoteRefresh]);
+  const stayQuote = quoteState.status === 'ok' ? quoteState.quote : undefined;
+  const stayCost = { nights: stayQuote ? stayQuote.nights.length : Math.max(1, nightsBetween(checkIn, checkOut)) };
 
   // 2. Motorbike rental cost (with half-day before 12:00 noon support)
   const bikeDailyPrice = selectedPackage
@@ -197,7 +245,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
   const calculateBaseTotal = () => {
     if (listing.category === 'homestay') {
-      return stayCost.totalCost;
+      return stayQuote ? stayQuote.subtotal : 0;
     }
     if (listing.category === 'motorbike') {
       return bikeCost.totalCost;
@@ -219,7 +267,9 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
   const baseTotal = calculateBaseTotal();
   let discountAmount = 0;
-  if (appliedVoucher) {
+  if (listing.category === 'homestay') {
+    discountAmount = stayQuote ? stayQuote.discount : 0;
+  } else if (appliedVoucher) {
     if (appliedVoucher.discountType === 'percent') {
       discountAmount = Math.round((baseTotal * appliedVoucher.discountValue) / 100);
     } else {
@@ -317,10 +367,21 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
   const labels = getConsoleLabels();
 
+  useEffect(() => {
+    if (listing.category !== 'homestay' || !appliedVoucherCode || !stayQuote) return;
+    if (stayQuote.voucherError) setVoucherMessage({ type: 'error', text: stayQuote.voucherError.message });
+    else if (stayQuote.discount > 0) setVoucherMessage({ type: 'success', text: `Đã áp dụng mã ${stayQuote.voucherCode}: giảm ${formatVND(stayQuote.discount)}.` });
+  }, [stayQuote?.voucherError?.code, stayQuote?.discount, appliedVoucherCode]);
+
   const handleApplyVoucher = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const code = voucherCodeInput.trim().toUpperCase();
     if (!code) return;
+    if (listing.category === 'homestay') {
+      // Server kiểm điều kiện voucher trong báo giá; kết quả hiện ở voucherMessage bên dưới.
+      setAppliedVoucherCode(code);
+      return;
+    }
     const found = vouchers.find(
       (v) => v.code.toUpperCase() === code && v.isActive
     );
@@ -351,6 +412,11 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
   const handleSubmitBooking = (e: React.FormEvent) => {
     e.preventDefault();
     if (!canBookOnline) return;
+    if (listing.category === 'homestay' && stayQuote && Date.parse(stayQuote.expiresAt) < Date.now()) {
+      setBookingError('Báo giá đã hết hạn 30 phút, đang lấy lại giá mới. Vui lòng kiểm tra rồi bấm đặt lại.');
+      setQuoteRefresh((n) => n + 1);
+      return;
+    }
     if (!guestName.trim() || !guestPhone.trim()) {
       setBookingError('Vui lòng điền đầy đủ họ tên và số điện thoại liên hệ!');
       return;
@@ -387,9 +453,11 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
           listing.category === 'homestay' || listing.category === 'motorbike'
             ? checkOut
             : checkIn,
+        quoteId: listing.category === 'homestay' ? stayQuote?.id : undefined,
         guestsCount:
-          listing.category === 'homestay' ||
-          listing.category === 'restaurant' ||
+          listing.category === 'homestay'
+            ? stayAdults + stayChildren
+            : listing.category === 'restaurant' ||
           listing.category === 'coffee'
             ? guestsCount
             : serviceQuantity,
@@ -418,7 +486,8 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
           listing.category === 'bus' ? includeBusMotorbikeCombo : undefined,
         totalAmount,
         discountApplied: discountAmount > 0 ? discountAmount : undefined,
-        voucherCodeApplied: appliedVoucher ? appliedVoucher.code : undefined,
+        voucherCodeApplied:
+          listing.category === 'homestay' ? stayQuote?.voucherCode || undefined : appliedVoucher ? appliedVoucher.code : undefined,
         pointsEarned: earnedPoints,
         status: 'confirmed',
         paymentStatus: paymentProofUrl ? 'proof_uploaded' : 'unpaid',
@@ -1261,6 +1330,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                         <input
                           type="date"
                           value={checkIn}
+                          min={todayInVietnam()}
                           onChange={(e) => setCheckIn(e.target.value)}
                           className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
                           required
@@ -1281,21 +1351,30 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
-                        Số lượng khách lưu trú
-                      </label>
-                      <select
-                        value={guestsCount}
-                        onChange={(e) => setGuestsCount(Number(e.target.value))}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
-                      >
-                        <option value={1}>1 khách (Solo săn mây)</option>
-                        <option value={2}>2 khách (Cặp đôi / Bạn thân)</option>
-                        <option value={4}>4 khách (Nhóm bạn)</option>
-                        <option value={6}>6 khách (Gia đình)</option>
-                      </select>
+                    <div className="grid grid-cols-3 gap-2">
+                      {([
+                        ['adults', 'Người lớn', stayAdults, 1, 30],
+                        ['children', 'Trẻ em', stayChildren, 0, 20],
+                        ['rooms', 'Số phòng', stayRooms, 1, 10]
+                      ] as const).map(([key, label, value, min, max]) => (
+                        <div key={key}>
+                          <label htmlFor={`stay-${key}`} className="block text-xs font-bold text-slate-700 mb-1">
+                            {label}
+                          </label>
+                          <input
+                            id={`stay-${key}`}
+                            type="number"
+                            inputMode="numeric"
+                            min={min}
+                            max={max}
+                            value={value}
+                            onChange={(e) => setStayGuests({ [key]: Number(e.target.value) })}
+                            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-base text-slate-900 focus:outline-none focus:border-brand-800"
+                          />
+                        </div>
+                      ))}
                     </div>
+                    <p className="text-xs text-slate-500">Trẻ em tính vào sức chứa phòng; không có giá trẻ em riêng.</p>
                   </>
                 )}
 
@@ -1722,6 +1801,32 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
                 {/* Price Breakdown */}
                 <div className="pt-3 border-t border-slate-200 space-y-1.5 text-xs">
+                  {listing.category === 'homestay' && quoteState.status === 'loading' && (
+                    <p className="text-slate-500" role="status">Đang tính giá theo từng đêm…</p>
+                  )}
+                  {listing.category === 'homestay' && quoteState.status === 'error' && quoteState.code !== 'NOT_QUOTABLE' && (
+                    <p className="rounded-control border border-danger-200 bg-danger-50 px-3 py-2 text-danger-700" role="alert">
+                      {quoteState.message}
+                    </p>
+                  )}
+                  {listing.category === 'homestay' && quoteState.code === 'NOT_QUOTABLE' && listing.minPrice > 0 && (
+                    <p className="text-slate-600">
+                      Giá tham khảo từ nguồn công khai: từ {formatVND(listing.minPrice)}/đêm (chưa xác minh).
+                    </p>
+                  )}
+                  {stayQuote && (
+                    <ul className="space-y-1 pb-1.5 border-b border-dashed border-slate-200" aria-label="Giá từng đêm">
+                      {stayQuote.nights.map((n) => (
+                        <li key={n.date} className="flex justify-between gap-2 text-slate-600">
+                          <span>{nightLabel(n)}</span>
+                          <span className="tabular-nums text-slate-900">
+                            {formatVND(n.pricePerRoom)}
+                            {stayQuote.rooms > 1 ? ` × ${stayQuote.rooms} phòng` : ''}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   <div className="flex justify-between text-slate-600 gap-2">
                     <span className="shrink-0">Dịch vụ đã chọn:</span>
                     <span className="text-slate-900 font-bold text-right">
@@ -1736,7 +1841,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                   </div>
                   {discountAmount > 0 && (
                     <div className="flex justify-between text-emerald-700 font-bold">
-                      <span>Giảm giá Voucher ({appliedVoucher?.code}):</span>
+                      <span>Giảm giá Voucher ({listing.category === 'homestay' ? stayQuote?.voucherCode : appliedVoucher?.code}):</span>
                       <span>-{formatVND(discountAmount)}</span>
                     </div>
                   )}

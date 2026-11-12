@@ -1,7 +1,7 @@
 /**
  * N03.3 — Gọi API danh bạ từ trình duyệt. Mọi thao tác ghi chỉ báo thành công khi server trả 2xx.
  */
-import type { Listing, PartnerClaimRequest, VerificationTier } from '../types/index.ts';
+import type { Listing, PartnerClaimRequest, PromoVoucher, VerificationTier } from '../types/index.ts';
 
 export interface ApiFieldError {
   field: string;
@@ -129,7 +129,42 @@ export const listingsApi = {
   listClaims: () => request<any[]>('GET', '/api/admin/claims'),
   reviewClaim: (id: string, decision: 'approve' | 'reject') => request<unknown>('POST', `/api/admin/claims/${encodeURIComponent(id)}/review`, { decision }),
   putSiteContent: (content: unknown) => request<void>('PUT', '/api/admin/site-content', { content }),
+
+  // Voucher (N04.3) — chỉ admin
+  listVouchers: () => request<any[]>('GET', '/api/admin/vouchers'),
+  upsertVoucher: (v: PromoVoucher & { usageLimit?: number | null; maxDiscount?: number | null }) =>
+    request<any>('POST', '/api/admin/vouchers', {
+      code: v.code,
+      title: v.title,
+      discountType: v.discountType,
+      discountValue: Math.round(v.discountValue),
+      maxDiscount: v.maxDiscount ?? null,
+      minBookingAmount: Math.round(v.minBookingAmount || 0),
+      applicableCategory: v.applicableCategory,
+      applicableListingId: v.applicableListingId || null,
+      validUntil: v.validUntil || null,
+      isActive: v.isActive,
+      usageLimit: v.usageLimit ?? null,
+      description: v.description,
+    }),
 };
+
+/** Voucher từ server → kiểu hiển thị cũ của AdminDashboard (id = mã). */
+export function voucherFromServer(v: any): PromoVoucher {
+  return {
+    id: v.code,
+    code: v.code,
+    title: v.title,
+    discountType: v.discountType,
+    discountValue: v.discountValue,
+    minBookingAmount: v.minBookingAmount,
+    applicableCategory: v.applicableCategory,
+    applicableListingId: v.applicableListingId || undefined,
+    isActive: v.isActive,
+    validUntil: v.validUntil || '',
+    description: v.description || '',
+  };
+}
 
 /** Hồ sơ nhận chính chủ từ server → kiểu hiển thị cũ của AdminDashboard. */
 export function claimToRequest(c: any): PartnerClaimRequest {

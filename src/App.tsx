@@ -13,7 +13,6 @@ import {
   INITIAL_PARTNER_WALLET,
   CLOUD_LANDMARKS,
   INITIAL_DISPUTES,
-  INITIAL_VOUCHERS,
   INITIAL_REWARD_SETTINGS,
   INITIAL_SITE_CONTENT,
   INITIAL_CURATED_COMBOS,
@@ -64,7 +63,7 @@ import { VerificationMethodologySection } from './components/VerificationMethodo
 import { DisputeModal } from './components/DisputeModal.tsx';
 import { ReviewModal } from './components/ReviewModal.tsx';
 import { AuthModal } from './components/AuthModal.tsx';
-import { listingsApi, managedToListing, claimToRequest, toContent, ApiError, type ManagedListing } from './api/listingsApi.ts';
+import { listingsApi, managedToListing, claimToRequest, toContent, voucherFromServer, ApiError, type ManagedListing } from './api/listingsApi.ts';
 import { onlyMappable } from './utils/listingDisplay.ts';
 import { EmptyState, ErrorState, Skeleton } from './components/ui/index.ts';
 import { AuthUser, DEMO_ACCOUNTS } from './types/auth.ts';
@@ -317,7 +316,8 @@ export default function App() {
   const [partnerWallet, setPartnerWallet] = useState(INITIAL_PARTNER_WALLET);
   const [billingEnabled, setBillingEnabled] = useState(false);
   const [disputes, setDisputes] = useState<BookingDispute[]>(INITIAL_DISPUTES);
-  const [vouchers, setVouchers] = useState<PromoVoucher[]>(INITIAL_VOUCHERS);
+  // N04.3: voucher lưu ở server, admin tạo; không còn voucher mẫu trong trình duyệt.
+  const [vouchers, setVouchers] = useState<PromoVoucher[]>([]);
   const [rewardSettings, setRewardSettings] = useState<ServiceRewardSetting[]>(INITIAL_REWARD_SETTINGS);
   const [claimRequests, setClaimRequests] = useState<PartnerClaimRequest[]>([]);
 
@@ -469,11 +469,35 @@ export default function App() {
   };
 
   // Voucher toggle handler
+  const reloadVouchers = React.useCallback(async () => {
+    if (currentUser?.role !== 'admin') return setVouchers([]);
+    try {
+      setVouchers((await listingsApi.listVouchers()).map(voucherFromServer));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [currentUser?.id, currentUser?.role]);
+  useEffect(() => {
+    reloadVouchers();
+  }, [reloadVouchers]);
+
+  const saveVoucher = async (v: PromoVoucher, okMsg: string) => {
+    try {
+      await listingsApi.upsertVoucher(v);
+      showToast(okMsg);
+      await reloadVouchers();
+    } catch (e) {
+      showToast(e instanceof ApiError ? `Chưa lưu voucher: ${e.message}` : 'Chưa lưu được voucher.');
+    }
+  };
+
   const handleToggleVoucher = (voucherId: string) => {
-    setVouchers((prev) =>
-      prev.map((v) => (v.id === voucherId ? { ...v, isActive: !v.isActive } : v))
-    );
-    showToast('Đã cập nhật trạng thái hoạt động của mã Voucher!');
+    const v = vouchers.find((x) => x.id === voucherId);
+    if (v) void saveVoucher({ ...v, isActive: !v.isActive }, v.isActive ? `Đã tắt mã ${v.code}.` : `Đã bật mã ${v.code}.`);
+  };
+
+  const handleAddVoucher = (v: PromoVoucher) => {
+    void saveVoucher(v, `Đã lưu mã ${v.code.toUpperCase()} lên máy chủ.`);
   };
 
   // Reward point percentage update handler
@@ -692,7 +716,11 @@ export default function App() {
       return;
     }
     if (route.redirectTo || route.notFound) return;
-    const qs = route.listingId || route.myTrips ? location.search : filterQuery();
+    const qs = route.myTrips
+      ? location.search
+      : route.listingId
+        ? buildQuery({ checkIn: stayCheckIn, checkOut: stayCheckOut, adults: stayAdults, children: stayChildren, rooms: stayRooms, area: selectedArea })
+        : filterQuery();
     if (qs !== location.search) navigate(`${location.pathname}${qs}`, { replace: true });
   }, [currentTab, stayCheckIn, stayCheckOut, stayAdults, stayChildren, stayRooms, selectedArea]);
 
@@ -4146,7 +4174,7 @@ export default function App() {
               onResolveDispute={handleResolveDispute}
               vouchers={vouchers}
               onToggleVoucher={handleToggleVoucher}
-              onAddVoucher={(newV) => setVouchers((prev) => [newV, ...prev])}
+              onAddVoucher={handleAddVoucher}
               rewardSettings={rewardSettings}
               onUpdateRewardPercent={handleUpdateRewardPercent}
               claimRequests={claimRequests}
@@ -4329,7 +4357,7 @@ export default function App() {
           onResolveDispute={handleResolveDispute}
           onUpdateSiteContent={handleUpdateSiteContent}
           onUpdateForecasts={setForecasts}
-          onAddVoucher={(newV) => setVouchers((prev) => [newV, ...prev])}
+          onAddVoucher={handleAddVoucher}
           onToggleBilling={handleToggleBilling}
           onJumpToAdminTab={() => {
             setIsJarvisOverlayOpen(false);
@@ -4342,6 +4370,8 @@ export default function App() {
       {selectedListingDetail && (
         <ListingDetailModal
           listing={selectedListingDetail}
+          searchIntent={{ checkIn: stayCheckIn, checkOut: stayCheckOut, adults: stayAdults, children: stayChildren, rooms: stayRooms }}
+          onChangeSearchIntent={updateSearchIntent}
           reviews={reviews.filter((r) => r.listingId === selectedListingDetail.id)}
           userBookings={bookings.filter((b) => b.listingId === selectedListingDetail.id)}
           vouchers={vouchers}
