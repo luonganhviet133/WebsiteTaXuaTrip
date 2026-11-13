@@ -129,7 +129,9 @@ export function computeVerification(row: Pick<ListingRow, 'verification_tier' | 
 
 const SELECT_LISTING = `
   SELECT l.*, v.content_json AS published_json, v.reviewed_at AS published_at,
-         (SELECT provider_id FROM provider_listings pl WHERE pl.listing_id = l.id ORDER BY pl.is_primary_owner DESC, pl.created_at LIMIT 1) AS owner_provider_id
+         (SELECT provider_id FROM provider_listings pl WHERE pl.listing_id = l.id ORDER BY pl.is_primary_owner DESC, pl.created_at LIMIT 1) AS owner_provider_id,
+         (SELECT ROUND(AVG(rv.rating), 1) FROM reviews rv WHERE rv.listing_id = l.id AND rv.status = 'published') AS review_avg,
+         (SELECT COUNT(*) FROM reviews rv WHERE rv.listing_id = l.id AND rv.status = 'published') AS review_count
   FROM listings l
   LEFT JOIN listing_versions v ON v.id = l.published_version_id`;
 
@@ -147,9 +149,9 @@ function toPublic(row: ListingRow): PublicListing | null {
     sourceName: row.source_name,
     collectedAt: row.collected_at,
     updatedCalendarDate: (row.published_at || row.updated_at).slice(0, 10),
-    // Đánh giá thật gắn với đơn đã hoàn tất (N06). Chưa có thì 0, không tự sinh.
-    rating: 0,
-    reviewCount: 0,
+    // Chỉ từ đánh giá xác thực đang hiện (N06.3: gắn đơn đã hoàn tất). Chưa có thì 0, không tự sinh.
+    rating: Number((row as any).review_avg ?? 0),
+    reviewCount: Number((row as any).review_count ?? 0),
     partnerId: row.owner_provider_id || '',
     claimedByOwner: Boolean(row.owner_provider_id),
     ownerVerificationStatus: row.owner_provider_id ? 'verified_owner' : 'unclaimed',

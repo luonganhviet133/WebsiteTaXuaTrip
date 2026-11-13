@@ -5,7 +5,7 @@ import { handleApiRequest, type ApiContext } from '../api.ts';
 import { BookingLifecycle } from '../bookings/store.ts';
 import { CommunityStore } from './store.ts';
 import { addDays, todayInVietnam } from '../../search/searchIntent.ts';
-import { previousVnMonth, vnMonth } from '../../config/community.ts';
+import { previousVnMonth, vnMonth, previousPeriod, currentPeriod } from '../../config/community.ts';
 
 const rooms = {
   title: 'Homestay Mây (mẫu)', category: 'homestay', area: 'Đỉnh Gió', minPrice: 500000, coordinates: null,
@@ -230,4 +230,34 @@ test('Đổi điểm lấy quà đang khóa; cơ chế (khi mở) không âm đi
   const replay = await store.redeem(guestId, 'rw1', (ok as any).idempotencyKey);
   assert.equal(replay.ok && replay.giftCode, (ok as any).giftCode, 'gửi lại cùng khóa trả cùng mã quà');
   assert.equal((await db.d1.prepare('SELECT COUNT(*) AS n FROM point_redemptions').first<{ n: number }>())!.n, 1);
+});
+
+test('Top 3 theo quý và năm (N06.3): xếp hạng cộng dồn cả kỳ, chốt riêng từng kỳ, kỳ chưa hết thì chưa chốt', async () => {
+  const { db, t, call, guestId, otherId } = await setup();
+  const prevQ = previousPeriod('quarter', new Date());
+  const [qy, qn] = [prevQ.slice(0, 4), Number(prevQ.slice(6))];
+  const monthsOfQ = [0, 1, 2].map((i) => `${qy}-${String((qn - 1) * 3 + 1 + i).padStart(2, '0')}-10T05:00:00.000Z`);
+  // khách A: 40 điểm mỗi tháng trong quý (=120); khách B: 100 điểm một tháng
+  for (const [i, at] of monthsOfQ.entries()) {
+    await db.d1.prepare("INSERT INTO points_ledger (id, user_id, source_type, source_id, points, reason, effective_at, created_at) VALUES (?, ?, 'admin_award', ?, 40, 'thử', ?, ?)").bind(`qa${i}`, guestId, `qa${i}`, at, at).run();
+  }
+  await db.d1.prepare("INSERT INTO points_ledger (id, user_id, source_type, source_id, points, reason, effective_at, created_at) VALUES ('qb', ?, 'admin_award', 'qb', 100, 'thử', ?, ?)").bind(otherId, monthsOfQ[1], monthsOfQ[1]).run();
+  const q = (await call('GET', `/api/admin/community/monthly?period=${prevQ}`, t.admin)).body.data;
+  assert.equal(q.finished, true);
+  assert.deepEqual(q.ranking.map((r: any) => [r.userId, r.points]), [[guestId, 120], [otherId, 100]], 'quý cộng dồn 3 tháng');
+  assert.match(q.label, /^quý [1-4]\/\d{4}$/);
+  const pubQ = (await call('GET', `/api/community/leaderboard?scope=quarter&period=${prevQ}`)).body.data;
+  assert.equal(pubQ.items[0].points, 120);
+  assert.equal((await call('GET', `/api/community/leaderboard?scope=quarter&period=${qy}-11`)).status, 400, 'kỳ không khớp scope');
+
+  const curQ = currentPeriod('quarter', new Date());
+  assert.equal((await call('POST', `/api/admin/community/monthly/${curQ}/award`, t.admin, { rank: 1, userId: guestId, giftNote: 'Áo khoác' })).body.code, 'MONTH_NOT_FINISHED');
+  assert.equal((await call('POST', `/api/admin/community/monthly/${prevQ}/award`, t.admin, { rank: 1, userId: guestId, giftNote: 'Áo khoác Tà Xùa' })).status, 200);
+  // Cùng người được ghi ở kỳ tháng khác với kỳ quý (khóa theo từng kỳ)
+  const anyMonth = monthsOfQ[0].slice(0, 7);
+  assert.equal((await call('POST', `/api/admin/community/monthly/${anyMonth}/award`, t.admin, { rank: 1, userId: guestId, giftNote: 'Voucher cà phê' })).status, 200);
+  const curY = currentPeriod('year', new Date());
+  assert.equal((await call('POST', `/api/admin/community/monthly/${curY}/award`, t.admin, { rank: 1, userId: guestId, giftNote: 'x yz' })).body.code, 'MONTH_NOT_FINISHED', 'năm chưa hết');
+  const notes = (await call('GET', '/api/notifications', t.guest)).body.data.items;
+  assert.ok(notes.some((x: any) => /quý [1-4]\/\d{4}/.test(x.title)), 'thông báo ghi đúng kỳ quý');
 });

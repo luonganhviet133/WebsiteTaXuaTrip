@@ -29,6 +29,7 @@ import { handleBookingRoutes } from './bookings/routes.ts';
 import { BookingLifecycle } from './bookings/store.ts';
 import { handlePaymentRoutes } from './payments/routes.ts';
 import { handleCommunityRoutes } from './community/routes.ts';
+import { handleFeedbackRoutes } from './feedback/routes.ts';
 import type { PrivateStorage } from './payments/storage.ts';
 
 export interface ApiContext {
@@ -200,6 +201,19 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
     }
     return json({ success: true, data: booking });
   }
+
+  // ==================== ĐÁNH GIÁ XÁC THỰC, KHIẾU NẠI (N06.3) ====================
+  const feedbackResponse = await handleFeedbackRoutes(request, pathname, {
+    d1: ctx.db.d1,
+    json,
+    readJson,
+    requireRole: (allowed) => requireRole(request, ctx, allowed),
+    optionalUser: async () => (await getUser(request, ctx)) ?? null,
+    rateLimit: (key, max) => checkRateLimit(key, max, 60 * 1000).allowed,
+    clientIp: ctx.clientIp,
+    privateStorage: ctx.privateStorage,
+  });
+  if (feedbackResponse) return feedbackResponse;
 
   // ==================== ĐIỂM MÂY, XẾP HẠNG, PHÍ NỀN TẢNG (N06.2) ====================
   const communityResponse = await handleCommunityRoutes(request, pathname, {

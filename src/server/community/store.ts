@@ -5,6 +5,7 @@
 import type { D1Database } from '../d1.ts';
 import {
   POINT_RULES, POINTS_WINDOW_DAYS, REDEMPTION_ENABLED, shortName, titleFor, vnMonth,
+  PERIOD_RE, periodKind, periodRange, periodLabel, currentPeriod,
 } from '../../config/community.ts';
 import { HoldStore, notifyUserStmt } from '../bookings/holds.ts';
 
@@ -88,23 +89,23 @@ export class CommunityStore {
     }));
   }
 
-  async leaderboard(scope: string, month: string | null, now = new Date()) {
-    if (scope !== 'month' && scope !== '12m') return fail(400, 'INVALID_SCOPE', 'scope là month hoặc 12m.');
-    const m = month || vnMonth(now);
-    if (!MONTH_RE.test(m)) return fail(400, 'INVALID_MONTH', 'Tháng dạng YYYY-MM.');
-    const range: [string, string] = scope === 'month' ? monthRange(m) : [windowStart(now), new Date(now.getTime() + 1).toISOString()];
+  async leaderboard(scope: string, period: string | null, now = new Date()) {
+    if (!['month', 'quarter', 'year', '12m'].includes(scope)) return fail(400, 'INVALID_SCOPE', 'scope là month, quarter, year hoặc 12m.');
+    const p = scope === '12m' ? null : period || currentPeriod(scope as any, now);
+    if (p !== null && (!PERIOD_RE.test(p) || periodKind(p) !== scope)) return fail(400, 'INVALID_PERIOD', 'Kỳ dạng YYYY-MM, YYYY-Qn hoặc YYYY, đúng với scope.');
+    const range: [string, string] = p ? periodRange(p) : [windowStart(now), new Date(now.getTime() + 1).toISOString()];
     const rows = await this.ranking(range, 20, now);
     return {
       ok: true as const,
-      data: { scope, month: scope === 'month' ? m : null, items: rows.map((r) => ({ rank: r.rank, name: shortName(r.fullName), points: r.points, title: r.title })) },
+      data: { scope, month: p, period: p, items: rows.map((r) => ({ rank: r.rank, name: shortName(r.fullName), points: r.points, title: r.title })) },
     };
   }
 
   // ---------- Top 3 tháng ----------
 
   async adminMonthly(month: string, now = new Date()) {
-    if (!MONTH_RE.test(month)) return fail(400, 'INVALID_MONTH', 'Tháng dạng YYYY-MM.');
-    const ranking = await this.ranking(monthRange(month), 10, now);
+    if (!PERIOD_RE.test(month)) return fail(400, 'INVALID_PERIOD', 'Kỳ dạng YYYY-MM, YYYY-Qn hoặc YYYY.');
+    const ranking = await this.ranking(periodRange(month), 10, now);
     const awards = await this.d1
       .prepare('SELECT a.rank, a.user_id, a.points, a.gift_note, a.awarded_at, p.full_name FROM monthly_awards a JOIN profiles p ON p.id = a.user_id WHERE a.month = ? ORDER BY a.rank')
       .bind(month)
@@ -113,7 +114,9 @@ export class CommunityStore {
       ok: true as const,
       data: {
         month,
-        finished: month < vnMonth(now),
+        period: month,
+        label: periodLabel(month),
+        finished: periodRange(month)[1] <= now.toISOString(),
         ranking,
         awards: (awards.results || []).map((a: any) => ({ rank: a.rank, userId: a.user_id, fullName: a.full_name, points: a.points, giftNote: a.gift_note, awardedAt: a.awarded_at })),
       },
@@ -121,8 +124,8 @@ export class CommunityStore {
   }
 
   async awardMonthly(month: string, input: any, actor: Actor, now = new Date()) {
-    if (!MONTH_RE.test(month)) return fail(400, 'INVALID_MONTH', 'Tháng dạng YYYY-MM.');
-    if (!(month < vnMonth(now))) return fail(409, 'MONTH_NOT_FINISHED', 'Chỉ chốt top 3 khi tháng đã kết thúc.');
+    if (!PERIOD_RE.test(month)) return fail(400, 'INVALID_PERIOD', 'Kỳ dạng YYYY-MM, YYYY-Qn hoặc YYYY.');
+    if (!(periodRange(month)[1] <= now.toISOString())) return fail(409, 'MONTH_NOT_FINISHED', `Chỉ chốt top 3 khi ${periodLabel(month)} đã kết thúc.`);
     const rank = Number(input?.rank);
     if (![1, 2, 3].includes(rank)) return fail(400, 'INVALID_RANK', 'Hạng là 1, 2 hoặc 3.');
     const giftNote = typeof input?.giftNote === 'string' ? input.giftNote.trim().slice(0, 300) : '';
@@ -130,7 +133,7 @@ export class CommunityStore {
     const userId = String(input?.userId || '');
     const user = await this.d1.prepare('SELECT id FROM profiles WHERE id = ?').bind(userId).first<any>();
     if (!user) return fail(404, 'USER_NOT_FOUND', 'Không tìm thấy thành viên.');
-    const [start, end] = monthRange(month);
+    const [start, end] = periodRange(month);
     const pts = await this.d1
       .prepare("SELECT COALESCE(SUM(points), 0) AS s FROM points_ledger WHERE user_id = ? AND source_type <> 'redemption' AND effective_at >= ? AND effective_at < ?")
       .bind(userId, start, end)
@@ -145,25 +148,25 @@ export class CommunityStore {
           userId,
           kind: 'community.monthly_award',
           bookingId: null as any,
-          title: `Chúc mừng! Bạn đứng hạng ${rank} người đóng góp tháng ${month.split('-').reverse().join('/')}`,
+          title: `Chúc mừng! Bạn đứng hạng ${rank} người đóng góp ${periodLabel(month)}`,
           body: `Tà Xùa Trip gửi tặng: ${giftNote}. Cảm ơn bạn đã đóng góp cho cộng đồng Tà Xùa.`,
           now: nowIso,
         }),
       ]);
     } catch (err: any) {
-      if (/UNIQUE constraint failed/i.test(String(err?.message))) return fail(409, 'ALREADY_AWARDED', 'Hạng này hoặc thành viên này đã được ghi quà cho tháng này.');
+      if (/UNIQUE constraint failed/i.test(String(err?.message))) return fail(409, 'ALREADY_AWARDED', `Hạng này hoặc thành viên này đã được ghi quà cho ${periodLabel(month)}.`);
       throw err;
     }
     return { ok: true as const, data: { month, rank, userId, points: pts?.s ?? 0, giftNote } };
   }
 
   async monthlyWinners(month: string) {
-    if (!MONTH_RE.test(month)) return fail(400, 'INVALID_MONTH', 'Tháng dạng YYYY-MM.');
+    if (!PERIOD_RE.test(month)) return fail(400, 'INVALID_PERIOD', 'Kỳ dạng YYYY-MM, YYYY-Qn hoặc YYYY.');
     const r = await this.d1
       .prepare('SELECT a.rank, a.points, p.full_name FROM monthly_awards a JOIN profiles p ON p.id = a.user_id WHERE a.month = ? ORDER BY a.rank')
       .bind(month)
       .all<any>();
-    return { ok: true as const, data: { month, winners: (r.results || []).map((x: any) => ({ rank: x.rank, name: shortName(x.full_name), points: x.points })) } };
+    return { ok: true as const, data: { month, period: month, label: periodLabel(month), winners: (r.results || []).map((x: any) => ({ rank: x.rank, name: shortName(x.full_name), points: x.points })) } };
   }
 
   // ---------- Admin cộng / thu hồi điểm ----------
