@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkinUrl, formatCreatedAt, guestCanCancel, guestCountOf, ownerActions, parseCheckinInput, statusLabel } from './bookingsApi.ts';
+import { checkinUrl, formatCreatedAt, guestCanCancel, guestCountOf, ownerActions, parseCheckinInput, reconButtons, statusLabel } from './bookingsApi.ts';
 
 const TOKEN = 'a'.repeat(20) + '_-' + 'B'.repeat(21); // 43 ký tự base64url
 
@@ -55,4 +55,16 @@ test('Hiển thị đơn từ server: ngày đặt theo giờ VN, số khách = 
   assert.equal(guestCountOf({ adults: 2, children: 1 }), 3);
   assert.equal(guestCountOf({ guestsCount: 4 }), 4);
   assert.equal(guestCountOf({}), 0);
+});
+
+test('Đối soát cọc: nút theo vai trò và trạng thái (khớp bảng server)', () => {
+  assert.deepEqual(reconButtons('owner', 'open', false), ['refund', 'propose_hold']);
+  assert.deepEqual(reconButtons('owner', 'refund_reported', false), []);
+  assert.deepEqual(reconButtons('guest', 'open', false), []);
+  assert.deepEqual(reconButtons('guest', 'open', true), ['dispute'], 'quá hạn 3 ngày mới báo được');
+  assert.deepEqual(reconButtons('guest', 'refund_reported', false), ['confirm_received', 'dispute']);
+  assert.deepEqual(reconButtons('guest', 'hold_proposed', false), ['accept_hold', 'reject_hold']);
+  assert.deepEqual(reconButtons('admin', 'disputed', false), ['resolve_refunded', 'resolve_held', 'resolve_refund_required']);
+  assert.deepEqual(reconButtons('admin', 'open', true), []);
+  for (const m of ['guest', 'owner', 'admin'] as const) assert.deepEqual(reconButtons(m, 'closed', true), []);
 });

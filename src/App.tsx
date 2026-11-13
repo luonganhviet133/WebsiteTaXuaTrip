@@ -40,6 +40,7 @@ import { HeroSection, HeroConsoleMode } from './components/HeroSection.tsx';
 import { ListingCard } from './components/ListingCard.tsx';
 import { ListingDetailModal } from './components/ListingDetailModal.tsx';
 import { PartnerBookingsPanel } from './components/PartnerBookingsPanel.tsx';
+import { AdminReconciliationPanel } from './components/AdminReconciliationPanel.tsx';
 import { BusBookingModal } from './components/BusBookingModal.tsx';
 import { CloudForecastWidget } from './components/CloudForecastWidget.tsx';
 import { AIItineraryGenerator } from './components/AIItineraryGenerator.tsx';
@@ -4208,6 +4209,7 @@ export default function App() {
           )
         )}
 
+        {currentTab === 'admin' && currentUser?.role === 'admin' && <AdminReconciliationPanel />}
         {currentTab === 'admin' && (
           currentUser?.role === 'admin' ? (
             <AdminDashboard

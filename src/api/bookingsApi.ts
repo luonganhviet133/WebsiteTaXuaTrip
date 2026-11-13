@@ -44,6 +44,8 @@ export interface ServerBooking {
   depositReceipts?: number;
   balanceReceipts?: number;
   needsReconciliation?: boolean;
+  reconStatus?: ReconStatusView | null;
+  reconDueAt?: string | null;
 }
 
 export interface BookingDetail extends ServerBooking {
@@ -148,6 +150,48 @@ export function statusLabel(status: string, holdExpiresAt: string | null, now: n
   return LABEL[s] || s;
 }
 
+export type ReconMode = 'guest' | 'owner' | 'admin';
+export type ReconStatusView = 'open' | 'refund_reported' | 'hold_proposed' | 'disputed' | 'closed';
+export type ReconActionName =
+  | 'refund' | 'propose_hold' | 'accept_hold' | 'reject_hold' | 'confirm_received' | 'dispute'
+  | 'resolve_refunded' | 'resolve_held' | 'resolve_refund_required';
+
+/** Nút hiện cho từng bên (server vẫn kiểm lại theo src/server/payments/reconciliation.ts). */
+export function reconButtons(mode: ReconMode, status: ReconStatusView, overdue: boolean): ReconActionName[] {
+  if (status === 'closed') return [];
+  if (mode === 'owner') return status === 'open' ? ['refund', 'propose_hold'] : [];
+  if (mode === 'guest') {
+    if (status === 'refund_reported') return ['confirm_received', 'dispute'];
+    if (status === 'hold_proposed') return ['accept_hold', 'reject_hold'];
+    if (status === 'open' && overdue) return ['dispute'];
+    return [];
+  }
+  return status === 'disputed' ? ['resolve_refunded', 'resolve_held', 'resolve_refund_required'] : [];
+}
+
+export interface ReconView {
+  bookingId: string;
+  bookingCode: string;
+  depositAmount: number;
+  totalAmount: number;
+  overdue: boolean;
+  reconciliation: null | {
+    status: ReconStatusView;
+    outcome: 'refunded' | 'held' | null;
+    reason: string;
+    openedAt: string;
+    dueAt: string;
+    refundAmount: number | null;
+    ownerNote: string | null;
+    guestNote: string | null;
+    adminNote: string | null;
+    closedAt: string | null;
+  };
+  files: { id: string; role: 'owner' | 'guest'; createdAt: string }[];
+  depositReceipts: { id: string; createdAt: string }[];
+  events: { action: string; actorRole: string; note: string | null; createdAt: string }[];
+}
+
 const pad = (n: number) => String(n).padStart(2, '0');
 
 /** Thời điểm đặt: ISO của server → "HH:mm dd/mm/yyyy" giờ VN; chuỗi cũ (đơn lưu trình duyệt) giữ nguyên. */
@@ -208,6 +252,36 @@ export const bookingsApi = {
     if (!res || !res.ok) return null;
     return URL.createObjectURL(await res.blob());
   },
+  // Đối soát cọc
+  recon: (id: string) => call<ReconView>('GET', `/api/bookings/${encodeURIComponent(id)}/reconciliation`),
+  reconAct: (id: string, action: ReconActionName, body: { amount?: number; note?: string } = {}) =>
+    call<ReconView>('POST', `/api/bookings/${encodeURIComponent(id)}/reconciliation/${action}`, body),
+  reconUpload: async (id: string, file: Blob): Promise<ApiOutcome<{ id: string }>> => {
+    try {
+      const res = await fetch(`/api/bookings/${encodeURIComponent(id)}/reconciliation/files`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token()}`, 'Content-Type': file.type || 'application/octet-stream' },
+        body: file,
+      });
+      const data: any = await res.json().catch(() => null);
+      if (res.ok && data?.success) return { ok: true, data: data.data };
+      return { ok: false, status: res.status, code: data?.code || `HTTP_${res.status}`, message: data?.error || 'Không gửi được ảnh.' };
+    } catch {
+      return { ok: false, status: 0, code: 'NETWORK', message: 'Mất kết nối máy chủ. Vui lòng thử lại.' };
+    }
+  },
+  reconFileUrl: async (id: string, fileId: string): Promise<string | null> => {
+    const res = await fetch(`/api/bookings/${encodeURIComponent(id)}/reconciliation/files/${encodeURIComponent(fileId)}`, {
+      headers: { Authorization: `Bearer ${token()}` },
+    }).catch(() => null);
+    if (!res || !res.ok) return null;
+    return URL.createObjectURL(await res.blob());
+  },
+  adminRecons: () =>
+    call<(NonNullable<ReconView['reconciliation']> & { bookingId: string; bookingCode: string; listingTitle: string; guestName: string; guestPhone: string; depositAmount: number })[]>(
+      'GET',
+      '/api/admin/reconciliations'
+    ),
   getPayout: (listingId: string) => call<PayoutAccount | null>('GET', `/api/partner/listings/${encodeURIComponent(listingId)}/payout-account`),
   setPayout: (listingId: string, body: { bankBin: string; accountNumber: string; accountName: string }) =>
     call<PayoutAccount>('PUT', `/api/partner/listings/${encodeURIComponent(listingId)}/payout-account`, body),

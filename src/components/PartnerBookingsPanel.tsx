@@ -10,6 +10,7 @@ import { holdExpiryLabel } from '../api/holdsApi.ts';
 import { formatVND } from '../utils/rules.ts';
 import { DEPOSIT_PERCENT, balanceDueAt } from '../config/payment.ts';
 import { formatCreatedAt } from '../api/bookingsApi.ts';
+import { ReconciliationPanel } from './ReconciliationPanel.tsx';
 
 type Notice = { type: 'ok' | 'error'; text: string } | null;
 type NotificationList = { unread: number; items: { id: string; title: string; body: string; createdAt: string; read: boolean }[] };
@@ -88,10 +89,11 @@ const PaymentLines: React.FC<{ b: ServerBooking; open: boolean; onToggle: () => 
   const due = balanceDueAt(b.checkInDate);
   return (
     <div className="text-xs space-y-1">
-      {b.needsReconciliation && (
-        <p className="font-bold text-amber-300">
-          Cần đối soát: khách đã gửi biên lai cọc nhưng đơn {b.status === 'expired' ? 'hết hạn giữ chỗ' : 'đã hủy'} trước khi bạn xác nhận. Kiểm tài khoản và liên hệ khách; hệ thống không tự giữ lại phòng.
-        </p>
+      {b.reconStatus && (
+        <>
+          {b.needsReconciliation && <p className="font-bold text-amber-300">Cần đối soát cọc — hoàn trong 3 ngày (kèm ảnh chứng từ) hoặc đề nghị giữ tiền nếu khách đồng ý.</p>}
+          <ReconciliationPanel bookingId={b.id} mode="owner" />
+        </>
       )}
       {active && (
         <p className="text-slate-300">

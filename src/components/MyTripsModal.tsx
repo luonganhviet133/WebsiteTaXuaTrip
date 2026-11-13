@@ -22,6 +22,7 @@ import { bookingsApi, formatCreatedAt, guestCanCancel, guestCountOf } from '../a
 import { CheckinQr } from './CheckinQr.tsx';
 import { PaymentPanel } from './PaymentPanel.tsx';
 import { GuestNotices } from './GuestNotices.tsx';
+import { ReconciliationPanel } from './ReconciliationPanel.tsx';
 import { formatVND, canBookingLeaveReview } from '../utils/rules.ts';
 
 interface MyTripsModalProps {
@@ -443,6 +444,9 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                     )}
                   </div>
                 </div>
+
+                {/* Đối soát cọc: chỉ hiện khi đơn có đối soát (khách đã gửi biên lai nhưng đơn hết hạn/bị từ chối) */}
+                {['expired', 'cancelled'].includes(booking.status) && <ReconciliationPanel bookingId={booking.id} mode="guest" onChanged={() => setReloadTick((n) => n + 1)} />}
 
                 {cancelling?.id === booking.id && (
                   <form
