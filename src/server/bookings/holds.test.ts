@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import { DatabaseEngine } from '../db.ts';
 import { handleApiRequest, type ApiContext } from '../api.ts';
 import { HoldStore, HOLD_TTL_MS, depositFor } from './holds.ts';
+import { BookingLifecycle } from './store.ts';
+
+const ADMIN = { id: 'admin', role: 'admin' as const };
 import { InventoryStore } from '../inventory/store.ts';
 import { addDays, todayInVietnam } from '../../search/searchIntent.ts';
 
@@ -145,7 +148,7 @@ test('N05.2: giữ chỗ hết hạn trả phòng, không xác nhận được b
   assert.equal(await available(mon, wed, before), 0);
   assert.equal(await available(mon, wed, after), 1, 'quá hạn thì tự trả phòng, không cần tác vụ dọn');
 
-  const lateConfirm = await holds.confirmHold(r.body.data.id, { id: 'admin', role: 'admin' }, after);
+  const lateConfirm = await new BookingLifecycle(db.d1).act(r.body.data.id, 'confirm', ADMIN, {}, after);
   assert.equal(lateConfirm.ok, false);
   if (!lateConfirm.ok) assert.equal(lateConfirm.code, 'HOLD_EXPIRED');
 
@@ -154,7 +157,7 @@ test('N05.2: giữ chỗ hết hạn trả phòng, không xác nhận được b
   const row = await db.d1.prepare('SELECT status FROM bookings WHERE id = ?').bind(r.body.data.id).first<{ status: string }>();
   assert.equal(row!.status, 'expired');
   assert.equal((await holds.expireHolds(after)).expired, 0, 'chạy lại không tác động lặp');
-  const stillExpired = await holds.confirmHold(r.body.data.id, { id: 'admin', role: 'admin' }, before);
+  const stillExpired = await new BookingLifecycle(db.d1).act(r.body.data.id, 'confirm', ADMIN, {}, before);
   assert.equal(stillExpired.ok, false, 'đơn đã hết hạn không xác nhận lại được kể cả bằng đồng hồ cũ');
 });
 
@@ -163,10 +166,11 @@ test('N05.2: xác nhận khi còn hạn giữ phòng vĩnh viễn; chạy lại 
   const q = await quote();
   const r = await hold(t.a, q.id, 'k-conf');
   const holds = new HoldStore(db.d1);
-  const ok = await holds.confirmHold(r.body.data.id, { id: 'admin', role: 'admin' });
-  assert.equal(ok.ok, true);
-  const again = await holds.confirmHold(r.body.data.id, { id: 'admin', role: 'admin' });
-  assert.equal(again.ok, false);
+  const lifecycle = new BookingLifecycle(db.d1);
+  const ok = await lifecycle.act(r.body.data.id, 'confirm', ADMIN);
+  assert.equal(ok.ok && ok.already, false);
+  const again = await lifecycle.act(r.body.data.id, 'confirm', ADMIN);
+  assert.equal(again.ok && again.already, true, 'xác nhận lại trả "đã làm", không ghi thêm');
   const far = new Date(Date.now() + 10 * HOLD_TTL_MS);
   assert.equal(await available(mon, wed, far), 0, 'đã xác nhận thì không hết hạn');
   assert.equal((await holds.expireHolds(far)).expired, 0);
@@ -184,7 +188,8 @@ test('N05.2: khách hủy giữ chỗ thì trả phòng; người khác không h
   assert.equal(c.body.data.status, 'cancelled');
   assert.equal(await available(), 1);
   const again = await call('POST', `/api/bookings/${id}/cancel`, t.a);
-  assert.equal(again.status, 409, 'hủy lần hai không tác động lặp');
+  assert.equal(again.status, 200);
+  assert.equal(again.body.already, true, 'hủy lần hai không tác động lặp');
   const q2 = await quote();
   assert.equal((await hold(t.b, q2.id, 'k-after')).status, 201, 'phòng đã trả cho người khác giữ');
 });

@@ -219,6 +219,11 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
   let holdWorker: Awaited<ReturnType<typeof unstable_dev>> | undefined;
   try {
     await runContract(t, (route, init) => worker.fetch(route, init as any) as unknown as Promise<Response>, 'worker');
+    // N05.3: một tài khoản sẽ được nâng làm admin (vai trò đọc lại từ hồ sơ mỗi yêu cầu, token vẫn dùng được).
+    const opsEmail = `ops.${Date.now()}@example.com`;
+    const opsReg = await worker.fetch('/api/auth/register', jsonInit('POST', { email: opsEmail, password: 'MatKhau123!', fullName: 'Vận Hành', role: 'traveler' }) as any);
+    assert.equal(opsReg.status, 201);
+    const opsToken = ((await opsReg.json()) as any).token as string;
     await worker.stop();
 
     // N05.2 — giữ chỗ trên D1 thật (workerd): migration 0006 dựng lại bảng bookings, batch rollback nhờ CHECK,
@@ -227,7 +232,7 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
     execFileSync(
       'npx',
       ['wrangler', 'd1', 'execute', 'DB', '--local', '--persist-to', persistTo, '--command',
-        `UPDATE listing_versions SET content_json = json_set(content_json, '$.roomTypes', json('${roomTypes}')) WHERE listing_id = 'tx-stay-5'`],
+        `UPDATE listing_versions SET content_json = json_set(content_json, '$.roomTypes', json('${roomTypes}')) WHERE listing_id = 'tx-stay-5'; UPDATE profiles SET role = 'admin' WHERE email = '${opsEmail}'`],
       { cwd: projectRoot, stdio: 'ignore' }
     );
     holdWorker = await unstable_dev(path.join(projectRoot, 'src/worker.ts'), {
@@ -239,7 +244,7 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
       experimental: { disableExperimentalWarning: true }
     });
     const call: Fetcher = (route, init) => holdWorker!.fetch(route, init as any) as unknown as Promise<Response>;
-    await t.test('N05.2 giữ chỗ trên D1 thật: 20 yêu cầu đồng thời chỉ 1 đơn thắng; hủy trả phòng', async () => {
+    await t.test('N05.2–N05.3 trên D1 thật: 20 yêu cầu đồng thời chỉ 1 đơn thắng; hủy trả phòng; xác nhận, quét QR đồng thời, hoàn tất', async () => {
       const reg = await call('/api/auth/register', jsonInit('POST', { email: `hold.${Date.now()}@example.com`, password: 'MatKhau123!', fullName: 'Khách Giữ Chỗ', role: 'traveler' }));
       assert.equal(reg.status, 201);
       const token = ((await reg.json()) as any).token;
@@ -268,9 +273,38 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
 
       const cancel = await call(`/api/bookings/${booking.id}/cancel`, jsonInit('POST', { reason: 'Thử hủy' }, token));
       assert.equal(cancel.status, 200);
-      assert.equal((await call(`/api/bookings/${booking.id}/cancel`, jsonInit('POST', {}, token))).status, 409);
+      const again = await call(`/api/bookings/${booking.id}/cancel`, jsonInit('POST', {}, token));
+      assert.equal(again.status, 200);
+      assert.equal(((await again.json()) as any).already, true, 'hủy lần hai không tác động lặp');
       const freed: any = await (await call(`/api/listings/tx-stay-5/availability?checkIn=${checkIn}&checkOut=${checkOut}`)).json();
       assert.equal(freed.data.rooms[0].available, 1);
+
+      // N05.3 trên D1 thật: xác nhận → mã QR (chỉ mục duy nhất có điều kiện) → 5 lần quét cùng lúc chỉ nhận phòng một lần.
+      // Khách thứ hai: khách đầu đã dùng hết 20 lần giữ chỗ/phút trong ca tranh phòng.
+      const reg2 = await call('/api/auth/register', jsonInit('POST', { email: `hold2.${Date.now()}@example.com`, password: 'MatKhau123!', fullName: 'Khách Hai', role: 'traveler' }));
+      assert.equal(reg2.status, 201);
+      const token2 = ((await reg2.json()) as any).token as string;
+      const today = todayInVietnam();
+      const q2 = await call('/api/quotes', jsonInit('POST', { listingId: 'tx-stay-5', roomTypeId: 'r1', checkIn: today, checkOut: addDays(today, 1), adults: 2, children: 0, rooms: 1 }));
+      assert.equal(q2.status, 200);
+      const h2 = await call('/api/bookings/holds', jsonInit('POST', { quoteId: ((await q2.json()) as any).data.id, idempotencyKey: 'today-1', guestName: 'Khách Giữ Chỗ', guestPhone: '0912345678' }, token2));
+      assert.equal(h2.status, 201);
+      const b2 = ((await h2.json()) as any).data;
+      assert.equal((await call(`/api/bookings/${b2.id}/confirm`, jsonInit('POST', {}, token2))).status, 403, 'khách không tự xác nhận');
+      const conf = await call(`/api/bookings/${b2.id}/confirm`, jsonInit('POST', {}, opsToken));
+      assert.equal(conf.status, 200);
+      const qr = ((await (await call(`/api/bookings/${b2.id}`, authInit(token2))).json()) as any).data.checkinToken;
+      assert.match(qr, /^[A-Za-z0-9_-]{43}$/);
+      const scans = await Promise.all(
+        Array.from({ length: 5 }, () => call('/api/partner/checkin', jsonInit('POST', { token: qr }, opsToken)).then(async (r) => ({ status: r.status, body: (await r.json()) as any })))
+      );
+      assert.ok(scans.every((r) => r.status === 200), JSON.stringify(scans.map((r) => r.status)));
+      assert.equal(scans.filter((r) => r.body.already === false).length, 1, 'đúng một lần nhận phòng');
+      const hist = ((await (await call(`/api/bookings/${b2.id}`, authInit(token2))).json()) as any).data.events.map((e: any) => e.action);
+      assert.deepEqual(hist, ['hold', 'confirm', 'check_in']);
+      const done = await call(`/api/bookings/${b2.id}/complete`, jsonInit('POST', {}, opsToken));
+      assert.equal(done.status, 200);
+      assert.equal(((await done.json()) as any).data.status, 'completed');
     });
   } finally {
     await worker.stop().catch(() => undefined);

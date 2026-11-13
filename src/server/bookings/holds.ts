@@ -65,6 +65,12 @@ export interface BookingView {
   status: string;
   holdExpiresAt: string | null;
   quoteId: string | null;
+  guestNote: string | null;
+  confirmedAt: string | null;
+  checkedInAt: string | null;
+  completedAt: string | null;
+  cancelledAt: string | null;
+  cancelReason: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -87,9 +93,10 @@ async function sha256Hex(text: string): Promise<string> {
   return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-const BOOKING_COLUMNS = `id, booking_code, user_id, listing_id, listing_title, provider_id, guest_name, guest_phone,
+export const BOOKING_COLUMNS = `id, booking_code, user_id, listing_id, listing_title, provider_id, guest_name, guest_phone,
   check_in_date, check_out_date, room_type_id, room_name, rooms, adults, children, subtotal, discount, voucher_code,
-  total_amount, deposit_amount, status, hold_expires_at, quote_id, created_at, updated_at, request_hash`;
+  total_amount, deposit_amount, status, hold_expires_at, quote_id, guest_note, confirmed_at, checked_in_at, completed_at,
+  cancelled_at, cancel_reason, created_at, updated_at, request_hash`;
 
 export function toBookingView(r: any): BookingView {
   return {
@@ -116,15 +123,46 @@ export function toBookingView(r: any): BookingView {
     status: r.status,
     holdExpiresAt: r.hold_expires_at ?? null,
     quoteId: r.quote_id ?? null,
+    guestNote: r.guest_note ?? null,
+    confirmedAt: r.confirmed_at ?? null,
+    checkedInAt: r.checked_in_at ?? null,
+    completedAt: r.completed_at ?? null,
+    cancelledAt: r.cancelled_at ?? null,
+    cancelReason: r.cancel_reason ?? null,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };
 }
 
+/** Một dòng lịch sử trạng thái đơn (N05.3). */
+export function bookingEventStmt(
+  d1: D1Database,
+  e: { bookingId: string; action: string; from: string | null; to: string; actor: { id: string | null; role: string }; reason?: string | null; now: string }
+) {
+  return d1
+    .prepare('INSERT INTO booking_events (id, booking_id, action, from_status, to_status, actor_id, actor_role, reason, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(`ev_${rand(20)}`, e.bookingId, e.action, e.from, e.to, e.actor.id, e.actor.role, e.reason ?? null, e.now);
+}
+
+/** Thông báo chuông cho mọi tài khoản chủ của cơ sở (Q3). */
+export function notifyOwnersStmt(
+  d1: D1Database,
+  n: { listingId: string; kind: string; bookingId: string; title: string; body: string; now: string }
+) {
+  return d1
+    .prepare(
+      `INSERT INTO notifications (id, user_id, kind, booking_id, title, body, created_at, read_at)
+       SELECT 'nt_' || lower(hex(randomblob(10))), p.user_id, ?, ?, ?, ?, ?, NULL
+       FROM provider_listings pl JOIN providers p ON p.id = pl.provider_id
+       WHERE pl.listing_id = ?`
+    )
+    .bind(n.kind, n.bookingId, n.title.slice(0, 120), n.body.slice(0, 300), n.now, n.listingId);
+}
+
 export class HoldStore {
   constructor(private d1: D1Database) {}
 
-  private assertion(okSql: string, ...params: unknown[]) {
+  assertion(okSql: string, ...params: unknown[]) {
     const id = `as_${rand(16)}`;
     return [
       this.d1.prepare(`INSERT INTO batch_assertions (id, ok) SELECT ?, CASE WHEN ${okSql} THEN 1 ELSE 0 END`).bind(id, ...params),
@@ -227,6 +265,17 @@ export class HoldStore {
           )
       ),
     ];
+    stmts.push(
+      bookingEventStmt(this.d1, { bookingId: id, action: 'hold', from: null, to: 'pending_deposit', actor, now: nowIso }),
+      notifyOwnersStmt(this.d1, {
+        listingId: quoteRow.listing_id,
+        kind: 'booking.hold',
+        bookingId: id,
+        title: 'Đơn mới đang chờ cọc',
+        body: `${input.guestName} giữ ${quote.rooms} ${room.name} ${quote.checkIn} → ${quote.checkOut}. Giữ chỗ 30 phút.`,
+        now: nowIso,
+      })
+    );
     if (quote.voucherCode) {
       stmts.push(
         this.d1
@@ -271,69 +320,18 @@ export class HoldStore {
     return { ok: true, replay: false, booking: booking! };
   }
 
-  /**
-   * Xác nhận giữ chỗ (N05.3/N06 gọi khi cơ sở xác nhận đã nhận cọc). Chỉ thành công khi giữ chỗ CÒN HẠN;
-   * đơn đã xác nhận/hết hạn/hủy → lỗi, không tác động lặp. changes() kiểm đúng câu UPDATE vừa chạy.
-   */
-  async confirmHold(bookingId: string, actor: Actor, now: Date = new Date()): Promise<{ ok: true } | { ok: false; code: string; message: string }> {
-    const nowIso = now.toISOString();
-    const b = await this.getBooking(bookingId);
-    if (!b) return { ok: false, code: 'NOT_FOUND', message: 'Không tìm thấy đơn.' };
-    try {
-      await this.d1.batch([
-        this.d1
-          .prepare(`UPDATE bookings SET status = 'confirmed', updated_at = ? WHERE id = ? AND status = 'pending_deposit' AND hold_expires_at > ?`)
-          .bind(nowIso, bookingId, nowIso),
-        ...this.assertion('changes() = 1'),
-        this.d1
-          .prepare(`UPDATE room_night_allocations SET status = 'confirmed', expires_at = NULL, updated_at = ? WHERE source_id = ? AND status = 'held' AND expires_at > ?`)
-          .bind(nowIso, bookingId, nowIso),
-        ...this.assertion(`changes() > 0 AND (SELECT COUNT(*) FROM room_night_allocations WHERE source_id = ? AND status != 'confirmed') = 0`, bookingId),
-        this.d1
-          .prepare('INSERT INTO audit_log (id, actor_id, actor_role, action, entity_type, entity_id, detail_json, created_at) VALUES (?, ?, ?, ?, ?, ?, NULL, ?)')
-          .bind(`au_${rand(16)}`, actor.id, actor.role, 'booking.confirm_hold', 'booking', bookingId, nowIso),
-      ]);
-      return { ok: true };
-    } catch (err: any) {
-      if (!/CHECK constraint failed/i.test(String(err?.message))) throw err;
-      if (b.status === 'pending_deposit' && b.holdExpiresAt && Date.parse(b.holdExpiresAt) <= now.getTime()) {
-        return { ok: false, code: 'HOLD_EXPIRED', message: 'Giữ chỗ đã hết hạn, không xác nhận được.' };
-      }
-      if (b.status === 'expired') return { ok: false, code: 'HOLD_EXPIRED', message: 'Giữ chỗ đã hết hạn, không xác nhận được.' };
-      return { ok: false, code: 'INVALID_STATE', message: `Đơn đang ở trạng thái "${b.status}", không xác nhận được.` };
-    }
-  }
-
-  /** Khách (chủ đơn) hoặc admin hủy giữ chỗ đang chờ cọc → trả phòng ngay. */
-  async cancelHold(bookingId: string, actor: Actor, reason: string | undefined, now: Date = new Date()) {
-    const b = await this.getBooking(bookingId);
-    if (!b) return { ok: false as const, status: 404, code: 'NOT_FOUND', message: 'Không tìm thấy đơn.' };
-    if (b.userId !== actor.id && actor.role !== 'admin') {
-      return { ok: false as const, status: 403, code: 'FORBIDDEN', message: 'Bạn không có quyền hủy đơn này.' };
-    }
-    const nowIso = now.toISOString();
-    try {
-      await this.d1.batch([
-        this.d1
-          .prepare(`UPDATE bookings SET status = 'cancelled', cancelled_at = ?, cancel_reason = ?, updated_at = ? WHERE id = ? AND status = 'pending_deposit' AND hold_expires_at > ?`)
-          .bind(nowIso, reason || null, nowIso, bookingId, nowIso),
-        ...this.assertion('changes() = 1'),
-        this.d1.prepare(`UPDATE room_night_allocations SET status = 'released', updated_at = ? WHERE source_id = ? AND status = 'held'`).bind(nowIso, bookingId),
-        this.d1
-          .prepare('INSERT INTO audit_log (id, actor_id, actor_role, action, entity_type, entity_id, detail_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
-          .bind(`au_${rand(16)}`, actor.id, actor.role, 'booking.cancel_hold', 'booking', bookingId, JSON.stringify({ reason: reason || null }), nowIso),
-      ]);
-    } catch (err: any) {
-      if (!/CHECK constraint failed/i.test(String(err?.message))) throw err;
-      return { ok: false as const, status: 409, code: 'INVALID_STATE', message: 'Chỉ hủy được đơn đang giữ chỗ chờ cọc và còn hạn.' };
-    }
-    return { ok: true as const, booking: (await this.getBooking(bookingId))! };
-  }
-
   /** Dọn giữ chỗ hết hạn (Cron Trigger). Tồn đã tự trả theo thời gian; hàm này chỉ ghi trạng thái cho đúng. */
   async expireHolds(now: Date = new Date()): Promise<{ expired: number; released: number }> {
     const nowIso = now.toISOString();
-    const [b, a] = await this.d1.batch([
+    const [, b, a] = await this.d1.batch([
+      // Lịch sử trước, cùng điều kiện với câu UPDATE ngay sau (cùng batch → cùng tập đơn).
+      this.d1
+        .prepare(
+          `INSERT INTO booking_events (id, booking_id, action, from_status, to_status, actor_id, actor_role, reason, created_at)
+           SELECT 'ev_' || lower(hex(randomblob(10))), id, 'expire', 'pending_deposit', 'expired', NULL, 'system', NULL, ?
+           FROM bookings WHERE status = 'pending_deposit' AND hold_expires_at <= ?`
+        )
+        .bind(nowIso, nowIso),
       this.d1.prepare(`UPDATE bookings SET status = 'expired', updated_at = ? WHERE status = 'pending_deposit' AND hold_expires_at <= ?`).bind(nowIso, nowIso),
       this.d1.prepare(`UPDATE room_night_allocations SET status = 'released', updated_at = ? WHERE status = 'held' AND expires_at <= ?`).bind(nowIso, nowIso),
     ]);

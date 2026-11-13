@@ -26,6 +26,7 @@ import { ListingStore } from './listings/store.ts';
 import { handlePricingRoutes } from './pricing/routes.ts';
 import { handleInventoryRoutes } from './inventory/routes.ts';
 import { handleBookingRoutes } from './bookings/routes.ts';
+import { BookingLifecycle } from './bookings/store.ts';
 
 export interface ApiContext {
   db: DatabaseEngine;
@@ -177,7 +178,8 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
   if (route === 'GET /api/user/bookings') {
     const user = await requireRole(request, ctx);
     if (user instanceof Response) return user;
-    return json({ success: true, data: await ctx.db.getBookingsByUserId(user.id) });
+    // N05.3: đọc từ server với đủ thông tin đơn (mọi thiết bị thấy như nhau)
+    return json({ success: true, data: await new BookingLifecycle(ctx.db.d1).listForUser(user.id) });
   }
 
   const bookingMatch = method === 'GET' && pathname.match(/^\/api\/user\/bookings\/([^/]+)$/);
