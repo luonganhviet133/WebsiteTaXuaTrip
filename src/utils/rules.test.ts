@@ -371,28 +371,31 @@ test('validateLoginCredentials and validateRegisterForm accurately check Admin, 
   const validPartner = validateLoginCredentials('chuhome.may@taxuatrip.vn', 'chuhome123', 'partner');
   assert.equal(validPartner.isValid, true);
 
-  // 3. Register form validation
+  // 3. Register form validation (R1: bắt buộc email, mật khẩu ≥ 8, đồng ý điều khoản; đối tác cần SĐT + tên cơ sở)
   const invalidReg = validateRegisterForm({
     fullName: '',
-    emailOrPhone: 'invalid_contact',
-    password: '123',
+    email: '0987123456',
+    phone: '123',
+    password: '1234567',
     role: 'partner',
-    facilityName: ''
+    facilityName: '',
+    termsAccepted: false
   });
   assert.equal(invalidReg.isValid, false);
-  assert.ok(invalidReg.errors.fullName);
-  assert.ok(invalidReg.errors.emailOrPhone);
-  assert.ok(invalidReg.errors.password);
-  assert.ok(invalidReg.errors.facilityName);
+  for (const k of ['fullName', 'email', 'phone', 'password', 'facilityName', 'terms']) assert.ok(invalidReg.errors[k], k);
 
   const validReg = validateRegisterForm({
     fullName: 'Lò Thị Mai',
-    emailOrPhone: '0987123456',
-    password: 'password123',
-    confirmPassword: 'password123',
-    role: 'traveler'
+    email: 'lo.mai@gmail.com',
+    phone: '',
+    password: 'MayTaXua26',
+    confirmPassword: 'MayTaXua26',
+    role: 'traveler',
+    termsAccepted: true
   });
-  assert.equal(validReg.isValid, true);
+  assert.equal(validReg.isValid, true, JSON.stringify(validReg.errors));
+  assert.ok(validateRegisterForm({ fullName: 'Chủ Nhà', email: 'chu@gmail.com', phone: '', password: 'MayTaXua26', role: 'partner', facilityName: 'Nhà Mây', termsAccepted: true }).errors.phone, 'đối tác cần SĐT');
+  assert.ok(validateRegisterForm({ fullName: 'Lò Thị Mai', email: 'lo.mai@gmail.com', phone: '', password: '12345678', role: 'traveler', termsAccepted: true }).errors.password, 'mật khẩu phổ biến');
 
   // 4. Role badge info
   assert.equal(getRoleBadgeInfo('admin').shortLabel, 'Admin');

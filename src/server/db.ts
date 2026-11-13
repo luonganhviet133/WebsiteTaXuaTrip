@@ -69,6 +69,7 @@ export interface SessionRecord {
   expiresAt: string;
   createdAt: string;
   revokedAt?: string;
+  lastSeenAt?: string | null;
 }
 
 export interface BookingDTO {
@@ -373,7 +374,7 @@ export class DatabaseEngine {
   }
 
   // --- Session Management (Hashed Token Storage - S3 / Security) ---
-  public async createSession(userId: string, role: 'traveler' | 'partner' | 'admin', ttlDays = 7): Promise<{ token: string; session: SessionRecord }> {
+  public async createSession(userId: string, role: 'traveler' | 'partner' | 'admin', ttlDays = 7, userAgent?: string | null): Promise<{ token: string; session: SessionRecord }> {
     const rawToken = crypto.randomBytes(32).toString('hex');
     const tokenHash = hashToken(rawToken);
     const id = `sess_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
@@ -381,9 +382,9 @@ export class DatabaseEngine {
     const expiresAt = new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000).toISOString();
 
     await this.d1.prepare(`
-      INSERT INTO user_sessions (id, user_id, token_hash, role, expires_at, created_at)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).bind(id, userId, tokenHash, role, expiresAt, now).run();
+      INSERT INTO user_sessions (id, user_id, token_hash, role, expires_at, created_at, user_agent, last_seen_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(id, userId, tokenHash, role, expiresAt, now, userAgent ? userAgent.slice(0, 300) : null, now).run();
 
     return {
       token: rawToken,
@@ -405,13 +406,13 @@ export class DatabaseEngine {
 
     const row = await this.d1.prepare(`
       SELECT s.id as s_id, s.user_id as s_user_id, s.token_hash as s_token_hash, s.role as s_role,
-             s.expires_at as s_expires_at, s.created_at as s_created_at, s.revoked_at as s_revoked_at,
+             s.expires_at as s_expires_at, s.created_at as s_created_at, s.revoked_at as s_revoked_at, s.last_seen_at as s_last_seen_at,
              p.id as p_id, p.email as p_email, p.phone as p_phone, p.password_hash as p_password_hash,
              p.full_name as p_full_name, p.role as p_role, p.avatar_url as p_avatar_url,
              p.is_verified as p_is_verified, p.created_at as p_created_at, p.updated_at as p_updated_at
       FROM user_sessions s
       JOIN profiles p ON p.id = s.user_id
-      WHERE s.token_hash = ? AND s.revoked_at IS NULL AND s.expires_at > ?
+      WHERE s.token_hash = ? AND s.revoked_at IS NULL AND s.expires_at > ? AND p.status = 'active'
     `).bind(tokenHash, now).first<Record<string, any>>();
 
     if (!row) return null;
@@ -423,8 +424,13 @@ export class DatabaseEngine {
       role: row.s_role,
       expiresAt: row.s_expires_at,
       createdAt: row.s_created_at,
-      revokedAt: row.s_revoked_at
+      revokedAt: row.s_revoked_at,
+      lastSeenAt: row.s_last_seen_at ?? null
     };
+    // R1: ghi lần dùng gần nhất, tối đa 5 phút một lần để đỡ ghi D1.
+    if (!session.lastSeenAt || Date.parse(now) - Date.parse(session.lastSeenAt) > 5 * 60_000) {
+      await this.d1.prepare('UPDATE user_sessions SET last_seen_at = ? WHERE id = ?').bind(now, session.id).run();
+    }
 
     const profile: ProfileRecord = {
       id: row.p_id,
@@ -613,6 +619,8 @@ export class DatabaseEngine {
     }
 
     await this.d1.exec(`
+      DELETE FROM auth_codes;
+      DELETE FROM email_log;
       DELETE FROM complaint_files;
       DELETE FROM complaint_events;
       DELETE FROM complaints;

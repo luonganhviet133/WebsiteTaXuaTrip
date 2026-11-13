@@ -18,6 +18,20 @@
 
 ---
 
+### D-R1-01: Tài khoản và đăng nhập (chủ dự án chốt 13/11/2026)
+
+- **Tên miền:** taxuatrip.vn. **Gói:** dùng Cloudflare Free trước; nâng Workers Paid ($5/tháng) sau. Các bước nâng cấp và sao lưu nằm trong `UPGRADE_RUNBOOK.md`.
+- **Đăng ký bắt buộc email thật**, vì đặt lại mật khẩu đi qua email.
+  - Số điện thoại: khách không bắt buộc, đối tác bắt buộc. Vẫn đăng nhập được bằng số điện thoại.
+  - Tài khoản cũ chỉ có số điện thoại không đặt lại mật khẩu qua email được; admin hỗ trợ (R2).
+- **Quên mật khẩu và xác minh email** dùng mã 6 số gửi qua email: hạn 15 phút, tối đa 5 lần nhập, gửi lại sau 60 giây, tối đa 5 mã mỗi giờ. Chưa dùng OTP qua SMS.
+  - Gửi qua binding `EMAIL` của Cloudflare (cần Workers Paid và tên miền). Chưa có binding thì báo "sắp ra mắt".
+- **Mật khẩu** tối thiểu 8 ký tự; chặn mật khẩu quá phổ biến và mật khẩu chứa phần tên trong email. Sai 5 lần liên tiếp thì khóa tạm 15 phút.
+- **Tài khoản bị admin khóa** thì mọi phiên hết hiệu lực ngay.
+- **Đồng ý Điều khoản và Chính sách dữ liệu** khi đăng ký, có lưu phiên bản (`TERMS_VERSION`). Đơn vị vận hành ghi "Tà Xùa Trip".
+- **Đối tác:** chưa thu giấy tờ. Đăng ký xong ở trạng thái `pending`; admin gọi điện và xác nhận thủ công (R2).
+- **Email được vào trang quản trị** (Cloudflare Access, R3/C1): vanhuy171099@gmail.com, vtmedia0910@gmail.com, luonganhvietbds@gmail.com.
+
 ### D-N06-05: Đánh giá xác thực và khiếu nại (chủ dự án chốt 13/11/2026, làm ở N06.3)
 
 - **Phạm vi:** N06.3 gồm đánh giá, khiếu nại và top 3 theo quý/năm. Kết toán phí cuối tháng và voucher dịch vụ (D-N06-04) chuyển sang **N06.5**, vì N06.4 đã là Pass phòng.

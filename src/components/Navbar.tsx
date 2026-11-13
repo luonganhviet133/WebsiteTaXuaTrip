@@ -48,6 +48,8 @@ interface NavbarProps {
   cloudPoints: number;
   onOpenSos: () => void;
   onOpenPointsModal: () => void;
+  /** R1: mở Tài khoản của tôi */
+  onOpenAccount?: () => void;
   savedCount: number;
   onOpenSavedModal: () => void;
   bookingsCount?: number;
@@ -68,6 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   cloudPoints,
   onOpenSos,
   onOpenPointsModal,
+  onOpenAccount,
   savedCount,
   onOpenSavedModal,
   bookingsCount = 0,
@@ -418,6 +421,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                             type="button"
                             onClick={() => {
                               setIsUserMenuOpen(false);
+                              onOpenAccount?.();
+                            }}
+                            className="w-full text-left px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2 cursor-pointer transition-colors"
+                          >
+                            <span>👤</span>
+                            <span>Tài khoản của tôi</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsUserMenuOpen(false);
                               onOpenPointsModal();
                             }}
                             className="w-full text-left px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center justify-between cursor-pointer transition-colors"
@@ -756,6 +771,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                   )}
 
                   <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200/60">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        onOpenAccount?.();
+                      }}
+                      className="min-h-[38px] bg-white border border-slate-300 text-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-bold inline-flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs hover:bg-slate-100"
+                    >
+                      <span aria-hidden="true">👤</span>
+                      <span>Tài khoản</span>
+                    </button>
                     <button
                       type="button"
                       onClick={() => {

@@ -21,6 +21,8 @@ import {
 import { UserRole } from '../types/index.ts';
 import { AuthUser, DEMO_ACCOUNTS } from '../types/auth.ts';
 import { validateLoginCredentials, validateRegisterForm } from '../utils/rules.ts';
+import { accountApi, type AuthConfig } from '../api/accountApi.ts';
+import { TERMS_VERSION } from '../server/accounts/rules.ts';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -38,7 +40,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   onLoginSuccess
 }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole>(initialRole);
-  const [mode, setMode] = useState<'login' | 'register'>(initialMode);
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot'>(initialMode);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -49,8 +51,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       setMode(initialMode);
       setFormError(null);
       setSuccessNotice(null);
+      void accountApi.config().then((r) => r.ok && setAuthConfig(r.data));
     }
   }, [isOpen, initialRole, initialMode]);
+  const [authConfig, setAuthConfig] = useState<AuthConfig | null>(null);
+  // R1: quên mật khẩu (mã 6 số qua email)
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotStep, setForgotStep] = useState<'email' | 'code'>('email');
+  const [forgotCode, setForgotCode] = useState('');
+  const [forgotNewPassword, setForgotNewPassword] = useState('');
 
   // Form states
   const [identifier, setIdentifier] = useState('');
@@ -66,7 +75,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   // Register form states
   const [fullName, setFullName] = useState('');
-  const [regContact, setRegContact] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+  const [regPhone, setRegPhone] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [regPassword, setRegPassword] = useState('');
   const [regConfirmPassword, setRegConfirmPassword] = useState('');
   const [facilityName, setFacilityName] = useState('');
@@ -115,7 +126,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         onClose();
       }, 400);
     } catch (err: any) {
-      setFormError(err.message);
+      setFormError(String(err.message).replace(/^[A-Z_]+: /, ''));
     } finally {
       setIsLoading(false);
     }
@@ -174,7 +185,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         onClose();
       }, 400);
     } catch (err: any) {
-      setFormError(err.message);
+      setFormError(String(err.message).replace(/^[A-Z_]+: /, ''));
       setTurnstileToken('');
       setTurnstileReset((n) => n + 1);
     } finally {
@@ -194,11 +205,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     const validation = validateRegisterForm({
       fullName,
-      emailOrPhone: regContact,
+      email: regEmail,
+      phone: regPhone,
       password: regPassword,
       confirmPassword: regConfirmPassword,
       role: selectedRole,
-      facilityName
+      facilityName,
+      termsAccepted
     });
 
     if (!validation.isValid) {
@@ -214,15 +227,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     setIsLoading(true);
     try {
-      const cleanContact = regContact.trim();
-      const isEmail = cleanContact.includes('@');
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          identifier: cleanContact,
-          email: isEmail ? cleanContact : undefined,
-          phone: isEmail ? undefined : cleanContact,
+          email: regEmail.trim(),
+          phone: regPhone.trim() || undefined,
+          termsAccepted,
+          termsVersion: TERMS_VERSION,
           password: regPassword,
           fullName: fullName.trim(),
           role: selectedRole,
@@ -236,7 +248,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
 
       localStorage.setItem('taxua_session_token', data.token);
-      setSuccessNotice('Đăng ký tài khoản thành công! Tự động đăng nhập...');
+      setSuccessNotice(
+        data.emailVerificationSent
+          ? 'Đăng ký thành công! Đã gửi mã xác minh đến email; bạn nhập mã trong mục Tài khoản của tôi.'
+          : 'Đăng ký tài khoản thành công! Tự động đăng nhập...'
+      );
       setTimeout(() => {
         onLoginSuccess({
           id: data.user.id,
@@ -253,14 +269,47 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           createdAt: new Date().toISOString()
         });
         onClose();
-      }, 450);
+      }, data.emailVerificationSent ? 1800 : 450);
     } catch (err: any) {
-      setFormError(err.message);
+      setFormError(String(err.message).replace(/^[A-Z_]+: /, ''));
       setTurnstileToken('');
       setTurnstileReset((n) => n + 1);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // R1: quên mật khẩu — bước 1 gửi mã về email, bước 2 nhập mã + mật khẩu mới
+  const handleForgotSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError(null);
+    setSuccessNotice(null);
+    if (forgotStep === 'email') {
+      if (authConfig?.emailEnabled && !turnstileToken) {
+        setFormError('Vui lòng hoàn tất bước xác minh chống bot bên dưới trước khi tiếp tục.');
+        return;
+      }
+      setIsLoading(true);
+      const r = await accountApi.forgot(forgotEmail.trim(), turnstileToken || undefined);
+      setIsLoading(false);
+      setTurnstileToken('');
+      setTurnstileReset((n) => n + 1);
+      if (!r.ok) return setFormError(r.message);
+      setSuccessNotice(r.data.message);
+      setForgotStep('code');
+      return;
+    }
+    setIsLoading(true);
+    const r = await accountApi.reset(forgotEmail.trim(), forgotCode.trim(), forgotNewPassword);
+    setIsLoading(false);
+    if (!r.ok) return setFormError(r.message);
+    setSuccessNotice(r.data.message);
+    setIdentifier(forgotEmail.trim());
+    setPassword('');
+    setForgotCode('');
+    setForgotNewPassword('');
+    setForgotStep('email');
+    setMode('login');
   };
 
   const getRoleTheme = (role: UserRole) => {
@@ -481,8 +530,76 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </div>
           )}
 
-          {/* Form Content: Login */}
-          {mode === 'login' ? (
+          {/* R1: Quên mật khẩu */}
+          {mode === 'forgot' ? (
+            <form onSubmit={handleForgotSubmit} className="space-y-3">
+              <p className="text-sm font-extrabold text-brand-800">Lấy lại mật khẩu</p>
+              {authConfig && !authConfig.emailEnabled ? (
+                <p className="text-xs text-slate-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
+                  Đặt lại mật khẩu qua email sẽ hoạt động sau khi Tà Xùa Trip bật dịch vụ email (sắp ra mắt). Hiện tại vui lòng liên hệ Tà Xùa Trip để được hỗ trợ.
+                </p>
+              ) : (
+                <>
+                  <div>
+                    <label htmlFor="forgot-email" className="block text-xs font-bold text-slate-700 mb-1">Email đã đăng ký:</label>
+                    <input
+                      id="forgot-email"
+                      type="email"
+                      autoComplete="email"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      disabled={forgotStep === 'code'}
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl disabled:bg-slate-50"
+                      required
+                    />
+                  </div>
+                  {forgotStep === 'code' ? (
+                    <>
+                      <div>
+                        <label htmlFor="forgot-code" className="block text-xs font-bold text-slate-700 mb-1">Mã 6 số trong email:</label>
+                        <input
+                          id="forgot-code"
+                          inputMode="numeric"
+                          autoComplete="one-time-code"
+                          maxLength={6}
+                          value={forgotCode}
+                          onChange={(e) => setForgotCode(e.target.value.replace(/\D/g, ''))}
+                          className="w-full px-3 py-2 text-sm tracking-[0.4em] font-bold border border-slate-200 rounded-xl"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="forgot-new" className="block text-xs font-bold text-slate-700 mb-1">Mật khẩu mới (tối thiểu 8 ký tự):</label>
+                        <input
+                          id="forgot-new"
+                          type="password"
+                          autoComplete="new-password"
+                          value={forgotNewPassword}
+                          onChange={(e) => setForgotNewPassword(e.target.value)}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl"
+                          required
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <TurnstileWidget siteKey={TURNSTILE_SITE_KEY} action="forgot" onToken={setTurnstileToken} resetSignal={turnstileReset} />
+                  )}
+                  <button type="submit" disabled={isLoading} className={`w-full py-2.5 px-4 rounded-xl text-white font-extrabold text-xs cursor-pointer disabled:opacity-60 ${currentTheme.buttonBg}`}>
+                    {forgotStep === 'email' ? 'Gửi mã về email' : 'Đặt mật khẩu mới'}
+                  </button>
+                  {forgotStep === 'code' && (
+                    <button type="button" onClick={() => { setForgotStep('email'); setSuccessNotice(null); }} className="w-full text-xs text-slate-600 hover:text-brand-800 cursor-pointer">
+                      Chưa nhận được mã? Gửi lại
+                    </button>
+                  )}
+                </>
+              )}
+              <button type="button" onClick={() => { setMode('login'); setFormError(null); }} className="w-full text-xs font-bold text-brand-800 cursor-pointer">
+                ← Quay lại đăng nhập
+              </button>
+            </form>
+          ) : mode === 'login' ? (
+
             <form onSubmit={handleLoginSubmit} className="space-y-3.5">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
@@ -529,13 +646,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)"
+                    placeholder="Nhập mật khẩu"
                     className="w-full pl-9 pr-9 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((p) => !p)}
+                    aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -554,14 +672,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <span>Ghi nhớ phiên đăng nhập</span>
                 </label>
 
-                <a
-                  href="https://zalo.me/0981234567"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-slate-500 hover:text-brand-800 text-xs"
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode('forgot');
+                    setForgotStep('email');
+                    setForgotEmail(identifier.includes('@') ? identifier.trim() : '');
+                    setFormError(null);
+                    setSuccessNotice(null);
+                  }}
+                  className="text-slate-600 hover:text-brand-800 text-xs font-semibold cursor-pointer"
                 >
                   Quên mật khẩu?
-                </a>
+                </button>
               </div>
 
               <TurnstileWidget
@@ -599,18 +722,40 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Email hoặc Số điện thoại:
+                <label htmlFor="reg-email" className="block text-xs font-bold text-slate-700 mb-1">
+                  Email (dùng để đăng nhập và lấy lại mật khẩu):
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    id="reg-email"
+                    type="email"
+                    autoComplete="email"
+                    value={regEmail}
+                    onChange={(e) => setRegEmail(e.target.value)}
+                    placeholder="ban@gmail.com"
+                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="reg-phone" className="block text-xs font-bold text-slate-700 mb-1">
+                  Số điện thoại{selectedRole === 'partner' ? ' (bắt buộc, Tà Xùa Trip gọi xác minh):' : ' (không bắt buộc):'}
                 </label>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
-                    type="text"
-                    value={regContact}
-                    onChange={(e) => setRegContact(e.target.value)}
-                    placeholder="098... hoặc email của bạn"
+                    id="reg-phone"
+                    type="tel"
+                    autoComplete="tel"
+                    inputMode="tel"
+                    value={regPhone}
+                    onChange={(e) => setRegPhone(e.target.value)}
+                    placeholder="0912345678"
                     className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
-                    required
+                    required={selectedRole === 'partner'}
                   />
                 </div>
               </div>
@@ -643,7 +788,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     type="password"
                     value={regPassword}
                     onChange={(e) => setRegPassword(e.target.value)}
-                    placeholder="Tối thiểu 6 ký tự"
+                    placeholder="Tối thiểu 8 ký tự"
                     className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
@@ -662,6 +807,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   />
                 </div>
               </div>
+
+              <label className="flex items-start gap-2 text-xs text-slate-700 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="mt-0.5 rounded border-slate-300"
+                />
+                <span>
+                  Tôi đã đọc và đồng ý{' '}
+                  <a href="/dieu-khoan" target="_blank" rel="noopener noreferrer" className="font-bold text-brand-800 underline">
+                    Điều khoản sử dụng
+                  </a>{' '}
+                  và{' '}
+                  <a href="/chinh-sach-du-lieu" target="_blank" rel="noopener noreferrer" className="font-bold text-brand-800 underline">
+                    Chính sách dữ liệu cá nhân
+                  </a>
+                  .
+                </span>
+              </label>
 
               <TurnstileWidget
                 siteKey={TURNSTILE_SITE_KEY}

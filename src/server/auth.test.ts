@@ -8,6 +8,7 @@ import type { Server } from 'http';
 import type { AddressInfo } from 'net';
 import { createExpressApp } from '../../server.ts';
 import { DatabaseEngine } from './db.ts';
+import { TERMS_VERSION } from './accounts/rules.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -141,7 +142,7 @@ test('N02: Real Database, Authentication & Multi-Tenant Authorization Test Suite
     assert.match(body.error, /Không được phép tự đăng ký tài khoản quản trị viên/);
   });
 
-  await t.test('Partner registration starts with unverified status and owns 0 listings', async () => {
+  await t.test('Partner registration starts unverified (provider pending admin check, R1) and owns 0 listings', async () => {
     const res = await fetch(`${baseUrl}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -150,7 +151,10 @@ test('N02: Real Database, Authentication & Multi-Tenant Authorization Test Suite
         password: 'partnerpassword123',
         fullName: 'Chủ Nhà Mới',
         role: 'partner',
-        facilityName: 'Homestay Mới Xây'
+        phone: '0966554433',
+        facilityName: 'Homestay Mới Xây',
+        termsAccepted: true,
+        termsVersion: TERMS_VERSION
       })
     });
     assert.equal(res.status, 201);
@@ -305,15 +309,19 @@ test('N02: Real Database, Authentication & Multi-Tenant Authorization Test Suite
   });
 
   // 8. PHONE NUMBER AUTHENTICATION
-  await t.test('User can register with Phone Number and login with that phone number', async () => {
+  // R1: đăng ký bắt buộc email (lấy lại mật khẩu qua email); vẫn đăng nhập được bằng số điện thoại.
+  await t.test('User registers with email + phone and can login with that phone number', async () => {
     const regRes = await fetch(`${baseUrl}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        email: 'phone.user@gmail.com',
         phone: '0977112233',
         password: 'phonepassword123',
         fullName: 'Nguyễn Văn Phone',
-        role: 'traveler'
+        role: 'traveler',
+        termsAccepted: true,
+        termsVersion: TERMS_VERSION
       })
     });
     assert.equal(regRes.status, 201);

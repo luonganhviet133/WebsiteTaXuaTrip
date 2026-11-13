@@ -4,6 +4,7 @@
  */
 import { getDefaultDb, verifyPassword, hashPassword } from './db.ts';
 import type { DatabaseEngine, ProfileRecord, ProviderRecord } from './db.ts';
+import { LOCKOUT, TERMS_VERSION, checkPassword, isLockedOut, normalizeEmail, normalizeVnPhone } from './accounts/rules.ts';
 
 export interface AuthenticatedUser {
   id: string;
@@ -28,6 +29,9 @@ export interface RegisterInput {
   role: 'traveler' | 'partner' | 'admin';
   facilityName?: string;
   turnstileToken?: string;
+  termsAccepted?: boolean;
+  termsVersion?: string;
+  userAgent?: string | null;
 }
 
 export interface LoginInput {
@@ -37,6 +41,7 @@ export interface LoginInput {
   emailOrPhone?: string;
   password: string;
   turnstileToken?: string;
+  userAgent?: string | null;
 }
 
 // Convert internal profile & provider to clean public representation
@@ -70,27 +75,37 @@ export async function registerUser(input: RegisterInput, customDb: DatabaseEngin
     throw new Error('FORBIDDEN_ADMIN_REGISTRATION: Không được phép tự đăng ký tài khoản quản trị viên.');
   }
 
-  const rawContact = (input.email || input.emailOrPhone || input.identifier || input.phone || '').trim();
-  if (!rawContact) {
-    throw new Error('INVALID_CONTACT: Vui lòng nhập email hoặc số điện thoại.');
+  // R1 (chủ dự án chốt 13/11/2026): bắt buộc email thật (đặt lại mật khẩu, mã xác minh gửi qua email).
+  const email = normalizeEmail(input.email ?? (String(input.emailOrPhone || input.identifier || '').includes('@') ? input.emailOrPhone || input.identifier : ''));
+  if (!email) {
+    throw new Error('INVALID_EMAIL: Vui lòng nhập email hợp lệ (dùng để đăng nhập và lấy lại mật khẩu).');
+  }
+  const fullName = (input.fullName || '').trim().replace(/\s+/g, ' ');
+  if (fullName.length < 2 || fullName.length > 80) {
+    throw new Error('INVALID_NAME: Họ tên từ 2 đến 80 ký tự.');
+  }
+  const weak = checkPassword(input.password ?? '', email);
+  if (weak) throw new Error(`WEAK_PASSWORD: ${weak}`);
+  if (input.termsAccepted !== true || input.termsVersion !== TERMS_VERSION) {
+    throw new Error('TERMS_REQUIRED: Vui lòng đọc và đồng ý Điều khoản sử dụng và Chính sách dữ liệu cá nhân.');
+  }
+  let phone = '';
+  if (input.phone) {
+    const p = normalizeVnPhone(input.phone);
+    if (!p) throw new Error('INVALID_PHONE: Số điện thoại Việt Nam gồm 10 số, ví dụ 0912345678.');
+    phone = p;
+  }
+  if (input.role === 'partner') {
+    if (!phone) throw new Error('PHONE_REQUIRED: Đối tác cần số điện thoại để Tà Xùa Trip liên hệ xác minh.');
+    const fn = (input.facilityName || '').trim();
+    if (fn.length < 2 || fn.length > 120) throw new Error('INVALID_BUSINESS: Vui lòng nhập tên cơ sở/doanh nghiệp (2–120 ký tự).');
   }
 
-  if (!input.password || input.password.length < 6) {
-    throw new Error('WEAK_PASSWORD: Mật khẩu phải có tối thiểu 6 ký tự.');
+  if (await customDb.findProfileByEmail(email)) {
+    throw new Error('EMAIL_EXISTS: Email này đã được đăng ký. Bạn có thể đăng nhập hoặc lấy lại mật khẩu.');
   }
-
-  if (!input.fullName || !input.fullName.trim()) {
-    throw new Error('INVALID_NAME: Vui lòng nhập họ và tên.');
-  }
-
-  const isEmail = rawContact.includes('@');
-  const email = isEmail ? rawContact.toLowerCase() : `${rawContact.replace(/\s+/g, '')}@taxuatrip.user`;
-  const phone = isEmail ? (input.phone?.trim() || '') : rawContact.replace(/\s+/g, '');
-
-  // Check existing user
-  const existing = await customDb.findProfileByEmail(email);
-  if (existing) {
-    throw new Error('EMAIL_EXISTS: Email hoặc số điện thoại này đã được đăng ký.');
+  if (phone && (await customDb.findProfileByPhone(phone))) {
+    throw new Error('PHONE_EXISTS: Số điện thoại này đã gắn với tài khoản khác.');
   }
 
   const role: 'traveler' | 'partner' = input.role === 'partner' ? 'partner' : 'traveler';
@@ -99,25 +114,31 @@ export async function registerUser(input: RegisterInput, customDb: DatabaseEngin
   const profile = await customDb.createProfile({
     email,
     password: input.password,
-    fullName: input.fullName.trim(),
+    fullName,
     phone,
     role,
     isVerified: false // Regular registration is NEVER automatically verified
   });
+  const nowIso = new Date().toISOString();
+  await customDb.d1
+    .prepare('UPDATE profiles SET terms_version = ?, terms_accepted_at = ?, last_login_at = ? WHERE id = ?')
+    .bind(TERMS_VERSION, nowIso, nowIso, profile.id)
+    .run();
 
   let provider: ProviderRecord | undefined;
   if (role === 'partner') {
     // STRICT RULE: Partner registration creates an unverified provider with ZERO listings owned!
     provider = await customDb.createProvider({
       userId: profile.id,
-      businessName: input.facilityName?.trim() || `Cơ sở của ${profile.fullName}`,
+      businessName: input.facilityName!.trim(),
       phone: profile.phone,
-      verificationStatus: 'unverified'
+      // R1: chưa thu giấy tờ; admin liên hệ và bấm xác nhận thủ công (R2).
+      verificationStatus: 'pending'
     });
   }
 
   // Create active session
-  const { token } = await customDb.createSession(profile.id, profile.role);
+  const { token } = await customDb.createSession(profile.id, profile.role, 7, input.userAgent);
   const user = await sanitizeUser(profile, provider, customDb);
 
   return {
@@ -137,14 +158,43 @@ export async function loginUser(credentials: LoginInput, customDb: DatabaseEngin
   if (!profile) {
     throw new Error('INVALID_CREDENTIALS: Email/Số điện thoại hoặc mật khẩu không chính xác.');
   }
-
-  const isValid = verifyPassword(credentials.password, profile.passwordHash);
-  if (!isValid) {
-    throw new Error('INVALID_CREDENTIALS: Email/Số điện thoại hoặc mật khẩu không chính xác.');
+  const state = await customDb.d1
+    .prepare('SELECT status, login_locked_until FROM profiles WHERE id = ?')
+    .bind(profile.id)
+    .first<{ status: string; login_locked_until: string | null }>();
+  const now = Date.now();
+  // R1: sai 5 lần liên tiếp thì khóa tạm 15 phút; trong thời gian khóa không kiểm mật khẩu (chặn dò).
+  if (isLockedOut(state?.login_locked_until, now)) {
+    const mins = Math.ceil((Date.parse(state!.login_locked_until!) - now) / 60_000);
+    throw new Error(`TOO_MANY_ATTEMPTS: Bạn đã nhập sai nhiều lần. Vui lòng thử lại sau ${mins} phút hoặc lấy lại mật khẩu.`);
   }
 
+  if (!verifyPassword(credentials.password, profile.passwordHash)) {
+    const lockUntil = new Date(now + LOCKOUT.minutes * 60_000).toISOString();
+    const after = await customDb.d1
+      .prepare(
+        `UPDATE profiles SET
+           login_locked_until = CASE WHEN failed_login_count + 1 >= ? THEN ? ELSE login_locked_until END,
+           failed_login_count = CASE WHEN failed_login_count + 1 >= ? THEN 0 ELSE failed_login_count + 1 END
+         WHERE id = ? RETURNING login_locked_until`
+      )
+      .bind(LOCKOUT.maxFailures, lockUntil, LOCKOUT.maxFailures, profile.id)
+      .first<{ login_locked_until: string | null }>();
+    if (isLockedOut(after?.login_locked_until, now)) {
+      throw new Error(`TOO_MANY_ATTEMPTS: Bạn đã nhập sai ${LOCKOUT.maxFailures} lần. Tài khoản tạm khóa ${LOCKOUT.minutes} phút; bạn có thể lấy lại mật khẩu.`);
+    }
+    throw new Error('INVALID_CREDENTIALS: Email/Số điện thoại hoặc mật khẩu không chính xác.');
+  }
+  if (state?.status === 'locked') {
+    throw new Error('ACCOUNT_LOCKED: Tài khoản đang bị khóa. Vui lòng liên hệ Tà Xùa Trip để được hỗ trợ.');
+  }
+
+  await customDb.d1
+    .prepare('UPDATE profiles SET failed_login_count = 0, login_locked_until = NULL, last_login_at = ? WHERE id = ?')
+    .bind(new Date(now).toISOString(), profile.id)
+    .run();
   const provider = await customDb.findProviderByUserId(profile.id);
-  const { token } = await customDb.createSession(profile.id, profile.role);
+  const { token } = await customDb.createSession(profile.id, profile.role, 7, credentials.userAgent);
   const user = await sanitizeUser(profile, provider || undefined, customDb);
 
   return {
@@ -180,9 +230,8 @@ export async function changeUserPassword(
   if (!verifyPassword(currentPass, profile.passwordHash)) {
     throw new Error('Mật khẩu hiện tại không chính xác');
   }
-  if (!newPass || newPass.length < 8) {
-    throw new Error('Mật khẩu mới phải có tối thiểu 8 ký tự');
-  }
+  const weak = checkPassword(newPass ?? '', profile.email);
+  if (weak) throw new Error(weak);
   const newHash = hashPassword(newPass);
   // Không dùng hàm của bootstrap admin: hàm đó đặt role = 'admin'.
   await customDb.updatePasswordAndRevokeSessions(userId, newHash);

@@ -2,6 +2,7 @@
  * Business and Domain Rules for Tà Xùa Trip
  */
 import type { BusType, MotorbikeFleet, RoomType, Booking } from '../types';
+import { checkPassword, normalizeEmail, normalizeVnPhone } from '../server/accounts/rules.ts';
 
 export interface CloudProbabilityParams {
   humidity: number; // in percent (e.g. 88)
@@ -868,41 +869,30 @@ export function validateLoginCredentials(
  */
 export function validateRegisterForm(data: {
   fullName: string;
-  emailOrPhone: string;
+  email: string;
+  phone: string;
   password: string;
   confirmPassword?: string;
   role: 'traveler' | 'partner' | 'admin';
   facilityName?: string;
+  termsAccepted: boolean;
 }): { isValid: boolean; errors: Record<string, string> } {
+  // R1: dùng chung luật với server (src/server/accounts/rules.ts); server vẫn kiểm lại.
   const errors: Record<string, string> = {};
-
-  if (!data.fullName.trim() || data.fullName.trim().length < 2) {
-    errors.fullName = 'Vui lòng nhập họ và tên hợp lệ (tối thiểu 2 ký tự).';
+  const name = data.fullName.trim();
+  if (name.length < 2 || name.length > 80) errors.fullName = 'Họ tên từ 2 đến 80 ký tự.';
+  const email = normalizeEmail(data.email);
+  if (!email) errors.email = 'Vui lòng nhập email hợp lệ (dùng để đăng nhập và lấy lại mật khẩu).';
+  if (data.phone.trim() && !normalizeVnPhone(data.phone)) errors.phone = 'Số điện thoại Việt Nam gồm 10 số, ví dụ 0912345678.';
+  if (data.role === 'partner' && !data.phone.trim()) errors.phone = 'Đối tác cần số điện thoại để Tà Xùa Trip liên hệ xác minh.';
+  const weak = checkPassword(data.password, email || '');
+  if (weak) errors.password = weak;
+  if (data.confirmPassword !== undefined && data.password !== data.confirmPassword) errors.confirmPassword = 'Mật khẩu xác nhận không khớp.';
+  if (data.role === 'partner' && (!data.facilityName || data.facilityName.trim().length < 2)) {
+    errors.facilityName = 'Chủ cơ sở cần nhập tên Homestay hoặc dịch vụ phụ trách.';
   }
-
-  const cleanId = data.emailOrPhone.trim();
-  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanId);
-  const isPhone = /(?:\+84|0)(?:3|5|7|8|9)(?:[\s.-]*\d){8}\b/.test(cleanId);
-  if (!cleanId || (!isEmail && !isPhone)) {
-    errors.emailOrPhone = 'Vui lòng nhập email hợp lệ hoặc số điện thoại di động Việt Nam.';
-  }
-
-  if (!data.password || data.password.length < 6) {
-    errors.password = 'Mật khẩu phải từ 6 ký tự trở lên.';
-  }
-
-  if (data.confirmPassword !== undefined && data.password !== data.confirmPassword) {
-    errors.confirmPassword = 'Mật khẩu xác nhận không khớp.';
-  }
-
-  if (data.role === 'partner' && (!data.facilityName || !data.facilityName.trim())) {
-    errors.facilityName = 'Chủ cơ sở cần nhập tên Homestay hoặc Dịch vụ phụ trách.';
-  }
-
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors
-  };
+  if (!data.termsAccepted) errors.terms = 'Vui lòng đọc và đồng ý Điều khoản sử dụng và Chính sách dữ liệu cá nhân.';
+  return { isValid: Object.keys(errors).length === 0, errors };
 }
 
 /**

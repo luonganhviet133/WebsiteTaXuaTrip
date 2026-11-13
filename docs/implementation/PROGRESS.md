@@ -16,6 +16,73 @@
 
 ---
 
+## Hotfix đổi mật khẩu (13/11/2026, nhánh `hotfix/doi-mat-khau`)
+
+**Lỗi bảo mật P0 trên production:** `changeUserPassword` gọi hàm `updateAdminPasswordAndRevokeSessions` của bootstrap admin, vốn đặt `role = 'admin'`. Vì vậy ai đổi mật khẩu qua `/api/auth/change-password` cũng thành admin.
+
+- Đã tái hiện bằng test: tài khoản khách đổi mật khẩu xong có `role` là `admin`.
+- Đã kiểm D1 production: 3 tài khoản vẫn đúng vai trò, chưa bị lợi dụng.
+- Sửa: thêm hàm `updatePasswordAndRevokeSessions` chỉ đổi mật khẩu và thu hồi phiên. Test hồi quy `auth.password.test.ts` cho khách và đối tác; kiểm đỏ đạt (fail trên mã cũ, pass trên mã mới).
+- Kèm sửa test chập chờn: `createBooking` tạo mã đơn bằng `Date.now()` + số ngẫu nhiên 0–999, nên trùng khi hai đơn tạo cùng mili giây. Đổi sang UUID.
+- `npm test`: 301/301, chạy hai lần đều đạt; build và dry-run đạt. **Chờ chủ dự án "gộp hotfix".**
+
+## R1 — Tài khoản và đăng nhập (13/11/2026, nhánh `dot/R1`, tách từ hotfix)
+
+**Trạng thái: ĐẠT phần kiểm được, chờ "gộp".** Gộp sẽ chạy migration `0012_accounts.sql` trên D1 production: chỉ thêm cột và bảng, tài khoản cũ mặc định `active`. Quyết định: D-R1-01.
+
+### Đã làm
+- Server:
+  - `accounts/rules.ts`: luật mật khẩu, khóa tạm, mã email, chuẩn hóa email/SĐT, phiên bản điều khoản.
+  - Migration `0012`: trạng thái tài khoản, đếm sai và khóa tạm, `email_verified_at`, điều khoản, thiết bị của phiên, bảng `auth_codes` (chỉ lưu băm), `email_log`.
+  - `email.ts`: gửi qua binding `EMAIL` của Cloudflare, khi không có binding thì báo chưa bật.
+  - `accounts/store.ts` và các API:
+    - `/api/auth/config`, `/api/auth/forgot-password`, `/api/auth/reset-password`;
+    - `/api/me/profile`, `/api/me/email/send-code|verify`, `/api/me/sessions`.
+  - Đăng ký: bắt buộc email và đồng ý điều khoản; đối tác cần SĐT và tên cơ sở, tạo ở trạng thái `pending`.
+  - Đăng nhập: khóa tạm sau 5 lần sai, báo khi tài khoản bị khóa, ghi thiết bị của phiên. Phiên của tài khoản bị khóa hết hiệu lực.
+- Giao diện:
+  - Form đăng ký: tách ô email và SĐT, ô đồng ý điều khoản có link, tối thiểu 8 ký tự.
+  - "Quên mật khẩu?" chạy ngay trong hộp đăng nhập (thay link Zalo số mẫu). Gói Free thì báo "sắp ra mắt".
+  - Bỏ tiền tố mã lỗi (`INVALID_CREDENTIALS:` …) khỏi thông báo cho người dùng.
+  - Hộp **Tài khoản của tôi** có 3 thẻ: thông tin và xác minh email, đổi mật khẩu, thiết bị.
+  - Trang `/dieu-khoan` và `/chinh-sach-du-lieu`.
+- `UPGRADE_RUNBOOK.md`: hướng dẫn từng bước nâng Workers Paid, đưa taxuatrip.vn vào Cloudflare, bật gửi email, Access cho admin. Mỗi bước có sao lưu D1 trước và cách quay lại.
+
+### Lệnh đã chạy và kết quả
+- `npm run typecheck`: 0 lỗi. `npm test`: **318/318**, gồm hợp đồng API trên workerd (migration 0012 và `UPDATE … RETURNING` chạy được trên D1 thật).
+- Test mới:
+  - `accounts/rules.test.ts`: 6 test;
+  - `accounts.api.test.ts`: 11 test (khóa tạm, tài khoản bị khóa mất phiên, phiên theo thiết bị, hồ sơ, mã một lần khi gửi đồng thời, quên mật khẩu không lộ email, gói Free, gửi lỗi).
+- Kiểm đỏ: bỏ điều kiện `p.status = 'active'` thì test tài khoản bị khóa fail; bỏ kiểm khóa tạm thì test khóa tạm fail.
+- Đã sửa các test cũ theo luật mới: đăng ký phải đồng ý điều khoản, đối tác ở trạng thái `pending`, đăng ký cần email.
+- `npm run build`, `npm run worker:dry-run`: đạt.
+- Kiểm tay trên `wrangler dev --local` (Turnstile được thay bằng bản giả cấp token như khóa test):
+  - **Lần A, không có binding email (giống gói Free hiện tại):**
+    - đăng ký qua giao diện; chưa tick điều khoản thì bị chặn;
+    - Tài khoản của tôi: lưu họ tên (thanh điều hướng cập nhật), xem thiết bị, mật khẩu yếu bị chặn;
+    - "Quên mật khẩu" báo sắp ra mắt; sai 5 lần thì báo khóa 15 phút;
+    - trang điều khoản mở đúng tiêu đề.
+  - **Lần B, có binding `send_email` giả lập của Wrangler:**
+    - email gửi đúng `"Tà Xùa Trip" <no-reply@taxuatrip.vn>`, tiêu đề có mã;
+    - quên mật khẩu qua giao diện → mã → mật khẩu mới → đăng nhập được; khóa tạm được mở, email thành "Đã xác minh";
+    - đối tác nhập mã xác minh email trong Tài khoản của tôi.
+  - 375/768/1280px (form đăng ký, quên mật khẩu, 3 thẻ Tài khoản của tôi, trang chính sách): không tràn ngang, không chữ nhỏ hơn 12px.
+
+### Chưa kiểm chứng / còn lại
+- Chưa chạy migration 0012 trên production (chờ gộp hotfix rồi R1).
+- Gửi email thật chưa thử được: cần Workers Paid và taxuatrip.vn (`UPGRADE_RUNBOOK.md` bước 1, 2, 4).
+- Vai trò trên production:
+  - `vtmedia0910@gmail.com` đang là **đối tác**;
+  - `vanhuy171099@gmail.com` chưa có tài khoản;
+  - chỉ `luonganhvietbds@gmail.com` là admin.
+  - Đổi vai trò làm qua trang quản trị ở R2, hoặc bằng `npm run db:bootstrap` nếu anh muốn ngay.
+- Tài khoản cũ `0985564756@taxuatrip.user` chỉ có SĐT, không lấy lại mật khẩu qua email được; admin cần hỗ trợ (R2).
+- Nội dung Điều khoản và Chính sách dữ liệu mô tả đúng hệ thống hiện tại nhưng chưa qua luật sư.
+- Ảnh đại diện chưa sửa được trong Tài khoản của tôi (để sau).
+- Giới hạn tần suất vẫn là bộ đếm trong bộ nhớ của từng Worker; R3 chuyển sang binding Rate Limiting.
+
+---
+
 ## N06.3 — Đánh giá xác thực, khiếu nại, top 3 theo quý/năm (13/11/2026, nhánh `dot/N06.3`)
 
 **Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp".** Gộp sẽ chạy migration `0011_reviews_complaints.sql` trên D1 production (chỉ thêm bảng mới). Quyết định: D-N06-05. Kết toán phí và voucher dịch vụ chuyển sang N06.5.

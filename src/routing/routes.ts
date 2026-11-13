@@ -18,6 +18,9 @@ export const TAB_PATHS = {
   verified: '/tham-dinh',
   partner: '/doi-tac',
   admin: '/quan-tri',
+  // R1: trang pháp lý
+  terms: '/dieu-khoan',
+  privacy: '/chinh-sach-du-lieu',
 } as const;
 
 export type AppTab = keyof typeof TAB_PATHS;
