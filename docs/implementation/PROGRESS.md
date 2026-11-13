@@ -20,6 +20,35 @@
 
 **Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp".** Nhánh tách từ `dot/N05.3` (N05.2, N05.3 chưa gộp) → gộp N06.1 sẽ chạy migration 0006–0008 trên D1 production (production có 0 đơn). **Xác nhận tiền là thủ công** (cơ sở bấm, có log); không có cổng thanh toán/webhook (D-N06-01).
 
+### Bổ sung sau khi chủ dự án chốt (13/11/2026): hạn 70% theo 14:00; quy trình đối soát cọc (D-N06-02)
+- `reconciliation.ts`: bảng trạng thái chờ hoàn → cơ sở báo đã hoàn / đề nghị giữ → khách xác nhận / đồng ý / báo → admin phân xử. Hạn 3 ngày.
+- `migrations_d1/0009_reconciliation.sql`: `payment_reconciliations`, `reconciliation_files`.
+- Mở tự động:
+  - giữ chỗ hết hạn (cron, trong cùng batch với việc hết hạn);
+  - cơ sở từ chối đơn khách đã gửi biên lai.
+  - Khách tự hủy / nhả phòng quá hạn 70% không mở (D03).
+- API: xem đối soát (khách/chủ/admin), ảnh bằng chứng hai bên (R2, kiểm ảnh thật, ≤ 5 ảnh/bên), các bước có điều kiện + `changes()` (bấm lặp/đồng thời chỉ ghi một lần), danh sách cho admin, nhắc quá hạn (cron).
+- Giao diện: khối "Đối soát tiền cọc" cho khách (Chuyến đi của tôi), chủ cơ sở (Đơn đặt phòng) và admin (đầu màn quản trị, tranh chấp lên đầu).
+- Test:
+  - `reconciliation.test.ts` (7 bảng);
+  - `reconciliation.api.test.ts` (7):
+    - mở/không mở; báo hai bên; hạn 3 ngày;
+    - hoàn cần ảnh và số tiền hợp lệ; khách xác nhận đóng;
+    - giữ tiền cần khách đồng ý;
+    - quá hạn nhắc một lần, báo admin, admin buộc hoàn → hạn mới;
+    - báo hoàn nhưng khách chưa nhận → admin kết luận;
+    - bấm đồng thời.
+  - Kiểm đỏ: bỏ `changes() = 1` → ca đồng thời trượt. Lần đầu ca này trượt cả khi có khóa (yêu cầu thua trả 409 thay vì "đã làm") → sửa: đọc lại rồi quyết định lại.
+- workerd + D1 + R2: từ chối đơn có biên lai → mở đối soát hạn 3 ngày, lịch sử `recon_open`, chưa quá hạn không báo được, ảnh bằng chứng đọc lại đúng từ R2, thông báo hiện hạn theo giờ VN.
+- Kiểm bằng Worker thật tại máy build (có `--test-scheduled`):
+  - Cron thật mở đối soát cho giữ chỗ hết hạn có biên lai và báo quá hạn (2 thông báo).
+  - Bấm qua giao diện cả ba vai trò:
+    - Cơ sở: báo hoàn khi chưa có ảnh bị chặn → có ảnh thì được; đề nghị giữ tiền.
+    - Khách: báo chưa nhận → chờ phân xử; đồng ý giữ → kết thúc "giữ tiền"; đơn quá hạn có nút báo.
+    - Admin: thấy 2 ảnh, kết luận "phải hoàn" → hạn mới, lịch sử đủ 4 bước.
+  - 375/768/1280px: không tràn, 0 chữ < 12px.
+- Lệnh: `npm run typecheck` 0 lỗi; `npm run build` đạt; `npm test` **273/273**; `npm run worker:dry-run` đạt.
+
 ### Đã làm
 - **Một cấu hình cọc** `src/config/payment.ts` (30% làm tròn lên, 70% còn lại, hạn 70%, mốc nhắc, điều khoản D03). Gỡ mọi `0.3`/"50%" viết cứng (Chuyến đi của tôi, dashboard đối tác, xe khách, trang chi tiết, màn giữ chỗ thành công) và `buildVietQrPaymentPayload` (tài khoản "TA XUA TRIP ESCROW" mẫu gõ cứng, ảnh từ img.vietqr.io).
 - **VietQR tự tạo** `src/payment/vietqr.ts` (NAPAS/EMVCo, CRC16-CCITT), danh sách ngân hàng theo mã BIN của NHNN.
@@ -86,8 +115,7 @@
 ### Chưa kiểm chứng / chưa làm
 - **Chưa thử chuyển khoản thật bằng app ngân hàng** quét mã VietQR (mới kiểm chuỗi theo mẫu công bố + giải mã ảnh). Nên thử một giao dịch nhỏ vào tài khoản của chính chủ dự án trước khi mở cho khách.
 - Chưa đăng nhập được trên preview (thiếu secret Turnstile); luồng đã kiểm bằng Worker chạy tại máy build.
-- Giờ nhận phòng 14:00 dùng để tính hạn 70% là **giả định** (D-N06-01).
-- Đơn "cần đối soát" chỉ được đánh dấu; chưa có quy trình hoàn/giữ tiền (chờ chủ dự án chốt nếu cần).
+- Đối soát cọc chỉ ghi nhận; hệ thống không chuyển/hoàn tiền thay hai bên (đúng D03: website không giữ tiền).
 - Nhắc 70% mới hiện trong "Chuyến đi của tôi"; chưa gửi Web Push/email/Zalo (Q3, chờ chọn dịch vụ).
 - Luồng xe khách/dịch vụ khác vẫn là dữ liệu mẫu trong trình duyệt (N09); `api.qrserver.com` còn ở các mã mẫu đó (không chứa thông tin tài khoản/thanh toán).
 - Mục "Bằng chứng chuyển khoản & đơn" cũ trong dashboard đối tác vẫn đọc dữ liệu mẫu (đơn homestay thật đã ở khối "Đơn đặt phòng").

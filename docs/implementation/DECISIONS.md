@@ -18,6 +18,28 @@
 
 ---
 
+### D-N06-02: Đối soát cọc (chủ dự án chốt 13/11/2026)
+
+- **Khi nào mở:** khách đã gửi biên lai cọc nhưng đơn **hết hạn giữ chỗ** hoặc **bị cơ sở từ chối** trước khi cơ sở xác nhận nhận cọc. Không mở khi khách tự hủy hoặc cơ sở nhả phòng vì quá hạn 70% (D03: cọc không hoàn).
+- **Cơ sở** trong **3 ngày**:
+  - **hoàn đủ** — bắt buộc tải ảnh chứng từ chuyển hoàn và ghi số tiền đã hoàn; hoặc
+  - **đề nghị giữ tiền** (vd chuyển sang ngày/phòng khác) — **chỉ giữ được khi khách bấm đồng ý**; khách từ chối thì quay về chờ hoàn.
+- **Khách:**
+  - xác nhận "Đã nhận lại tiền" thì kết thúc;
+  - báo "Chưa nhận được", hoặc cơ sở quá hạn 3 ngày chưa hoàn, thì khách **báo Tà Xùa Trip**, kèm ảnh (sao kê…).
+- **Admin** xem bằng chứng hai bên rồi ghi kết luận (bắt buộc ghi căn cứ):
+  - đã hoàn → kết thúc;
+  - cơ sở được giữ → kết thúc;
+  - cơ sở phải hoàn → mở lại, hạn mới 3 ngày.
+- **Hệ thống không chuyển tiền**; kết luận chỉ là ghi nhận.
+- **Bằng chứng lưu cho hai bên:**
+  - biên lai cọc của khách;
+  - chứng từ hoàn của cơ sở;
+  - ảnh khách gửi thêm (R2 riêng tư, mỗi bên ≤ 5 ảnh);
+  - số tiền, ghi chú từng bên;
+  - lịch sử từng bước (ai, lúc nào).
+- Nhắc: mở đối soát báo cả hai bên; quá hạn 3 ngày báo cả hai bên một lần mỗi hạn.
+
 ### D-N06-01: Thanh toán theo D03 (13/11/2026)
 
 - **Không có cổng thanh toán, không webhook.** Khách chuyển thẳng vào tài khoản của cơ sở; cơ sở tự kiểm tài khoản rồi bấm xác nhận (thủ công, ghi `booking_events`). Ảnh biên lai chỉ là bằng chứng, **không** làm đơn thành đã trả.
@@ -26,10 +48,10 @@
 - Khách phải tick điều khoản D03 (phiên bản `D03-2026-11-13`) mới thấy tài khoản/mã QR. Lúc tick, server chụp **snapshot**: người nhận, tổng, cọc, 70%, nội dung chuyển khoản (`<mã đơn> COC` / `<mã đơn> CON LAI`), hạn 70%. Cơ sở đổi tài khoản sau đó không ảnh hưởng đơn đã chụp.
 - Mã VietQR (chuẩn NAPAS/EMVCo) tạo trong mã nguồn, không gửi dữ liệu ra dịch vụ ngoài.
 - Biên lai: chỉ khách chủ đơn gửi; ảnh JPEG/PNG/WebP nhận theo byte đầu file; ≤ 5 MB; ≤ 3 ảnh mỗi khoản; lưu R2 riêng tư; chỉ khách, chủ cơ sở của đơn và admin xem.
-- **Hạn 70% = 24 giờ trước 14:00 ngày nhận phòng (giờ VN).** 14:00 lấy từ giao diện hiện có (phiếu nhận phòng ghi "từ 14:00") — **giả định chờ chủ dự án xác nhận**; đổi ở `CHECKIN_HOUR_VN`.
+- **Hạn 70% = 24 giờ trước 14:00 ngày nhận phòng (giờ VN)** — chủ dự án chốt 13/11/2026; cấu hình `CHECKIN_HOUR_VN`.
 - Nhắc khách trả 70% ở mốc 48 giờ và 30 giờ trước giờ nhận phòng, mỗi mốc một lần (cron 5 phút), hiện trong "Chuyến đi của tôi".
 - Quá hạn 70% mà cơ sở chưa xác nhận nhận đủ: chủ cơ sở/admin được **nhả phòng** (đơn hủy, phòng mở lại, cọc không hoàn). Đã xác nhận đủ thì không nhả được.
-- Biên lai cọc gửi khi giữ chỗ còn hạn nhưng giữ chỗ hết hạn trước khi cơ sở xác nhận: đơn hiện **"Cần đối soát"** cho cơ sở; hệ thống **không** tự xác nhận lại hay giữ lại phòng (phòng có thể đã bán cho người khác). Cách xử lý tiền (hoàn/giữ) do cơ sở và khách tự thỏa thuận — chưa có quy trình tự động, chờ chủ dự án chốt nếu cần.
+- Biên lai cọc gửi khi giữ chỗ còn hạn nhưng đơn hết hạn/bị từ chối trước khi cơ sở xác nhận: mở **đối soát cọc** (D-N06-02); hệ thống **không** tự xác nhận lại hay giữ lại phòng.
 
 ### D-N05-03: Vòng đời đơn (13/11/2026)
 
