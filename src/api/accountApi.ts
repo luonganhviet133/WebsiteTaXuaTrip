@@ -47,7 +47,8 @@ export interface SessionItem {
 export const accountApi = {
   config: () => call<AuthConfig>('GET', '/api/auth/config'),
   forgot: (email: string, turnstileToken?: string) => call<{ message: string }>('POST', '/api/auth/forgot-password', { email, turnstileToken }),
-  reset: (email: string, code: string, newPassword: string) => call<{ message: string }>('POST', '/api/auth/reset-password', { email, code, newPassword }),
+  /** identifier: email hoặc SĐT (mã do Tà Xùa Trip cấp qua điện thoại dùng được với SĐT). */
+  reset: (identifier: string, code: string, newPassword: string) => call<{ message: string }>('POST', '/api/auth/reset-password', { identifier, code, newPassword }),
   profile: () => call<MyProfile>('GET', '/api/me/profile'),
   updateProfile: (body: { fullName: string; phone: string; businessName?: string }) => call<MyProfile>('PUT', '/api/me/profile', body),
   sendEmailCode: () => call<{ sentTo: string }>('POST', '/api/me/email/send-code'),

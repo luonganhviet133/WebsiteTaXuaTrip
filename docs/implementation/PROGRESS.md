@@ -16,6 +16,35 @@
 
 ---
 
+## R2 — Thành viên & Đối tác cho admin (13/11/2026, nhánh `dot/R2`)
+
+Không có migration mới: dùng các cột trạng thái tài khoản đã thêm ở R1 (0012), bảng `audit_log` và `auth_codes` có sẵn.
+
+### Đã làm
+- Trang quản trị mở mặc định ở tab **Thành viên & Đối tác** (`src/components/AdminMembersPanel.tsx`, `src/api/adminMembersApi.ts`).
+  - Tổng quan số thật từ D1: khách, đối tác, đối tác chờ xác minh, quản trị, đang bị khóa, thành viên mới 7 ngày; đơn đặt, số cơ sở, khiếu nại chưa đóng. Bấm ô số để lọc nhanh.
+  - Tìm theo tên, email, SĐT (nhận cả `0985 564 756`, `+84…`), tên cơ sở; lọc vai trò, trạng thái, xác minh; 25 người/trang.
+  - Chi tiết từng người: phiên đang mở, số đơn, số cơ sở sở hữu, lần đăng nhập gần nhất, nhật ký quản trị (ai làm, lúc nào, lý do).
+- Thao tác (server `src/server/admin/members.ts`, route `/api/admin/members…`), **mọi thao tác bắt buộc lý do** và ghi `audit_log` trong cùng batch với thay đổi:
+  - **Khóa/mở khóa**: khóa thì mọi phiên mất hiệu lực ngay và không đăng nhập được; mở khóa cũng xóa khóa tạm do sai mật khẩu 5 lần.
+  - **Đổi vai trò** khách/đối tác/quản trị: có hiệu lực ngay, người bị đổi phải đăng nhập lại. Lên đối tác thì tạo hồ sơ đối tác "chờ xác minh" nếu chưa có.
+  - **Xác minh đối tác**: Đã xác minh / Từ chối / Chuyển về chờ, ghi chú cách đã xác minh (ví dụ đã gọi số nào); lưu người và thời điểm xác minh.
+  - **Cấp mã đặt lại mật khẩu**: mã 6 số hiện cho admin một lần để đọc qua điện thoại, chỉ lưu băm, hạn 60 phút, tối đa 5 mã/giờ/tài khoản. Khách vào Quên mật khẩu → "Tôi đã có mã từ Tà Xùa Trip", nhập **email hoặc SĐT**, mã và mật khẩu mới. Dùng được cho tài khoản cũ chỉ có SĐT. Mã admin đọc qua điện thoại không đánh dấu email đã xác minh.
+- Chặn: không tự khóa / đổi vai trò / cấp mã cho chính mình; luôn còn ít nhất một quản trị viên đang hoạt động (kiểm sau khi ghi trong cùng batch, hai admin thao tác cùng lúc cũng không làm mất admin cuối); không cấp mã cho tài khoản đang khóa.
+- `/api/admin/overview` trả số thật (trước chỉ có tổng số đơn).
+
+### Lệnh đã chạy và kết quả
+- `npm run typecheck`: 0 lỗi. `npm test`: **329/329 pass** (thêm 10 test API `src/server/admin/members.api.test.ts`, 1 test `adminMembersApi.test.ts`). `npm run build`, `npm run worker:dry-run`: đạt.
+- Kiểm đỏ (cố ý làm hỏng rồi chạy lại): bỏ kiểm "admin cuối" → test hỏng; mã admin đánh dấu email đã xác minh → test hỏng; bỏ chặn tự thao tác → 2 test hỏng. Bỏ bước thu hồi phiên khi khóa thì test vẫn qua vì R1 đã chặn phiên của tài khoản bị khóa ở bước kiểm phiên (thu hồi là lớp bảo vệ thứ hai).
+- Trình duyệt (wrangler dev + D1 local mới, migration 0001–0012): admin lọc "đối tác chờ xác minh" → xác minh có ghi chú → báo ở đầu trang (đối tác rời khỏi bộ lọc); tìm và khóa khách → khách đăng nhập bị `ACCOUNT_LOCKED`; đổi khách lên quản trị; cấp mã cho tài khoản cũ chỉ có SĐT → khách nhập SĐT + mã ở hộp đăng nhập → đặt mật khẩu mới → đăng nhập bằng SĐT được; hàng của chính admin không có nút thao tác.
+- Giao diện 375/768/1280: không tràn ngang, không chữ dưới 12px (trang Thành viên đang mở chi tiết, và hộp "Tôi đã có mã").
+
+### Chưa kiểm chứng / còn lại
+- Chưa chạy trên production (chờ "gộp R2").
+- Xác minh đối tác hiện là nhãn để admin theo dõi; chưa chặn tính năng nào của đối tác chưa xác minh (để quyết định khi mở N06.5).
+- Ô "Cột mốc 10.000 thành viên" ở đầu trang quản trị vẫn dùng số giả 1.240; dọn ở R4 (khóa tính năng chưa xong, bỏ số giả).
+- Sau khi gộp: `vanhuy171099@gmail.com` cần tự đăng ký, rồi admin hiện tại (`luonganhvietbds@gmail.com`) đổi vai trò lên Quản trị; `vtmedia0910@gmail.com` đổi từ Đối tác lên Quản trị nếu anh muốn.
+
 ## Hotfix đổi mật khẩu (13/11/2026, nhánh `hotfix/doi-mat-khau`)
 
 **Lỗi bảo mật P0 trên production:** `changeUserPassword` gọi hàm `updateAdminPasswordAndRevokeSessions` của bootstrap admin, vốn đặt `role = 'admin'`. Vì vậy ai đổi mật khẩu qua `/api/auth/change-password` cũng thành admin.

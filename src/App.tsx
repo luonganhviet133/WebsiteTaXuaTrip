@@ -4149,6 +4149,7 @@ export default function App() {
               claimRequests={claimRequests}
               onApproveClaim={handleApproveClaim}
               onRejectClaim={handleRejectClaim}
+              currentUserId={currentUser?.id}
             />
           ) : (
             <div className="max-w-2xl mx-auto my-12 px-4">

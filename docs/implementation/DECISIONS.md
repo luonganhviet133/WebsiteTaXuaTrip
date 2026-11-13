@@ -18,6 +18,14 @@
 
 ---
 
+### D-R2-01: Quản trị thành viên (13/11/2026)
+- **Quyết định:** admin khóa/mở, đổi vai trò, xác minh đối tác và cấp mã đặt lại mật khẩu ngay trong trang quản trị. Mọi thao tác bắt buộc lý do, ghi `audit_log` cùng batch. Không tự thao tác trên chính mình; luôn còn ít nhất một admin hoạt động.
+- **Mã đặt lại do admin cấp** thay cho đặt mật khẩu tạm: admin không bao giờ biết mật khẩu của khách; mã 6 số hiện một lần, lưu băm, hạn 60 phút, dùng một lần. Khách đăng nhập bằng email hoặc SĐT.
+- **Đổi vai trò** thu hồi mọi phiên của người bị đổi để giao diện và quyền khớp ngay.
+- **Xác minh đối tác** chỉ là trạng thái theo dõi (chưa chặn tính năng); việc chặn sẽ chốt cùng N06.5.
+
+---
+
 ### D-R1-01: Tài khoản và đăng nhập (chủ dự án chốt 13/11/2026)
 
 - **Tên miền:** taxuatrip.vn. **Gói:** dùng Cloudflare Free trước; nâng Workers Paid ($5/tháng) sau. Các bước nâng cấp và sao lưu nằm trong `UPGRADE_RUNBOOK.md`.

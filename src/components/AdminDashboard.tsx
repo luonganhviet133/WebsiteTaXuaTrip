@@ -107,6 +107,7 @@ import {
 } from '../utils/rules.ts';
 import { JarvisAdminAssistant } from './JarvisAdminAssistant.tsx';
 import { AdminFeedbackPanel } from './AdminFeedbackPanel.tsx';
+import { AdminMembersPanel } from './AdminMembersPanel.tsx';
 
 interface AdminDashboardProps {
   listings: Listing[];
@@ -139,6 +140,8 @@ interface AdminDashboardProps {
   claimRequests?: PartnerClaimRequest[];
   onApproveClaim?: (claimId: string) => void;
   onRejectClaim?: (claimId: string) => void;
+  /** R2: không cho admin thao tác trên chính mình trong trang Thành viên. */
+  currentUserId?: string;
 }
 
 const LOCATION_AREAS: LocationArea[] = [
@@ -181,13 +184,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onUpdateRewardPercent,
   claimRequests = [],
   onApproveClaim,
-  onRejectClaim
+  onRejectClaim,
+  currentUserId
 }) => {
   const targetMembers = 10000;
   const progressPercent = Math.min(100, Math.round((verifiedMembersCount / targetMembers) * 100));
 
   // Admin Tab Switcher
   const [adminTab, setAdminTab] = useState<
+    | 'members'
     | 'jarvis_command'
     | 'smart_listings'
     | 'cms_content'
@@ -197,7 +202,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     | 'vouchers_rewards'
     | 'claims'
     | 'evidence_audit'
-  >('jarvis_command');
+  >('members');
 
   // --- REVIDAPI GATEWAY MANAGEMENT STATE (https://revidapi.com/dashboard/docs) ---
   const [revidConfig, setRevidConfig] = useState<RevidApiGatewayConfig>(() => {
@@ -1153,6 +1158,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* CỤM ĐIỀU HƯỚNG SUB-TABS ADMIN */}
         <div className="bg-slate-850 border border-slate-750 p-2 rounded-2xl flex flex-wrap gap-2">
           {[
+            { id: 'members', label: 'Thành viên & Đối tác', icon: Users },
             { id: 'jarvis_command', label: '💠 J.A.R.V.I.S. Siêu Trợ Lý Điều Hành', icon: Sparkles },
             { id: 'smart_listings', label: `1. Quản Trị Cơ Sở & Dịch Vụ (${listings.length})`, icon: Building2 },
             { id: 'cms_content', label: `2. Kênh Social (${(cmsConfig.socialChannels || []).length}) & CMS Toàn Trang`, icon: Globe },
@@ -1195,6 +1201,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* ========================================================
             TAB 0: SIÊU TRỢ LÝ ĐIỀU HÀNH J.A.R.V.I.S. (ĐỘC QUYỀN ADMIN)
            ======================================================== */}
+        {adminTab === 'members' && <AdminMembersPanel currentUserId={currentUserId} />}
+
         {adminTab === 'jarvis_command' && (
           <JarvisAdminAssistant
             listings={listings}
