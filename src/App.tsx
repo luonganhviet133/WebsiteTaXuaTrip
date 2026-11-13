@@ -51,6 +51,8 @@ import { JarvisAdminAssistant } from './components/JarvisAdminAssistant.tsx';
 import { SosModal } from './components/SosModal.tsx';
 import { BookingSuccessModal } from './components/BookingSuccessModal.tsx';
 import { PointsModal } from './components/PointsModal.tsx';
+import { AccountModal } from './components/AccountModal.tsx';
+import { LegalPage } from './components/LegalPage.tsx';
 import { InteractiveMapSection } from './components/InteractiveMapSection.tsx';
 import { AITravelAdvisorModal } from './components/AITravelAdvisorModal.tsx';
 import {
@@ -121,7 +123,9 @@ const TAB_TITLES: Record<string, string> = {
   community: 'Cộng đồng',
   verified: 'Hồ sơ thẩm định',
   partner: 'Kênh đối tác',
-  admin: 'Quản trị'
+  admin: 'Quản trị',
+  terms: 'Điều khoản sử dụng',
+  privacy: 'Chính sách dữ liệu cá nhân'
 };
 
 export default function App() {
@@ -476,6 +480,7 @@ export default function App() {
   const [isBusModalOpen, setIsBusModalOpen] = useState(false);
   const [isSosModalOpen, setIsSosModalOpen] = useState(false);
   const [isPointsModalOpen, setIsPointsModalOpen] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [isWishlistModalOpen, setIsWishlistModalOpen] = useState(false);
   const isMyTripsModalOpen = Boolean(route.myTrips);
   const [activeDirectChatListing, setActiveDirectChatListing] = useState<Listing | null>(null);
@@ -1260,6 +1265,7 @@ export default function App() {
         cloudPoints={userProfile.cloudPoints}
         onOpenSos={() => setIsSosModalOpen(true)}
         onOpenPointsModal={() => setIsPointsModalOpen(true)}
+        onOpenAccount={() => setIsAccountOpen(true)}
         savedCount={userProfile.savedListings.length}
         onOpenSavedModal={() => setIsWishlistModalOpen(true)}
         bookingsCount={bookings.length}
@@ -3011,6 +3017,9 @@ export default function App() {
           );
         })()}
 
+        {/* R1: trang pháp lý */}
+        {(currentTab === 'terms' || currentTab === 'privacy') && <LegalPage kind={currentTab} />}
+
         {/* Dedicated /verified View */}
         {currentTab === 'verified' && (
           <VerificationMethodologySection
@@ -4350,6 +4359,16 @@ export default function App() {
 
       {isSosModalOpen && <SosModal onClose={() => setIsSosModalOpen(false)} siteContent={siteContent} />}
 
+      {isAccountOpen && currentUser && (
+        <AccountModal
+          onClose={() => setIsAccountOpen(false)}
+          onProfileSaved={(p) => setCurrentUser((u) => (u ? { ...u, name: p.fullName, phone: p.phone, facilityName: p.businessName ?? u.facilityName } : u))}
+          onLoggedOut={() => {
+            setIsAccountOpen(false);
+            handleLogout();
+          }}
+        />
+      )}
       {isPointsModalOpen && (
         <PointsModal
           isLoggedIn={!!currentUser}

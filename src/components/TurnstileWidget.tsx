@@ -36,7 +36,7 @@ function loadTurnstileScript(): Promise<void> {
 
 interface TurnstileWidgetProps {
   siteKey: string;
-  action: 'login' | 'register';
+  action: 'login' | 'register' | 'forgot';
   /** Nhận token khi xác minh xong; nhận chuỗi rỗng khi token hết hạn hoặc lỗi. */
   onToken: (token: string) => void;
   /** Tăng giá trị này để làm mới widget (token Turnstile chỉ dùng được một lần). */
