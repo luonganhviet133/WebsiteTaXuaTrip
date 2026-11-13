@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { Booking, Listing } from '../types/index.ts';
 import { AuthUser } from '../types/auth.ts';
+import { displayBookingStatus } from '../api/holdsApi.ts';
 import {
   formatVND,
   buildVietQrPaymentPayload,
@@ -151,8 +152,8 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
     );
   });
 
-  const getStatusBadge = (status: Booking['status']) => {
-    switch (status) {
+  const getStatusBadge = (booking: Booking) => {
+    switch (displayBookingStatus(booking.status, booking.holdExpiresAt)) {
       case 'pending':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900">
@@ -179,6 +180,12 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900">
             <CheckCircle2 className="w-3 h-3" />
             <span>Đã hoàn tất chuyến đi</span>
+          </span>
+        );
+      case 'expired':
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
+            Hết hạn giữ chỗ
           </span>
         );
       default:
@@ -332,7 +339,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                     <span className="px-2.5 py-1 rounded-lg bg-brand-800 text-white font-mono text-xs font-extrabold uppercase">
                       #{booking.id}
                     </span>
-                    {getStatusBadge(booking.status)}
+                    {getStatusBadge(booking)}
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${proofStatus.statusBadgeColor}`}>
                       {proofStatus.statusLabel}
                     </span>

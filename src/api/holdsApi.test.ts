@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { holdErrorAction, holdExpiryLabel, newIdempotencyKey } from './holdsApi.ts';
+import { displayBookingStatus, holdErrorAction, holdExpiryLabel, newIdempotencyKey } from './holdsApi.ts';
 
 test('Khóa idempotency ngẫu nhiên, hợp lệ với server (chữ, số, _, -; tối đa 80)', () => {
   const a = newIdempotencyKey();
@@ -22,4 +22,12 @@ test('Lỗi giữ chỗ dẫn tới đúng hành động giao diện', () => {
 test('Giờ hết hạn hiển thị theo giờ Việt Nam', () => {
   assert.equal(holdExpiryLabel('2026-11-13T07:35:00.000Z'), '14:35 ngày 13/11');
   assert.equal(holdExpiryLabel('2026-11-13T17:10:00.000Z'), '00:10 ngày 14/11');
+});
+
+test('Trạng thái hiển thị: giữ chỗ còn hạn là chờ cọc, quá hạn là hết hạn dù cron chưa dọn', () => {
+  const now = Date.parse('2026-11-13T07:00:00Z');
+  assert.equal(displayBookingStatus('pending_deposit', '2026-11-13T07:10:00Z', now), 'pending');
+  assert.equal(displayBookingStatus('pending_deposit', '2026-11-13T06:59:00Z', now), 'expired');
+  assert.equal(displayBookingStatus('expired', null, now), 'expired');
+  assert.equal(displayBookingStatus('confirmed', null, now), 'confirmed');
 });

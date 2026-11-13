@@ -79,3 +79,12 @@ export function holdExpiryLabel(iso: string): string {
   const d = new Date(Date.parse(iso) + 7 * 3600_000);
   return `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} ngày ${pad(d.getUTCDate())}/${pad(d.getUTCMonth() + 1)}`;
 }
+
+/**
+ * Trạng thái để hiển thị đơn từ server: giữ chỗ còn hạn hiện như "pending" (chờ cọc);
+ * giữ chỗ đã quá hạn hiện "expired" ngay cả khi cron chưa kịp dọn.
+ */
+export function displayBookingStatus(status: string, holdExpiresAt?: string | null, now: number = Date.now()): string {
+  if (status === 'pending_deposit') return holdExpiresAt && Date.parse(holdExpiresAt) <= now ? 'expired' : 'pending';
+  return status;
+}

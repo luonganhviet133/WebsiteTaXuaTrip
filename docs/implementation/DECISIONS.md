@@ -18,6 +18,15 @@
 
 ---
 
+### D-N05-02: Giữ chỗ homestay (13/11/2026)
+
+- Giữ phòng cần đăng nhập (đơn gắn với tài khoản, khóa chống gửi trùng tính theo tài khoản).
+- Giữ chỗ 30 phút. Quá hạn chưa cọc: phòng tự không còn bị tính ngay theo `hold_expires_at`; cron 5 phút chuyển đơn sang `expired` và nhả phòng.
+- Một yêu cầu giữ chỗ ghi đơn + mọi đêm + lượt voucher trong **một batch D1**; thiếu đêm nào thì cả batch hủy (không giữ lẻ đêm).
+- Gửi lại cùng khóa trả lại đúng đơn cũ; cùng khóa nhưng khác nội dung → 422.
+- Voucher có giới hạn lượt: tính lượt đã dùng + lượt của đơn còn hiệu lực (giữ chỗ còn hạn, đã xác nhận, đã nhận phòng, hoàn tất). Giữ chỗ hết hạn/hủy trả lượt.
+- **Giả định chờ chủ dự án chốt (chính sách tiền):** cọc 30% tổng tiền, làm tròn lên tới đồng — lấy theo con số 30% đang có trên giao diện cũ. Chưa thu tiền thật; thanh toán cọc làm ở N06. Đổi tỉ lệ chỉ cần sửa `DEPOSIT_PERCENT` trong `src/server/bookings/holds.ts`.
+
 ### D-N05-01: Quy tắc tồn phòng (13/11/2026)
 
 - Tồn tính theo từng đêm, từng hạng phòng. Phòng trống của một khoảng ngày là đêm ít phòng nhất; đêm của ngày trả phòng không tính.

@@ -16,6 +16,44 @@
 
 ---
 
+## N05.2 — Giữ chỗ 30 phút nguyên tử (13/11/2026, nhánh `dot/N05.2`)
+
+**Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp N05.2".** Gộp sẽ chạy migration 0006 trên D1 production (đã kiểm: production có 0 đơn, dựng lại bảng `bookings` không mất dữ liệu).
+
+### Đã làm
+- `migrations_d1/0006_booking_holds.sql`: dựng lại `bookings` với trạng thái `pending_deposit`/`expired`, cột hạng phòng, số khách, giảm giá, `quote_id`, `listing_version_id`, `hold_expires_at`, `idempotency_key` (`UNIQUE(user_id, idempotency_key)`), nguồn khách, ghi chú; bảng `voucher_redemptions`, `batch_assertions`.
+- `src/server/bookings/holds.ts` (`HoldStore`): tạo giữ chỗ bằng một batch D1 (đơn + từng đêm + lượt voucher, mỗi lệnh INSERT có điều kiện còn phòng/còn lượt, cuối batch một dòng `CHECK(ok = 1)` → thiếu gì thì cả batch hủy); xác nhận/hủy bằng `UPDATE … WHERE` có điều kiện + kiểm `changes()`; `expireHolds`. Mã đơn ngẫu nhiên (`TX` + 8 ký tự), tổng tiền lấy từ báo giá server, kiểm lại báo giá hết hạn/hồ sơ đổi phiên bản/voucher.
+- API: `POST /api/bookings/holds` (đăng nhập; 201 mới, 200 gửi lại cùng khóa, 409 `SOLD_OUT`/`QUOTE_EXPIRED`/`LISTING_CHANGED`/`VOUCHER_USED_UP`, 422 khóa trùng khác nội dung), `POST /api/bookings/:id/cancel` (chủ đơn hoặc admin).
+- Voucher: số lượt đã dùng tính cả đơn còn hiệu lực.
+- Cron Worker `*/5 * * * *` (`scheduled` trong `src/worker.ts`) dọn giữ chỗ quá hạn.
+- Giao diện: chi tiết homestay gọi giữ chỗ server; chưa đăng nhập → nút "Đăng nhập để giữ phòng", mở hộp đăng nhập, giữ nguyên thông tin đã nhập; lỗi mạng bấm lại dùng lại đúng khóa; hết phòng/báo giá hết hạn/hồ sơ đổi → báo lỗi và lấy giá mới. Màn thành công hiện giờ giữ phòng tới (giờ VN) và tiền cọc 30% do server tính. "Chuyến đi của tôi" hiện "Giữ chỗ 30 phút · Chờ cọc" / "Hết hạn giữ chỗ" cho đơn server (trước đó sẽ hiện nhầm "Đã hủy").
+
+### Test mới
+- `src/server/bookings/holds.test.ts` (10): 20 yêu cầu tranh phòng cuối chỉ 1 thắng; giữ đủ mọi đêm hoặc không đêm nào; gửi lại cùng khóa/khác nội dung/khóa theo tài khoản; mã ngẫu nhiên, tổng từ báo giá, cọc làm tròn lên; 401/báo giá không có/SĐT sai/báo giá hết hạn/hồ sơ đổi; hết hạn với đồng hồ kiểm soát; xác nhận; hủy và quyền hủy; voucher 1 lượt với 2 đơn đồng thời; cron `scheduled`.
+- `src/server/api.contract.test.ts`: thêm ca trên **workerd + D1 local thật**: migration 0006, 20 yêu cầu đồng thời → đúng 1 `201`, 19 `SOLD_OUT`; phòng về 0; hủy 200, hủy lại 409, phòng về 1. Kiểm đỏ: bỏ điều kiện `CHECK` trong batch → ca này **trượt**; trả lại → đạt.
+- `src/api/holdsApi.test.ts` (4): khóa idempotency, phân loại lỗi, giờ hết hạn theo giờ VN, trạng thái hiển thị.
+
+### Lệnh đã chạy
+- `npm run typecheck`: 0 lỗi. `npm run build`: đạt. `npm test`: **220/220**. `npm run worker:dry-run`: đạt.
+- Workers Builds preview `dot-n05-2`: thành công; D1 preview có đủ 6 migration tới `0006_booking_holds.sql`, bảng/cột mới có mặt.
+
+### Kiểm tra trên preview
+- `/api/health` 200 (workerd, D1 ok); `POST /api/bookings/holds` không token → 401.
+- Chi tiết `tx-stay-7`, chưa đăng nhập: nút "Đăng nhập để giữ phòng"; bấm → hộp đăng nhập mở trên cùng, lỗi "Vui lòng đăng nhập để giữ phòng…", họ tên/SĐT còn nguyên.
+- 375/768/1280px: khung đặt phòng không tràn ngang, 0 chữ < 12px trong form.
+
+### Chưa kiểm chứng
+- **Luồng giữ chỗ khi đã đăng nhập chưa thao tác bằng giao diện thật**: preview chặn đăng nhập (chưa có secret Turnstile cho preview, widget báo lỗi). Luồng này đã kiểm ở API (Node + workerd), chưa xem bằng mắt màn "Đã Giữ Phòng".
+- Cron chưa chạy trên Cloudflare thật (chỉ gọi `scheduled` trong test); kiểm sau khi gộp ở mục Cron Triggers của Worker.
+- Chưa có nút hủy giữ chỗ trong "Chuyến đi của tôi" (API có sẵn); chủ cơ sở/admin chưa thấy đơn giữ chỗ ở dashboard (U5/N06).
+- Tỉ lệ cọc 30% là giả định (D-N05-02), chờ chủ dự án chốt.
+- Ngoài phạm vi, đã thấy: widget dự báo mây trang chủ có chữ 10–11px.
+
+### Đợt tiếp theo
+- **N05.3** quản lý đơn: bảng chuyển trạng thái, API xác nhận/từ chối/check-in/hoàn tất/hủy có quyền, QR có token kiểm server, màn "của tôi" và đối tác đọc đúng đơn (gồm nút hủy giữ chỗ).
+
+---
+
 ## N05.1 — Tồn phòng theo đêm (13/11/2026, nhánh `dot/N05.1`)
 
 **Trạng thái: ĐẠT, chờ chủ dự án "gộp N05.1".** Gộp sẽ chạy migration 0005 trên D1 production.
