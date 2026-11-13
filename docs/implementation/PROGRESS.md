@@ -16,6 +16,87 @@
 
 ---
 
+## N06.1 — Cọc theo D03: điều khoản, snapshot, VietQR, biên lai, xác nhận thủ công, 70% (13/11/2026, nhánh `dot/N06.1`)
+
+**Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp".** Nhánh tách từ `dot/N05.3` (N05.2, N05.3 chưa gộp) → gộp N06.1 sẽ chạy migration 0006–0008 trên D1 production (production có 0 đơn). **Xác nhận tiền là thủ công** (cơ sở bấm, có log); không có cổng thanh toán/webhook (D-N06-01).
+
+### Đã làm
+- **Một cấu hình cọc** `src/config/payment.ts` (30% làm tròn lên, 70% còn lại, hạn 70%, mốc nhắc, điều khoản D03). Gỡ mọi `0.3`/"50%" viết cứng (Chuyến đi của tôi, dashboard đối tác, xe khách, trang chi tiết, màn giữ chỗ thành công) và `buildVietQrPaymentPayload` (tài khoản "TA XUA TRIP ESCROW" mẫu gõ cứng, ảnh từ img.vietqr.io).
+- **VietQR tự tạo** `src/payment/vietqr.ts` (NAPAS/EMVCo, CRC16-CCITT), danh sách ngân hàng theo mã BIN của NHNN.
+- `migrations_d1/0008_payments.sql`: `listing_payout_accounts`, `booking_payments` (snapshot), `payment_receipts`, `bookings.balance_confirmed_at/by`, `notifications.dedupe_key` (chỉ mục duy nhất có điều kiện).
+- `PaymentStore` + API:
+  - tài khoản nhận cọc của cơ sở (chủ cơ sở/admin);
+  - `GET /api/bookings/:id/payment`; `accept-terms` (chụp snapshot một lần; cơ sở đổi tài khoản sau đó không đổi đơn);
+  - biên lai (khách chủ đơn; kiểm byte đầu ảnh; ≤ 5 MB; ≤ 3 ảnh/khoản; R2 riêng tư; xem có kiểm quyền, `nosniff`, `no-store`);
+  - `confirm-balance` (batch có điều kiện + `changes()`; bấm lặp/đồng thời chỉ ghi một lần);
+  - nhắc 70% ở mốc 48 giờ/30 giờ (cron Worker, mỗi mốc một lần).
+- Vòng đời: thao tác **nhả phòng** (`release`) — chủ cơ sở/admin, chỉ khi quá hạn 70% và chưa xác nhận đủ; lý do D03 ghi vào đơn; báo khách. Danh sách đơn của đối tác có số biên lai và cờ **cần đối soát** (biên lai cọc đến khi giữ chỗ đã hết hạn — không tự xác nhận lại phòng).
+- Worker: R2 `PRIVATE_BUCKET` cho biên lai; Express (dev) lưu `.data/private`.
+- **Giao diện**
+  - Chuyến đi của tôi → "Thanh toán": điều khoản + tick → tài khoản cơ sở, mã VietQR (tạo trong trình duyệt), số tiền, nội dung (nút chép) → gửi ảnh biên lai; trạng thái "cơ sở đã xác nhận nhận cọc / nhận đủ 70%", hạn 70%, cảnh báo quá hạn. Khối "Thông báo mới" (nhắc 70%, nhận đủ, bị nhả phòng/từ chối).
+  - Dashboard đối tác: mục "4. Tài Khoản Nhận Cọc" lưu server (thay khối mẫu cũ); khối đơn: xem biên lai, "Đã nhận đủ 70%", "Nhả phòng (quá hạn 70%)" có bước xác nhận, "Cần đối soát", nhắc khi chưa có tài khoản.
+
+### Test mới
+- `src/payment/payment.test.ts` (8):
+  - cọc 30% và 50% cùng công thức;
+  - **không còn tỉ lệ cọc viết cứng trong components**;
+  - hạn và mốc nhắc theo giờ VN;
+  - nội dung không dấu;
+  - CRC (`123456789` → 29B1, mã tĩnh công khai);
+  - VietQR **khớp từng ký tự chuỗi mẫu công bố**;
+  - ràng buộc số tiền/nội dung; mã BIN.
+- `src/server/payments/payments.api.test.ts` (8):
+  - quyền tài khoản nhận cọc;
+  - điều khoản trước thông tin chuyển cọc;
+  - snapshot không đổi khi đổi tài khoản; chủ cơ sở thấy cùng số liệu;
+  - biên lai giả (415), quá 5 MB (413), sai người (403), chủ cơ sở không nộp thay, 70% trước khi xác nhận cọc (409), quá số lượng (409, ảnh bị xóa khỏi kho), xem chéo (403);
+  - tải biên lai không đổi trạng thái;
+  - khách không tự xác nhận; xác nhận 70% đồng thời chỉ một lần; khách thấy xác nhận;
+  - nhả phòng trước hạn bị chặn, sau hạn thì trả phòng và báo khách; đã trả đủ thì không nhả;
+  - nhắc 48 giờ/30 giờ mỗi mốc một lần, đơn đã trả đủ không bị nhắc;
+  - biên lai đến khi giữ chỗ hết hạn → cần đối soát, không xác nhận được.
+- Kiểm đỏ: bỏ `changes() = 1` trong xác nhận 70% → ca đồng thời **trượt**; bỏ khóa chống trùng của nhắc → ca nhắc **trượt**; trả lại → đạt.
+- `lifecycle.test.ts` (+1 nhả phòng), `bookingsApi.test.ts` (nút đối tác theo 70%/quá hạn).
+- workerd + D1 + **R2 local thật**:
+  - tài khoản nhận cọc; điều khoản → snapshot (tên không dấu, cọc + 70% = tổng);
+  - biên lai PNG lưu R2 và đọc lại đúng từng byte; chuỗi không phải ảnh → 415;
+  - xác nhận cọc và 70% hiện với khách.
+- Chạy câu SQL nhắc (`printf('%,d')`, `julianday('…Z')`, `strftime`) trên D1 local: ra `700.000`, lệch 0, `19/11`.
+
+### Lệnh đã chạy
+- `npm run typecheck`: 0 lỗi. `npm run build`: đạt. `npm test`: **258/258**. `npm run worker:dry-run`: đạt.
+- Workers Builds preview `dot-n06-1`: thành công; D1 preview chạy tới `0008_payments.sql`, đủ bảng/cột/chỉ mục mới.
+- Preview (chưa đăng nhập): API thanh toán mới trả 401; binding R2 riêng tư có mặt. Bản build không còn `img.vietqr.io`, "ESCROW", số tài khoản mẫu.
+
+### Kiểm tra giao diện (Worker thật chạy tại máy build: wrangler dev + D1/R2 local, Chrome headless)
+- **Chủ cơ sở**
+  - Chưa có tài khoản thì hiện nhắc; nhập Vietcombank qua form → lưu, tên thành "CHU DOC MO".
+- **Khách**
+  - Chưa tick thì không thấy số tài khoản, nút khóa; tick → khối chuyển cọc.
+  - **Giải mã ảnh QR**: BIN 970436, TK 00110044556, 390.000 đ (30% của 1.300.000), nội dung "TX… COC", CRC tính lại khớp.
+  - File giả → "Chỉ nhận ảnh JPG, PNG hoặc WebP."; ảnh thật → gửi được, hiện ảnh, ghi rõ chưa phải đã trả.
+- **Chủ cơ sở**
+  - Xem được ảnh biên lai; "Đã nhận cọc" → "Đã nhận đủ 70%" → hết nút.
+  - Đơn nhận phòng hôm nay: "70%: QUÁ HẠN" + "Nhả phòng" → bước cảnh báo → "Đã hủy" với lý do D03.
+- **Khách thấy**
+  - Thông báo bị nhả phòng và nhận đủ 70%; "✓ Cơ sở đã xác nhận nhận cọc… nhận đủ 70%…"; thẻ đơn hiện lý do hủy.
+- 375/768/1280px (form tài khoản, khối thanh toán của khách, khối đơn của đối tác): không tràn ngang, 0 chữ < 12px, không phần tử lọt ra ngoài.
+- Phát hiện và đã sửa trong lúc kiểm: nội dung chuyển khoản bị ngắt giữa chữ ở 375px ("CO / C"), khách không có chỗ đọc thông báo (thêm "Thông báo mới").
+
+### Chưa kiểm chứng / chưa làm
+- **Chưa thử chuyển khoản thật bằng app ngân hàng** quét mã VietQR (mới kiểm chuỗi theo mẫu công bố + giải mã ảnh). Nên thử một giao dịch nhỏ vào tài khoản của chính chủ dự án trước khi mở cho khách.
+- Chưa đăng nhập được trên preview (thiếu secret Turnstile); luồng đã kiểm bằng Worker chạy tại máy build.
+- Giờ nhận phòng 14:00 dùng để tính hạn 70% là **giả định** (D-N06-01).
+- Đơn "cần đối soát" chỉ được đánh dấu; chưa có quy trình hoàn/giữ tiền (chờ chủ dự án chốt nếu cần).
+- Nhắc 70% mới hiện trong "Chuyến đi của tôi"; chưa gửi Web Push/email/Zalo (Q3, chờ chọn dịch vụ).
+- Luồng xe khách/dịch vụ khác vẫn là dữ liệu mẫu trong trình duyệt (N09); `api.qrserver.com` còn ở các mã mẫu đó (không chứa thông tin tài khoản/thanh toán).
+- Mục "Bằng chứng chuyển khoản & đơn" cũ trong dashboard đối tác vẫn đọc dữ liệu mẫu (đơn homestay thật đã ở khối "Đơn đặt phòng").
+
+### Đợt tiếp theo
+- **N06.2** sổ phí và Điểm Mây chỉ ghi thêm, không lặp theo sự kiện; hoàn tất một lần; đổi điểm ra quà dùng được.
+
+---
+
 ## N05.3 — Vòng đời đơn: trạng thái, lịch sử, QR nhận phòng, đơn của cơ sở (13/11/2026, nhánh `dot/N05.3`)
 
 **Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp".** Nhánh tách từ `dot/N05.2` (chưa gộp) nên gộp N05.3 sẽ kéo theo N05.2 và chạy migration 0006 + 0007 trên D1 production (production có 0 đơn).

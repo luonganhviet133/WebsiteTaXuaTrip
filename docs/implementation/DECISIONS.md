@@ -18,6 +18,19 @@
 
 ---
 
+### D-N06-01: Thanh toán theo D03 (13/11/2026)
+
+- **Không có cổng thanh toán, không webhook.** Khách chuyển thẳng vào tài khoản của cơ sở; cơ sở tự kiểm tài khoản rồi bấm xác nhận (thủ công, ghi `booking_events`). Ảnh biên lai chỉ là bằng chứng, **không** làm đơn thành đã trả.
+- Một cấu hình duy nhất `src/config/payment.ts`: cọc 30% (làm tròn lên tới đồng), 70% còn lại; mọi màn và server đọc từ đây.
+- Tài khoản nhận cọc theo từng cơ sở, chủ cơ sở/admin nhập; ngân hàng chọn trong danh sách mã BIN của NHNN (cấp đến 31/12/2023); tên chủ tài khoản lưu không dấu, in hoa.
+- Khách phải tick điều khoản D03 (phiên bản `D03-2026-11-13`) mới thấy tài khoản/mã QR. Lúc tick, server chụp **snapshot**: người nhận, tổng, cọc, 70%, nội dung chuyển khoản (`<mã đơn> COC` / `<mã đơn> CON LAI`), hạn 70%. Cơ sở đổi tài khoản sau đó không ảnh hưởng đơn đã chụp.
+- Mã VietQR (chuẩn NAPAS/EMVCo) tạo trong mã nguồn, không gửi dữ liệu ra dịch vụ ngoài.
+- Biên lai: chỉ khách chủ đơn gửi; ảnh JPEG/PNG/WebP nhận theo byte đầu file; ≤ 5 MB; ≤ 3 ảnh mỗi khoản; lưu R2 riêng tư; chỉ khách, chủ cơ sở của đơn và admin xem.
+- **Hạn 70% = 24 giờ trước 14:00 ngày nhận phòng (giờ VN).** 14:00 lấy từ giao diện hiện có (phiếu nhận phòng ghi "từ 14:00") — **giả định chờ chủ dự án xác nhận**; đổi ở `CHECKIN_HOUR_VN`.
+- Nhắc khách trả 70% ở mốc 48 giờ và 30 giờ trước giờ nhận phòng, mỗi mốc một lần (cron 5 phút), hiện trong "Chuyến đi của tôi".
+- Quá hạn 70% mà cơ sở chưa xác nhận nhận đủ: chủ cơ sở/admin được **nhả phòng** (đơn hủy, phòng mở lại, cọc không hoàn). Đã xác nhận đủ thì không nhả được.
+- Biên lai cọc gửi khi giữ chỗ còn hạn nhưng giữ chỗ hết hạn trước khi cơ sở xác nhận: đơn hiện **"Cần đối soát"** cho cơ sở; hệ thống **không** tự xác nhận lại hay giữ lại phòng (phòng có thể đã bán cho người khác). Cách xử lý tiền (hoàn/giữ) do cơ sở và khách tự thỏa thuận — chưa có quy trình tự động, chờ chủ dự án chốt nếu cần.
+
 ### D-N05-03: Vòng đời đơn (13/11/2026)
 
 - Chỉ server đổi trạng thái, theo bảng `src/server/bookings/lifecycle.ts`:
