@@ -16,6 +16,11 @@
 
 ---
 
+## Hotfix lịch sao lưu (14/11/2026, nhánh `hotfix/cron-sao-luu`)
+- Lỗi: cron `17 20 * * 6`. Cloudflare đánh số thứ trong tuần 1 = Chủ nhật … 7 = thứ Bảy, nên `6` là thứ Sáu (UTC): bản sao lưu "hằng tuần" chạy 03:17 sáng thứ Bảy giờ VN thay vì Chủ nhật. Phát hiện khi kiểm production: bản đầu tiên chạy lúc 03:17 14/11/2026, 378 dòng, thành công.
+- Sửa: `17 20 * * SAT` (viết chữ như tài liệu Cloudflare khuyên). Test mới buộc chuỗi cron trong `wrangler.toml` khớp đúng chuỗi mà worker so sánh.
+- Kiểm: typecheck, 344/344 test, build, dry-run.
+
 ## R4 — Khóa tính năng chưa xong, bỏ số liệu giả, áp Design System (13/11/2026, nhánh `dot/R4`)
 
 Design System (đã duyệt 13/11/2026): https://claude.ai/artifact/F5Z985s8p3TnYwjVA7BmPL
