@@ -468,7 +468,16 @@ export class DatabaseEngine {
     return res.meta.changes ?? 0;
   }
 
-  // --- Atomic Admin Password Update & Session Invalidation (S3) ---
+  // --- Đổi mật khẩu của chính người dùng: KHÔNG đụng vai trò; thu hồi mọi phiên (hotfix 13/11/2026) ---
+  public async updatePasswordAndRevokeSessions(userId: string, newPasswordHash: string): Promise<void> {
+    const now = new Date().toISOString();
+    await this.d1.batch([
+      this.d1.prepare('UPDATE profiles SET password_hash = ?, updated_at = ? WHERE id = ?').bind(newPasswordHash, now, userId),
+      this.d1.prepare('UPDATE user_sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL').bind(now, userId),
+    ]);
+  }
+
+  // --- Atomic Admin Password Update & Session Invalidation (S3) — CHỈ dùng cho bootstrap admin ---
   public async updateAdminPasswordAndRevokeSessions(userId: string, newPasswordHash: string): Promise<void> {
     const now = new Date().toISOString();
     await this.d1.batch([
