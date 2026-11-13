@@ -41,6 +41,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole>(initialRole);
   const [mode, setMode] = useState<'login' | 'register' | 'forgot'>(initialMode);
+  // R2: mã đặt lại do Tà Xùa Trip cấp qua điện thoại (khi chưa có email, hoặc tài khoản cũ chỉ có SĐT)
+  const [codeFromAdmin, setCodeFromAdmin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -309,6 +311,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setForgotCode('');
     setForgotNewPassword('');
     setForgotStep('email');
+    setCodeFromAdmin(false);
     setMode('login');
   };
 
@@ -534,21 +537,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {mode === 'forgot' ? (
             <form onSubmit={handleForgotSubmit} className="space-y-3">
               <p className="text-sm font-extrabold text-brand-800">Lấy lại mật khẩu</p>
-              {authConfig && !authConfig.emailEnabled ? (
-                <p className="text-xs text-slate-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
-                  Đặt lại mật khẩu qua email sẽ hoạt động sau khi Tà Xùa Trip bật dịch vụ email (sắp ra mắt). Hiện tại vui lòng liên hệ Tà Xùa Trip để được hỗ trợ.
-                </p>
+              {authConfig && !authConfig.emailEnabled && !codeFromAdmin ? (
+                <>
+                  <p className="text-xs text-slate-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
+                    Đặt lại mật khẩu qua email sẽ hoạt động sau khi Tà Xùa Trip bật dịch vụ email (sắp ra mắt). Hiện tại vui lòng liên hệ Tà Xùa Trip: sau khi xác nhận bạn là chủ tài khoản, chúng tôi sẽ đọc cho bạn một mã 6 số.
+                  </p>
+                  <button type="button" onClick={() => { setCodeFromAdmin(true); setForgotStep('code'); setFormError(null); }} className={`w-full py-2.5 px-4 rounded-xl text-white font-extrabold text-xs cursor-pointer ${currentTheme.buttonBg}`}>
+                    Tôi đã có mã từ Tà Xùa Trip
+                  </button>
+                </>
               ) : (
                 <>
                   <div>
-                    <label htmlFor="forgot-email" className="block text-xs font-bold text-slate-700 mb-1">Email đã đăng ký:</label>
+                    <label htmlFor="forgot-email" className="block text-xs font-bold text-slate-700 mb-1">{codeFromAdmin ? 'Email hoặc số điện thoại đã đăng ký:' : 'Email đã đăng ký:'}</label>
                     <input
                       id="forgot-email"
-                      type="email"
-                      autoComplete="email"
+                      type={codeFromAdmin ? 'text' : 'email'}
+                      autoComplete={codeFromAdmin ? 'username' : 'email'}
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
-                      disabled={forgotStep === 'code'}
+                      disabled={forgotStep === 'code' && !codeFromAdmin}
                       className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl disabled:bg-slate-50"
                       required
                     />
@@ -556,7 +564,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   {forgotStep === 'code' ? (
                     <>
                       <div>
-                        <label htmlFor="forgot-code" className="block text-xs font-bold text-slate-700 mb-1">Mã 6 số trong email:</label>
+                        <label htmlFor="forgot-code" className="block text-xs font-bold text-slate-700 mb-1">{codeFromAdmin ? 'Mã 6 số Tà Xùa Trip cung cấp:' : 'Mã 6 số trong email:'}</label>
                         <input
                           id="forgot-code"
                           inputMode="numeric"
@@ -587,14 +595,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <button type="submit" disabled={isLoading} className={`w-full py-2.5 px-4 rounded-xl text-white font-extrabold text-xs cursor-pointer disabled:opacity-60 ${currentTheme.buttonBg}`}>
                     {forgotStep === 'email' ? 'Gửi mã về email' : 'Đặt mật khẩu mới'}
                   </button>
-                  {forgotStep === 'code' && (
+                  {forgotStep === 'code' && !codeFromAdmin && (
                     <button type="button" onClick={() => { setForgotStep('email'); setSuccessNotice(null); }} className="w-full text-xs text-slate-600 hover:text-brand-800 cursor-pointer">
                       Chưa nhận được mã? Gửi lại
                     </button>
                   )}
+                  {forgotStep === 'email' && (
+                    <button type="button" onClick={() => { setCodeFromAdmin(true); setForgotStep('code'); setFormError(null); }} className="w-full text-xs text-slate-600 hover:text-brand-800 cursor-pointer">
+                      Tôi đã có mã từ Tà Xùa Trip
+                    </button>
+                  )}
                 </>
               )}
-              <button type="button" onClick={() => { setMode('login'); setFormError(null); }} className="w-full text-xs font-bold text-brand-800 cursor-pointer">
+              <button type="button" onClick={() => { setMode('login'); setFormError(null); setCodeFromAdmin(false); setForgotStep('email'); }} className="w-full text-xs font-bold text-brand-800 cursor-pointer">
                 ← Quay lại đăng nhập
               </button>
             </form>
