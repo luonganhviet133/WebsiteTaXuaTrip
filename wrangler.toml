@@ -29,6 +29,10 @@ bucket_name = "taxua-trip-private"
 [vars]
 NODE_ENV = "production"
 
+# N05.2 — mỗi 5 phút dọn giữ chỗ quá hạn (src/worker.ts scheduled). Cron miễn phí trên gói Workers Free.
+[triggers]
+crons = ["*/5 * * * *"]
+
 # Bản xem trước cho các nhánh khác main (Workers Builds chạy `npx wrangler preview`).
 # Dùng tài nguyên riêng, không đụng D1/R2 production. NODE_ENV = production để đăng ký/đăng nhập
 # bị chặn (503) cho tới khi thêm TURNSTILE_SECRET_KEY ở mục Previews Base của Worker.

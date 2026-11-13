@@ -306,6 +306,19 @@ export interface Booking {
   attribution?: import('../search/attribution.ts').Attribution;
   /** N04.2: mã báo giá server dùng khi đặt (N05 kiểm lại khi giữ chỗ) */
   quoteId?: string;
+  /** N05.3: mã đặt chỗ hiển thị (TX…) khi đơn đọc từ server */
+  bookingCode?: string;
+  /** N05.3: đơn server ghi người lớn/trẻ em thay cho guestsCount */
+  adults?: number | null;
+  children?: number | null;
+  /** N05.3: lý do hủy/từ chối (server) */
+  cancelReason?: string | null;
+  /** N05.2: mã đơn nội bộ trên server (id hiển thị là mã đặt chỗ TX…) */
+  serverBookingId?: string;
+  /** N05.2: giữ phòng đến thời điểm này; quá hạn chưa cọc thì phòng tự trả */
+  holdExpiresAt?: string;
+  /** N05.2: tiền cọc 30% do server tính */
+  depositAmount?: number;
   listingId: string;
   listingTitle: string;
   category: ServiceCategory;

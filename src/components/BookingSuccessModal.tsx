@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { Booking } from '../types/index.ts';
 import { formatVND, calculateMemberPoints } from '../utils/rules.ts';
+import { holdExpiryLabel } from '../api/holdsApi.ts';
+import { DEPOSIT_PERCENT } from '../config/payment.ts';
 
 interface BookingSuccessModalProps {
   booking: Booking | null;
@@ -44,15 +46,42 @@ export const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
           <CheckCircle2 className="w-10 h-10" />
         </div>
 
-        <h2 className="text-xl sm:text-2xl font-black text-white mb-1">
-          Đã Tạo Phiếu Đặt Chỗ
-        </h2>
-        <DemoNotice dark className="mb-6 text-left">
-          Phiếu này chỉ lưu trên trình duyệt của bạn, chưa gửi tới chủ cơ sở và chưa giữ phòng.
-          Vui lòng gọi hoặc nhắn Zalo cho cơ sở để xác nhận phòng và đặt cọc.
-        </DemoNotice>
+        {booking.holdExpiresAt ? (
+          <>
+            <h2 className="text-xl sm:text-2xl font-black text-white mb-1">Đã Giữ Phòng</h2>
+            <div className="mb-6 rounded-2xl border border-amber-400/40 bg-amber-500/10 p-3 text-left text-xs leading-relaxed text-amber-100">
+              <p className="font-bold">
+                Phòng được giữ đến <span className="text-amber-300">{holdExpiryLabel(booking.holdExpiresAt)}</span> (30 phút).
+              </p>
+              {typeof booking.depositAmount === 'number' && (
+                <p className="mt-1">
+                  Tiền cọc {DEPOSIT_PERCENT}%: <strong className="text-amber-300">{formatVND(booking.depositAmount)}</strong>, chuyển thẳng vào tài khoản
+                  của cơ sở. Mở "Chuyến đi của tôi" → "Thanh toán" để đọc điều khoản và xem thông tin chuyển khoản. Chưa được cơ sở
+                  xác nhận nhận cọc trước giờ trên thì phòng tự được trả lại.
+                </p>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            <h2 className="text-xl sm:text-2xl font-black text-white mb-1">
+              Đã Tạo Phiếu Đặt Chỗ
+            </h2>
+            <DemoNotice dark className="mb-6 text-left">
+              Phiếu này chỉ lưu trên trình duyệt của bạn, chưa gửi tới chủ cơ sở và chưa giữ phòng.
+              Vui lòng gọi hoặc nhắn Zalo cho cơ sở để xác nhận phòng và đặt cọc.
+            </DemoNotice>
+          </>
+        )}
 
-        {/* QR Code Container */}
+        {/* N05.3: đơn trên server chưa có QR ở bước này; QR nhận phòng hiện trong "Chuyến đi của tôi" khi cơ sở xác nhận */}
+        {booking.holdExpiresAt ? (
+          <div className="bg-white p-4 rounded-2xl max-w-[260px] mx-auto mb-4 shadow-xl text-slate-900">
+            <div className="text-xs text-slate-600">Mã đặt chỗ</div>
+            <div className="font-mono text-xl font-black tracking-wider">{booking.bookingCode || booking.id}</div>
+            <div className="text-xs text-slate-600 mt-1">Mã QR nhận phòng có trong "Chuyến đi của tôi" sau khi cơ sở xác nhận đã nhận cọc.</div>
+          </div>
+        ) : (
         <div className="bg-white p-4 rounded-2xl max-w-[200px] mx-auto mb-4 shadow-xl">
           <img
             src={booking.qrCodeUrl}
@@ -63,6 +92,7 @@ export const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
             {booking.id}
           </div>
         </div>
+        )}
 
         {/* Cloud points earned alert */}
         <div className="bg-gradient-to-r from-teal-500/20 via-sky-500/20 to-indigo-500/20 border border-teal-500/30 rounded-2xl p-3 mb-6 flex items-center justify-center gap-2 text-xs font-bold text-teal-300">

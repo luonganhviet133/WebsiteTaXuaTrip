@@ -62,3 +62,12 @@ test('Bộ lọc trong query: đọc và ghi khớp nhau', () => {
   assert.equal(buildQuery({}), '');
   assert.equal(buildQuery({ area: 'all' }), '');
 });
+
+test('N05.3: đường dẫn QR nhận phòng mở màn đối tác kèm mã', () => {
+  const r = parseLocation('/doi-tac/nhan-phong', '?ma=abc_DEF-123');
+  assert.equal(r.tab, 'partner');
+  assert.equal(r.checkinToken, 'abc_DEF-123');
+  assert.equal(r.notFound, undefined);
+  assert.equal(parseLocation('/doi-tac/nhan-phong', '').checkinToken, '');
+  assert.equal(parseLocation('/doi-tac', '').checkinToken, undefined);
+});

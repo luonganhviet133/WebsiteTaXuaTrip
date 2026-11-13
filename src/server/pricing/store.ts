@@ -4,6 +4,9 @@
 import type { D1Database } from '../d1.ts';
 import type { StayQuote, VoucherRecord } from './quote.ts';
 
+// Giống ACTIVE_BOOKING_SQL trong bookings/holds.ts (không import để tránh vòng phụ thuộc).
+const ACTIVE_BOOKING_SQL = `(b.status IN ('confirmed','checked_in','completed') OR (b.status = 'pending_deposit' AND b.hold_expires_at > ?))`;
+
 const HOLIDAYS_KEY = 'pricing_holidays';
 
 interface VoucherRow {
@@ -45,13 +48,23 @@ export const normalizeVoucherCode = (code: unknown) => (typeof code === 'string'
 export class VoucherStore {
   constructor(private d1: D1Database) {}
 
-  async get(code: string) {
-    const r = await this.d1.prepare('SELECT * FROM vouchers WHERE code = ?').bind(normalizeVoucherCode(code)).first<VoucherRow>();
+  /**
+   * used_count (lượt ghi tay/cũ) + lượt của đơn còn hiệu lực (N05.2: giữ chỗ còn hạn, đã xác nhận trở đi).
+   * Giữ chỗ hết hạn/hủy tự trả lượt.
+   */
+  private selectWithUsage = `SELECT v.code, v.title, v.discount_type, v.discount_value, v.max_discount, v.min_booking_amount,
+      v.applicable_category, v.applicable_listing_id, v.valid_from, v.valid_until, v.is_active, v.usage_limit, v.description,
+      v.used_count + (SELECT COUNT(*) FROM voucher_redemptions r JOIN bookings b ON b.id = r.booking_id
+                      WHERE r.code = v.code AND ${ACTIVE_BOOKING_SQL}) AS used_count
+    FROM vouchers v`;
+
+  async get(code: string, now: Date = new Date()) {
+    const r = await this.d1.prepare(`${this.selectWithUsage} WHERE v.code = ?`).bind(now.toISOString(), normalizeVoucherCode(code)).first<VoucherRow>();
     return r ? toVoucher(r) : null;
   }
 
-  async list() {
-    const res = await this.d1.prepare('SELECT * FROM vouchers ORDER BY created_at DESC').all<VoucherRow>();
+  async list(now: Date = new Date()) {
+    const res = await this.d1.prepare(`${this.selectWithUsage} ORDER BY v.created_at DESC`).bind(now.toISOString()).all<VoucherRow>();
     return (res.results || []).map(toVoucher);
   }
 

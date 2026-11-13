@@ -25,6 +25,10 @@ import { handleListingRoutes } from './listings/routes.ts';
 import { ListingStore } from './listings/store.ts';
 import { handlePricingRoutes } from './pricing/routes.ts';
 import { handleInventoryRoutes } from './inventory/routes.ts';
+import { handleBookingRoutes } from './bookings/routes.ts';
+import { BookingLifecycle } from './bookings/store.ts';
+import { handlePaymentRoutes } from './payments/routes.ts';
+import type { PrivateStorage } from './payments/storage.ts';
 
 export interface ApiContext {
   db: DatabaseEngine;
@@ -39,6 +43,8 @@ export interface ApiContext {
   runtime: 'workerd' | 'node';
   /** Chỉ Worker có binding R2. */
   storage?: { mediaBucket: boolean; privateBucket: boolean };
+  /** N06.1: kho biên lai riêng tư (Worker: R2 PRIVATE_BUCKET; Express: thư mục; test: bộ nhớ). */
+  privateStorage?: PrivateStorage;
 }
 
 type Role = AuthenticatedUser['role'];
@@ -176,7 +182,8 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
   if (route === 'GET /api/user/bookings') {
     const user = await requireRole(request, ctx);
     if (user instanceof Response) return user;
-    return json({ success: true, data: await ctx.db.getBookingsByUserId(user.id) });
+    // N05.3: đọc từ server với đủ thông tin đơn (mọi thiết bị thấy như nhau)
+    return json({ success: true, data: await new BookingLifecycle(ctx.db.d1).listForUser(user.id) });
   }
 
   const bookingMatch = method === 'GET' && pathname.match(/^\/api\/user\/bookings\/([^/]+)$/);
@@ -192,6 +199,29 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
     }
     return json({ success: true, data: booking });
   }
+
+  // ==================== THANH TOÁN (N06.1, D03) ====================
+  const paymentResponse = await handlePaymentRoutes(request, pathname, {
+    d1: ctx.db.d1,
+    json,
+    readJson,
+    requireRole: (allowed) => requireRole(request, ctx, allowed),
+    rateLimit: (key, max) => checkRateLimit(key, max, 60 * 1000).allowed,
+    clientIp: ctx.clientIp,
+    privateStorage: ctx.privateStorage,
+  });
+  if (paymentResponse) return paymentResponse;
+
+  // ==================== GIỮ CHỖ (N05.2) ====================
+  const bookingResponse = await handleBookingRoutes(request, pathname, {
+    d1: ctx.db.d1,
+    json,
+    readJson,
+    requireRole: (allowed) => requireRole(request, ctx, allowed),
+    rateLimit: (key, max) => checkRateLimit(key, max, 60 * 1000).allowed,
+    clientIp: ctx.clientIp,
+  });
+  if (bookingResponse) return bookingResponse;
 
   // ==================== TỒN PHÒNG THEO ĐÊM (N05.1) ====================
   // Đặt trước route danh bạ để /api/partner/listings/:id/inventory không bị route sửa hồ sơ bắt nhầm.

@@ -39,6 +39,8 @@ import { Navbar } from './components/Navbar.tsx';
 import { HeroSection, HeroConsoleMode } from './components/HeroSection.tsx';
 import { ListingCard } from './components/ListingCard.tsx';
 import { ListingDetailModal } from './components/ListingDetailModal.tsx';
+import { PartnerBookingsPanel } from './components/PartnerBookingsPanel.tsx';
+import { AdminReconciliationPanel } from './components/AdminReconciliationPanel.tsx';
 import { BusBookingModal } from './components/BusBookingModal.tsx';
 import { CloudForecastWidget } from './components/CloudForecastWidget.tsx';
 import { AIItineraryGenerator } from './components/AIItineraryGenerator.tsx';
@@ -741,7 +743,7 @@ export default function App() {
       return;
     }
     if (route.redirectTo || route.notFound) return;
-    const qs = route.myTrips
+    const qs = route.myTrips || route.checkinToken !== undefined
       ? location.search
       : route.listingId
         ? buildQuery({ checkIn: stayCheckIn, checkOut: stayCheckOut, adults: stayAdults, children: stayChildren, rooms: stayRooms, area: selectedArea })
@@ -4112,6 +4114,15 @@ export default function App() {
                 onCheckInBooking={handleCheckInBooking}
                 onCompleteBooking={handleCompleteBooking}
                 billingEnabled={billingEnabled}
+                bookingsPanel={
+                  <PartnerBookingsPanel
+                    listingId={partnerListing.id}
+                    initialCheckinToken={route.checkinToken || undefined}
+                    onCheckinFinished={() => {
+                      if (route.checkinToken !== undefined) navigate(pathForTab('partner'), { replace: true });
+                    }}
+                  />
+                }
               />
             ) : (
               <div className="max-w-2xl mx-auto my-12 px-4">
@@ -4198,6 +4209,7 @@ export default function App() {
           )
         )}
 
+        {currentTab === 'admin' && currentUser?.role === 'admin' && <AdminReconciliationPanel />}
         {currentTab === 'admin' && (
           currentUser?.role === 'admin' ? (
             <AdminDashboard
@@ -4430,9 +4442,10 @@ export default function App() {
           onClose={() => setSelectedListingDetail(null)}
           onBookSuccess={handleBookingSuccess}
           onAddReview={handleAddReview}
-          onCompleteBooking={handleCompleteBooking}
           onOpenDirectChat={(l) => setActiveDirectChatListing(l)}
           onClaimListing={(l) => setActiveClaimListing(l)}
+          isLoggedIn={!!currentUser}
+          onRequireLogin={() => handleOpenAuthModal('traveler', 'login')}
         />
       )}
 
@@ -4506,11 +4519,6 @@ export default function App() {
         onClose={() => setIsMyTripsModalOpen(false)}
         onRequireLogin={() => setIsAuthModalOpen(true)}
         onSelectListingForReview={(l) => setSelectedListingDetail(l)}
-        onSimulateCompleteBooking={handleCompleteBooking}
-        onConfirmDepositPaid={(bookingId) => {
-          handleConfirmBooking(bookingId);
-          showToast('Đã ghi nhận chuyển khoản cọc VietQR! Đơn đặt đã chuyển sang Đã xác nhận.');
-        }}
         onOpenDispute={(b) => setActiveDisputeBooking(b)}
         onOpenReviewModal={(b) => setActiveReviewBooking(b)}
       />

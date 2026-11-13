@@ -18,6 +18,64 @@
 
 ---
 
+### D-N06-02: Đối soát cọc (chủ dự án chốt 13/11/2026)
+
+- **Khi nào mở:** khách đã gửi biên lai cọc nhưng đơn **hết hạn giữ chỗ** hoặc **bị cơ sở từ chối** trước khi cơ sở xác nhận nhận cọc. Không mở khi khách tự hủy hoặc cơ sở nhả phòng vì quá hạn 70% (D03: cọc không hoàn).
+- **Cơ sở** trong **3 ngày**:
+  - **hoàn đủ** — bắt buộc tải ảnh chứng từ chuyển hoàn và ghi số tiền đã hoàn; hoặc
+  - **đề nghị giữ tiền** (vd chuyển sang ngày/phòng khác) — **chỉ giữ được khi khách bấm đồng ý**; khách từ chối thì quay về chờ hoàn.
+- **Khách:**
+  - xác nhận "Đã nhận lại tiền" thì kết thúc;
+  - báo "Chưa nhận được", hoặc cơ sở quá hạn 3 ngày chưa hoàn, thì khách **báo Tà Xùa Trip**, kèm ảnh (sao kê…).
+- **Admin** xem bằng chứng hai bên rồi ghi kết luận (bắt buộc ghi căn cứ):
+  - đã hoàn → kết thúc;
+  - cơ sở được giữ → kết thúc;
+  - cơ sở phải hoàn → mở lại, hạn mới 3 ngày.
+- **Hệ thống không chuyển tiền**; kết luận chỉ là ghi nhận.
+- **Bằng chứng lưu cho hai bên:**
+  - biên lai cọc của khách;
+  - chứng từ hoàn của cơ sở;
+  - ảnh khách gửi thêm (R2 riêng tư, mỗi bên ≤ 5 ảnh);
+  - số tiền, ghi chú từng bên;
+  - lịch sử từng bước (ai, lúc nào).
+- Nhắc: mở đối soát báo cả hai bên; quá hạn 3 ngày báo cả hai bên một lần mỗi hạn.
+
+### D-N06-01: Thanh toán theo D03 (13/11/2026)
+
+- **Không có cổng thanh toán, không webhook.** Khách chuyển thẳng vào tài khoản của cơ sở; cơ sở tự kiểm tài khoản rồi bấm xác nhận (thủ công, ghi `booking_events`). Ảnh biên lai chỉ là bằng chứng, **không** làm đơn thành đã trả.
+- Một cấu hình duy nhất `src/config/payment.ts`: cọc 30% (làm tròn lên tới đồng), 70% còn lại; mọi màn và server đọc từ đây.
+- Tài khoản nhận cọc theo từng cơ sở, chủ cơ sở/admin nhập; ngân hàng chọn trong danh sách mã BIN của NHNN (cấp đến 31/12/2023); tên chủ tài khoản lưu không dấu, in hoa.
+- Khách phải tick điều khoản D03 (phiên bản `D03-2026-11-13`) mới thấy tài khoản/mã QR. Lúc tick, server chụp **snapshot**: người nhận, tổng, cọc, 70%, nội dung chuyển khoản (`<mã đơn> COC` / `<mã đơn> CON LAI`), hạn 70%. Cơ sở đổi tài khoản sau đó không ảnh hưởng đơn đã chụp.
+- Mã VietQR (chuẩn NAPAS/EMVCo) tạo trong mã nguồn, không gửi dữ liệu ra dịch vụ ngoài.
+- Biên lai: chỉ khách chủ đơn gửi; ảnh JPEG/PNG/WebP nhận theo byte đầu file; ≤ 5 MB; ≤ 3 ảnh mỗi khoản; lưu R2 riêng tư; chỉ khách, chủ cơ sở của đơn và admin xem.
+- **Hạn 70% = 24 giờ trước 14:00 ngày nhận phòng (giờ VN)** — chủ dự án chốt 13/11/2026; cấu hình `CHECKIN_HOUR_VN`.
+- Nhắc khách trả 70% ở mốc 48 giờ và 30 giờ trước giờ nhận phòng, mỗi mốc một lần (cron 5 phút), hiện trong "Chuyến đi của tôi".
+- Quá hạn 70% mà cơ sở chưa xác nhận nhận đủ: chủ cơ sở/admin được **nhả phòng** (đơn hủy, phòng mở lại, cọc không hoàn). Đã xác nhận đủ thì không nhả được.
+- Biên lai cọc gửi khi giữ chỗ còn hạn nhưng đơn hết hạn/bị từ chối trước khi cơ sở xác nhận: mở **đối soát cọc** (D-N06-02); hệ thống **không** tự xác nhận lại hay giữ lại phòng.
+
+### D-N05-03: Vòng đời đơn (13/11/2026)
+
+- Chỉ server đổi trạng thái, theo bảng `src/server/bookings/lifecycle.ts`:
+  - Chờ cọc → Đã xác nhận: chủ cơ sở/admin bấm "Đã nhận cọc" (D03), chỉ khi giữ chỗ còn hạn.
+  - Chờ cọc → Đã hủy: chủ cơ sở/admin từ chối, **bắt buộc lý do** (khách thấy lý do).
+  - Đã xác nhận → Đã nhận phòng: chủ cơ sở/admin, **chỉ qua mã QR**, từ ngày nhận phòng tới trước ngày trả phòng (giờ VN).
+  - Đã nhận phòng → Hoàn tất: chủ cơ sở/admin. Chưa cộng điểm/thu phí (N06).
+  - Hủy: khách hủy được giữ chỗ còn hạn, hoặc đơn đã xác nhận trước ngày nhận phòng (cọc không hoàn, D03); admin hủy được trước khi nhận phòng.
+- **Chủ cơ sở chưa tự hủy đơn đã xác nhận** cho tới khi N06.1 làm quy tắc quá hạn 70% (D03); trường hợp cần nhả phòng thì nhờ admin.
+- Làm lại thao tác đã xong trả "đã làm" (200, `already: true`), không ghi lịch sử thêm.
+- Mỗi lần đổi trạng thái ghi `booking_events` (ai, vai trò, từ → đến, lý do, lúc nào), cả lúc giữ chỗ và hết hạn.
+- Mã QR nhận phòng: đường dẫn `/doi-tac/nhan-phong?ma=<256 bit ngẫu nhiên>`, tạo khi xác nhận, chỉ khách chủ đơn đọc được. Ảnh QR tạo trong trình duyệt. Mã sai/trái cơ sở/chưa tới ngày/quá ngày trả phòng bị chặn.
+- Báo chủ cơ sở (Q3) đợt này: chuông trong dashboard (bảng `notifications`, khi có giữ chỗ mới hoặc khách hủy) + nút mở Zalo/gọi khách. Web Push (cần khóa VAPID) và email (cần dịch vụ gửi mail) chờ chủ dự án chọn.
+
+### D-N05-02: Giữ chỗ homestay (13/11/2026)
+
+- Giữ phòng cần đăng nhập (đơn gắn với tài khoản, khóa chống gửi trùng tính theo tài khoản).
+- Giữ chỗ 30 phút. Quá hạn chưa cọc: phòng tự không còn bị tính ngay theo `hold_expires_at`; cron 5 phút chuyển đơn sang `expired` và nhả phòng.
+- Một yêu cầu giữ chỗ ghi đơn + mọi đêm + lượt voucher trong **một batch D1**; thiếu đêm nào thì cả batch hủy (không giữ lẻ đêm).
+- Gửi lại cùng khóa trả lại đúng đơn cũ; cùng khóa nhưng khác nội dung → 422.
+- Voucher có giới hạn lượt: tính lượt đã dùng + lượt của đơn còn hiệu lực (giữ chỗ còn hạn, đã xác nhận, đã nhận phòng, hoàn tất). Giữ chỗ hết hạn/hủy trả lượt.
+- **Cọc (chủ dự án chốt 13/11/2026):** 30% tổng tiền, làm tròn tới đồng; mã làm tròn **lên** (`Math.ceil`) để cơ sở không nhận thiếu. Chưa thu tiền qua website (D03: chuyển thẳng cơ sở); `DEPOSIT_PERCENT` trong `src/server/bookings/holds.ts`.
+
 ### D-N05-01: Quy tắc tồn phòng (13/11/2026)
 
 - Tồn tính theo từng đêm, từng hạng phòng. Phòng trống của một khoảng ngày là đêm ít phòng nhất; đêm của ngày trả phòng không tính.

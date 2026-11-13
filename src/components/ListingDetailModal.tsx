@@ -1,5 +1,6 @@
 import { ONLINE_PAYMENT_ENABLED } from '../config/features';
-import React, { useState, useEffect } from 'react';
+import { DEPOSIT_PERCENT, depositFor } from '../config/payment.ts';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   X,
   Star,
@@ -47,6 +48,8 @@ import {
 } from '../utils/rules.ts';
 import { verificationLabel } from '../utils/listingDisplay.ts';
 import { requestQuote, nightLabel, type QuoteResponse } from '../api/quotesApi.ts';
+import { createHold, holdErrorAction, newIdempotencyKey } from '../api/holdsApi.ts';
+import { readAttribution } from '../search/attribution.ts';
 import { defaultStayDates, nightsBetween, todayInVietnam } from '../search/searchIntent.ts';
 
 interface ListingDetailModalProps {
@@ -61,9 +64,11 @@ interface ListingDetailModalProps {
   onClose: () => void;
   onBookSuccess: (booking: Booking) => void;
   onAddReview?: (review: Review, bookingId?: string) => void;
-  onCompleteBooking?: (bookingId: string) => void;
   onOpenDirectChat?: (listing: Listing) => void;
   onClaimListing?: (listing: Listing) => void;
+  /** N05.2: giữ phòng homestay cần đăng nhập */
+  isLoggedIn?: boolean;
+  onRequireLogin?: () => void;
 }
 
 export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
@@ -77,9 +82,10 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
   onClose,
   onBookSuccess,
   onAddReview,
-  onCompleteBooking,
   onOpenDirectChat,
-  onClaimListing
+  onClaimListing,
+  isLoggedIn = false,
+  onRequireLogin
 }) => {
   if (!listing) return null;
 
@@ -127,6 +133,8 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
   const [notes, setNotes] = useState('');
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // N05.2: một khóa cho một lần đặt; bấm lại sau lỗi mạng gửi lại đúng khóa này để không tạo đơn trùng.
+  const holdKeyRef = useRef<{ sig: string; key: string } | null>(null);
 
   useEffect(() => {
     setActivePhoto(listing.coverImage);
@@ -145,10 +153,6 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
   // Eligible completed bookings that haven't been reviewed yet
   const eligibleBookings = userBookings.filter((b) =>
     canBookingLeaveReview(b.status, b.reviewed)
-  );
-  // Active bookings (confirmed / checked_in) that can be marked completed
-  const activeBookings = userBookings.filter(
-    (b) => b.status === 'confirmed' || b.status === 'checked_in'
   );
 
   // Review Form State
@@ -422,10 +426,14 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
       return;
     }
     setBookingError(null);
+    if (listing.category === 'homestay') {
+      void submitHomestayHold();
+      return;
+    }
     setIsSubmitting(true);
 
     setTimeout(() => {
-      const depositAmount = Math.round(totalAmount * 0.3);
+      const depositAmount = depositFor(totalAmount);
       const proof: PaymentProof | undefined = paymentProofUrl
         ? {
             imageUrl: paymentProofUrl,
@@ -510,6 +518,75 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
       setIsSubmitting(false);
       onBookSuccess(newBooking);
     }, 250);
+  };
+
+  // N05.2: homestay giữ phòng trên máy chủ 30 phút; tổng tiền và cọc lấy từ báo giá server.
+  const submitHomestayHold = async () => {
+    if (!stayQuote) return;
+    const token = typeof localStorage === 'undefined' ? '' : localStorage.getItem('taxua_session_token') || '';
+    if (!isLoggedIn || !token) {
+      setBookingError('Vui lòng đăng nhập để giữ phòng. Thông tin bạn đã nhập vẫn được giữ nguyên.');
+      onRequireLogin?.();
+      return;
+    }
+    const guestNote = notes.trim();
+    const sig = [stayQuote.id, guestName.trim(), guestPhone.trim(), guestNote].join('|');
+    if (holdKeyRef.current?.sig !== sig) holdKeyRef.current = { sig, key: newIdempotencyKey() };
+    setIsSubmitting(true);
+    const r = await createHold(
+      {
+        quoteId: stayQuote.id,
+        idempotencyKey: holdKeyRef.current.key,
+        guestName: guestName.trim(),
+        guestPhone: guestPhone.trim(),
+        guestNote: guestNote || undefined,
+        attribution: readAttribution(localStorage),
+      },
+      token
+    );
+    setIsSubmitting(false);
+    if (!r.ok) {
+      const action = holdErrorAction(r.status, r.code);
+      setBookingError(r.message);
+      if (action === 'login') onRequireLogin?.();
+      if (action === 'refresh_quote') {
+        holdKeyRef.current = null;
+        setQuoteRefresh((n) => n + 1);
+      }
+      return;
+    }
+    holdKeyRef.current = null;
+    const b = r.booking;
+    onBookSuccess({
+      id: b.bookingCode,
+      bookingCode: b.bookingCode,
+      serverBookingId: b.id,
+      quoteId: b.quoteId || undefined,
+      listingId: listing.id,
+      listingTitle: listing.title,
+      category: listing.category,
+      guestName: b.guestName,
+      guestPhone: b.guestPhone,
+      checkInDate: b.checkInDate,
+      checkOutDate: b.checkOutDate,
+      guestsCount: (b.adults || 0) + (b.children || 0),
+      roomName: b.roomName || labels.selectedItemLabel,
+      pricingMode: 'per_night',
+      totalAmount: b.totalAmount,
+      discountApplied: b.discount ? b.discount : undefined,
+      voucherCodeApplied: b.voucherCode || undefined,
+      depositAmount: b.depositAmount,
+      holdExpiresAt: b.holdExpiresAt || undefined,
+      pointsEarned: earnedPoints,
+      status: 'pending',
+      paymentStatus: 'unpaid',
+      reviewed: false,
+      qrCodeUrl: '', // N05.3: QR nhận phòng do server cấp khi đơn được xác nhận (Chuyến đi của tôi)
+      platformFee: 50000,
+      feeCharged: false,
+      notes: guestNote || undefined,
+      createdAt: b.createdAt.replace('T', ' ').slice(0, 16),
+    });
   };
 
   const handleReviewSubmit = (e: React.FormEvent) => {
@@ -1231,19 +1308,10 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     </p>
                     <p className="text-slate-500">
                       {reviewSuccessMessage ||
-                        'Để chống seeding ảo, hệ thống chỉ cho phép viết đánh giá khi đơn đặt chuyển sang trạng thái Hoàn tất (Completed).'}
+                        'Để chống seeding ảo, chỉ mở đánh giá khi chủ cơ sở đã xác nhận đơn hoàn tất.'}
                     </p>
                   </div>
 
-                  {activeBookings.length > 0 && onCompleteBooking && (
-                    <button
-                      type="button"
-                      onClick={() => onCompleteBooking(activeBookings[0].id)}
-                      className="shrink-0 px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs transition-colors cursor-pointer"
-                    >
-                      Hoàn tất đơn #{activeBookings[0].id} để đánh giá
-                    </button>
-                  )}
                 </div>
               )}
 
@@ -1760,7 +1828,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                      <span>Đính kèm ảnh chuyển khoản (Cọc 30%)</span>
+                      <span>Đính kèm ảnh chuyển khoản (Cọc {DEPOSIT_PERCENT}%)</span>
                     </span>
                     <span className="text-xs text-slate-400">Bảo vệ quyền lợi</span>
                   </div>
@@ -1879,7 +1947,13 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     <span>Đang xử lý đơn đặt...</span>
                   ) : (
                     <>
-                      <span>{canBookOnline ? labels.submitButtonLabel : 'Chưa đặt online được'}</span>
+                      <span>
+                        {!canBookOnline
+                          ? 'Chưa đặt online được'
+                          : listing.category === 'homestay' && !isLoggedIn
+                          ? 'Đăng nhập để giữ phòng'
+                          : labels.submitButtonLabel}
+                      </span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}

@@ -16,6 +16,205 @@
 
 ---
 
+## N06.1 — Cọc theo D03: điều khoản, snapshot, VietQR, biên lai, xác nhận thủ công, 70% (13/11/2026, nhánh `dot/N06.1`)
+
+**Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp".** Nhánh tách từ `dot/N05.3` (N05.2, N05.3 chưa gộp) → gộp N06.1 sẽ chạy migration 0006–0008 trên D1 production (production có 0 đơn). **Xác nhận tiền là thủ công** (cơ sở bấm, có log); không có cổng thanh toán/webhook (D-N06-01).
+
+### Bổ sung sau khi chủ dự án chốt (13/11/2026): hạn 70% theo 14:00; quy trình đối soát cọc (D-N06-02)
+- `reconciliation.ts`: bảng trạng thái chờ hoàn → cơ sở báo đã hoàn / đề nghị giữ → khách xác nhận / đồng ý / báo → admin phân xử. Hạn 3 ngày.
+- `migrations_d1/0009_reconciliation.sql`: `payment_reconciliations`, `reconciliation_files`.
+- Mở tự động:
+  - giữ chỗ hết hạn (cron, trong cùng batch với việc hết hạn);
+  - cơ sở từ chối đơn khách đã gửi biên lai.
+  - Khách tự hủy / nhả phòng quá hạn 70% không mở (D03).
+- API: xem đối soát (khách/chủ/admin), ảnh bằng chứng hai bên (R2, kiểm ảnh thật, ≤ 5 ảnh/bên), các bước có điều kiện + `changes()` (bấm lặp/đồng thời chỉ ghi một lần), danh sách cho admin, nhắc quá hạn (cron).
+- Giao diện: khối "Đối soát tiền cọc" cho khách (Chuyến đi của tôi), chủ cơ sở (Đơn đặt phòng) và admin (đầu màn quản trị, tranh chấp lên đầu).
+- Test:
+  - `reconciliation.test.ts` (7 bảng);
+  - `reconciliation.api.test.ts` (7):
+    - mở/không mở; báo hai bên; hạn 3 ngày;
+    - hoàn cần ảnh và số tiền hợp lệ; khách xác nhận đóng;
+    - giữ tiền cần khách đồng ý;
+    - quá hạn nhắc một lần, báo admin, admin buộc hoàn → hạn mới;
+    - báo hoàn nhưng khách chưa nhận → admin kết luận;
+    - bấm đồng thời.
+  - Kiểm đỏ: bỏ `changes() = 1` → ca đồng thời trượt. Lần đầu ca này trượt cả khi có khóa (yêu cầu thua trả 409 thay vì "đã làm") → sửa: đọc lại rồi quyết định lại.
+- workerd + D1 + R2: từ chối đơn có biên lai → mở đối soát hạn 3 ngày, lịch sử `recon_open`, chưa quá hạn không báo được, ảnh bằng chứng đọc lại đúng từ R2, thông báo hiện hạn theo giờ VN.
+- Kiểm bằng Worker thật tại máy build (có `--test-scheduled`):
+  - Cron thật mở đối soát cho giữ chỗ hết hạn có biên lai và báo quá hạn (2 thông báo).
+  - Bấm qua giao diện cả ba vai trò:
+    - Cơ sở: báo hoàn khi chưa có ảnh bị chặn → có ảnh thì được; đề nghị giữ tiền.
+    - Khách: báo chưa nhận → chờ phân xử; đồng ý giữ → kết thúc "giữ tiền"; đơn quá hạn có nút báo.
+    - Admin: thấy 2 ảnh, kết luận "phải hoàn" → hạn mới, lịch sử đủ 4 bước.
+  - 375/768/1280px: không tràn, 0 chữ < 12px.
+- Lệnh: `npm run typecheck` 0 lỗi; `npm run build` đạt; `npm test` **273/273**; `npm run worker:dry-run` đạt.
+
+### Đã làm
+- **Một cấu hình cọc** `src/config/payment.ts` (30% làm tròn lên, 70% còn lại, hạn 70%, mốc nhắc, điều khoản D03). Gỡ mọi `0.3`/"50%" viết cứng (Chuyến đi của tôi, dashboard đối tác, xe khách, trang chi tiết, màn giữ chỗ thành công) và `buildVietQrPaymentPayload` (tài khoản "TA XUA TRIP ESCROW" mẫu gõ cứng, ảnh từ img.vietqr.io).
+- **VietQR tự tạo** `src/payment/vietqr.ts` (NAPAS/EMVCo, CRC16-CCITT), danh sách ngân hàng theo mã BIN của NHNN.
+- `migrations_d1/0008_payments.sql`: `listing_payout_accounts`, `booking_payments` (snapshot), `payment_receipts`, `bookings.balance_confirmed_at/by`, `notifications.dedupe_key` (chỉ mục duy nhất có điều kiện).
+- `PaymentStore` + API:
+  - tài khoản nhận cọc của cơ sở (chủ cơ sở/admin);
+  - `GET /api/bookings/:id/payment`; `accept-terms` (chụp snapshot một lần; cơ sở đổi tài khoản sau đó không đổi đơn);
+  - biên lai (khách chủ đơn; kiểm byte đầu ảnh; ≤ 5 MB; ≤ 3 ảnh/khoản; R2 riêng tư; xem có kiểm quyền, `nosniff`, `no-store`);
+  - `confirm-balance` (batch có điều kiện + `changes()`; bấm lặp/đồng thời chỉ ghi một lần);
+  - nhắc 70% ở mốc 48 giờ/30 giờ (cron Worker, mỗi mốc một lần).
+- Vòng đời: thao tác **nhả phòng** (`release`) — chủ cơ sở/admin, chỉ khi quá hạn 70% và chưa xác nhận đủ; lý do D03 ghi vào đơn; báo khách. Danh sách đơn của đối tác có số biên lai và cờ **cần đối soát** (biên lai cọc đến khi giữ chỗ đã hết hạn — không tự xác nhận lại phòng).
+- Worker: R2 `PRIVATE_BUCKET` cho biên lai; Express (dev) lưu `.data/private`.
+- **Giao diện**
+  - Chuyến đi của tôi → "Thanh toán": điều khoản + tick → tài khoản cơ sở, mã VietQR (tạo trong trình duyệt), số tiền, nội dung (nút chép) → gửi ảnh biên lai; trạng thái "cơ sở đã xác nhận nhận cọc / nhận đủ 70%", hạn 70%, cảnh báo quá hạn. Khối "Thông báo mới" (nhắc 70%, nhận đủ, bị nhả phòng/từ chối).
+  - Dashboard đối tác: mục "4. Tài Khoản Nhận Cọc" lưu server (thay khối mẫu cũ); khối đơn: xem biên lai, "Đã nhận đủ 70%", "Nhả phòng (quá hạn 70%)" có bước xác nhận, "Cần đối soát", nhắc khi chưa có tài khoản.
+
+### Test mới
+- `src/payment/payment.test.ts` (8):
+  - cọc 30% và 50% cùng công thức;
+  - **không còn tỉ lệ cọc viết cứng trong components**;
+  - hạn và mốc nhắc theo giờ VN;
+  - nội dung không dấu;
+  - CRC (`123456789` → 29B1, mã tĩnh công khai);
+  - VietQR **khớp từng ký tự chuỗi mẫu công bố**;
+  - ràng buộc số tiền/nội dung; mã BIN.
+- `src/server/payments/payments.api.test.ts` (8):
+  - quyền tài khoản nhận cọc;
+  - điều khoản trước thông tin chuyển cọc;
+  - snapshot không đổi khi đổi tài khoản; chủ cơ sở thấy cùng số liệu;
+  - biên lai giả (415), quá 5 MB (413), sai người (403), chủ cơ sở không nộp thay, 70% trước khi xác nhận cọc (409), quá số lượng (409, ảnh bị xóa khỏi kho), xem chéo (403);
+  - tải biên lai không đổi trạng thái;
+  - khách không tự xác nhận; xác nhận 70% đồng thời chỉ một lần; khách thấy xác nhận;
+  - nhả phòng trước hạn bị chặn, sau hạn thì trả phòng và báo khách; đã trả đủ thì không nhả;
+  - nhắc 48 giờ/30 giờ mỗi mốc một lần, đơn đã trả đủ không bị nhắc;
+  - biên lai đến khi giữ chỗ hết hạn → cần đối soát, không xác nhận được.
+- Kiểm đỏ: bỏ `changes() = 1` trong xác nhận 70% → ca đồng thời **trượt**; bỏ khóa chống trùng của nhắc → ca nhắc **trượt**; trả lại → đạt.
+- `lifecycle.test.ts` (+1 nhả phòng), `bookingsApi.test.ts` (nút đối tác theo 70%/quá hạn).
+- workerd + D1 + **R2 local thật**:
+  - tài khoản nhận cọc; điều khoản → snapshot (tên không dấu, cọc + 70% = tổng);
+  - biên lai PNG lưu R2 và đọc lại đúng từng byte; chuỗi không phải ảnh → 415;
+  - xác nhận cọc và 70% hiện với khách.
+- Chạy câu SQL nhắc (`printf('%,d')`, `julianday('…Z')`, `strftime`) trên D1 local: ra `700.000`, lệch 0, `19/11`.
+
+### Lệnh đã chạy
+- `npm run typecheck`: 0 lỗi. `npm run build`: đạt. `npm test`: **258/258**. `npm run worker:dry-run`: đạt.
+- Workers Builds preview `dot-n06-1`: thành công; D1 preview chạy tới `0008_payments.sql`, đủ bảng/cột/chỉ mục mới.
+- Preview (chưa đăng nhập): API thanh toán mới trả 401; binding R2 riêng tư có mặt. Bản build không còn `img.vietqr.io`, "ESCROW", số tài khoản mẫu.
+
+### Kiểm tra giao diện (Worker thật chạy tại máy build: wrangler dev + D1/R2 local, Chrome headless)
+- **Chủ cơ sở**
+  - Chưa có tài khoản thì hiện nhắc; nhập Vietcombank qua form → lưu, tên thành "CHU DOC MO".
+- **Khách**
+  - Chưa tick thì không thấy số tài khoản, nút khóa; tick → khối chuyển cọc.
+  - **Giải mã ảnh QR**: BIN 970436, TK 00110044556, 390.000 đ (30% của 1.300.000), nội dung "TX… COC", CRC tính lại khớp.
+  - File giả → "Chỉ nhận ảnh JPG, PNG hoặc WebP."; ảnh thật → gửi được, hiện ảnh, ghi rõ chưa phải đã trả.
+- **Chủ cơ sở**
+  - Xem được ảnh biên lai; "Đã nhận cọc" → "Đã nhận đủ 70%" → hết nút.
+  - Đơn nhận phòng hôm nay: "70%: QUÁ HẠN" + "Nhả phòng" → bước cảnh báo → "Đã hủy" với lý do D03.
+- **Khách thấy**
+  - Thông báo bị nhả phòng và nhận đủ 70%; "✓ Cơ sở đã xác nhận nhận cọc… nhận đủ 70%…"; thẻ đơn hiện lý do hủy.
+- 375/768/1280px (form tài khoản, khối thanh toán của khách, khối đơn của đối tác): không tràn ngang, 0 chữ < 12px, không phần tử lọt ra ngoài.
+- Phát hiện và đã sửa trong lúc kiểm: nội dung chuyển khoản bị ngắt giữa chữ ở 375px ("CO / C"), khách không có chỗ đọc thông báo (thêm "Thông báo mới").
+
+### Chưa kiểm chứng / chưa làm
+- **Chưa thử chuyển khoản thật bằng app ngân hàng** quét mã VietQR (mới kiểm chuỗi theo mẫu công bố + giải mã ảnh). Nên thử một giao dịch nhỏ vào tài khoản của chính chủ dự án trước khi mở cho khách.
+- Chưa đăng nhập được trên preview (thiếu secret Turnstile); luồng đã kiểm bằng Worker chạy tại máy build.
+- Đối soát cọc chỉ ghi nhận; hệ thống không chuyển/hoàn tiền thay hai bên (đúng D03: website không giữ tiền).
+- Nhắc 70% mới hiện trong "Chuyến đi của tôi"; chưa gửi Web Push/email/Zalo (Q3, chờ chọn dịch vụ).
+- Luồng xe khách/dịch vụ khác vẫn là dữ liệu mẫu trong trình duyệt (N09); `api.qrserver.com` còn ở các mã mẫu đó (không chứa thông tin tài khoản/thanh toán).
+- Mục "Bằng chứng chuyển khoản & đơn" cũ trong dashboard đối tác vẫn đọc dữ liệu mẫu (đơn homestay thật đã ở khối "Đơn đặt phòng").
+
+### Đợt tiếp theo
+- **N06.2** sổ phí và Điểm Mây chỉ ghi thêm, không lặp theo sự kiện; hoàn tất một lần; đổi điểm ra quà dùng được.
+
+---
+
+## N05.3 — Vòng đời đơn: trạng thái, lịch sử, QR nhận phòng, đơn của cơ sở (13/11/2026, nhánh `dot/N05.3`)
+
+**Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp".** Nhánh tách từ `dot/N05.2` (chưa gộp) nên gộp N05.3 sẽ kéo theo N05.2 và chạy migration 0006 + 0007 trên D1 production (production có 0 đơn).
+
+### Đã làm
+- **Bảng chuyển trạng thái** `src/server/bookings/lifecycle.ts` (D-N05-03): xác nhận đã nhận cọc / từ chối (bắt buộc lý do) / nhận phòng (chỉ qua QR, đúng ngày) / hoàn tất / hủy; quyền theo quan hệ với đơn (khách đặt, chủ cơ sở của đơn, admin). Khách không tự xác nhận, nhận phòng, hoàn tất; đơn đã hủy không thành hoàn tất.
+- `migrations_d1/0007_booking_lifecycle.sql`: `booking_events` (lịch sử), `notifications` (chuông), `checkin_token` (256 bit, chỉ mục duy nhất có điều kiện), `confirmed_at`/`checked_in_at`/`completed_at`.
+- `BookingLifecycle` (`src/server/bookings/store.ts`): mỗi lần đổi trạng thái là một batch D1 (UPDATE đúng trạng thái nguồn → kiểm `changes() = 1` → cập nhật các đêm giữ phòng → lịch sử → thông báo). Yêu cầu thua khi tranh nhau đọc lại và trả "đã làm". Giữ chỗ và hết hạn (cron) cũng ghi lịch sử.
+- API: `POST /api/bookings/:id/{confirm|reject|complete|cancel}`, `GET /api/bookings/:id` (lịch sử; mã QR chỉ cho khách chủ đơn khi đã xác nhận), `GET|POST /api/partner/checkin` (xem/xác nhận bằng mã), `GET /api/partner/bookings`, `GET /api/notifications`, `POST /api/notifications/read`. `GET /api/user/bookings` trả đủ thông tin đơn từ server.
+- **Giao diện**
+  - Dashboard đối tác: khối "Đơn đặt phòng" đọc server (tự tải lại mỗi phút), nút đúng trạng thái, từ chối kèm lý do, "Mở Zalo khách"/"Gọi", chuông thông báo, ô nhận phòng bằng mã.
+  - `/doi-tac/nhan-phong?ma=…`: đường dẫn trong QR; chủ cơ sở quét bằng camera điện thoại là mở thẳng màn xác nhận. Đơn không còn ở trạng thái "Đã xác nhận" thì không hiện nút.
+  - Chuyến đi của tôi: QR nhận phòng thật (tạo trong trình duyệt bằng `qrcode`, không gửi mã ra api.qrserver.com); nút "Hủy đơn" theo bảng (cảnh báo cọc không hoàn với đơn đã xác nhận); hiện lý do hủy, ngày đặt giờ VN, số khách; ghi chú đầu trang nói đúng cách giữ phòng/cọc hiện tại.
+  - **Gỡ** nút cho khách tự đổi trạng thái: "Đánh dấu Hoàn tất lưu trú", "Xác nhận đã chuyển khoản cọc → Đã giữ phòng" (Chuyến đi của tôi), "Hoàn tất đơn # để đánh giá" (trang chi tiết).
+  - Màn giữ chỗ thành công hiện mã đặt chỗ, không tải ảnh QR từ dịch vụ ngoài.
+- Cọc 30% làm tròn lên tới đồng ghi là đã chốt (D-N05-02).
+
+### Test mới
+- `lifecycle.test.ts` (7): bảng, quyền, không đi tắt, làm lại = đã làm, giữ chỗ quá hạn, khung ngày nhận phòng, hủy theo ngày.
+- `lifecycle.api.test.ts` (9): chủ cơ sở xác nhận, chủ khác/khách/chưa đăng nhập bị chặn, bấm lại không ghi thêm; mã QR chỉ khách thấy; từ chối cần lý do và trả phòng; khách hủy đơn đã xác nhận, chủ không tự hủy; QR sai (404) / trái cơ sở (403) / chưa tới ngày / hết hạn; 5 lần quét cùng lúc chỉ 1 lần áp và 1 dòng lịch sử, rồi hoàn tất; thao tác ngoài bảng 404; danh sách đơn và chuông theo cơ sở; hai thiết bị cùng khách thấy như nhau.
+- Kiểm đỏ: bỏ điều kiện `changes() = 1` → ca quét cùng lúc **trượt**; trả lại → đạt.
+- workerd + D1 local thật (`api.contract.test.ts`): migration 0007; khách không tự xác nhận; admin xác nhận; mã QR 43 ký tự; 5 lần quét gửi cùng lúc chỉ 1 lần nhận phòng; lịch sử `hold → confirm → check_in`; hoàn tất.
+- `bookingsApi.test.ts` (5), `routes.test.ts` (+1).
+
+### Lệnh đã chạy
+- `npm run typecheck`: 0 lỗi. `npm run build`: đạt. `npm test`: **242/242**. `npm run worker:dry-run`: đạt.
+- Workers Builds preview `dot-n05-3`: thành công; D1 preview có đủ 7 migration, bảng/cột/chỉ mục mới có mặt.
+
+### Kiểm tra giao diện
+- **Chạy Worker thật trên máy build** (`wrangler dev` + D1 local, Chrome headless) với tài khoản thử: chủ cơ sở sở hữu `tx-stay-5`, một khách, 3 đơn giữ chỗ.
+  - Dashboard đối tác: 3 đơn, chuông 3 chưa đọc; bấm "Đã nhận cọc" → "Đã xác nhận"; "Từ chối" khóa nút tới khi có lý do, xong → "Đã hủy" kèm lý do.
+  - Chuyến đi của tôi: đơn đã xác nhận có QR; giải mã ảnh QR (OpenCV) ra đúng `…/doi-tac/nhan-phong?ma=<mã server cấp>`; không còn nút tự hoàn tất; khách hủy giữ chỗ qua giao diện → "Đã hủy", chủ cơ sở nhận chuông.
+  - Mở đường dẫn QR bằng tài khoản chủ cơ sở: thấy khách, phòng, ngày; xác nhận → "Đã nhận phòng", đường dẫn về `/doi-tac`; bấm "Hoàn tất" → "Hoàn tất"; quét lại → báo trạng thái, không có nút.
+  - 375/768/1280px (khối đơn của đối tác, màn nhận phòng, Chuyến đi của tôi): không tràn ngang, 0 chữ < 12px, không phần tử lọt ra ngoài màn.
+  - Phát hiện và đã sửa trong lúc kiểm: ngày đặt hiện chuỗi ISO, "Số lượng" trống, khách không thấy lý do từ chối, chữ ngày trong thông báo dạng ISO, màn quét vẫn hiện nút với đơn đã hoàn tất.
+- Preview (chưa đăng nhập): `/doi-tac/nhan-phong?ma=…` giữ mã trên đường dẫn và hiện lời mời đăng nhập chủ cơ sở; các API mới trả 401.
+
+### Chưa kiểm chứng / chưa làm
+- Chưa thao tác đăng nhập trên preview (preview chưa có secret Turnstile); luồng đăng nhập đã kiểm bằng Worker chạy tại máy build.
+- Trên workerd local, 5 lần quét "cùng lúc" thực tế chạy nối tiếp (bỏ điều kiện `changes()` ca này vẫn đạt), nên tranh chấp thật được chứng minh bởi test Node + cơ chế CHECK đã kiểm đỏ trên D1 ở N05.2.
+- Chưa có Web Push và email cho chủ cơ sở (Q3): cần chủ dự án tạo khóa VAPID và chọn dịch vụ gửi mail.
+- Admin chưa có màn quản lý đơn (API đã cho phép admin); chuông chỉ cho chủ cơ sở (admin nhận qua Telegram ở A1).
+- Chủ cơ sở chưa tự hủy đơn đã xác nhận (chờ quy tắc 70% ở N06.1). Hoàn tất chưa cộng điểm/thu phí (N06.2).
+- Mục "Bằng chứng chuyển khoản & đơn" cũ trong dashboard đối tác vẫn là dữ liệu mẫu trong trình duyệt (N06.1 thay).
+- Ảnh QR ở đơn cũ lưu trình duyệt (xe, dịch vụ khác) vẫn dùng api.qrserver.com với mã đơn mẫu (không phải mã nhận phòng); thay khi các loại dịch vụ đó lên server (N09).
+
+### Đợt tiếp theo
+- **N06.1** cọc: điều khoản không hoàn tiền (khách tick trước khi thấy thông tin chuyển cọc), thông tin chuyển cọc của cơ sở, mốc nhắc 70% (48h/30h/24h), chủ cơ sở nhả phòng khi quá hạn.
+- Có thể làm **A1** (Telegram cho admin) ngay sau N05.3 theo plan.
+
+---
+
+## N05.2 — Giữ chỗ 30 phút nguyên tử (13/11/2026, nhánh `dot/N05.2`)
+
+**Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp N05.2".** Gộp sẽ chạy migration 0006 trên D1 production (đã kiểm: production có 0 đơn, dựng lại bảng `bookings` không mất dữ liệu).
+
+### Đã làm
+- `migrations_d1/0006_booking_holds.sql`: dựng lại `bookings` với trạng thái `pending_deposit`/`expired`, cột hạng phòng, số khách, giảm giá, `quote_id`, `listing_version_id`, `hold_expires_at`, `idempotency_key` (`UNIQUE(user_id, idempotency_key)`), nguồn khách, ghi chú; bảng `voucher_redemptions`, `batch_assertions`.
+- `src/server/bookings/holds.ts` (`HoldStore`): tạo giữ chỗ bằng một batch D1 (đơn + từng đêm + lượt voucher, mỗi lệnh INSERT có điều kiện còn phòng/còn lượt, cuối batch một dòng `CHECK(ok = 1)` → thiếu gì thì cả batch hủy); xác nhận/hủy bằng `UPDATE … WHERE` có điều kiện + kiểm `changes()`; `expireHolds`. Mã đơn ngẫu nhiên (`TX` + 8 ký tự), tổng tiền lấy từ báo giá server, kiểm lại báo giá hết hạn/hồ sơ đổi phiên bản/voucher.
+- API: `POST /api/bookings/holds` (đăng nhập; 201 mới, 200 gửi lại cùng khóa, 409 `SOLD_OUT`/`QUOTE_EXPIRED`/`LISTING_CHANGED`/`VOUCHER_USED_UP`, 422 khóa trùng khác nội dung), `POST /api/bookings/:id/cancel` (chủ đơn hoặc admin).
+- Voucher: số lượt đã dùng tính cả đơn còn hiệu lực.
+- Cron Worker `*/5 * * * *` (`scheduled` trong `src/worker.ts`) dọn giữ chỗ quá hạn.
+- Giao diện: chi tiết homestay gọi giữ chỗ server; chưa đăng nhập → nút "Đăng nhập để giữ phòng", mở hộp đăng nhập, giữ nguyên thông tin đã nhập; lỗi mạng bấm lại dùng lại đúng khóa; hết phòng/báo giá hết hạn/hồ sơ đổi → báo lỗi và lấy giá mới. Màn thành công hiện giờ giữ phòng tới (giờ VN) và tiền cọc 30% do server tính. "Chuyến đi của tôi" hiện "Giữ chỗ 30 phút · Chờ cọc" / "Hết hạn giữ chỗ" cho đơn server (trước đó sẽ hiện nhầm "Đã hủy").
+
+### Test mới
+- `src/server/bookings/holds.test.ts` (10): 20 yêu cầu tranh phòng cuối chỉ 1 thắng; giữ đủ mọi đêm hoặc không đêm nào; gửi lại cùng khóa/khác nội dung/khóa theo tài khoản; mã ngẫu nhiên, tổng từ báo giá, cọc làm tròn lên; 401/báo giá không có/SĐT sai/báo giá hết hạn/hồ sơ đổi; hết hạn với đồng hồ kiểm soát; xác nhận; hủy và quyền hủy; voucher 1 lượt với 2 đơn đồng thời; cron `scheduled`.
+- `src/server/api.contract.test.ts`: thêm ca trên **workerd + D1 local thật**: migration 0006, 20 yêu cầu đồng thời → đúng 1 `201`, 19 `SOLD_OUT`; phòng về 0; hủy 200, hủy lại 409, phòng về 1. Kiểm đỏ: bỏ điều kiện `CHECK` trong batch → ca này **trượt**; trả lại → đạt.
+- `src/api/holdsApi.test.ts` (4): khóa idempotency, phân loại lỗi, giờ hết hạn theo giờ VN, trạng thái hiển thị.
+
+### Lệnh đã chạy
+- `npm run typecheck`: 0 lỗi. `npm run build`: đạt. `npm test`: **220/220**. `npm run worker:dry-run`: đạt.
+- Workers Builds preview `dot-n05-2`: thành công; D1 preview có đủ 6 migration tới `0006_booking_holds.sql`, bảng/cột mới có mặt.
+
+### Kiểm tra trên preview
+- `/api/health` 200 (workerd, D1 ok); `POST /api/bookings/holds` không token → 401.
+- Chi tiết `tx-stay-7`, chưa đăng nhập: nút "Đăng nhập để giữ phòng"; bấm → hộp đăng nhập mở trên cùng, lỗi "Vui lòng đăng nhập để giữ phòng…", họ tên/SĐT còn nguyên.
+- 375/768/1280px: khung đặt phòng không tràn ngang, 0 chữ < 12px trong form.
+
+### Chưa kiểm chứng
+- **Luồng giữ chỗ khi đã đăng nhập chưa thao tác bằng giao diện thật**: preview chặn đăng nhập (chưa có secret Turnstile cho preview, widget báo lỗi). Luồng này đã kiểm ở API (Node + workerd), chưa xem bằng mắt màn "Đã Giữ Phòng".
+- Cron chưa chạy trên Cloudflare thật (chỉ gọi `scheduled` trong test); kiểm sau khi gộp ở mục Cron Triggers của Worker.
+- Chưa có nút hủy giữ chỗ trong "Chuyến đi của tôi" (API có sẵn); chủ cơ sở/admin chưa thấy đơn giữ chỗ ở dashboard (U5/N06).
+- Tỉ lệ cọc 30% là giả định (D-N05-02), chờ chủ dự án chốt.
+- Ngoài phạm vi, đã thấy: widget dự báo mây trang chủ có chữ 10–11px.
+
+### Đợt tiếp theo
+- **N05.3** quản lý đơn: bảng chuyển trạng thái, API xác nhận/từ chối/check-in/hoàn tất/hủy có quyền, QR có token kiểm server, màn "của tôi" và đối tác đọc đúng đơn (gồm nút hủy giữ chỗ).
+
+---
+
 ## N05.1 — Tồn phòng theo đêm (13/11/2026, nhánh `dot/N05.1`)
 
 **Trạng thái: ĐẠT, chờ chủ dự án "gộp N05.1".** Gộp sẽ chạy migration 0005 trên D1 production.

@@ -7,7 +7,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { execSync } from 'node:child_process';
+import { execFileSync, execSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -17,6 +17,7 @@ import { fileURLToPath } from 'node:url';
 import { unstable_dev } from 'wrangler';
 import { createExpressApp } from '../../server.ts';
 import { DatabaseEngine } from './db.ts';
+import { addDays, todayInVietnam } from '../search/searchIntent.ts';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -215,10 +216,151 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
     logLevel: 'error',
     experimental: { disableExperimentalWarning: true }
   });
+  let holdWorker: Awaited<ReturnType<typeof unstable_dev>> | undefined;
   try {
     await runContract(t, (route, init) => worker.fetch(route, init as any) as unknown as Promise<Response>, 'worker');
-  } finally {
+    // N05.3: một tài khoản sẽ được nâng làm admin (vai trò đọc lại từ hồ sơ mỗi yêu cầu, token vẫn dùng được).
+    const opsEmail = `ops.${Date.now()}@example.com`;
+    const opsReg = await worker.fetch('/api/auth/register', jsonInit('POST', { email: opsEmail, password: 'MatKhau123!', fullName: 'Vận Hành', role: 'traveler' }) as any);
+    assert.equal(opsReg.status, 201);
+    const opsToken = ((await opsReg.json()) as any).token as string;
     await worker.stop();
+
+    // N05.2 — giữ chỗ trên D1 thật (workerd): migration 0006 dựng lại bảng bookings, batch rollback nhờ CHECK,
+    // changes() trong UPDATE có điều kiện. Cho tx-stay-5 một hạng phòng chỉ còn 1 phòng rồi khởi động lại Worker.
+    const roomTypes = JSON.stringify([{ id: 'r1', name: 'Phòng đôi', capacity: 2, priceWeekday: 500000, priceWeekend: 800000, totalRooms: 1, availableRooms: 1, amenities: [], viewType: 'Sân vườn' }]);
+    execFileSync(
+      'npx',
+      ['wrangler', 'd1', 'execute', 'DB', '--local', '--persist-to', persistTo, '--command',
+        `UPDATE listing_versions SET content_json = json_set(content_json, '$.roomTypes', json('${roomTypes}')) WHERE listing_id = 'tx-stay-5'; UPDATE profiles SET role = 'admin' WHERE email = '${opsEmail}'`],
+      { cwd: projectRoot, stdio: 'ignore' }
+    );
+    holdWorker = await unstable_dev(path.join(projectRoot, 'src/worker.ts'), {
+      config: path.join(projectRoot, 'wrangler.toml'),
+      local: true,
+      persistTo,
+      vars: { NODE_ENV: 'development' },
+      logLevel: 'error',
+      experimental: { disableExperimentalWarning: true }
+    });
+    const call: Fetcher = (route, init) => holdWorker!.fetch(route, init as any) as unknown as Promise<Response>;
+    await t.test('N05.2–N05.3 trên D1 thật: 20 yêu cầu đồng thời chỉ 1 đơn thắng; hủy trả phòng; xác nhận, quét QR đồng thời, hoàn tất; thanh toán D03 với R2; đối soát cọc', async () => {
+      const reg = await call('/api/auth/register', jsonInit('POST', { email: `hold.${Date.now()}@example.com`, password: 'MatKhau123!', fullName: 'Khách Giữ Chỗ', role: 'traveler' }));
+      assert.equal(reg.status, 201);
+      const token = ((await reg.json()) as any).token;
+      let checkIn = addDays(todayInVietnam(), 7);
+      while (new Date(`${checkIn}T00:00:00Z`).getUTCDay() !== 1) checkIn = addDays(checkIn, 1);
+      const checkOut = addDays(checkIn, 2);
+      const q = await call('/api/quotes', jsonInit('POST', { listingId: 'tx-stay-5', roomTypeId: 'r1', checkIn, checkOut, adults: 2, children: 0, rooms: 1 }));
+      assert.equal(q.status, 200);
+      const quoteId = ((await q.json()) as any).data.id;
+
+      const results = await Promise.all(
+        Array.from({ length: 20 }, (_, i) =>
+          call('/api/bookings/holds', jsonInit('POST', { quoteId, idempotencyKey: `race-${i}`, guestName: 'Khách Giữ Chỗ', guestPhone: '0912345678' }, token))
+            .then(async (r) => ({ status: r.status, body: (await r.json()) as any }))
+        )
+      );
+      const won = results.filter((r) => r.status === 201);
+      assert.equal(won.length, 1, JSON.stringify(results.map((r) => r.status)));
+      assert.ok(results.filter((r) => r.status !== 201).every((r) => r.status === 409 && r.body.code === 'SOLD_OUT'));
+      const booking = won[0].body.data;
+      assert.equal(booking.totalAmount, 1000000);
+      assert.equal(booking.depositAmount, 300000);
+
+      const soldOut: any = await (await call(`/api/listings/tx-stay-5/availability?checkIn=${checkIn}&checkOut=${checkOut}`)).json();
+      assert.equal(soldOut.data.rooms[0].available, 0);
+
+      const cancel = await call(`/api/bookings/${booking.id}/cancel`, jsonInit('POST', { reason: 'Thử hủy' }, token));
+      assert.equal(cancel.status, 200);
+      const again = await call(`/api/bookings/${booking.id}/cancel`, jsonInit('POST', {}, token));
+      assert.equal(again.status, 200);
+      assert.equal(((await again.json()) as any).already, true, 'hủy lần hai không tác động lặp');
+      const freed: any = await (await call(`/api/listings/tx-stay-5/availability?checkIn=${checkIn}&checkOut=${checkOut}`)).json();
+      assert.equal(freed.data.rooms[0].available, 1);
+
+      // N05.3 trên D1 thật: xác nhận → mã QR (chỉ mục duy nhất có điều kiện) → 5 lần quét cùng lúc chỉ nhận phòng một lần.
+      // Khách thứ hai: khách đầu đã dùng hết 20 lần giữ chỗ/phút trong ca tranh phòng.
+      const reg2 = await call('/api/auth/register', jsonInit('POST', { email: `hold2.${Date.now()}@example.com`, password: 'MatKhau123!', fullName: 'Khách Hai', role: 'traveler' }));
+      assert.equal(reg2.status, 201);
+      const token2 = ((await reg2.json()) as any).token as string;
+      const today = todayInVietnam();
+      const q2 = await call('/api/quotes', jsonInit('POST', { listingId: 'tx-stay-5', roomTypeId: 'r1', checkIn: today, checkOut: addDays(today, 1), adults: 2, children: 0, rooms: 1 }));
+      assert.equal(q2.status, 200);
+      const h2 = await call('/api/bookings/holds', jsonInit('POST', { quoteId: ((await q2.json()) as any).data.id, idempotencyKey: 'today-1', guestName: 'Khách Giữ Chỗ', guestPhone: '0912345678' }, token2));
+      assert.equal(h2.status, 201);
+      const b2 = ((await h2.json()) as any).data;
+      assert.equal((await call(`/api/bookings/${b2.id}/confirm`, jsonInit('POST', {}, token2))).status, 403, 'khách không tự xác nhận');
+      const conf = await call(`/api/bookings/${b2.id}/confirm`, jsonInit('POST', {}, opsToken));
+      assert.equal(conf.status, 200);
+      const qr = ((await (await call(`/api/bookings/${b2.id}`, authInit(token2))).json()) as any).data.checkinToken;
+      assert.match(qr, /^[A-Za-z0-9_-]{43}$/);
+      const scans = await Promise.all(
+        Array.from({ length: 5 }, () => call('/api/partner/checkin', jsonInit('POST', { token: qr }, opsToken)).then(async (r) => ({ status: r.status, body: (await r.json()) as any })))
+      );
+      assert.ok(scans.every((r) => r.status === 200), JSON.stringify(scans.map((r) => r.status)));
+      assert.equal(scans.filter((r) => r.body.already === false).length, 1, 'đúng một lần nhận phòng');
+      const hist = ((await (await call(`/api/bookings/${b2.id}`, authInit(token2))).json()) as any).data.events.map((e: any) => e.action);
+      assert.deepEqual(hist, ['hold', 'confirm', 'check_in']);
+      const done = await call(`/api/bookings/${b2.id}/complete`, jsonInit('POST', {}, opsToken));
+      assert.equal(done.status, 200);
+      assert.equal(((await done.json()) as any).data.status, 'completed');
+
+      // N06.1 trên D1 + R2 thật: tài khoản nhận cọc → điều khoản → snapshot → biên lai lưu R2 → xác nhận cọc và 70%.
+      const payout = await call('/api/partner/listings/tx-stay-5/payout-account', jsonInit('PUT', { bankBin: '970436', accountNumber: '0011004455667', accountName: 'Chủ Dốc Mơ' }, opsToken));
+      assert.equal(payout.status, 200);
+      const q3 = await call('/api/quotes', jsonInit('POST', { listingId: 'tx-stay-5', roomTypeId: 'r1', checkIn: addDays(today, 3), checkOut: addDays(today, 4), adults: 2, children: 0, rooms: 1 }));
+      const h3 = await call('/api/bookings/holds', jsonInit('POST', { quoteId: ((await q3.json()) as any).data.id, idempotencyKey: 'pay-1', guestName: 'Khách Hai', guestPhone: '0912345678' }, token2));
+      assert.equal(h3.status, 201);
+      const b3 = ((await h3.json()) as any).data;
+      const p0: any = await (await call(`/api/bookings/${b3.id}/payment`, authInit(token2))).json();
+      assert.equal(p0.data.snapshot, null);
+      const acc = await call(`/api/bookings/${b3.id}/payment/accept-terms`, jsonInit('POST', { termsVersion: p0.data.termsVersion }, token2));
+      assert.equal(acc.status, 200);
+      const snap = ((await acc.json()) as any).data.snapshot;
+      assert.equal(snap.payeeAccountName, 'CHU DOC MO');
+      assert.equal(snap.depositAmount, b3.depositAmount);
+      assert.equal(snap.depositAmount + snap.balanceAmount, b3.totalAmount);
+      const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3, 4]);
+      const up = await call(`/api/bookings/${b3.id}/payment/receipts?kind=deposit`, { method: 'POST', headers: { Authorization: `Bearer ${token2}`, 'Content-Type': 'image/png' }, body: png });
+      assert.equal(up.status, 201);
+      const rcId = ((await up.json()) as any).data.id;
+      const img = await call(`/api/bookings/${b3.id}/payment/receipts/${rcId}`, authInit(opsToken));
+      assert.equal(img.status, 200);
+      assert.equal(img.headers.get('content-type'), 'image/png');
+      assert.deepEqual(new Uint8Array(await img.arrayBuffer()), png, 'đọc lại đúng ảnh từ R2');
+      const txt = await call(`/api/bookings/${b3.id}/payment/receipts?kind=deposit`, { method: 'POST', headers: { Authorization: `Bearer ${token2}`, 'Content-Type': 'image/png' }, body: 'not an image' });
+      assert.equal(txt.status, 415);
+      assert.equal((await call(`/api/bookings/${b3.id}/confirm`, jsonInit('POST', {}, opsToken))).status, 200);
+      assert.equal((await call(`/api/bookings/${b3.id}/payment/confirm-balance`, jsonInit('POST', {}, opsToken))).status, 200);
+      const p1: any = await (await call(`/api/bookings/${b3.id}/payment`, authInit(token2))).json();
+      assert.ok(p1.data.depositConfirmedAt && p1.data.balanceConfirmedAt, 'khách thấy cơ sở đã xác nhận');
+      assert.equal(p1.data.receipts.length, 1);
+
+      // Đối soát cọc trên D1 + R2: khách gửi biên lai rồi cơ sở/admin từ chối → mở đối soát, hạn 3 ngày; khách gửi bằng chứng.
+      const q4 = await call('/api/quotes', jsonInit('POST', { listingId: 'tx-stay-5', roomTypeId: 'r1', checkIn: addDays(today, 5), checkOut: addDays(today, 6), adults: 2, children: 0, rooms: 1 }));
+      const h4 = await call('/api/bookings/holds', jsonInit('POST', { quoteId: ((await q4.json()) as any).data.id, idempotencyKey: 'recon-1', guestName: 'Khách Hai', guestPhone: '0912345678' }, token2));
+      const b4 = ((await h4.json()) as any).data;
+      await call(`/api/bookings/${b4.id}/payment/accept-terms`, jsonInit('POST', { termsVersion: p0.data.termsVersion }, token2));
+      assert.equal((await call(`/api/bookings/${b4.id}/payment/receipts?kind=deposit`, { method: 'POST', headers: { Authorization: `Bearer ${token2}`, 'Content-Type': 'image/png' }, body: png })).status, 201);
+      assert.equal((await call(`/api/bookings/${b4.id}/reject`, jsonInit('POST', { reason: 'Phòng hỏng điện' }, opsToken))).status, 200);
+      const rv: any = await (await call(`/api/bookings/${b4.id}/reconciliation`, authInit(token2))).json();
+      assert.equal(rv.data.reconciliation.status, 'open');
+      assert.ok(Math.abs(Date.parse(rv.data.reconciliation.dueAt) - Date.now() - 3 * 24 * 3600_000) < 120_000, 'hạn 3 ngày');
+      assert.deepEqual(rv.data.events.map((e: any) => e.action), ['recon_open']);
+      const early = await call(`/api/bookings/${b4.id}/reconciliation/dispute`, jsonInit('POST', { note: 'Chưa thấy hoàn' }, token2));
+      assert.equal(((await early.json()) as any).code, 'NOT_OVERDUE');
+      const ev = await call(`/api/bookings/${b4.id}/reconciliation/files`, { method: 'POST', headers: { Authorization: `Bearer ${token2}`, 'Content-Type': 'image/png' }, body: png });
+      assert.equal(ev.status, 201);
+      const evId = ((await ev.json()) as any).data.id;
+      const evImg = await call(`/api/bookings/${b4.id}/reconciliation/files/${evId}`, authInit(opsToken));
+      assert.deepEqual(new Uint8Array(await evImg.arrayBuffer()), png);
+      const notes: any = await (await call('/api/notifications', authInit(token2))).json();
+      assert.ok(notes.data.items.some((x: any) => x.kind === 'recon.opened' && /\d{2}:\d{2} \d{2}\/\d{2}/.test(x.body)), 'hạn hiện giờ VN');
+    });
+  } finally {
+    await worker.stop().catch(() => undefined);
+    await holdWorker?.stop();
     fs.rmSync(persistTo, { recursive: true, force: true });
   }
 });

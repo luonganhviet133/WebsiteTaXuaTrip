@@ -84,7 +84,9 @@ export interface BookingDTO {
   checkOutDate: string;
   totalAmount: number;
   depositAmount: number;
-  status: 'draft' | 'pending' | 'confirmed' | 'completed' | 'cancelled';
+  status: 'draft' | 'pending' | 'pending_deposit' | 'confirmed' | 'checked_in' | 'completed' | 'cancelled' | 'expired';
+  /** N05.2: hạn giữ chỗ của đơn pending_deposit */
+  holdExpiresAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -491,7 +493,7 @@ export class DatabaseEngine {
              guest_name as guestName, guest_phone as guestPhone,
              check_in_date as checkInDate, check_out_date as checkOutDate,
              total_amount as totalAmount, deposit_amount as depositAmount,
-             status, created_at as createdAt, updated_at as updatedAt
+             status, hold_expires_at as holdExpiresAt, created_at as createdAt, updated_at as updatedAt
       FROM bookings
       WHERE user_id = ?
       ORDER BY created_at DESC
@@ -602,6 +604,15 @@ export class DatabaseEngine {
     }
 
     await this.d1.exec(`
+      DELETE FROM reconciliation_files;
+      DELETE FROM payment_reconciliations;
+      DELETE FROM payment_receipts;
+      DELETE FROM booking_payments;
+      DELETE FROM listing_payout_accounts;
+      DELETE FROM notifications;
+      DELETE FROM booking_events;
+      DELETE FROM voucher_redemptions;
+      DELETE FROM batch_assertions;
       DELETE FROM room_night_allocations;
       DELETE FROM room_night_closures;
       DELETE FROM quotes;

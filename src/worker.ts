@@ -10,6 +10,9 @@
 import { DatabaseEngine } from './server/db.ts';
 import { TURNSTILE_TEST_SECRET } from './server/antiAbuse.ts';
 import { handleApiRequest } from './server/api.ts';
+import { HoldStore } from './server/bookings/holds.ts';
+import { PaymentStore } from './server/payments/store.ts';
+import { R2Storage } from './server/payments/storage.ts';
 
 export interface Env {
   DB: any;
@@ -39,6 +42,21 @@ function getClientIp(request: Request): string {
 }
 
 export default {
+  // N05.2 — Cron (wrangler.toml [triggers]) mỗi 5 phút: chuyển giữ chỗ quá hạn sang 'expired' và nhả phòng.
+  // Tồn phòng không phụ thuộc cron (giữ chỗ hết hạn tự không được tính); cron chỉ dọn trạng thái cho đúng.
+  async scheduled(_event: unknown, env: Env): Promise<void> {
+    const d1 = new DatabaseEngine({ d1: env.DB }).d1;
+    const result = await new HoldStore(d1).expireHolds();
+    if (result.expired || result.released) console.log(`[holds] expired=${result.expired} released=${result.released}`);
+    // N06.1: nhắc khách trả 70% ở mốc 48 giờ và 30 giờ trước giờ nhận phòng (mỗi mốc một lần).
+    const payments = new PaymentStore(d1);
+    const reminders = await payments.sendBalanceReminders();
+    if (reminders) console.log(`[payments] balance_reminders=${reminders}`);
+    // Đối soát cọc quá hạn 3 ngày chưa hoàn: báo khách và chủ cơ sở (mỗi hạn một lần).
+    const overdue = await payments.sendReconciliationReminders();
+    if (overdue) console.log(`[payments] reconciliation_overdue=${overdue}`);
+  },
+
   async fetch(request: Request, env: Env, ctx?: any): Promise<Response> {
     const url = new URL(request.url);
     const pathname = url.pathname;
@@ -47,6 +65,7 @@ export default {
     if (pathname === '/api' || pathname.startsWith('/api/')) {
       return handleApiRequest(request, {
         db: new DatabaseEngine({ d1: env.DB }),
+        privateStorage: env.PRIVATE_BUCKET ? new R2Storage(env.PRIVATE_BUCKET) : undefined,
         clientIp: getClientIp(request),
         turnstileSecret: getTurnstileSecret(env),
         turnstileHostnames: [url.hostname],
