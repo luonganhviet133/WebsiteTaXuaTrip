@@ -570,7 +570,7 @@ export class DatabaseEngine {
     depositAmount: number;
     status?: 'draft' | 'pending' | 'confirmed' | 'completed' | 'cancelled';
   }): Promise<BookingDTO> {
-    const id = `bk_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    const id = `bk_${crypto.randomUUID().replace(/-/g, "").slice(0, 20)}`;
     const bookingCode = `TX-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
     const now = new Date().toISOString();
     const status = data.status || 'pending';
