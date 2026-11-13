@@ -31,6 +31,7 @@ import { handlePaymentRoutes } from './payments/routes.ts';
 import { handleCommunityRoutes } from './community/routes.ts';
 import { handleFeedbackRoutes } from './feedback/routes.ts';
 import { AccountStore } from './accounts/store.ts';
+import { MemberAdminStore } from './admin/members.ts';
 import { NoEmailSender, type EmailSender } from './email.ts';
 import type { PrivateStorage } from './payments/storage.ts';
 
@@ -182,7 +183,7 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
   if (route === 'POST /api/auth/forgot-password' || route === 'POST /api/auth/reset-password') {
     const body = await readJson(request);
     if (body === null) return json({ success: false, error: 'INVALID_JSON: Dữ liệu gửi lên không hợp lệ.' }, 400);
-    const limited = rateLimited(`pwreset:${ctx.clientIp}:${String(body.email || '').toLowerCase()}`);
+    const limited = rateLimited(`pwreset:${ctx.clientIp}:${identifierOf(body)}`);
     if (limited) return limited;
     if (pathname.endsWith('/forgot-password')) {
       if (!accounts.config().emailEnabled) return accountOut(await accounts.forgotPassword(body.email));
@@ -342,14 +343,30 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
   });
   if (pricingResponse) return pricingResponse;
 
-  if (route === 'GET /api/admin/overview') {
+  // ==================== QUẢN TRỊ THÀNH VIÊN & ĐỐI TÁC (R2) ====================
+  if (route === 'GET /api/admin/overview' || pathname === '/api/admin/members' || pathname.startsWith('/api/admin/members/')) {
     const user = await requireRole(request, ctx, ['admin']);
     if (user instanceof Response) return user;
-    const allBookings = await ctx.db.getAllBookingsAdmin();
-    return json({
-      success: true,
-      data: { totalBookings: allBookings.length, verifiedStatus: 'system_active', serverTimestamp: new Date().toISOString() }
-    });
+    const members = new MemberAdminStore(ctx.db.d1);
+    if (route === 'GET /api/admin/overview') return accountOut(await members.overview());
+    if (route === 'GET /api/admin/members') return accountOut(await members.list(url.searchParams));
+    const m = pathname.match(/^\/api\/admin\/members\/([^/]+)(?:\/([a-z-]+))?$/);
+    if (m) {
+      const id = decodeURIComponent(m[1]);
+      const action = m[2] || '';
+      if (method === 'GET' && !action) return accountOut(await members.detail(id));
+      if (method === 'POST' && action) {
+        const limited = rateLimited(`adminmember:${user.id}`);
+        if (limited) return limited;
+        const body = (await readJson(request)) || {};
+        if (action === 'lock') return accountOut(await members.lock(id, user.id, body.reason));
+        if (action === 'unlock') return accountOut(await members.unlock(id, user.id, body.reason));
+        if (action === 'role') return accountOut(await members.setRole(id, user.id, body.role, body.reason));
+        if (action === 'partner-verification') return accountOut(await members.setPartnerVerification(id, user.id, body.status, body.note));
+        if (action === 'reset-code') return accountOut(await members.issueResetCode(id, user.id, body.reason));
+      }
+    }
+    return json({ success: false, code: 'NOT_FOUND', error: 'API endpoint not found' }, 404);
   }
 
   // ==================== AI & GATEWAY ====================

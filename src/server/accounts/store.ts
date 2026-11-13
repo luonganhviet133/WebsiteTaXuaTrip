@@ -165,7 +165,7 @@ export class AccountStore {
   }
 
   /** Kiểm mã: đúng thì đánh dấu đã dùng (một lần), sai thì tăng số lần nhập. */
-  private async consumeCode(userId: string, purpose: Purpose, code: string, now: Date, extra: any[] = []) {
+  private async consumeCode(userId: string, purpose: Purpose, code: string, now: Date, extra: (codeId: string) => any[] = () => []) {
     const nowIso = now.toISOString();
     const c = await this.d1
       .prepare('SELECT id, code_hash, attempts FROM auth_codes WHERE user_id = ? AND purpose = ? AND used_at IS NULL AND expires_at > ? ORDER BY created_at DESC LIMIT 1')
@@ -186,7 +186,7 @@ export class AccountStore {
       await this.d1.batch([
         this.d1.prepare('UPDATE auth_codes SET used_at = ? WHERE id = ? AND used_at IS NULL').bind(nowIso, c.id),
         ...this.holds.assertion('changes() = 1'),
-        ...extra,
+        ...extra(c.id),
       ]);
     } catch (err: any) {
       if (/CHECK constraint failed/i.test(String(err?.message))) return bad; // hai yêu cầu dùng cùng mã: chỉ một cái thành công
@@ -209,7 +209,7 @@ export class AccountStore {
 
   async verifyEmail(userId: string, code: string, now = new Date()) {
     const nowIso = now.toISOString();
-    const r = await this.consumeCode(userId, 'verify_email', String(code || '').trim(), now, [
+    const r = await this.consumeCode(userId, 'verify_email', String(code || '').trim(), now, () => [
       this.d1.prepare('UPDATE profiles SET email_verified_at = COALESCE(email_verified_at, ?), updated_at = ? WHERE id = ?').bind(nowIso, nowIso, userId),
     ]);
     if (!r.ok) return r;
@@ -228,22 +228,32 @@ export class AccountStore {
     return { ok: true as const, data: { message: 'Nếu email đã đăng ký, mã đặt lại mật khẩu đã được gửi. Mã có hiệu lực 15 phút.' } };
   }
 
+  /** Đặt lại bằng mã: mã gửi qua email, hoặc mã admin cấp qua điện thoại (R2). Tìm tài khoản bằng email hoặc SĐT. */
   async resetPassword(input: any, now = new Date()) {
-    const email = normalizeEmail(input?.email);
     const bad = fail(400, 'INVALID_CODE', 'Mã không đúng hoặc đã hết hạn. Vui lòng yêu cầu mã mới.');
-    if (!email) return bad;
-    const u = await this.d1.prepare("SELECT id, email, status FROM profiles WHERE LOWER(email) = ?").bind(email).first<any>();
+    const raw = String(input?.identifier ?? input?.email ?? '').trim();
+    let u: any = null;
+    if (raw.includes('@')) {
+      const email = normalizeEmail(raw);
+      if (email) u = await this.d1.prepare('SELECT id, email, status FROM profiles WHERE LOWER(email) = ?').bind(email).first<any>();
+    } else {
+      const phone = normalizeVnPhone(raw);
+      if (phone) u = await this.d1.prepare("SELECT id, email, status FROM profiles WHERE REPLACE(phone, ' ', '') = ?").bind(phone).first<any>();
+    }
     if (!u || u.status !== 'active') return bad;
     const weak = checkPassword(String(input?.newPassword ?? ''), u.email);
     if (weak) return fail(400, 'WEAK_PASSWORD', weak);
     const nowIso = now.toISOString();
-    const r = await this.consumeCode(u.id, 'reset_password', String(input?.code || '').trim(), now, [
+    const r = await this.consumeCode(u.id, 'reset_password', String(input?.code || '').trim(), now, (codeId) => [
+      // Chỉ mã gửi tới đúng email mới chứng minh email; mã admin đọc qua điện thoại thì không.
       this.d1
         .prepare(
           `UPDATE profiles SET password_hash = ?, password_changed_at = ?, failed_login_count = 0, login_locked_until = NULL,
-             email_verified_at = COALESCE(email_verified_at, ?), updated_at = ? WHERE id = ?`
+             email_verified_at = CASE WHEN EXISTS (SELECT 1 FROM auth_codes WHERE id = ? AND sent_to = profiles.email)
+               THEN COALESCE(email_verified_at, ?) ELSE email_verified_at END,
+             updated_at = ? WHERE id = ?`
         )
-        .bind(hashPassword(String(input.newPassword)), nowIso, nowIso, nowIso, u.id),
+        .bind(hashPassword(String(input.newPassword)), nowIso, codeId, nowIso, nowIso, u.id),
       this.d1.prepare('UPDATE user_sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL').bind(nowIso, u.id),
     ]);
     if (!r.ok) return r;
