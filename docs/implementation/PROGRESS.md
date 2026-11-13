@@ -16,6 +16,54 @@
 
 ---
 
+## N06.2 — Điểm Mây theo đóng góp, sổ phí nền tảng theo cơ sở (13/11/2026, nhánh `dot/N06.2`)
+
+**Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp".** Gộp sẽ chạy migration `0010_points_fees.sql` trên D1 production (chỉ thêm bảng mới). Quyết định: D-N06-03. **Chưa thu tiền và chưa mở đổi điểm.**
+
+### Đã làm
+- Server:
+  - `src/config/community.ts`: luật điểm, danh hiệu, tên rút gọn, cách tính phí.
+  - Migration `0010`: `points_ledger`, `listing_fee_rates`, `fee_ledger`, `point_rewards`, `point_redemptions`, `monthly_awards`.
+  - `community/ledger.ts`: ghi +20 điểm và dòng phí trong cùng batch với bước "hoàn tất". Dùng INSERT OR IGNORE trên khóa duy nhất, nên bấm lặp không ghi trùng.
+  - `community/store.ts` và `routes.ts`, gồm các API:
+    - điểm của tôi;
+    - bảng xếp hạng (tháng / 12 tháng) và top 3 tháng trước;
+    - sổ phí của đối tác;
+    - phía admin: cài mức phí, sổ phí và đảo phí, cộng/thu hồi điểm, chốt top 3 và ghi quà;
+    - đổi điểm (đang khóa, trả 403).
+- Giao diện:
+  - Điểm Mây trên thanh điều hướng lấy từ server, đơn vị "điểm" (trước đây ghi "đ").
+  - `PointsModal` có danh hiệu, tiến độ, cách nhận điểm và lịch sử; mục đổi quà hiện "sắp mở".
+  - `LeaderboardCard` nằm ở tab Cộng đồng.
+  - `PartnerFeeLedger` thay ví trả trước trong mục "5. Sổ Phí & Hiệu Quả".
+  - `AdminCommunityPanel` có 3 thẻ: Phí nền tảng, Điểm Mây, Top 3 tháng.
+- Bỏ phần mô phỏng:
+  - ví trả trước 50.000đ/booking;
+  - `calculatePlatformFee`, `calculateMemberPoints`;
+  - cộng điểm tại trình duyệt (đánh giá +20/+50, điểm theo % tiền đặt);
+  - lời hứa điểm trong modal đặt xe, đánh giá, chuyến đi, AI.
+  - Test `community.test.ts` quét mã nguồn để chặn các phần này quay lại.
+
+### Lệnh đã chạy và kết quả
+- `npm run typecheck`: 0 lỗi.
+- `npm test`: 286/286 pass. Trong đó `community.api.test.ts` có 9 test; kiểm đỏ: bỏ điều kiện số dư thì test đổi điểm fail. Contract workerd chạy: cài phí 5% → hoàn tất 2 lần → 20 điểm, đúng 1 dòng phí, bảng xếp hạng "Khách H.".
+- `npm run build`, `npm run worker:dry-run`: đạt.
+- Kiểm tay trên `wrangler dev --local` (D1 local có migration 0010):
+  - Admin cài 5% cho "Dốc Mơ" bằng form → đơn TXMQ8RBU8P (500.000đ) hoàn tất → sổ phí ghi **25.000đ**. Hoàn tất lần 2 trả `already`, không ghi thêm.
+  - Admin cộng 40 điểm có lý do → tra theo email thấy lịch sử (+40, +20) và nút thu hồi.
+  - Top 3 tháng 10: chốt hạng 1 kèm quà. API công khai trả `Nguyễn V. K.` 40 điểm. Hạng 2–3 hiện "Chưa có người đủ điểm".
+  - Thanh điều hướng hiện 60 Điểm Mây; modal hiện "Lữ khách mới", còn 40 điểm lên "Người săn mây".
+  - Kiểm ở 375/768/1280px (admin 3 thẻ, sổ phí đối tác, bảng xếp hạng, modal điểm): không tràn ngang, không chữ nhỏ hơn 12px.
+  - Để thử, đã sửa D1 local trực tiếp bằng SQL: chuyển đơn sang `checked_in` và dời điểm sang tháng 10. Hai bước này không qua luồng thật.
+
+### Chưa kiểm chứng / còn lại
+- Chưa chạy migration 0010 trên production (chờ "gộp").
+- +30/+20 điểm cho đánh giá: hằng số đã có, nhưng luồng đánh giá chưa nối với server (N06.3).
+- Hóa đơn phí cuối tháng và việc thu phí: N06.3. Giá trị quy đổi điểm và người chịu chi phí voucher: chưa chốt.
+- Màn quản trị cũ vẫn giữ prop `rewardSettings` (tỉ lệ điểm theo %) dù không hiển thị và không còn dùng để tính điểm. Chưa xóa, để giữ thay đổi gọn.
+
+---
+
 ## N06.1 — Cọc theo D03: điều khoản, snapshot, VietQR, biên lai, xác nhận thủ công, 70% (13/11/2026, nhánh `dot/N06.1`)
 
 **Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp".** Nhánh tách từ `dot/N05.3` (N05.2, N05.3 chưa gộp) → gộp N06.1 sẽ chạy migration 0006–0008 trên D1 production (production có 0 đơn). **Xác nhận tiền là thủ công** (cơ sở bấm, có log); không có cổng thanh toán/webhook (D-N06-01).

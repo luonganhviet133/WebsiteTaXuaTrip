@@ -35,7 +35,6 @@ import {
   Booking,
   Review,
   PromoVoucher,
-  ServiceRewardSetting,
   ServicePackageItem,
   PaymentProof
 } from '../types/index.ts';
@@ -49,6 +48,7 @@ import {
 import { verificationLabel } from '../utils/listingDisplay.ts';
 import { requestQuote, nightLabel, type QuoteResponse } from '../api/quotesApi.ts';
 import { createHold, holdErrorAction, newIdempotencyKey } from '../api/holdsApi.ts';
+import { POINT_RULES } from '../config/community.ts';
 import { readAttribution } from '../search/attribution.ts';
 import { defaultStayDates, nightsBetween, todayInVietnam } from '../search/searchIntent.ts';
 
@@ -60,7 +60,6 @@ interface ListingDetailModalProps {
   reviews?: Review[];
   userBookings?: Booking[];
   vouchers?: PromoVoucher[];
-  rewardSettings?: ServiceRewardSetting[];
   onClose: () => void;
   onBookSuccess: (booking: Booking) => void;
   onAddReview?: (review: Review, bookingId?: string) => void;
@@ -76,7 +75,6 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
   reviews = [],
   userBookings = [],
   vouchers = [],
-  rewardSettings = [],
   searchIntent,
   onChangeSearchIntent,
   onClose,
@@ -284,10 +282,8 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
   // Chưa có giá do cơ sở/admin nhập thì không cho đặt online, không tự gán giá (N03).
   const canBookOnline = baseTotal > 0;
 
-  // Point rate from admin reward setting or default 8%
-  const rewardSetting = rewardSettings.find((r) => r.listingId === listing.id);
-  const earnRatePercent = rewardSetting ? rewardSetting.pointEarnRatePercent : 8;
-  const earnedPoints = canBookOnline ? Math.max(10, Math.round((totalAmount * (earnRatePercent / 100)) / 1000)) : 0;
+  // N06.2: Điểm Mây theo đóng góp — cố định khi chuyến HOÀN TẤT, không theo số tiền (chủ dự án chốt 13/11/2026).
+  const earnedPoints = canBookOnline ? POINT_RULES.stay_completed : 0;
 
   const getConsoleLabels = () => {
     switch (listing.category) {
@@ -297,7 +293,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
           consoleTitle: 'Đặt Phòng Homestay Trực Tuyến',
           consoleSubtitle: `Tính theo đêm (${stayCost.nights} đêm) • Giữ phòng xác thực`,
           selectedItemLabel: selectedRoom?.name || 'Phòng tiêu chuẩn',
-          submitButtonLabel: `Xác Nhận Đặt Phòng (+${earnedPoints} Điểm Mây)`
+          submitButtonLabel: `Xác Nhận Đặt Phòng`
         };
       case 'bus':
         return {
@@ -305,7 +301,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
           consoleTitle: 'Đặt Vé Xe & Combo Xe Máy Đi Kèm',
           consoleSubtitle: 'Giữ ghế trực tiếp với nhà xe • Ưu đãi -30k khi thuê kèm xe máy',
           selectedItemLabel: `${selectedPackage?.name || 'Vé xe tiêu chuẩn'} (${serviceQuantity} vé)${includeBusMotorbikeCombo ? ' + Combo Xe máy' : ''}`,
-          submitButtonLabel: `Xác Nhận Đặt Vé Xe (+${earnedPoints} Điểm Mây)`
+          submitButtonLabel: `Xác Nhận Đặt Vé Xe`
         };
       case 'motorbike':
         return {
@@ -313,7 +309,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
           consoleTitle: 'Đặt Thuê Xe Máy Phượt Đèo',
           consoleSubtitle: `Tính linh hoạt (${bikeCost.daysLabel}) • Trả trước 12h trưa tính 0.5 ngày`,
           selectedItemLabel: `${selectedPackage?.name || selectedBikeModel} (${serviceQuantity} xe • ${bikeCost.daysLabel})`,
-          submitButtonLabel: `Xác Nhận Thuê Xe Máy (+${earnedPoints} Điểm Mây)`
+          submitButtonLabel: `Xác Nhận Thuê Xe Máy`
         };
       case 'restaurant':
       case 'coffee':
@@ -328,7 +324,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
             selectedMenuItemIds.length > 0
               ? `Đặt trước ${selectedMenuItemIds.length} món (${guestsCount} khách)`
               : `Đặt bàn ${guestsCount} khách`,
-          submitButtonLabel: `Xác Nhận Đặt Bàn (+${earnedPoints} Điểm Mây)`
+          submitButtonLabel: `Xác Nhận Đặt Bàn`
         };
       case 'tour':
         return {
@@ -336,7 +332,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
           consoleTitle: 'Đặt Tour Săn Mây & Porter Bản Địa',
           consoleSubtitle: 'Thổ địa dẫn đường an toàn • Bảo hiểm & hỗ trợ chụp ảnh',
           selectedItemLabel: `${selectedPackage?.name || 'Tour tiêu chuẩn'} (${serviceQuantity} khách)`,
-          submitButtonLabel: `Xác Nhận Đặt Tour (+${earnedPoints} Điểm Mây)`
+          submitButtonLabel: `Xác Nhận Đặt Tour`
         };
       case 'photo':
         return {
@@ -344,7 +340,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
           consoleTitle: 'Đặt Lịch Photographer Săn Mây',
           consoleSubtitle: 'Giao toàn bộ file gốc + Ảnh blend màu chất lượng cao',
           selectedItemLabel: `${selectedPackage?.name || 'Gói chụp săn mây'} (${serviceQuantity} gói)`,
-          submitButtonLabel: `Xác Nhận Đặt Lịch Chụp (+${earnedPoints} Điểm Mây)`
+          submitButtonLabel: `Xác Nhận Đặt Lịch Chụp`
         };
       case 'costume':
       case 'camera':
@@ -356,7 +352,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
               : 'Đặt Thuê Máy Ảnh & Flycam',
           consoleSubtitle: 'Giữ mẫu đúng lịch trình • Nhận từ sớm kịp đi săn mây',
           selectedItemLabel: `${selectedPackage?.name || 'Gói thuê'} (SL: ${serviceQuantity})`,
-          submitButtonLabel: `Xác Nhận Giữ Đồ Thuê (+${earnedPoints} Điểm Mây)`
+          submitButtonLabel: `Xác Nhận Giữ Đồ Thuê`
         };
       default:
         return {
@@ -364,7 +360,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
           consoleTitle: 'Đặt Dịch Vụ Trực Tuyến',
           consoleSubtitle: 'Xác nhận tức thì • Không phát sinh phụ phí ẩn',
           selectedItemLabel: `${selectedPackage?.name || 'Dịch vụ tiêu chuẩn'} (SL: ${serviceQuantity})`,
-          submitButtonLabel: `Xác Nhận Đặt Dịch Vụ (+${earnedPoints} Điểm Mây)`
+          submitButtonLabel: `Xác Nhận Đặt Dịch Vụ`
         };
     }
   };
@@ -626,7 +622,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
     setReviewComment('');
     setReviewRating(5);
     setReviewSuccessMessage(
-      'Cảm ơn bạn! Đánh giá xác thực đã được đăng công khai và cộng +50 Điểm Mây.'
+      'Cảm ơn bạn! Đánh giá xác thực đã được đăng công khai.'
     );
   };
 
@@ -1153,7 +1149,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                 <li className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0" />
                   <span>
-                    {canBookOnline ? <>Tích lũy <strong>+{earnedPoints} Điểm Mây</strong> đổi ưu đãi</> : 'Tích Điểm Mây khi đặt online (khi cơ sở đã có giá)'}
+                    {canBookOnline ? <>Nhận <strong>{earnedPoints} Điểm Mây</strong> khi chuyến hoàn tất</> : 'Nhận Điểm Mây khi đặt online và hoàn tất chuyến'}
                   </span>
                 </li>
                 {ONLINE_PAYMENT_ENABLED && (
@@ -1212,9 +1208,6 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                         </p>
                       </div>
                     </div>
-                    <span className="text-xs font-bold text-teal-800 bg-teal-100/80 px-2.5 py-1 rounded-full shrink-0">
-                      +50 Điểm Mây
-                    </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1914,10 +1907,8 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     </div>
                   )}
                   <div className="flex justify-between text-slate-600">
-                    <span>Tích điểm thành viên ({earnRatePercent}%):</span>
-                    <span className="text-teal-700 font-extrabold tabular-nums">
-                      +{earnedPoints} Điểm Mây
-                    </span>
+                    <span>Điểm Mây (khi chuyến hoàn tất):</span>
+                    <span className="text-teal-700 font-extrabold tabular-nums">{earnedPoints} điểm</span>
                   </div>
                   <div className="flex justify-between text-sm font-extrabold pt-2 border-t border-slate-200">
                     <span className="text-brand-800">Tổng thanh toán:</span>

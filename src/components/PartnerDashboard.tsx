@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { PayoutAccountForm } from './PayoutAccountForm.tsx';
+import { PartnerFeeLedger } from './PartnerFeeLedger.tsx';
 import { depositFor } from '../config/payment.ts';
 import { 
   Building2, 
   Calendar, 
-  Wallet, 
   TrendingUp, 
   Eye, 
   PhoneCall, 
@@ -35,7 +35,6 @@ import {
 import { 
   Listing, 
   Booking, 
-  PartnerWallet, 
   RoomType, 
   BusTrip, 
   BusType, 
@@ -63,7 +62,6 @@ interface PartnerDashboardProps {
   allListings?: Listing[];
   onSelectPartnerListing?: (listingId: string) => void;
   bookings: Booking[];
-  wallet: PartnerWallet;
   onUpdateAvailability: (roomId: string, newAvailable: number) => void;
   /** N05.1: đêm đang chỉnh phòng trống và số phòng trống thật của đêm đó (từ server). */
   inventoryDate?: string;
@@ -119,7 +117,6 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
   allListings = [],
   onSelectPartnerListing,
   bookings,
-  wallet,
   onUpdateAvailability,
   inventoryDate,
   onChangeInventoryDate,
@@ -767,7 +764,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
       },
       {
         id: 'wallet_analytics' as PartnerModuleType,
-        label: '5. Ví Cọc & Hiệu Quả',
+        label: '5. Sổ Phí & Hiệu Quả',
         icon: TrendingUp,
         desc: 'Thống kê & phí 50k'
       }
@@ -843,18 +840,6 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
             </div>
           </div>
 
-          {/* Quick Metrics */}
-          <div className="flex items-center gap-3 bg-slate-900/90 border border-slate-750 p-3.5 rounded-2xl shrink-0">
-            <div className="text-right">
-              <span className="text-xs text-slate-400 block">Số dư ví trả trước:</span>
-              <span className="text-lg font-black text-teal-400">
-                {formatVND(wallet.balance)}
-              </span>
-            </div>
-            <div className="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center text-teal-300">
-              <Wallet className="w-5 h-5" />
-            </div>
-          </div>
         </div>
 
         {bookingsPanel}
@@ -2611,57 +2596,9 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
            ======================================================== */}
         {activeModule === 'wallet_analytics' && (
           <div className="space-y-6">
+            {/* N06.2: sổ phí nền tảng thật (server) thay ví trả trước 50.000đ mẫu */}
+            <PartnerFeeLedger />
             <div className="bg-slate-850 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-750">
-                <div>
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    <Wallet className="w-5 h-5 text-teal-400" />
-                    <span>Ví Trả Trước Đối Tác & Đối Soát Phí Sàn 50.000đ</span>
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Minh bạch tuyệt đối: Hệ thống chỉ trừ 50.000đ khi khách thực tế đến và check-in thành công.
-                  </p>
-                </div>
-
-                <div className="text-right">
-                  <span className="text-xs text-slate-400 block">Chính sách thu phí hiện hành:</span>
-                  <span
-                    className={`text-xs font-bold px-3 py-1 rounded-full ${
-                      billingEnabled
-                        ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                        : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                    }`}
-                  >
-                    {billingEnabled ? 'Đang bật thu phí (50k/booking)' : 'Miễn phí hoàn toàn (Giai đoạn Beta)'}
-                  </span>
-                </div>
-              </div>
-
-              {/* Wallet cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-slate-900 border border-slate-750 p-4 rounded-2xl">
-                  <span className="text-xs text-slate-400">Số dư khả dụng ví:</span>
-                  <div className="text-xl font-black text-teal-400 mt-1">{formatVND(wallet.balance)}</div>
-                  <button className="mt-3 text-xs bg-teal-600/30 hover:bg-teal-600/40 text-teal-300 font-bold px-3 py-1.5 rounded-xl border border-teal-500/30 cursor-pointer">
-                    Nạp thêm qua QR payOS
-                  </button>
-                </div>
-
-                <div className="bg-slate-900 border border-slate-750 p-4 rounded-2xl">
-                  <span className="text-xs text-slate-400">Số đơn hoàn tất thành công:</span>
-                  <div className="text-xl font-black text-white mt-1">{wallet.completedBookingsCount} đơn</div>
-                  <span className="text-xs text-emerald-400">Khách đã đến & check-in thực tế</span>
-                </div>
-
-                <div className="bg-slate-900 border border-slate-750 p-4 rounded-2xl">
-                  <span className="text-xs text-slate-400">Tổng phí sàn ghi nhận:</span>
-                  <div className="text-xl font-black text-amber-400 mt-1">
-                    {formatVND(wallet.completedBookingsCount * 50000)}
-                  </div>
-                  <span className="text-xs text-slate-400">Chỉ trừ tiền thực tế khi bật cờ thu</span>
-                </div>
-              </div>
-
               {/* Hiệu quả & Thống kê */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
                 <div className="bg-slate-900 border border-slate-750 p-5 rounded-2xl">

@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import { POINT_RULES } from '../config/community.ts';
 import {
   INITIAL_LISTINGS,
   BUS_TRIPS,
@@ -372,7 +373,8 @@ export function generateLocalRuleBasedConsultation(req: TripConsultRequest): Tri
     });
   }
 
-  const memberPointsReward = Math.round(estimatedTotalCost * 0.05 / 1000) * 10; // 5% tích luỹ điểm mây
+  // N06.2: Điểm Mây theo đóng góp — cố định khi chuyến ở hoàn tất, không theo số tiền.
+  const memberPointsReward = POINT_RULES.stay_completed;
 
   return {
     summary: `Kế hoạch du lịch Tà Xùa ${nights + 1}N${nights}Đ dành cho đoàn ${guests} khách đón tại ${req.pickupLocation}. Tận hưởng trọn vẹn biển mây phòng ngủ, lịch trình săn mây chuẩn giờ vàng và dịch vụ đã thẩm định thực tế.`,
@@ -570,6 +572,8 @@ Hãy trả về định dạng JSON thuần túy (không kèm markdown code bloc
     // Làm sạch chuỗi JSON nếu có bao quanh bởi markdown
     const cleanedJson = textOutput.replace(/^```json\s*/, '').replace(/\s*```$/, '');
     const parsedData = JSON.parse(cleanedJson) as TripConsultResponse;
+    // Điểm Mây do quy tắc của hệ thống quyết định, không lấy số AI tự đưa ra (N06.2).
+    parsedData.memberPointsReward = POINT_RULES.stay_completed;
 
     // Đảm bảo dữ liệu homestay có ảnh và liên hệ thực tế
     if (parsedData.recommendedHomestays && parsedData.recommendedHomestays.length > 0) {

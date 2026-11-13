@@ -49,3 +49,20 @@ test('Tháng theo giờ Việt Nam', () => {
   assert.equal(vnMonth(new Date('2026-11-30T17:00:00Z')), '2026-12');
   assert.equal(previousVnMonth(new Date('2026-01-10T00:00:00Z')), '2025-12');
 });
+
+test('Giao diện không tự cộng/trừ Điểm Mây trong trình duyệt và không còn phí cố định 50.000đ', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const { fileURLToPath } = await import('node:url');
+  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+  const files = [path.join(root, 'App.tsx'), ...fs.readdirSync(path.join(root, 'components')).filter((f) => f.endsWith('.tsx')).map((f) => path.join(root, 'components', f))];
+  const offenders: string[] = [];
+  for (const f of files) {
+    fs.readFileSync(f, 'utf8').split('\n').forEach((line, i) => {
+      if (/cloudPoints:\s*prev\.cloudPoints\s*[+-]|onEarnCloudPoints|calculateMemberPoints|calculatePlatformFee|\+\s*\{?(pointsEarned|earnedPoints)\}?\s*Điểm Mây|\+\d+ Điểm Mây|\+\d+đ\)|50\.000đ\/booking|50k\/booking|Phí Sàn 50\.000đ|trừ 50\.000đ/.test(line)) {
+        offenders.push(`${path.basename(f)}:${i + 1}: ${line.trim().slice(0, 90)}`);
+      }
+    });
+  }
+  assert.deepEqual(offenders, []);
+});

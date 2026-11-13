@@ -64,28 +64,6 @@ export function estimatePickupTime(departureTime: string, minuteOffset: number):
 }
 
 /**
- * Quyết định tính phí 50.000đ từ nhà cung cấp:
- * Theo mục 2 & 11 trong kế hoạch: Chỉ thu khi booking 'completed', kiểm soát bằng cờ billing_enabled
- */
-export function calculatePlatformFee(bookingStatus: string, billingEnabled: boolean): number {
-  if (bookingStatus !== 'completed') return 0;
-  if (!billingEnabled) return 0;
-  return 50000;
-}
-
-/**
- * Tính điểm "Mây" cho thành viên:
- * Mỗi booking hoàn tất được thưởng điểm, viết review xác thực được thưởng thêm
- */
-export function calculateMemberPoints(bookingAmount: number, isVerifiedReview = false): number {
-  if (bookingAmount <= 0) return 0;
-  // 100.000đ = 10 điểm Mây, tối thiểu 30 điểm cho 1 booking
-  const basePoints = Math.max(30, Math.floor(bookingAmount / 100000) * 10);
-  const reviewBonus = isVerifiedReview ? 50 : 0;
-  return basePoints + reviewBonus;
-}
-
-/**
  * Định dạng tiền tệ Việt Nam (VNĐ)
  */
 export function formatVND(amount: number): string {

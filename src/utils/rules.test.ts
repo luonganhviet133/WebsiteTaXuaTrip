@@ -3,8 +3,6 @@ import assert from 'node:assert/strict';
 import { 
   calculateCloudProbability, 
   estimatePickupTime, 
-  calculatePlatformFee, 
-  calculateMemberPoints,
   formatVND,
   calculateDistanceKm,
   estimateMountainTravelMinutes,
@@ -62,27 +60,6 @@ test('estimatePickupTime correctly offsets departure time by minutes', () => {
   assert.equal(estimatePickupTime('06:30', 45), '07:15');
   assert.equal(estimatePickupTime('23:30', 60), '00:30');
   assert.equal(estimatePickupTime('08:00', 0), '08:00');
-});
-
-test('calculatePlatformFee only applies when completed and billing is enabled', () => {
-  // Billing enabled, completed -> 50,000 VND
-  assert.equal(calculatePlatformFee('completed', true), 50000);
-
-  // Billing disabled, completed -> 0
-  assert.equal(calculatePlatformFee('completed', false), 0);
-
-  // Pending or confirmed, billing enabled -> 0 (only charged upon completed stay)
-  assert.equal(calculatePlatformFee('pending', true), 0);
-  assert.equal(calculatePlatformFee('confirmed', true), 0);
-  assert.equal(calculatePlatformFee('cancelled', true), 0);
-});
-
-test('calculateMemberPoints grants base points and verified review bonus', () => {
-  const pts1 = calculateMemberPoints(800000, false);
-  assert.equal(pts1, 80);
-
-  const pts2 = calculateMemberPoints(800000, true);
-  assert.equal(pts2, 130); // 80 + 50
 });
 
 test('formatVND formats Vietnamese currency strings properly', () => {

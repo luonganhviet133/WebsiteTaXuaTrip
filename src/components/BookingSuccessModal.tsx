@@ -13,7 +13,8 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { Booking } from '../types/index.ts';
-import { formatVND, calculateMemberPoints } from '../utils/rules.ts';
+import { formatVND } from '../utils/rules.ts';
+import { POINT_RULES } from '../config/community.ts';
 import { holdExpiryLabel } from '../api/holdsApi.ts';
 import { DEPOSIT_PERCENT } from '../config/payment.ts';
 
@@ -27,8 +28,6 @@ export const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
   onClose
 }) => {
   if (!booking) return null;
-
-  const pointsEarned = calculateMemberPoints(booking.totalAmount);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fade-in text-white">
@@ -97,7 +96,7 @@ export const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
         {/* Cloud points earned alert */}
         <div className="bg-gradient-to-r from-teal-500/20 via-sky-500/20 to-indigo-500/20 border border-teal-500/30 rounded-2xl p-3 mb-6 flex items-center justify-center gap-2 text-xs font-bold text-teal-300">
           <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-          <span>Điểm Mây dự kiến: <strong>+{pointsEarned}</strong> (bản demo, chưa lưu lên hệ thống)</span>
+          <span>Điểm Mây: <strong>+{POINT_RULES.stay_completed}</strong> khi chuyến hoàn tất (cơ sở xác nhận)</span>
         </div>
 
         {/* Booking Details Card */}

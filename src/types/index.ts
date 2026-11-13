@@ -649,15 +649,6 @@ export interface MemberProfile {
   bookingHistory: Booking[];
 }
 
-export interface PartnerWallet {
-  partnerId: string;
-  partnerName: string;
-  balance: number; // Số dư ví trả trước
-  pendingFeeTotal: number;
-  completedBookingsCount: number;
-  billingEnabled: boolean; // cờ tính phí
-}
-
 // ===== Quản trị & Điều phối RevidAPI Gateway (https://revidapi.com/dashboard/docs) =====
 
 export type RevidComplexityLevel =

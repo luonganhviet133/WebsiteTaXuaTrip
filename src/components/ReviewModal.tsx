@@ -84,7 +84,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
               Đánh Giá Trải Nghiệm Tại {booking.listingTitle}
             </h3>
             <p className="text-xs text-slate-300 mt-0.5">
-              Đánh giá gắn với mã đơn xác thực {booking.id} (+20 Điểm Mây thưởng)
+              Đánh giá gắn với mã đơn xác thực {booking.id}
             </p>
           </div>
 
@@ -110,8 +110,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                 </h4>
                 <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto mt-1 leading-relaxed">
                   Đánh giá đã được xác thực và hiển thị công khai trên hồ sơ của{' '}
-                  <strong>{booking.listingTitle}</strong>. Bạn đã được cộng thêm{' '}
-                  <strong className="text-teal-700">+20 Điểm Mây</strong> vào tài khoản thành viên!
+                  <strong>{booking.listingTitle}</strong>. Cảm ơn bạn đã đóng góp cho cộng đồng!
                 </p>
               </div>
 

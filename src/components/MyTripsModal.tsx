@@ -428,7 +428,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                         className="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-amber-400 hover:bg-amber-300 text-slate-950 inline-flex items-center gap-1.5 cursor-pointer shadow-2xs"
                       >
                         <Star className="w-3.5 h-3.5 fill-slate-950" />
-                        <span>Viết Đánh Giá (+20 Điểm Mây)</span>
+                        <span>Viết Đánh Giá</span>
                       </button>
                     )}
 

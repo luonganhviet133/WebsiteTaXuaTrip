@@ -18,6 +18,24 @@
 
 ---
 
+### D-N06-03: Điểm Mây theo đóng góp, phí nền tảng theo từng cơ sở (chủ dự án chốt 13/11/2026)
+
+- **Điểm Mây tính theo đóng góp thật, không theo tiền chi tiêu.** Nguồn duy nhất là sổ `points_ledger` ở server; trình duyệt không tự cộng điểm.
+  - Hoàn tất chuyến ở (cơ sở xác nhận): +20, ghi cùng batch với bước "hoàn tất"; một đơn chỉ được cộng một lần.
+  - Đánh giá xác thực: +30, có ảnh thật thêm +20. Hằng số đã có, nhưng nối vào luồng đánh giá ở N06.3.
+  - Admin cộng điểm cho đóng góp được duyệt: 1–500 điểm mỗi lần, phải ghi lý do, có khóa chống bấm lặp.
+  - Admin thu hồi bằng một dòng trừ bù, không xóa dòng gốc.
+- **Danh hiệu** tính theo điểm 12 tháng gần nhất: Lữ khách mới (0), Người săn mây (100), Thổ địa Tà Xùa (300), Đại sứ Tà Xùa (800).
+- **Bảng xếp hạng** công khai chỉ hiện khách du lịch, dùng tên rút gọn (ví dụ "Nguyễn V. K.").
+- **Top 3 mỗi tháng:** sau khi tháng kết thúc, admin chốt và ghi quà đã trao. Mỗi hạng và mỗi người chỉ được ghi một lần.
+- **Đổi điểm lấy quà: khóa** (`REDEMPTION_ENABLED=false`). Giá trị quy đổi và người chịu chi phí voucher chưa chốt. Server đã có API đổi điểm nhưng trả 403 cho tới khi chủ dự án chốt.
+- **Phí nền tảng:**
+  - Admin cài mức phí cho từng cơ sở sau khi đã thỏa thuận. Có hai dạng: số tiền cố định mỗi đơn (0–10.000.000đ), hoặc phần trăm (0–50%, làm tròn tới đồng theo quy tắc thường).
+  - Khi đơn hoàn tất, hệ thống ghi một dòng vào `fee_ledger` theo mức phí lúc đó. Cơ sở chưa được cài mức phí thì không ghi dòng nào.
+  - Đảo phí phải có lý do và giữ nguyên kỳ (tháng) của dòng gốc.
+  - **Chưa thu tiền.** Không còn ví trả trước và không tự trừ 50.000đ. Hóa đơn cuối tháng làm ở N06.3.
+- **Bỏ** các lời hứa điểm cũ trong giao diện: điểm theo % tiền đặt, +50 khi đánh giá, điểm cộng tại trình duyệt. Có test quét mã nguồn để chặn chúng quay lại.
+
 ### D-N06-02: Đối soát cọc (chủ dự án chốt 13/11/2026)
 
 - **Khi nào mở:** khách đã gửi biên lai cọc nhưng đơn **hết hạn giữ chỗ** hoặc **bị cơ sở từ chối** trước khi cơ sở xác nhận nhận cọc. Không mở khi khách tự hủy hoặc cơ sở nhả phòng vì quá hạn 70% (D03: cọc không hoàn).
