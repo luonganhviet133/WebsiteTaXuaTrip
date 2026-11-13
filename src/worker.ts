@@ -19,7 +19,7 @@ import { applyEdgeLimit, type EdgeLimiters } from './server/security/edgeLimit.t
 import { accessConfigFrom, enforceAccess } from './server/security/access.ts';
 import { D1Backup } from './server/backup/d1Backup.ts';
 
-const WEEKLY_BACKUP_CRON = '17 20 * * 6';
+const WEEKLY_BACKUP_CRON = '17 20 * * SAT';
 
 export interface Env extends EdgeLimiters {
   DB: any;

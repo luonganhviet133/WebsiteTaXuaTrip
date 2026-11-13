@@ -140,3 +140,11 @@ test('Phiên bản cấu trúc D1: khớp migration mới nhất; health báo l�
   assert.equal((await schemaStatus(fake('0011_reviews_complaints.sql'))).ok, false);
   assert.deepEqual(await schemaStatus(fake(null, true)), { expected: EXPECTED_MIGRATION, applied: null, ok: true });
 });
+
+test('Cron sao lưu hằng tuần: khớp giữa wrangler.toml và worker; dùng SAT (Cloudflare: 1=Chủ nhật…7=thứ Bảy)', () => {
+  const toml = fs.readFileSync(path.join(root, 'wrangler.toml'), 'utf8');
+  const worker = fs.readFileSync(path.join(root, 'src/worker.ts'), 'utf8');
+  const weekly = /const WEEKLY_BACKUP_CRON = '([^']+)'/.exec(worker)?.[1];
+  assert.equal(weekly, '17 20 * * SAT');
+  assert.ok(toml.includes(`"${weekly}"`), 'wrangler.toml phải có đúng chuỗi cron mà worker so sánh');
+});
