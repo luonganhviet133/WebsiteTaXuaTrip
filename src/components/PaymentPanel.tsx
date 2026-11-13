@@ -178,7 +178,7 @@ export const PaymentPanel: React.FC<{ bookingId: string; onChanged?: () => void 
                   type="button"
                   disabled={!agreed || busy}
                   onClick={() => void accept()}
-                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-sm font-extrabold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-full bg-brand-800 hover:bg-brand-700 text-white text-sm font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Xem thông tin chuyển cọc
                 </button>

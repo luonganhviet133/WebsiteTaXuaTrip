@@ -300,7 +300,7 @@ Hotline hỗ trợ: 0981 234 567`;
           <form onSubmit={handleStartConsultation} className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-200/70">
               <span className="text-xs font-black uppercase tracking-wider text-brand-800 flex items-center gap-1.5">
-                <Calendar className="w-4 h-4 text-teal-600" />
+                <Calendar className="w-4 h-4 text-teal-700" />
                 Thông số chuyến đi cần tư vấn
               </span>
               <span className="text-xs font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200/80">
@@ -319,7 +319,7 @@ Hotline hỗ trợ: 0981 234 567`;
                     type="date"
                     value={checkIn}
                     onChange={(e) => setCheckIn(e.target.value)}
-                    className="w-full text-xs font-bold text-brand-800 bg-white border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full text-base font-bold text-brand-800 bg-white border border-slate-500 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
                     required
                   />
                 </div>
@@ -336,7 +336,7 @@ Hotline hỗ trợ: 0981 234 567`;
                     value={checkOut}
                     min={checkIn}
                     onChange={(e) => setCheckOut(e.target.value)}
-                    className="w-full text-xs font-bold text-brand-800 bg-white border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full text-base font-bold text-brand-800 bg-white border border-slate-500 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
                     required
                   />
                 </div>
@@ -352,7 +352,7 @@ Hotline hỗ trợ: 0981 234 567`;
                   <select
                     value={guests}
                     onChange={(e) => setGuests(parseInt(e.target.value, 10))}
-                    className="w-full text-xs font-bold text-brand-800 bg-transparent border-none focus:outline-none cursor-pointer"
+                    className="w-full text-base font-bold text-brand-800 bg-transparent border-none focus:outline-none cursor-pointer"
                   >
                     <option value={1}>1 người (Đi một mình)</option>
                     <option value={2}>2 người (Cặp đôi / Bạn thân)</option>
@@ -386,7 +386,7 @@ Hotline hỗ trợ: 0981 234 567`;
                     value={budgetAmount}
                     onChange={(e) => setBudgetAmount(e.target.value)}
                     placeholder="VD: 1800000"
-                    className="w-full text-xs font-bold text-brand-800 bg-white border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full text-base font-bold text-brand-800 bg-white border border-slate-500 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
                   />
                   <span className="absolute right-3 top-2.5 text-xs font-bold text-slate-400">₫</span>
                 </div>
@@ -406,7 +406,7 @@ Hotline hỗ trợ: 0981 234 567`;
                     value={pickupLocation}
                     onChange={(e) => setPickupLocation(e.target.value)}
                     placeholder="Nhập địa chỉ hoặc điểm đón cụ thể..."
-                    className="w-full text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded-xl pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full text-base font-bold text-slate-800 bg-white border border-slate-500 rounded-xl pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
                   />
                 </div>
                 <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
@@ -479,7 +479,7 @@ Hotline hỗ trợ: 0981 234 567`;
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white font-black text-xs sm:text-sm shadow-md transition-all transform active:scale-95 cursor-pointer disabled:opacity-70 ml-auto"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all transform active:scale-95 cursor-pointer disabled:opacity-70 ml-auto"
               >
                 {isLoading ? (
                   <>
@@ -507,15 +507,15 @@ Hotline hỗ trợ: 0981 234 567`;
               </h3>
               <div className="max-w-md mx-auto space-y-2 text-xs font-semibold text-slate-600">
                 <div className={`flex items-center justify-center gap-2 ${loadingStep >= 1 ? 'text-teal-800' : 'text-slate-400'}`}>
-                  {loadingStep >= 1 ? <CheckCircle2 className="w-4 h-4 text-teal-600" /> : <Clock className="w-4 h-4" />}
+                  {loadingStep >= 1 ? <CheckCircle2 className="w-4 h-4 text-teal-700" /> : <Clock className="w-4 h-4" />}
                   <span>Đang đối chiếu danh sách homestay...</span>
                 </div>
                 <div className={`flex items-center justify-center gap-2 ${loadingStep >= 2 ? 'text-teal-800' : 'text-slate-400'}`}>
-                  {loadingStep >= 2 ? <CheckCircle2 className="w-4 h-4 text-teal-600" /> : <Clock className="w-4 h-4" />}
+                  {loadingStep >= 2 ? <CheckCircle2 className="w-4 h-4 text-teal-700" /> : <Clock className="w-4 h-4" />}
                   <span>Tính toán chi phí xe khách Limousine từ {pickupLocation}...</span>
                 </div>
                 <div className={`flex items-center justify-center gap-2 ${loadingStep >= 3 ? 'text-teal-800' : 'text-slate-400'}`}>
-                  {loadingStep >= 3 ? <CheckCircle2 className="w-4 h-4 text-teal-600" /> : <Clock className="w-4 h-4" />}
+                  {loadingStep >= 3 ? <CheckCircle2 className="w-4 h-4 text-teal-700" /> : <Clock className="w-4 h-4" />}
                   <span>Xây dựng lịch trình săn mây giờ vàng & áp dụng mã giảm giá...</span>
                 </div>
               </div>
@@ -562,7 +562,7 @@ Hotline hỗ trợ: 0981 234 567`;
                   onClick={handleCopyPlan}
                   className="ml-auto inline-flex items-center gap-1.5 text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200/80 px-3 py-1.5 rounded-xl transition-colors cursor-pointer shrink-0"
                 >
-                  {isCopied ? <Check className="w-3.5 h-3.5 text-teal-600" /> : <Share2 className="w-3.5 h-3.5" />}
+                  {isCopied ? <Check className="w-3.5 h-3.5 text-teal-700" /> : <Share2 className="w-3.5 h-3.5" />}
                   <span>{isCopied ? 'Đã sao chép!' : 'Chia sẻ kế hoạch'}</span>
                 </button>
               </div>
@@ -608,7 +608,7 @@ Hotline hỗ trợ: 0981 234 567`;
                       <div className="text-lg sm:text-xl font-black text-teal-700 mt-1">
                         {result.budgetAssessment.estimatedTotalCost.toLocaleString('vi-VN')} ₫
                       </div>
-                      <div className="text-xs font-bold text-teal-600 mt-0.5">
+                      <div className="text-xs font-bold text-teal-700 mt-0.5">
                         {result.budgetAssessment.estimatedCostPerPerson.toLocaleString('vi-VN')} ₫ / khách
                       </div>
                     </div>
@@ -647,7 +647,7 @@ Hotline hỗ trợ: 0981 234 567`;
                     </h4>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
                       <div className="bg-white p-3 rounded-xl border border-slate-200/80">
-                        <BedDouble className="w-4 h-4 mx-auto text-teal-600 mb-1" />
+                        <BedDouble className="w-4 h-4 mx-auto text-teal-700 mb-1" />
                         <div className="text-xs font-bold text-slate-500">Tiền phòng ({nights}đ)</div>
                         <div className="text-xs font-black text-brand-800 mt-0.5">
                           {result.breakdown.stayCost.toLocaleString('vi-VN')} ₫
@@ -663,7 +663,7 @@ Hotline hỗ trợ: 0981 234 567`;
                       </div>
 
                       <div className="bg-white p-3 rounded-xl border border-slate-200/80">
-                        <Utensils className="w-4 h-4 mx-auto text-amber-600 mb-1" />
+                        <Utensils className="w-4 h-4 mx-auto text-amber-700 mb-1" />
                         <div className="text-xs font-bold text-slate-500">Ăn uống đặc sản</div>
                         <div className="text-xs font-black text-brand-800 mt-0.5">
                           {result.breakdown.diningCost.toLocaleString('vi-VN')} ₫
@@ -771,13 +771,13 @@ Hotline hỗ trợ: 0981 234 567`;
                   {/* Travel Tips */}
                   <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5">
                     <h4 className="text-xs font-black uppercase tracking-wider text-brand-800 mb-2.5 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-teal-600" />
+                      <Sparkles className="w-3.5 h-3.5 text-teal-700" />
                       Lưu ý vàng khi du lịch Tà Xùa
                     </h4>
                     <ul className="space-y-1.5 text-xs text-slate-600">
                       {result.travelTips.map((tip, idx) => (
                         <li key={idx} className="flex items-start gap-2">
-                          <span className="text-teal-600 font-bold shrink-0">•</span>
+                          <span className="text-teal-700 font-bold shrink-0">•</span>
                           <span>{tip}</span>
                         </li>
                       ))}
@@ -849,7 +849,7 @@ Hotline hỗ trợ: 0981 234 567`;
                                       onSelectListing(fullListing);
                                       onClose();
                                     }}
-                                    className="flex-1 bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold py-2 rounded-xl text-center transition-colors cursor-pointer"
+                                    className="flex-1 bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold py-2 rounded-full text-center transition-colors cursor-pointer"
                                   >
                                     Xem phòng
                                   </button>
@@ -885,7 +885,7 @@ Hotline hỗ trợ: 0981 234 567`;
                 <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 flex flex-col h-96">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-200 mb-3">
                     <span className="text-xs font-black uppercase text-brand-800 flex items-center gap-1.5">
-                      <Bot className="w-4 h-4 text-teal-600" />
+                      <Bot className="w-4 h-4 text-teal-700" />
                       Trò chuyện trực tiếp cùng AI Cố vấn
                     </span>
                     <span className="text-xs text-slate-500">
@@ -925,7 +925,7 @@ Hotline hỗ trợ: 0981 234 567`;
                     ))}
                     {isChatSubmitting && (
                       <div className="flex items-center gap-2 text-xs text-slate-500 italic">
-                        <RefreshCw className="w-3.5 h-3.5 animate-spin text-teal-600" />
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin text-teal-700" />
                         <span>AI đang kiểm tra cơ sở dữ liệu và soạn câu trả lời...</span>
                       </div>
                     )}
@@ -938,12 +938,12 @@ Hotline hỗ trợ: 0981 234 567`;
                       value={chatInput}
                       onChange={(e) => setChatInput(e.target.value)}
                       placeholder="Hỏi thêm: Có homestay nào ô tô vào tận sân không? Cần mang đồ gì?"
-                      className="flex-1 text-xs bg-white border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                      className="flex-1 text-base bg-white border border-slate-500 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400"
                     />
                     <button
                       type="submit"
                       disabled={isChatSubmitting || !chatInput.trim()}
-                      className="bg-brand-800 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                      className="bg-brand-800 hover:bg-brand-700 text-white px-4 py-2.5 rounded-full font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
                     >
                       <Send className="w-3.5 h-3.5" />
                       <span>Gửi</span>
@@ -958,7 +958,7 @@ Hotline hỗ trợ: 0981 234 567`;
         {/* Footer controls */}
         <div className="px-5 sm:px-8 py-3.5 bg-slate-100 border-t border-slate-200 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2 text-xs text-slate-500">
-            <CheckCircle2 className="w-4 h-4 text-teal-600" />
+            <CheckCircle2 className="w-4 h-4 text-teal-700" />
             <span className="hidden sm:inline">Dữ liệu đối soát trực tiếp từ Tà Xùa Trip · Bảo vệ quyền lợi thành viên</span>
           </div>
           <button

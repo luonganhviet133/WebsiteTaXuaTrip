@@ -226,7 +226,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               onChange={(e) => setLookupQuery(e.target.value)}
               placeholder="Nhập mã đặt chỗ (VD: bk-101), tên homestay hoặc SĐT..."
               aria-label="Tìm kiếm mã đặt chỗ hoặc số điện thoại"
-              className="w-full bg-white border border-slate-200 rounded-2xl pl-9 pr-4 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-brand-800"
+              className="w-full bg-white border border-slate-500 rounded-2xl pl-9 pr-4 py-2 text-base font-semibold text-slate-800 focus:outline-none focus:border-brand-800"
             />
           </div>
           <div className="text-xs font-bold text-slate-500">
@@ -255,7 +255,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                     onClose();
                     onRequireLogin();
                   }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-brand-800 hover:bg-[#0a4585] text-white text-xs font-bold shadow-md cursor-pointer transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-800 hover:bg-[#0a4585] text-white text-xs font-bold shadow-md cursor-pointer transition-colors"
                 >
                   <LogIn className="w-4 h-4" />
                   <span>Đăng nhập ngay</span>

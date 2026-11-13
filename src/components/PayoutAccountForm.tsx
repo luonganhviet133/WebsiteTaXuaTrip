@@ -40,7 +40,7 @@ export const PayoutAccountForm: React.FC<{ listingId: string }> = ({ listingId }
 
   const field = 'w-full bg-slate-950 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white placeholder:text-slate-500';
   return (
-    <section aria-labelledby="payout-title" className="bg-slate-850 border border-slate-700 rounded-3xl p-4 sm:p-6 space-y-4">
+    <section aria-labelledby="payout-title" className="bg-slate-900 border border-slate-700 rounded-3xl p-4 sm:p-6 space-y-4">
       <div>
         <h3 id="payout-title" className="text-lg font-bold text-white flex items-center gap-2">
           <CreditCard className="w-5 h-5 text-teal-400" />

@@ -111,7 +111,7 @@ const ReviewsTab: React.FC = () => {
 export const AdminFeedbackPanel: React.FC = () => {
   const [tab, setTab] = useState<'complaints' | 'reviews'>('complaints');
   return (
-    <section aria-labelledby="admin-feedback-title" className="bg-slate-850 border border-rose-500/30 rounded-3xl p-4 sm:p-6 space-y-4 text-white">
+    <section aria-labelledby="admin-feedback-title" className="bg-slate-900 border border-rose-500/30 rounded-3xl p-4 sm:p-6 space-y-4 text-white">
       <div>
         <h3 id="admin-feedback-title" className="text-base font-extrabold">Khiếu nại & đánh giá</h3>
         <p className="text-xs text-slate-400">Kết luận khiếu nại chưa phải là đã hoàn tiền: cơ sở hoàn trực tiếp, khách xác nhận đã nhận mới đóng.</p>

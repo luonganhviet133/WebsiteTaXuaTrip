@@ -169,7 +169,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-black uppercase tracking-wider mb-2 border border-teal-200/60">
-              <CloudSun className="w-3.5 h-3.5 text-teal-600" />
+              <CloudSun className="w-3.5 h-3.5 text-teal-700" />
               <span>DỮ LIỆU KHÍ TƯỢNG ĐỘ CAO 1.500M – 1.850M</span>
             </div>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-brand-800 tracking-tight">
@@ -206,7 +206,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
               onClick={() => setShowSim(!showSim)}
               className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 shadow-2xs text-xs font-bold text-slate-700 transition-colors cursor-pointer"
             >
-              <Sliders className="w-4 h-4 text-teal-600" />
+              <Sliders className="w-4 h-4 text-teal-700" />
               <span>{showSim ? 'Ẩn mô phỏng khí tượng' : 'Mô phỏng thời tiết'}</span>
             </button>
           </div>
@@ -257,7 +257,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-5 border-b border-slate-100">
               <div>
                 <div className="inline-flex items-center gap-1.5 text-xs font-extrabold text-teal-700 mb-1">
-                  <MapPin className="w-3.5 h-3.5 text-teal-600" />
+                  <MapPin className="w-3.5 h-3.5 text-teal-700" />
                   <span>Đang xem dữ liệu khí tượng tại tọa độ</span>
                 </div>
                 <h2 className="text-2xl font-black text-brand-800 flex flex-wrap items-center gap-2.5">
@@ -303,7 +303,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
 
               <div className="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl">
                 <div className="flex items-center gap-1.5 text-xs text-slate-500 mb-1">
-                  <Thermometer className="w-3.5 h-3.5 text-amber-600" />
+                  <Thermometer className="w-3.5 h-3.5 text-amber-700" />
                   <span>Biên độ nhiệt</span>
                 </div>
                 <div className="text-lg font-black text-brand-800 tabular-nums">
@@ -402,7 +402,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
             {/* Free Cloud Alert */}
             <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-2xs">
               <div className="flex items-center gap-2 mb-1.5">
-                <BellRing className="w-4 h-4 text-amber-600" />
+                <BellRing className="w-4 h-4 text-amber-700" />
                 <h4 className="font-extrabold text-brand-800 text-sm">Bật Báo Thức & Cảnh Báo Biển Mây</h4>
               </div>
               <p className="text-xs text-slate-600 mb-3.5 leading-relaxed">
@@ -421,12 +421,12 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
                     value={alertEmail}
                     onChange={(e) => setAlertEmail(e.target.value)}
                     placeholder="Nhập SĐT Zalo hoặc Email nhận tin..."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-slate-50 border border-slate-500 rounded-xl px-3.5 py-2 text-base text-slate-800 placeholder-slate-400 focus:outline-none focus:border-teal-500"
                     required
                   />
                   <button
                     type="submit"
-                    className="w-full bg-brand-800 hover:bg-brand-700 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-2xs"
+                    className="w-full bg-brand-800 hover:bg-brand-700 text-white font-bold py-2.5 rounded-full text-xs transition-all cursor-pointer shadow-2xs"
                   >
                     Đăng Ký Nhận Báo Mây Miễn Phí
                   </button>
@@ -455,7 +455,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <div>
                 <h4 className="text-base font-extrabold text-brand-800 flex items-center gap-2">
-                  <Sliders className="w-4 h-4 text-teal-600" />
+                  <Sliders className="w-4 h-4 text-teal-700" />
                   <span>Bộ Mô Phỏng Hình Thành Biển Mây Tà Xùa</span>
                 </h4>
                 <p className="text-xs text-slate-600">
@@ -530,7 +530,7 @@ export const CloudForecastWidget: React.FC<CloudForecastWidgetProps> = ({
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="inline-flex items-center gap-1.5 text-xs font-extrabold text-amber-800 mb-1">
-                <Eye className="w-4 h-4 text-amber-600" />
+                <Eye className="w-4 h-4 text-amber-700" />
                 <span>Đã thẩm định góc nhìn thực tế (Cloud View Verified)</span>
               </div>
               <h3 className="text-lg sm:text-xl font-black text-brand-800">

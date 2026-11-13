@@ -23,8 +23,8 @@ const ReplyForm: React.FC<{ reviewId: string; onSaved: () => void }> = ({ review
       }}
     >
       <label htmlFor={`reply-${reviewId}`} className="sr-only">Trả lời công khai</label>
-      <input id={`reply-${reviewId}`} value={text} onChange={(e) => setText(e.target.value)} placeholder="Trả lời công khai của cơ sở" className="flex-1 min-w-0 rounded-xl border border-slate-300 px-3 py-2 text-sm" />
-      <button type="submit" disabled={text.trim().length < 5} className="px-3 py-2 rounded-xl text-xs font-bold bg-brand-800 text-white cursor-pointer disabled:opacity-50">Trả lời</button>
+      <input id={`reply-${reviewId}`} value={text} onChange={(e) => setText(e.target.value)} placeholder="Trả lời công khai của cơ sở" className="flex-1 min-w-0 rounded-xl border border-slate-500 px-3 py-2 text-sm" />
+      <button type="submit" disabled={text.trim().length < 5} className="px-3 py-2 rounded-full text-xs font-bold bg-brand-800 text-white cursor-pointer disabled:opacity-50">Trả lời</button>
       {msg && <p role="status" className="w-full text-xs text-rose-700">{msg}</p>}
     </form>
   );

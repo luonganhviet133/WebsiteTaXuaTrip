@@ -204,7 +204,7 @@ export const SosModal: React.FC<SosModalProps> = ({ onClose, siteContent }) => {
               <select
                 value={selectedSpotId}
                 onChange={(e) => setSelectedSpotId(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none focus:border-rose-400"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-base font-bold text-white focus:outline-none focus:border-rose-400"
               >
                 {MOUNTAIN_LANDMARKS.map((spot) => (
                   <option key={spot.id} value={spot.id}>
@@ -221,7 +221,7 @@ export const SosModal: React.FC<SosModalProps> = ({ onClose, siteContent }) => {
               <select
                 value={selectedIncidentId}
                 onChange={(e) => setSelectedIncidentId(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-amber-200 focus:outline-none focus:border-rose-400"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-base font-bold text-amber-200 focus:outline-none focus:border-rose-400"
               >
                 {INCIDENT_TYPES.map((inc) => (
                   <option key={inc.id} value={inc.id}>

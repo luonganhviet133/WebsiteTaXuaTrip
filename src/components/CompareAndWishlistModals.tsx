@@ -265,7 +265,7 @@ export const CompareHomestaysModal: React.FC<CompareHomestaysModalProps> = ({
                             onClose();
                             onSelectListing(fullItem);
                           }}
-                          className="w-full min-h-[42px] bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl cursor-pointer transition-colors"
+                          className="w-full min-h-[42px] bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs py-2.5 px-4 rounded-full cursor-pointer transition-colors"
                         >
                           Xem bằng chứng & Đặt phòng →
                         </button>
@@ -335,7 +335,7 @@ export const CompareHomestaysModal: React.FC<CompareHomestaysModalProps> = ({
                     {matrix.rows.map((row) => (
                       <td key={row.id} className="py-3.5 px-4">
                         <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center gap-1 font-extrabold text-amber-600">
+                          <span className="inline-flex items-center gap-1 font-extrabold text-amber-700">
                             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                             {row.rating}
                           </span>
@@ -573,12 +573,12 @@ export const WishlistDrawerModal: React.FC<WishlistDrawerModalProps> = ({
                   readOnly
                   value={shareUrl}
                   aria-label="Liên kết chia sẻ danh sách yêu thích"
-                  className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-700"
+                  className="flex-1 bg-white border border-slate-500 rounded-xl px-3 py-2 text-base font-mono text-slate-700"
                 />
                 <button
                   type="button"
                   onClick={handleCopyWishlistUrl}
-                  className="bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl cursor-pointer inline-flex items-center gap-1.5 shrink-0"
+                  className="bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold px-3.5 py-2 rounded-full cursor-pointer inline-flex items-center gap-1.5 shrink-0"
                 >
                   {copiedShareLink ? (
                     <>
@@ -675,7 +675,7 @@ export const WishlistDrawerModal: React.FC<WishlistDrawerModalProps> = ({
             <button
               type="button"
               onClick={onCompareAllSaved}
-              className="flex-1 bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs py-3 rounded-full cursor-pointer flex items-center justify-center gap-1.5"
+              className="flex-1 bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs py-3 rounded-full cursor-pointer flex items-center justify-center gap-1.5"
             >
               <Scale className="w-4 h-4" />
               <span>Đưa vào Bảng So Sánh ({Math.min(3, savedListings.length)} căn)</span>

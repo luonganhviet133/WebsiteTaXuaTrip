@@ -18,6 +18,14 @@
 
 ---
 
+### D-R4-01: Ra mắt chỉ với dữ liệu thật (13/11/2026)
+- **Quyết định:** tính năng chưa có dữ liệu hoặc nghiệp vụ thật thì khóa bằng cờ trong `src/config/features.ts`, cả ở giao diện ("Sắp ra mắt" nói việc thay thế làm được ngay) và ở API (503 `FEATURE_LOCKED`). Không hiện số liệu, đánh giá, dự báo hay cam kết chưa kiểm chứng; số trên trang lấy từ cơ sở dữ liệu hoặc không hiện.
+- **Không công bố danh sách lừa đảo** trừ vụ việc đã xác minh có bằng chứng: số điện thoại hoặc số tài khoản sai có thể bôi nhọ người thật.
+- **Mở lại một tính năng:** đổi `open: true` trong cùng commit có test cho tính năng đó; test cũ của Tư vấn AI / RevidAPI (gồm SSRF) tự chạy lại khi cờ mở.
+- **Giao diện:** theo Design System https://claude.ai/artifact/F5Z985s8p3TnYwjVA7BmPL (chủ dự án đã duyệt). Nút chính bo tròn chữ 700; ô nhập viền `slate-500` chữ 16px; trang quản trị nền tối (`slate-950`/`slate-900`/`slate-700`, nút chính ngọc).
+
+---
+
 ### D-R3-01: Bảo vệ trên gói Free và sao lưu (13/11/2026)
 - **Giới hạn tần suất:** dùng binding Rate Limiting của Workers (miễn phí, chạy cả trên workers.dev), coi là bộ lọc lỏng; giữ giới hạn nghiệp vụ trong API. Quy tắc rate limit/WAF của Cloudflare đợi tên miền (C1).
 - **CSP:** bắt buộc phần không thể làm hỏng trang; chính sách đầy đủ chạy chỉ báo cáo trước, bật bắt buộc sau khi production không còn báo vi phạm.

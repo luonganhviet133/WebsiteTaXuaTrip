@@ -316,7 +316,7 @@ export const AdminMembersPanel: React.FC<{ currentUserId?: string }> = ({ curren
   const select = 'px-3 py-2 text-sm bg-slate-950 border border-slate-700 rounded-xl text-white';
 
   return (
-    <div className="bg-slate-850 border border-slate-750 rounded-3xl p-4 sm:p-6 shadow-xl space-y-4">
+    <div className="bg-slate-900 border border-slate-700 rounded-3xl p-4 sm:p-6 shadow-xl space-y-4">
       <h3 className="text-base font-extrabold text-white">Thành viên & Đối tác</h3>
 
       {overview && (

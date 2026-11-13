@@ -100,7 +100,7 @@ export const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
         </div>
 
         {/* Booking Details Card */}
-        <div className="bg-slate-850 rounded-2xl p-4 border border-slate-750 text-left text-xs space-y-2 mb-6">
+        <div className="bg-slate-900 rounded-2xl p-4 border border-slate-700 text-left text-xs space-y-2 mb-6">
           <div className="flex justify-between">
             <span className="text-slate-400">Dịch vụ:</span>
             <span className="text-white font-semibold truncate max-w-[200px]">{booking.listingTitle}</span>
@@ -130,7 +130,7 @@ export const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
             </div>
           )}
 
-          <div className="flex justify-between pt-2 border-t border-slate-750 text-sm font-bold">
+          <div className="flex justify-between pt-2 border-t border-slate-700 text-sm font-bold">
             <span className="text-slate-300">Tổng thanh toán:</span>
             <span className="text-teal-400">{formatVND(booking.totalAmount)}</span>
           </div>

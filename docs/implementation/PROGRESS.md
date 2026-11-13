@@ -16,6 +16,53 @@
 
 ---
 
+## R4 — Khóa tính năng chưa xong, bỏ số liệu giả, áp Design System (13/11/2026, nhánh `dot/R4`)
+
+Design System (đã duyệt 13/11/2026): https://claude.ai/artifact/F5Z985s8p3TnYwjVA7BmPL
+
+### Đã làm
+- **Cờ tính năng** `src/config/features.ts` dùng chung giao diện và server. Đang khóa:
+  - khách: Tư vấn AI, Lên kế hoạch chuyến đi, Dự báo săn mây, Chat cộng đồng, Nhắn tin với cơ sở, Đặt vé xe khách;
+  - quản trị: J.A.R.V.I.S., Cổng AI (RevidAPI/AI Studio), Đóng gói website.
+
+  Màn chưa xong hiện khối **Sắp ra mắt** (`src/components/ComingSoon.tsx`) nói tình trạng thật và việc làm được ngay (nút sang Bản đồ / Lưu trú). Nút dẫn tới tính năng khóa mở hộp "Sắp ra mắt" (Esc để đóng, tiêu điểm vào nút đóng). Server trả **503 `FEATURE_LOCKED`** cho `/api/ai/consult`, `/api/ai/quick-quote`, `/api/revid/*`, kể cả với admin, nên không ai gọi thẳng được (Gemini không bị gọi từ web nữa).
+- **Bỏ số liệu và dữ liệu giả:**
+  - số đếm "Cộng Đồng 185", "24/38/14/18 Online", "1.240/10.000 thành viên", "Tăng 38%", "Tỷ lệ hài lòng 98%", ô lượt xem/lượt gọi chưa đo;
+  - % mây trên bản đồ, gói combo mẫu (giá bịa, ảnh kho, "Bán chạy nhất"), lịch xe mẫu, hồ sơ khách mẫu (3 mục đã lưu, đơn mẫu);
+  - cam kết chưa xác thực ("cứu hộ 24/7", "0% rủi ro", "100% GPS");
+  - công tắc thu phí chỉ đổi trong trình duyệt ("50K/ĐƠN").
+- **Gỡ danh sách "lừa đảo" bịa** ở trang Thẩm định: số điện thoại và số tài khoản tự đặt ra, gán là lừa đảo, có thể trùng người thật và gây bôi nhọ. Ô tra cứu nay chỉ đối chiếu với danh bạ thật. Thẻ chỉ số thay bằng số thật (số cơ sở, số đã xác minh cấp 2+, cọc 30% chuyển thẳng cho cơ sở, khiếu nại trong 7 ngày). Hai tình huống mẫu ghi rõ "Ví dụ minh họa".
+- **Nội dung mặc định nói thật** (`INITIAL_SITE_CONTENT`): bỏ "179+ kiểm duyệt", "đạt 85%", "Đang đạt đỉnh 90%", "Cập nhật… hôm nay" (chữ cố định), "100% thẩm định", "thời gian thực". Banner thứ hai đổi từ combo xe sang lưu trú.
+- **Gỡ khỏi `public/`**: `ta-xua-trip-source.zip`, `ta-xua-trip-build.zip`, `ta-xua-trip-chay-ngay.html`, `assets/aistudio/` (PDF kế hoạch, ảnh). Mục "Hosting Online / Tải bản .HTML" trong menu điện thoại đã ẩn.
+- **Áp Design System:**
+  - `bg-slate-850`/`border-slate-750` (khoảng 180 chỗ, Tailwind 4 không có nên không có tác dụng; viền rơi về màu chữ) → `slate-900`/`slate-700`; nền trang quản trị `slate-950`.
+  - 46 nút chính về một kiểu (bo tròn, chữ 700).
+  - 120 ô nhập trên nền sáng: viền `slate-500` (đạt 3:1), chữ 16px.
+  - Chữ `teal-600`/`amber-600` trên nền sáng → `700` (đạt 4,5:1).
+  - Trang quản trị: tiêu đề gọn; mọi bảng thành tab (Thành viên & Đối tác mở đầu tiên; Đối soát cọc, Phí nền tảng & Điểm Mây chuyển từ đầu trang vào tab); bỏ biểu tượng cảm xúc ở tab.
+
+### Lệnh đã chạy và kết quả
+- `npm run typecheck` 0 lỗi; `npm test` **343/343 pass**; `npm run build`, `npm run worker:dry-run` đạt.
+- Test mới:
+  - `src/config/features.test.ts`;
+  - API khóa trả 503 với cả admin (`accounts.api.test.ts`);
+  - `src/data/honestContent.test.ts`: nội dung mặc định không có % ngoài cọc 30%, không "hôm nay", không 24/7, 179+, thời gian thực; hồ sơ khách trống; danh sách lừa đảo trống; số Online chỉ nằm trong khối khóa.
+- Test cũ của Tư vấn AI / RevidAPI (gồm test SSRF R5) rẽ theo cờ: đang khóa thì kiểm 503; mở lại thì chạy lại kiểm tra cũ. Đã thử bật hai cờ: 72/72 test cũ của ba tệp đó pass.
+- Kiểm đỏ: bỏ chặn ở server → test khóa API hỏng; đưa "85% hôm nay" vào nội dung mặc định → test nội dung hỏng.
+- Trình duyệt (wrangler dev + D1 local), 10 màn × 375/768/1280 (Khám phá, Lưu trú, Chi tiết cơ sở, Di chuyển, Săn mây, Lịch trình, Cộng đồng, Bản đồ, Thẩm định, Quản trị):
+  - không tràn ngang, không chữ dưới 12px, không lỗi trang;
+  - không còn mẫu số liệu giả đã liệt kê;
+  - Săn mây / Lịch trình / Cộng đồng hiện khối Sắp ra mắt;
+  - nút "Tư vấn AI" và "Cộng Đồng" mở hộp Sắp ra mắt, Esc đóng được.
+- Ảnh trước/sau từng màn đã đối chiếu.
+
+### Chưa kiểm chứng / còn lại
+- Chưa chạy trên production (chờ "gộp R4"). Nếu production đã lưu nội dung trang (CMS) từ trước thì bản đã lưu được ưu tiên hơn nội dung mặc định mới; sau khi gộp sẽ kiểm `/api/site-content` và sửa trong trang quản trị nếu còn câu cũ.
+- Ảnh hero, banner, combo vẫn trỏ Unsplash (ảnh kho) cho tới khi có ảnh thật tải lên R2.
+- Kênh mạng xã hội trong nội dung mặc định ("Tích Xanh Chính Chủ", liên kết TikTok/Facebook) chưa kiểm là tài khoản thật của Tà Xùa Trip; admin cần sửa trong "Nội dung trang & kênh liên hệ".
+- Trang Thẩm định còn đoạn "4 chiêu trò lừa cọc" là hướng dẫn chung (không nêu số điện thoại/người cụ thể), giữ lại.
+- Các màn ít dùng (Dịch vụ, Ăn uống, các hộp thoại đặt xe/dịch vụ đang khóa) mới được áp quy chuẩn qua codemod, chưa rà từng màn.
+
 ## R3 — Bảo vệ Cloudflare, sao lưu D1, theo dõi (13/11/2026, nhánh `dot/R3`)
 
 ### Đã làm

@@ -530,30 +530,16 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
           padding: 5px 11px;
           border-radius: 9999px;
           background: ${isSelected ? '#073161' : isTargetForListing ? '#0d7a74' : '#0f172a'};
-          border: 2px solid ${
-            isSelected
-              ? '#f59e0b'
-              : spot.cloudProbability >= 85
-              ? '#10b981'
-              : '#38bdf8'
-          };
+          border: 2px solid ${isSelected ? '#f59e0b' : '#5eead4'};
           color: #ffffff;
-          font-size: 11px;
+          font-size: 12px;
           font-weight: 800;
           white-space: nowrap;
           box-shadow: 0 6px 16px rgba(7,49,97,0.38);
           transform: ${isSelected ? 'scale(1.12)' : 'scale(1)'};
           transition: all 0.2s ease;
         ">
-          <span>☁️</span>
           <span>${escapeHtml(spot.area)}</span>
-          <span style="
-            background: rgba(16, 185, 129, 0.25);
-            color: #6ee7b7;
-            padding: 1px 6px;
-            border-radius: 999px;
-            font-size: 10px;
-          ">${spot.cloudProbability}%</span>
         </div>
       `;
 
@@ -868,7 +854,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3.5">
           <div className="flex items-center gap-2.5 flex-wrap">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-50 border border-teal-200 text-xs font-extrabold uppercase tracking-wider text-teal-800">
-              <Compass className="w-3.5 h-3.5 text-teal-600" />
+              <Compass className="w-3.5 h-3.5 text-teal-700" />
               <span>Bản Đồ Số Tà Xùa</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-extrabold text-brand-800 tracking-tight">
@@ -905,11 +891,11 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   className={`w-3.5 h-3.5 ${
                     selectedLandmark?.id === spot.id && !selectedMapListing
                       ? 'text-emerald-300'
-                      : 'text-teal-600'
+                      : 'text-teal-700'
                   }`}
                 />
                 <span>
-                  {spot.area} ({spot.cloudProbability}%)
+                  {spot.area}
                 </span>
               </button>
             ))}
@@ -933,7 +919,7 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   }
                 }}
                 placeholder="Tìm Homestay, Cafe (Mị Ơi, Lu Trế...)"
-                className="w-full pl-8 pr-7 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-brand-800 focus:bg-white transition-all"
+                className="w-full pl-8 pr-7 py-1.5 rounded-xl bg-slate-50 border border-slate-500 text-base text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-brand-800 focus:bg-white transition-all"
               />
               {searchQuery && (
                 <button
@@ -1274,7 +1260,6 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                       }`}
                     >
                       <span>⛰️ {spot.altitude}</span>
-                      <span>☁️ {spot.cloudProbability}%</span>
                     </div>
                     <div
                       className={`text-xs font-extrabold line-clamp-1 ${
@@ -1457,9 +1442,6 @@ export const InteractiveMapSection: React.FC<InteractiveMapSectionProps> = ({
                   <div className="absolute top-3 left-3 flex items-center gap-2">
                     <span className="px-3 py-1 rounded-full text-xs font-bold bg-brand-800 text-white">
                       ⛰️ Độ cao {selectedLandmark.altitude}
-                    </span>
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-teal-700 text-white">
-                      ☁️ {selectedLandmark.cloudProbability}% Cloud View
                     </span>
                   </div>
                   <div className="absolute bottom-3 left-3.5 right-3.5 text-white">

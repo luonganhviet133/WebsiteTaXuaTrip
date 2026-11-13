@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { FEATURES } from '../config/features.ts';
 import { spawn } from 'node:child_process';
 import type { Server } from 'http';
 import type { AddressInfo } from 'net';
@@ -157,6 +158,11 @@ test('Express Server API Endpoints & Safety Guards (Part A: F1, F2, F3 Verificat
 
   // Business endpoints
   await t.test('POST /api/revid/classify classifies task complexity', async () => {
+    if (!FEATURES.aiGateway.open) {
+      const locked = await fetch(`${baseUrl}/api/revid/classify`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"prompt":"x"}' });
+      assert.equal(locked.status, 503, 'R4: đang khóa');
+      return;
+    }
     const res = await fetch(`${baseUrl}/api/revid/classify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -171,6 +177,11 @@ test('Express Server API Endpoints & Safety Guards (Part A: F1, F2, F3 Verificat
   });
 
   await t.test('POST /api/ai/quick-quote generates valid quote', async () => {
+    if (!FEATURES.aiAdvisor.open) {
+      const locked = await fetch(`${baseUrl}/api/ai/quick-quote`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      assert.equal(locked.status, 503, 'R4: đang khóa');
+      return;
+    }
     const res = await fetch(`${baseUrl}/api/ai/quick-quote`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

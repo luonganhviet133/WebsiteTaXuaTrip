@@ -33,6 +33,7 @@ import { handleFeedbackRoutes } from './feedback/routes.ts';
 import { AccountStore } from './accounts/store.ts';
 import { MemberAdminStore } from './admin/members.ts';
 import { schemaStatus } from './schemaVersion.ts';
+import { FEATURES, featureForApi } from '../config/features.ts';
 import { D1Backup, type BackupBucket } from './backup/d1Backup.ts';
 import { NoEmailSender, type EmailSender } from './email.ts';
 import type { PrivateStorage } from './payments/storage.ts';
@@ -141,6 +142,12 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
   const route = `${method} ${pathname}`;
 
   const accounts = new AccountStore(ctx.db.d1, ctx.email ?? new NoEmailSender());
+
+  // ==================== R4: TÍNH NĂNG CHƯA MỞ ====================
+  const lockedFeature = featureForApi(method, pathname);
+  if (lockedFeature && !FEATURES[lockedFeature].open) {
+    return json({ success: false, code: 'FEATURE_LOCKED', error: `${FEATURES[lockedFeature].title} sắp ra mắt.` }, 503);
+  }
 
   // ==================== AUTH ====================
   if (route === 'POST /api/auth/register' || route === 'POST /api/auth/login') {

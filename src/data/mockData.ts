@@ -12677,13 +12677,14 @@ export const INITIAL_BOOKINGS: Booking[] = [
 ];
 
 export const INITIAL_USER_PROFILE: MemberProfile = {
-  id: 'user-vip-01',
-  name: 'Lê Thành Đạt',
-  phone: '0986 555 777',
+  // R4: hồ sơ trống (trước đây là người mẫu với 3 mục đã lưu và đơn mẫu).
+  id: 'guest',
+  name: '',
+  phone: '',
   cloudPoints: 0, // N06.2: lấy từ server (/api/me/points) khi đăng nhập
-  membershipTier: 'Thợ Săn Mây Bạc',
-  savedListings: ['homestay-may', 'coffee-mi-oi', 'tour-song-lung'],
-  bookingHistory: INITIAL_BOOKINGS
+  membershipTier: 'Tân Binh Săn Mây',
+  savedListings: [],
+  bookingHistory: []
 };
 
 export const INITIAL_CLAIM_REQUESTS: PartnerClaimRequest[] = [
@@ -12917,29 +12918,29 @@ export const INITIAL_CURATED_COMBOS: CuratedComboPackage[] = [
 ];
 
 export const INITIAL_SITE_CONTENT: SiteContentConfig = {
-  heroBadge: '🏔️ Cổng đặt phòng & thông tin Tà Xùa',
+  heroBadge: 'Cổng đặt phòng & thông tin Tà Xùa',
   heroTitle: 'TÀ XÙA TRIP',
   heroSubtitle: 'Đi thật. Biết trước.',
-  heroDescription: '179+ homestay kiểm duyệt thực tế, minh bạch giá phòng và liên hệ trực tiếp chủ nhà không qua trung gian.',
+  heroDescription: 'Homestay, xe và quán ăn ở Tà Xùa với giá do chính cơ sở công bố. Liên hệ trực tiếp chủ nhà, không qua trung gian.',
   heroBackgroundImage: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80',
   heroOverlayOpacity: 75,
   alertEnabled: true,
   alertLevel: 'info',
-  alertText: 'Mùa săn mây đẹp nhất năm (Tháng 10 - Tháng 3): Xác suất biển mây Đỉnh Gió & Sống Lưng đạt 85%. Lưu ý kiểm tra phanh xe khi đổ đèo Bắc Yên.',
+  alertText: 'Mùa săn mây thường từ tháng 10 đến tháng 4. Kiểm tra phanh xe trước khi đổ đèo Bắc Yên.',
   emergencyBanner: {
     enabled: true,
     severity: 'info',
-    title: 'Cập nhật thời tiết & đèo Tà Xùa hôm nay',
-    message: 'Đường lên Sống Lưng Khủng Long và Thảo Nguyên thông thoáng, biển mây dày từ 05:30 - 08:30 sáng.',
+    title: 'Kinh nghiệm đi Tà Xùa',
+    message: 'Biển mây thường dày nhất khoảng 5:30–8:30 sáng. Hỏi chủ nhà về tình trạng đường trước khi lên.',
     actionUrl: '#weather'
   },
   heroBanners: [
     {
       id: 'hb-1',
-      badgeText: '🔥 Điểm Săn Mây Đỉnh Nhất',
-      title: 'Mùa Biển Mây Tà Xùa Đang Đạt Đỉnh 90%',
-      subtitle: 'Trải nghiệm Đỉnh Gió - Sống Lưng Khủng Long - Thảo Nguyên',
-      description: 'Đặt trực tiếp Homestay view mây tràn chân giường, combo xe Limousine + thuê xe máy nhận tại bản không qua cò mồi.',
+      badgeText: 'Điểm săn mây',
+      title: 'Đỉnh Gió, Sống Lưng Khủng Long, Thảo Nguyên',
+      subtitle: 'Xem vị trí các điểm ngắm mây và chỗ ở gần đó',
+      description: 'Bản đồ các điểm săn mây quen thuộc và cơ sở lưu trú quanh từng điểm.',
       imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
       ctaText: 'Xem Bản Đồ & Tọa Độ Săn Mây',
       targetTab: 'map',
@@ -12948,22 +12949,22 @@ export const INITIAL_SITE_CONTENT: SiteContentConfig = {
     },
     {
       id: 'hb-2',
-      badgeText: '🚌 Combo Tiết Kiệm',
-      title: 'Vé Xe Cabin Đôi + Xe Máy Giao Tận Homestay',
-      subtitle: 'Tiết kiệm 30.000đ/xe máy • Giữ chỗ ghế tầng 1 & tầng 2 trực quan',
-      description: 'Lựa chọn vị trí giường nằm 2 tầng hoặc Limousine VIP, kết hợp thuê xe máy tính linh hoạt mốc 12h trưa nửa ngày.',
+      badgeText: 'Lưu trú',
+      title: 'Đặt homestay trực tiếp với chủ nhà',
+      subtitle: 'Giá do cơ sở công bố, cọc 30% chuyển thẳng vào tài khoản của cơ sở',
+      description: 'Xem ảnh, tiện nghi và tình trạng xác minh của từng cơ sở trước khi đặt.',
       imageUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1200&q=80',
-      ctaText: 'Xem Gói Combo & Đặt Xe',
-      targetTab: 'combo_section',
+      ctaText: 'Xem chỗ ở',
+      targetTab: 'stay',
       sortOrder: 2,
       isActive: true
     },
     {
       id: 'hb-3',
-      badgeText: '🍲 Ẩm Thực & Cafe Đỉnh Gió',
-      title: 'Lẩu Gà Đen H’Mông & Cafe Ngắm Hoàng Hôn',
-      subtitle: 'Xem trước thực đơn niêm yết, giờ mở cửa & đặt bàn săn mây sớm',
-      description: 'Không lo chặt chém với bảng giá thực đơn minh bạch từ các quán ăn bản địa và tiệm cafe view thung lũng.',
+      badgeText: 'Ăn uống',
+      title: 'Quán ăn và cafe ở Tà Xùa',
+      subtitle: 'Xem quán gần chỗ ở và cách liên hệ',
+      description: 'Danh bạ quán ăn, cafe ngắm mây; giờ mở cửa và giá theo thông tin cơ sở cung cấp.',
       imageUrl: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1200&q=80',
       ctaText: 'Xem Quán Ăn & Cafe Đỉnh Gió',
       targetTab: 'dining',
@@ -12977,9 +12978,9 @@ export const INITIAL_SITE_CONTENT: SiteContentConfig = {
       id: 'sec-stay',
       sectionKey: 'stay',
       sectionName: 'Lưu Trú Homestay & Cloud Lounge',
-      badgeText: '100% Thẩm Định Thực Tế',
+      badgeText: 'Lưu trú',
       title: 'Homestay & Bungalow Săn Mây Tà Xùa',
-      subtitle: 'Minh bạch view nhìn, bình nóng lạnh, điều hòa, đệm sưởi và số phòng trống theo thời gian thực.',
+      subtitle: 'Xem view, tiện nghi (nóng lạnh, đệm sưởi…) và tình trạng xác minh của từng cơ sở.',
       bannerImageUrl: 'https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&w=1400&q=80',
       ctaText: 'Lọc phòng trống ngay',
       isActive: true
@@ -12988,9 +12989,9 @@ export const INITIAL_SITE_CONTENT: SiteContentConfig = {
       id: 'sec-transport',
       sectionKey: 'transport',
       sectionName: 'Xe Khách, Xe Máy & Taxi Bản Địa',
-      badgeText: 'Đặt Ghế & Combo Xe Máy',
+      badgeText: 'Di chuyển',
       title: 'Di Chuyển Lên Tà Xùa An Toàn & Chủ Động',
-      subtitle: 'Sơ đồ giường nằm 2 tầng, Cabin VIP, Limousine kèm thuê xe máy chính chủ (trả trước 12h trưa tính nửa ngày).',
+      subtitle: 'Nhà xe, taxi và điểm thuê xe máy trong danh bạ; gọi trực tiếp để đặt chỗ.',
       bannerImageUrl: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1400&q=80',
       ctaText: 'Xem lịch xe chạy',
       isActive: true
@@ -13001,7 +13002,7 @@ export const INITIAL_SITE_CONTENT: SiteContentConfig = {
       sectionName: 'Tour Trekking, Photographer & Trang Phục',
       badgeText: 'Trải Nghiệm Bản Địa',
       title: 'Dịch Vụ Săn Mây, Chụp Ảnh & Thuê Đồ',
-      subtitle: 'Poster dẫn tour Sống Lưng Khủng Long, thợ ảnh săn mây chuyên nghiệp, thuê váy Mông & máy ảnh Fujifilm/Sony.',
+      subtitle: 'Người dẫn đường, thợ ảnh và thuê trang phục do cơ sở địa phương cung cấp.',
       bannerImageUrl: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=80',
       ctaText: 'Đặt dịch vụ trải nghiệm',
       isActive: true
@@ -13010,9 +13011,9 @@ export const INITIAL_SITE_CONTENT: SiteContentConfig = {
       id: 'sec-dining',
       sectionKey: 'dining',
       sectionName: 'Ẩm Thực Tây Bắc & Cafe Săn Mây',
-      badgeText: 'Niêm Yết Thực Đơn',
+      badgeText: 'Ăn uống',
       title: 'Quán Ăn Đặc Sản & Tiệm Cà Phê Đỉnh Gió',
-      subtitle: 'Cập nhật giờ mở - đóng cửa thực tế, menu lẩu gà đen, cá tầm, đồ nướng và thức uống nóng giữa biển mây.',
+      subtitle: 'Lẩu gà đen, cá tầm, đồ nướng, đồ uống nóng; giờ mở cửa và giá theo cơ sở công bố.',
       bannerImageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80',
       ctaText: 'Xem thực đơn & đặt bàn',
       isActive: true
@@ -13021,9 +13022,9 @@ export const INITIAL_SITE_CONTENT: SiteContentConfig = {
       id: 'sec-verified',
       sectionKey: 'verified',
       sectionName: 'Phương Pháp Thẩm Định 3 Cấp',
-      badgeText: 'Chống Lừa Đảo & Ảo Giá',
+      badgeText: 'Xác minh & khiếu nại',
       title: 'Hệ Thống Chứng Nhận & Bảo Vệ Du Khách',
-      subtitle: 'Mọi cơ sở đều được kiểm duyệt thực địa, lưu bằng chứng chuyển khoản (UNC) và đối soát minh bạch.',
+      subtitle: 'Cách Tà Xùa Trip xác minh cơ sở, giữ bằng chứng chuyển khoản và xử lý khiếu nại.',
       bannerImageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1400&q=80',
       ctaText: 'Tìm hiểu quy trình',
       isActive: true

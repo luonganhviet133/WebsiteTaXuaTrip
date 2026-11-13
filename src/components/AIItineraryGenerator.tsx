@@ -548,7 +548,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                 <select
                   value={vibe}
                   onChange={(e) => setVibe(e.target.value as any)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-500 bg-slate-50 text-base font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                 >
                   <option value="chill">☁️ Săn mây & Cafe Chill</option>
                   <option value="trekking">🥾 Trekking Sống Lưng & Rừng</option>
@@ -565,7 +565,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                 <select
                   value={preferredArea}
                   onChange={(e) => setPreferredArea(e.target.value as LocationArea)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-500 bg-slate-50 text-base font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                 >
                   <option value="Đỉnh Gió">📍 Đỉnh Gió (Trung tâm săn mây)</option>
                   <option value="Sống Lưng Khủng Long">🦖 Sống Lưng Khủng Long</option>
@@ -582,7 +582,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                 <select
                   value={transport}
                   onChange={(e) => setTransport(e.target.value as any)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-500 bg-slate-50 text-base font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                 >
                   <option value="limo_bike">🚌 Xe Cabin/Limo + Thuê xe máy</option>
                   <option value="private_car">🚗 Ô tô cá nhân tự lái</option>
@@ -597,7 +597,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                 <select
                   value={groupSize}
                   onChange={(e) => setGroupSize(Number(e.target.value) || 2)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-500 bg-slate-50 text-base font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                 >
                   <option value={1}>👤 1 khách (Độc hành / Ghép đoàn)</option>
                   <option value={2}>👥 2 khách (Cặp đôi / Đôi bạn)</option>
@@ -774,7 +774,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => onSelectListing && onSelectListing(resolvedListing)}
-                                  className="px-3.5 py-1.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-extrabold flex items-center gap-1 cursor-pointer transition-colors"
+                                  className="px-3.5 py-1.5 rounded-full bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
                                 >
                                   <span>Xem & Đặt</span>
                                   <ArrowRight className="w-3.5 h-3.5" />
@@ -930,7 +930,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
               <button
                 type="button"
                 onClick={handleDownloadOfflineHtmlFile}
-                className="w-full py-2.5 px-4 rounded-xl bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                className="w-full py-2.5 px-4 rounded-full bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
               >
                 <FileDown className="w-4 h-4" />
                 <span>Tải Trọn Bộ Lịch Trình & Sơ Đồ Về Máy</span>
