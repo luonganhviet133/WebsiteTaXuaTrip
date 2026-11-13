@@ -134,6 +134,9 @@ export function toBookingView(r: any): BookingView {
   };
 }
 
+/** 2026-11-19 → 19/11/2026 (chữ trong thông báo). */
+export const viDate = (d: string) => d.split('-').reverse().join('/');
+
 /** Một dòng lịch sử trạng thái đơn (N05.3). */
 export function bookingEventStmt(
   d1: D1Database,
@@ -272,7 +275,7 @@ export class HoldStore {
         kind: 'booking.hold',
         bookingId: id,
         title: 'Đơn mới đang chờ cọc',
-        body: `${input.guestName} giữ ${quote.rooms} ${room.name} ${quote.checkIn} → ${quote.checkOut}. Giữ chỗ 30 phút.`,
+        body: `${input.guestName} giữ ${quote.rooms} ${room.name}, ${viDate(quote.checkIn)} → ${viDate(quote.checkOut)}. Giữ chỗ 30 phút.`,
         now: nowIso,
       })
     );

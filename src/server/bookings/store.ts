@@ -8,7 +8,7 @@
 import type { D1Database } from '../d1.ts';
 import { todayInVietnam } from '../../search/searchIntent.ts';
 import { ListingStore } from '../listings/store.ts';
-import { BOOKING_COLUMNS, HoldStore, bookingEventStmt, notifyOwnersStmt, toBookingView, type BookingView } from './holds.ts';
+import { BOOKING_COLUMNS, HoldStore, viDate, bookingEventStmt, notifyOwnersStmt, toBookingView, type BookingView } from './holds.ts';
 import { decide, type BookingAction, type BookingStatus, type Party } from './lifecycle.ts';
 
 export interface LifecycleActor {
@@ -118,7 +118,7 @@ export class BookingLifecycle {
           kind: 'booking.cancelled',
           bookingId,
           title: `Đơn ${row.booking_code} đã hủy`,
-          body: `${parties.includes('guest') ? 'Khách' : 'Tà Xùa Trip'} hủy đơn ${row.check_in_date} → ${row.check_out_date}. Phòng đã được trả lại.${reason ? ` Lý do: ${reason}` : ''}`,
+          body: `${parties.includes('guest') ? 'Khách' : 'Tà Xùa Trip'} hủy đơn ${viDate(row.check_in_date)} → ${viDate(row.check_out_date)}. Phòng đã được trả lại.${reason ? ` Lý do: ${reason}` : ''}`,
           now: nowIso,
         })
       );

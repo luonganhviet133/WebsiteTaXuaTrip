@@ -63,7 +63,6 @@ interface ListingDetailModalProps {
   onClose: () => void;
   onBookSuccess: (booking: Booking) => void;
   onAddReview?: (review: Review, bookingId?: string) => void;
-  onCompleteBooking?: (bookingId: string) => void;
   onOpenDirectChat?: (listing: Listing) => void;
   onClaimListing?: (listing: Listing) => void;
   /** N05.2: giữ phòng homestay cần đăng nhập */
@@ -82,7 +81,6 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
   onClose,
   onBookSuccess,
   onAddReview,
-  onCompleteBooking,
   onOpenDirectChat,
   onClaimListing,
   isLoggedIn = false,
@@ -154,10 +152,6 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
   // Eligible completed bookings that haven't been reviewed yet
   const eligibleBookings = userBookings.filter((b) =>
     canBookingLeaveReview(b.status, b.reviewed)
-  );
-  // Active bookings (confirmed / checked_in) that can be marked completed
-  const activeBookings = userBookings.filter(
-    (b) => b.status === 'confirmed' || b.status === 'checked_in'
   );
 
   // Review Form State
@@ -564,6 +558,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
     const b = r.booking;
     onBookSuccess({
       id: b.bookingCode,
+      bookingCode: b.bookingCode,
       serverBookingId: b.id,
       quoteId: b.quoteId || undefined,
       listingId: listing.id,
@@ -585,7 +580,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
       status: 'pending',
       paymentStatus: 'unpaid',
       reviewed: false,
-      qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(b.bookingCode)}`,
+      qrCodeUrl: '', // N05.3: QR nhận phòng do server cấp khi đơn được xác nhận (Chuyến đi của tôi)
       platformFee: 50000,
       feeCharged: false,
       notes: guestNote || undefined,
@@ -1312,19 +1307,10 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     </p>
                     <p className="text-slate-500">
                       {reviewSuccessMessage ||
-                        'Để chống seeding ảo, hệ thống chỉ cho phép viết đánh giá khi đơn đặt chuyển sang trạng thái Hoàn tất (Completed).'}
+                        'Để chống seeding ảo, chỉ mở đánh giá khi chủ cơ sở đã xác nhận đơn hoàn tất.'}
                     </p>
                   </div>
 
-                  {activeBookings.length > 0 && onCompleteBooking && (
-                    <button
-                      type="button"
-                      onClick={() => onCompleteBooking(activeBookings[0].id)}
-                      className="shrink-0 px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs transition-colors cursor-pointer"
-                    >
-                      Hoàn tất đơn #{activeBookings[0].id} để đánh giá
-                    </button>
-                  )}
                 </div>
               )}
 

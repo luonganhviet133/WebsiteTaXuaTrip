@@ -24,6 +24,8 @@ export type AppTab = keyof typeof TAB_PATHS;
 
 export const LISTING_PREFIX = '/co-so/';
 export const MY_TRIPS_PATH = '/chuyen-di-cua-toi';
+/** N05.3: mã QR nhận phòng là đường dẫn này kèm ?ma=<mã>; mở bằng camera điện thoại của chủ cơ sở. */
+export const CHECKIN_PATH = '/doi-tac/nhan-phong';
 
 const TAB_ALIASES: Record<string, AppTab> = { stays: 'stay', bus: 'transport' };
 const PATH_TO_TAB = new Map<string, AppTab>(Object.entries(TAB_PATHS).map(([tab, path]) => [path, tab as AppTab]));
@@ -57,6 +59,8 @@ export interface ParsedRoute {
   tab?: AppTab;
   listingId?: string;
   myTrips?: boolean;
+  /** N05.3: mã nhận phòng (có thể rỗng) khi mở /doi-tac/nhan-phong */
+  checkinToken?: string;
   notFound?: boolean;
   query: RouteQuery;
   /** Link kiểu cũ (?tab=…&listing=…) cần chuyển sang đường dẫn mới. */
@@ -103,6 +107,7 @@ export function parseLocation(pathname: string, search: string): ParsedRoute {
     return { listingId: id, query };
   }
   if (path === MY_TRIPS_PATH) return { myTrips: true, query };
+  if (path === CHECKIN_PATH) return { tab: 'partner', checkinToken: new URLSearchParams(search.startsWith('?') ? search.slice(1) : search).get('ma') || '', query };
 
   const tab = PATH_TO_TAB.get(path === '' ? '/' : path);
   if (tab) return { tab, query };

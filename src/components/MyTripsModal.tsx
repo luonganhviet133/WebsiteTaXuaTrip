@@ -25,6 +25,8 @@ import {
 import { Booking, Listing } from '../types/index.ts';
 import { AuthUser } from '../types/auth.ts';
 import { displayBookingStatus } from '../api/holdsApi.ts';
+import { bookingsApi, formatCreatedAt, guestCanCancel, guestCountOf } from '../api/bookingsApi.ts';
+import { CheckinQr } from './CheckinQr.tsx';
 import {
   formatVND,
   buildVietQrPaymentPayload,
@@ -39,8 +41,6 @@ interface MyTripsModalProps {
   listings: Listing[];
   onClose: () => void;
   onSelectListingForReview: (listing: Listing) => void;
-  onSimulateCompleteBooking: (bookingId: string) => void;
-  onConfirmDepositPaid: (bookingId: string) => void;
   onOpenDispute?: (booking: Booking) => void;
   onOpenReviewModal?: (booking: Booking) => void;
   onRequireLogin?: () => void;
@@ -53,8 +53,6 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
   listings,
   onClose,
   onSelectListingForReview,
-  onSimulateCompleteBooking,
-  onConfirmDepositPaid,
   onOpenDispute,
   onOpenReviewModal,
   onRequireLogin
@@ -68,6 +66,9 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
   const [isLoadingBookings, setIsLoadingBookings] = useState(false);
   const [fetchStatus, setFetchStatus] = useState<'idle' | 'loading' | 'success' | 'unauthenticated' | 'error'>('idle');
   const fetchSeqRef = React.useRef(0);
+  // N05.3: tải lại danh sách sau khi khách hủy đơn
+  const [reloadTick, setReloadTick] = useState(0);
+  const [cancelling, setCancelling] = useState<{ id: string; reason: string; busy: boolean; error?: string } | null>(null);
 
   React.useEffect(() => {
     if (!isOpen) {
@@ -130,7 +131,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
     return () => {
       controller.abort();
     };
-  }, [isOpen, currentUser?.id]);
+  }, [isOpen, currentUser?.id, reloadTick]);
 
   if (!isOpen) return null;
 
@@ -140,7 +141,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
   const filteredBookings = activeBookings.filter((b) => {
     if (!lookupQuery.trim()) return true;
     const q = lookupQuery.trim().toLowerCase();
-    const id = (b.id || '').toLowerCase();
+    const id = `${b.id || ''} ${b.bookingCode || ''}`.toLowerCase();
     const listingTitle = (b.listingTitle || '').toLowerCase();
     const guestPhone = (b.guestPhone || '').toLowerCase();
     const guestName = (b.guestName || '').toLowerCase();
@@ -315,8 +316,8 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
 
           {!ONLINE_PAYMENT_ENABLED && fetchStatus !== 'unauthenticated' && (
             <DemoNotice>
-              Thanh toán trực tuyến chưa mở: website chưa nhận tiền cọc, chưa nhận biên lai và chưa
-              tự giữ phòng. Vui lòng liên hệ trực tiếp cơ sở (số điện thoại trên trang chi tiết) để đặt cọc và xác nhận.
+              Website giữ phòng 30 phút nhưng chưa nhận tiền cọc trực tuyến. Vui lòng chuyển cọc trực tiếp cho cơ sở
+              (số điện thoại trên trang chi tiết); cơ sở bấm xác nhận đã nhận cọc thì đơn chuyển sang Đã xác nhận và có mã QR nhận phòng.
             </DemoNotice>
           )}
 
@@ -337,14 +338,14 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2.5 flex-wrap">
                     <span className="px-2.5 py-1 rounded-lg bg-brand-800 text-white font-mono text-xs font-extrabold uppercase">
-                      #{booking.id}
+                      #{booking.bookingCode || booking.id}
                     </span>
                     {getStatusBadge(booking)}
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${proofStatus.statusBadgeColor}`}>
                       {proofStatus.statusLabel}
                     </span>
                     <span className="text-xs text-slate-500 font-medium">
-                      Đặt ngày: {booking.createdAt}
+                      Đặt ngày: {formatCreatedAt(booking.createdAt)}
                     </span>
                   </div>
                   <div className="text-right">
@@ -373,9 +374,12 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                         📅 Trả phòng: <strong>{booking.checkOutDate}</strong>
                       </span>
                       <span>
-                        👥 Số lượng: <strong>{booking.guestsCount} khách/ghế</strong>
+                        👥 Số lượng: <strong>{guestCountOf(booking)} khách</strong>
                       </span>
                     </div>
+                    {booking.status === 'cancelled' && booking.cancelReason && (
+                      <p className="text-xs text-slate-600">Lý do hủy: {booking.cancelReason}</p>
+                    )}
 
                     {/* Dải thông tin biên lai thanh toán đã lưu */}
                     <div className="pt-2 flex items-center gap-3">
@@ -491,17 +495,55 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                       </button>
                     )}
 
-                    {booking.status !== 'completed' && (
+                    {/* N05.3: khách không tự hoàn tất; chỉ hủy được theo bảng trạng thái (server kiểm lại) */}
+                    {guestCanCancel({ status: booking.status, holdExpiresAt: booking.holdExpiresAt ?? null, checkInDate: booking.checkInDate }) && cancelling?.id !== booking.id && (
                       <button
                         type="button"
-                        onClick={() => onSimulateCompleteBooking(booking.id)}
-                        className="px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 cursor-pointer"
+                        onClick={() => setCancelling({ id: booking.id, reason: '', busy: false })}
+                        className="px-3 py-1.5 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 cursor-pointer"
                       >
-                        ✓ Đánh dấu Hoàn tất lưu trú
+                        Hủy đơn
                       </button>
                     )}
                   </div>
                 </div>
+
+                {cancelling?.id === booking.id && (
+                  <form
+                    className="bg-rose-50 border border-rose-200 rounded-2xl p-3 space-y-2"
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      setCancelling({ ...cancelling, busy: true, error: undefined });
+                      const r = await bookingsApi.act(booking.id, 'cancel', cancelling.reason.trim() || undefined);
+                      if (!r.ok) return setCancelling({ ...cancelling, busy: false, error: r.message });
+                      setCancelling(null);
+                      setReloadTick((n) => n + 1);
+                    }}
+                  >
+                    <p className="text-xs font-bold text-rose-900">
+                      {booking.status === 'confirmed'
+                        ? 'Hủy đơn đã xác nhận: tiền cọc không được hoàn (điều khoản D03). Phòng sẽ được trả lại cho cơ sở.'
+                        : 'Hủy giữ chỗ: phòng được trả lại ngay.'}
+                    </p>
+                    <label htmlFor={`cancel-reason-${booking.id}`} className="sr-only">Lý do hủy</label>
+                    <input
+                      id={`cancel-reason-${booking.id}`}
+                      value={cancelling.reason}
+                      onChange={(e) => setCancelling({ ...cancelling, reason: e.target.value })}
+                      placeholder="Lý do (không bắt buộc)"
+                      className="w-full bg-white border border-rose-200 rounded-xl px-3 py-2 text-sm"
+                    />
+                    {cancelling.error && <p className="text-xs font-bold text-rose-700">{cancelling.error}</p>}
+                    <div className="flex gap-2">
+                      <button type="submit" disabled={cancelling.busy} className="px-3 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold cursor-pointer disabled:opacity-50">
+                        Xác nhận hủy
+                      </button>
+                      <button type="button" onClick={() => setCancelling(null)} className="px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold cursor-pointer">
+                        Giữ đơn
+                      </button>
+                    </div>
+                  </form>
+                )}
 
                 {/* Expandable Panel 1: Dynamic VietQR Payment */}
                 {ONLINE_PAYMENT_ENABLED && isVietQrOpen && (
@@ -576,15 +618,6 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                         </button>
                       </div>
 
-                      {booking.status === 'pending' && (
-                        <button
-                          type="button"
-                          onClick={() => onConfirmDepositPaid(booking.id)}
-                          className="w-full bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs py-2.5 rounded-xl cursor-pointer transition-colors"
-                        >
-                          Xác nhận đã chuyển khoản cọc → Chuyển sang Đã giữ phòng
-                        </button>
-                      )}
                     </div>
                   </div>
                 )}
@@ -621,14 +654,14 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                     </div>
 
                     <div className="sm:col-span-4 bg-white text-slate-900 rounded-2xl p-4 flex flex-col items-center text-center">
-                      <div className="w-24 h-24 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center mb-2">
-                        <QrCode className="w-16 h-16 text-brand-800" />
+                      <div className="mb-2">
+                        <CheckinQr bookingId={booking.id} />
                       </div>
                       <div className="font-mono text-xs font-extrabold text-brand-800">
-                        {booking.id.toUpperCase()}
+                        {booking.bookingCode || booking.id}
                       </div>
-                      <div className="text-xs text-slate-500">
-                        Đưa mã này cho chủ cơ sở khi nhận phòng
+                      <div className="text-xs text-slate-600">
+                        Đưa mã QR này cho chủ cơ sở quét khi nhận phòng. Không gửi ảnh mã cho người khác.
                       </div>
                     </div>
                   </div>

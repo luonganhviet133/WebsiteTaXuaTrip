@@ -72,6 +72,8 @@ interface PartnerDashboardProps {
   onConfirmBooking: (bookingId: string) => void;
   onCheckInBooking: (bookingId: string) => void;
   onCompleteBooking: (bookingId: string) => void;
+  /** N05.3: khối đơn đặt phòng từ server (đặt ngay dưới phần đầu) */
+  bookingsPanel?: React.ReactNode;
   billingEnabled: boolean;
   onUpdateListing?: (updated: Listing) => void | Promise<boolean>;
   onConfirmPaymentProof?: (bookingId: string) => void;
@@ -125,6 +127,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
   onConfirmBooking,
   onCheckInBooking,
   onCompleteBooking,
+  bookingsPanel,
   billingEnabled,
   onUpdateListing,
   onConfirmPaymentProof
@@ -868,6 +871,8 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
             </div>
           </div>
         </div>
+
+        {bookingsPanel}
 
         {/* CỤM ĐIỀU HƯỚNG PHÂN HỆ CHUYÊN BIỆT (CHỈ HIỂN THỊ ĐÚNG DỊCH VỤ CỦA ĐỐI TÁC ĐANG ĐĂNG NHẬP) */}
         <div className="bg-slate-850 border border-slate-750 p-2 rounded-2xl flex flex-wrap gap-2">
