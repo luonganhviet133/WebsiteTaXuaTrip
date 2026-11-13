@@ -16,6 +16,58 @@
 
 ---
 
+## N05.3 — Vòng đời đơn: trạng thái, lịch sử, QR nhận phòng, đơn của cơ sở (13/11/2026, nhánh `dot/N05.3`)
+
+**Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp".** Nhánh tách từ `dot/N05.2` (chưa gộp) nên gộp N05.3 sẽ kéo theo N05.2 và chạy migration 0006 + 0007 trên D1 production (production có 0 đơn).
+
+### Đã làm
+- **Bảng chuyển trạng thái** `src/server/bookings/lifecycle.ts` (D-N05-03): xác nhận đã nhận cọc / từ chối (bắt buộc lý do) / nhận phòng (chỉ qua QR, đúng ngày) / hoàn tất / hủy; quyền theo quan hệ với đơn (khách đặt, chủ cơ sở của đơn, admin). Khách không tự xác nhận, nhận phòng, hoàn tất; đơn đã hủy không thành hoàn tất.
+- `migrations_d1/0007_booking_lifecycle.sql`: `booking_events` (lịch sử), `notifications` (chuông), `checkin_token` (256 bit, chỉ mục duy nhất có điều kiện), `confirmed_at`/`checked_in_at`/`completed_at`.
+- `BookingLifecycle` (`src/server/bookings/store.ts`): mỗi lần đổi trạng thái là một batch D1 (UPDATE đúng trạng thái nguồn → kiểm `changes() = 1` → cập nhật các đêm giữ phòng → lịch sử → thông báo). Yêu cầu thua khi tranh nhau đọc lại và trả "đã làm". Giữ chỗ và hết hạn (cron) cũng ghi lịch sử.
+- API: `POST /api/bookings/:id/{confirm|reject|complete|cancel}`, `GET /api/bookings/:id` (lịch sử; mã QR chỉ cho khách chủ đơn khi đã xác nhận), `GET|POST /api/partner/checkin` (xem/xác nhận bằng mã), `GET /api/partner/bookings`, `GET /api/notifications`, `POST /api/notifications/read`. `GET /api/user/bookings` trả đủ thông tin đơn từ server.
+- **Giao diện**
+  - Dashboard đối tác: khối "Đơn đặt phòng" đọc server (tự tải lại mỗi phút), nút đúng trạng thái, từ chối kèm lý do, "Mở Zalo khách"/"Gọi", chuông thông báo, ô nhận phòng bằng mã.
+  - `/doi-tac/nhan-phong?ma=…`: đường dẫn trong QR; chủ cơ sở quét bằng camera điện thoại là mở thẳng màn xác nhận. Đơn không còn ở trạng thái "Đã xác nhận" thì không hiện nút.
+  - Chuyến đi của tôi: QR nhận phòng thật (tạo trong trình duyệt bằng `qrcode`, không gửi mã ra api.qrserver.com); nút "Hủy đơn" theo bảng (cảnh báo cọc không hoàn với đơn đã xác nhận); hiện lý do hủy, ngày đặt giờ VN, số khách; ghi chú đầu trang nói đúng cách giữ phòng/cọc hiện tại.
+  - **Gỡ** nút cho khách tự đổi trạng thái: "Đánh dấu Hoàn tất lưu trú", "Xác nhận đã chuyển khoản cọc → Đã giữ phòng" (Chuyến đi của tôi), "Hoàn tất đơn # để đánh giá" (trang chi tiết).
+  - Màn giữ chỗ thành công hiện mã đặt chỗ, không tải ảnh QR từ dịch vụ ngoài.
+- Cọc 30% làm tròn lên tới đồng ghi là đã chốt (D-N05-02).
+
+### Test mới
+- `lifecycle.test.ts` (7): bảng, quyền, không đi tắt, làm lại = đã làm, giữ chỗ quá hạn, khung ngày nhận phòng, hủy theo ngày.
+- `lifecycle.api.test.ts` (9): chủ cơ sở xác nhận, chủ khác/khách/chưa đăng nhập bị chặn, bấm lại không ghi thêm; mã QR chỉ khách thấy; từ chối cần lý do và trả phòng; khách hủy đơn đã xác nhận, chủ không tự hủy; QR sai (404) / trái cơ sở (403) / chưa tới ngày / hết hạn; 5 lần quét cùng lúc chỉ 1 lần áp và 1 dòng lịch sử, rồi hoàn tất; thao tác ngoài bảng 404; danh sách đơn và chuông theo cơ sở; hai thiết bị cùng khách thấy như nhau.
+- Kiểm đỏ: bỏ điều kiện `changes() = 1` → ca quét cùng lúc **trượt**; trả lại → đạt.
+- workerd + D1 local thật (`api.contract.test.ts`): migration 0007; khách không tự xác nhận; admin xác nhận; mã QR 43 ký tự; 5 lần quét gửi cùng lúc chỉ 1 lần nhận phòng; lịch sử `hold → confirm → check_in`; hoàn tất.
+- `bookingsApi.test.ts` (5), `routes.test.ts` (+1).
+
+### Lệnh đã chạy
+- `npm run typecheck`: 0 lỗi. `npm run build`: đạt. `npm test`: **242/242**. `npm run worker:dry-run`: đạt.
+- Workers Builds preview `dot-n05-3`: thành công; D1 preview có đủ 7 migration, bảng/cột/chỉ mục mới có mặt.
+
+### Kiểm tra giao diện
+- **Chạy Worker thật trên máy build** (`wrangler dev` + D1 local, Chrome headless) với tài khoản thử: chủ cơ sở sở hữu `tx-stay-5`, một khách, 3 đơn giữ chỗ.
+  - Dashboard đối tác: 3 đơn, chuông 3 chưa đọc; bấm "Đã nhận cọc" → "Đã xác nhận"; "Từ chối" khóa nút tới khi có lý do, xong → "Đã hủy" kèm lý do.
+  - Chuyến đi của tôi: đơn đã xác nhận có QR; giải mã ảnh QR (OpenCV) ra đúng `…/doi-tac/nhan-phong?ma=<mã server cấp>`; không còn nút tự hoàn tất; khách hủy giữ chỗ qua giao diện → "Đã hủy", chủ cơ sở nhận chuông.
+  - Mở đường dẫn QR bằng tài khoản chủ cơ sở: thấy khách, phòng, ngày; xác nhận → "Đã nhận phòng", đường dẫn về `/doi-tac`; bấm "Hoàn tất" → "Hoàn tất"; quét lại → báo trạng thái, không có nút.
+  - 375/768/1280px (khối đơn của đối tác, màn nhận phòng, Chuyến đi của tôi): không tràn ngang, 0 chữ < 12px, không phần tử lọt ra ngoài màn.
+  - Phát hiện và đã sửa trong lúc kiểm: ngày đặt hiện chuỗi ISO, "Số lượng" trống, khách không thấy lý do từ chối, chữ ngày trong thông báo dạng ISO, màn quét vẫn hiện nút với đơn đã hoàn tất.
+- Preview (chưa đăng nhập): `/doi-tac/nhan-phong?ma=…` giữ mã trên đường dẫn và hiện lời mời đăng nhập chủ cơ sở; các API mới trả 401.
+
+### Chưa kiểm chứng / chưa làm
+- Chưa thao tác đăng nhập trên preview (preview chưa có secret Turnstile); luồng đăng nhập đã kiểm bằng Worker chạy tại máy build.
+- Trên workerd local, 5 lần quét "cùng lúc" thực tế chạy nối tiếp (bỏ điều kiện `changes()` ca này vẫn đạt), nên tranh chấp thật được chứng minh bởi test Node + cơ chế CHECK đã kiểm đỏ trên D1 ở N05.2.
+- Chưa có Web Push và email cho chủ cơ sở (Q3): cần chủ dự án tạo khóa VAPID và chọn dịch vụ gửi mail.
+- Admin chưa có màn quản lý đơn (API đã cho phép admin); chuông chỉ cho chủ cơ sở (admin nhận qua Telegram ở A1).
+- Chủ cơ sở chưa tự hủy đơn đã xác nhận (chờ quy tắc 70% ở N06.1). Hoàn tất chưa cộng điểm/thu phí (N06.2).
+- Mục "Bằng chứng chuyển khoản & đơn" cũ trong dashboard đối tác vẫn là dữ liệu mẫu trong trình duyệt (N06.1 thay).
+- Ảnh QR ở đơn cũ lưu trình duyệt (xe, dịch vụ khác) vẫn dùng api.qrserver.com với mã đơn mẫu (không phải mã nhận phòng); thay khi các loại dịch vụ đó lên server (N09).
+
+### Đợt tiếp theo
+- **N06.1** cọc: điều khoản không hoàn tiền (khách tick trước khi thấy thông tin chuyển cọc), thông tin chuyển cọc của cơ sở, mốc nhắc 70% (48h/30h/24h), chủ cơ sở nhả phòng khi quá hạn.
+- Có thể làm **A1** (Telegram cho admin) ngay sau N05.3 theo plan.
+
+---
+
 ## N05.2 — Giữ chỗ 30 phút nguyên tử (13/11/2026, nhánh `dot/N05.2`)
 
 **Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp N05.2".** Gộp sẽ chạy migration 0006 trên D1 production (đã kiểm: production có 0 đơn, dựng lại bảng `bookings` không mất dữ liệu).

@@ -18,6 +18,20 @@
 
 ---
 
+### D-N05-03: Vòng đời đơn (13/11/2026)
+
+- Chỉ server đổi trạng thái, theo bảng `src/server/bookings/lifecycle.ts`:
+  - Chờ cọc → Đã xác nhận: chủ cơ sở/admin bấm "Đã nhận cọc" (D03), chỉ khi giữ chỗ còn hạn.
+  - Chờ cọc → Đã hủy: chủ cơ sở/admin từ chối, **bắt buộc lý do** (khách thấy lý do).
+  - Đã xác nhận → Đã nhận phòng: chủ cơ sở/admin, **chỉ qua mã QR**, từ ngày nhận phòng tới trước ngày trả phòng (giờ VN).
+  - Đã nhận phòng → Hoàn tất: chủ cơ sở/admin. Chưa cộng điểm/thu phí (N06).
+  - Hủy: khách hủy được giữ chỗ còn hạn, hoặc đơn đã xác nhận trước ngày nhận phòng (cọc không hoàn, D03); admin hủy được trước khi nhận phòng.
+- **Chủ cơ sở chưa tự hủy đơn đã xác nhận** cho tới khi N06.1 làm quy tắc quá hạn 70% (D03); trường hợp cần nhả phòng thì nhờ admin.
+- Làm lại thao tác đã xong trả "đã làm" (200, `already: true`), không ghi lịch sử thêm.
+- Mỗi lần đổi trạng thái ghi `booking_events` (ai, vai trò, từ → đến, lý do, lúc nào), cả lúc giữ chỗ và hết hạn.
+- Mã QR nhận phòng: đường dẫn `/doi-tac/nhan-phong?ma=<256 bit ngẫu nhiên>`, tạo khi xác nhận, chỉ khách chủ đơn đọc được. Ảnh QR tạo trong trình duyệt. Mã sai/trái cơ sở/chưa tới ngày/quá ngày trả phòng bị chặn.
+- Báo chủ cơ sở (Q3) đợt này: chuông trong dashboard (bảng `notifications`, khi có giữ chỗ mới hoặc khách hủy) + nút mở Zalo/gọi khách. Web Push (cần khóa VAPID) và email (cần dịch vụ gửi mail) chờ chủ dự án chọn.
+
 ### D-N05-02: Giữ chỗ homestay (13/11/2026)
 
 - Giữ phòng cần đăng nhập (đơn gắn với tài khoản, khóa chống gửi trùng tính theo tài khoản).
@@ -25,7 +39,7 @@
 - Một yêu cầu giữ chỗ ghi đơn + mọi đêm + lượt voucher trong **một batch D1**; thiếu đêm nào thì cả batch hủy (không giữ lẻ đêm).
 - Gửi lại cùng khóa trả lại đúng đơn cũ; cùng khóa nhưng khác nội dung → 422.
 - Voucher có giới hạn lượt: tính lượt đã dùng + lượt của đơn còn hiệu lực (giữ chỗ còn hạn, đã xác nhận, đã nhận phòng, hoàn tất). Giữ chỗ hết hạn/hủy trả lượt.
-- **Giả định chờ chủ dự án chốt (chính sách tiền):** cọc 30% tổng tiền, làm tròn lên tới đồng — lấy theo con số 30% đang có trên giao diện cũ. Chưa thu tiền thật; thanh toán cọc làm ở N06. Đổi tỉ lệ chỉ cần sửa `DEPOSIT_PERCENT` trong `src/server/bookings/holds.ts`.
+- **Cọc (chủ dự án chốt 13/11/2026):** 30% tổng tiền, làm tròn tới đồng; mã làm tròn **lên** (`Math.ceil`) để cơ sở không nhận thiếu. Chưa thu tiền qua website (D03: chuyển thẳng cơ sở); `DEPOSIT_PERCENT` trong `src/server/bookings/holds.ts`.
 
 ### D-N05-01: Quy tắc tồn phòng (13/11/2026)
 
