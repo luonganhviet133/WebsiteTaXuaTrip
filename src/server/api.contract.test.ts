@@ -244,7 +244,7 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
       experimental: { disableExperimentalWarning: true }
     });
     const call: Fetcher = (route, init) => holdWorker!.fetch(route, init as any) as unknown as Promise<Response>;
-    await t.test('N05.2–N05.3 trên D1 thật: 20 yêu cầu đồng thời chỉ 1 đơn thắng; hủy trả phòng; xác nhận, quét QR đồng thời, hoàn tất; thanh toán D03 với R2', async () => {
+    await t.test('N05.2–N05.3 trên D1 thật: 20 yêu cầu đồng thời chỉ 1 đơn thắng; hủy trả phòng; xác nhận, quét QR đồng thời, hoàn tất; thanh toán D03 với R2; đối soát cọc', async () => {
       const reg = await call('/api/auth/register', jsonInit('POST', { email: `hold.${Date.now()}@example.com`, password: 'MatKhau123!', fullName: 'Khách Giữ Chỗ', role: 'traveler' }));
       assert.equal(reg.status, 201);
       const token = ((await reg.json()) as any).token;
@@ -336,6 +336,27 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
       const p1: any = await (await call(`/api/bookings/${b3.id}/payment`, authInit(token2))).json();
       assert.ok(p1.data.depositConfirmedAt && p1.data.balanceConfirmedAt, 'khách thấy cơ sở đã xác nhận');
       assert.equal(p1.data.receipts.length, 1);
+
+      // Đối soát cọc trên D1 + R2: khách gửi biên lai rồi cơ sở/admin từ chối → mở đối soát, hạn 3 ngày; khách gửi bằng chứng.
+      const q4 = await call('/api/quotes', jsonInit('POST', { listingId: 'tx-stay-5', roomTypeId: 'r1', checkIn: addDays(today, 5), checkOut: addDays(today, 6), adults: 2, children: 0, rooms: 1 }));
+      const h4 = await call('/api/bookings/holds', jsonInit('POST', { quoteId: ((await q4.json()) as any).data.id, idempotencyKey: 'recon-1', guestName: 'Khách Hai', guestPhone: '0912345678' }, token2));
+      const b4 = ((await h4.json()) as any).data;
+      await call(`/api/bookings/${b4.id}/payment/accept-terms`, jsonInit('POST', { termsVersion: p0.data.termsVersion }, token2));
+      assert.equal((await call(`/api/bookings/${b4.id}/payment/receipts?kind=deposit`, { method: 'POST', headers: { Authorization: `Bearer ${token2}`, 'Content-Type': 'image/png' }, body: png })).status, 201);
+      assert.equal((await call(`/api/bookings/${b4.id}/reject`, jsonInit('POST', { reason: 'Phòng hỏng điện' }, opsToken))).status, 200);
+      const rv: any = await (await call(`/api/bookings/${b4.id}/reconciliation`, authInit(token2))).json();
+      assert.equal(rv.data.reconciliation.status, 'open');
+      assert.ok(Math.abs(Date.parse(rv.data.reconciliation.dueAt) - Date.now() - 3 * 24 * 3600_000) < 120_000, 'hạn 3 ngày');
+      assert.deepEqual(rv.data.events.map((e: any) => e.action), ['recon_open']);
+      const early = await call(`/api/bookings/${b4.id}/reconciliation/dispute`, jsonInit('POST', { note: 'Chưa thấy hoàn' }, token2));
+      assert.equal(((await early.json()) as any).code, 'NOT_OVERDUE');
+      const ev = await call(`/api/bookings/${b4.id}/reconciliation/files`, { method: 'POST', headers: { Authorization: `Bearer ${token2}`, 'Content-Type': 'image/png' }, body: png });
+      assert.equal(ev.status, 201);
+      const evId = ((await ev.json()) as any).data.id;
+      const evImg = await call(`/api/bookings/${b4.id}/reconciliation/files/${evId}`, authInit(opsToken));
+      assert.deepEqual(new Uint8Array(await evImg.arrayBuffer()), png);
+      const notes: any = await (await call('/api/notifications', authInit(token2))).json();
+      assert.ok(notes.data.items.some((x: any) => x.kind === 'recon.opened' && /\d{2}:\d{2} \d{2}\/\d{2}/.test(x.body)), 'hạn hiện giờ VN');
     });
   } finally {
     await worker.stop().catch(() => undefined);

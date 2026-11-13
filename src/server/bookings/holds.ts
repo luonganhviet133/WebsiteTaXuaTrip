@@ -17,6 +17,7 @@ import { ListingStore } from '../listings/store.ts';
 import { InventoryStore } from '../inventory/store.ts';
 import { ACTIVE_ALLOCATION_SQL } from '../inventory/availability.ts';
 import { todayInVietnam } from '../../search/searchIntent.ts';
+import { openReconciliationStmts } from '../payments/reconciliation.ts';
 
 export const HOLD_TTL_MS = 30 * 60 * 1000; // D04: giữ chỗ chờ cọc 30 phút
 // N06.1: tỉ lệ cọc ở một nơi duy nhất (D03)
@@ -338,7 +339,14 @@ export class HoldStore {
   /** Dọn giữ chỗ hết hạn (Cron Trigger). Tồn đã tự trả theo thời gian; hàm này chỉ ghi trạng thái cho đúng. */
   async expireHolds(now: Date = new Date()): Promise<{ expired: number; released: number }> {
     const nowIso = now.toISOString();
-    const [, b, a] = await this.d1.batch([
+    const results = await this.d1.batch([
+      // Đối soát cọc: khách đã gửi biên lai nhưng giữ chỗ hết hạn trước khi cơ sở xác nhận (mở trước câu UPDATE).
+      ...openReconciliationStmts(this.d1, {
+        where: "b.status = 'pending_deposit' AND b.hold_expires_at <= ?",
+        params: [nowIso],
+        nowIso,
+        reason: 'giữ chỗ đã hết hạn trước khi cơ sở xác nhận nhận cọc',
+      }),
       // Lịch sử trước, cùng điều kiện với câu UPDATE ngay sau (cùng batch → cùng tập đơn).
       this.d1
         .prepare(
@@ -350,6 +358,7 @@ export class HoldStore {
       this.d1.prepare(`UPDATE bookings SET status = 'expired', updated_at = ? WHERE status = 'pending_deposit' AND hold_expires_at <= ?`).bind(nowIso, nowIso),
       this.d1.prepare(`UPDATE room_night_allocations SET status = 'released', updated_at = ? WHERE status = 'held' AND expires_at <= ?`).bind(nowIso, nowIso),
     ]);
+    const [b, a] = results.slice(-2);
     return { expired: Number(b?.meta?.changes ?? 0), released: Number(a?.meta?.changes ?? 0) };
   }
 }

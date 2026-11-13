@@ -11,6 +11,7 @@ import type { AuthenticatedUser } from '../auth.ts';
 import type { PricingRouteDeps } from '../pricing/routes.ts';
 import { MAX_RECEIPT_BYTES, PaymentStore } from './store.ts';
 import type { PrivateStorage } from './storage.ts';
+import { RECON_RULES, type ReconAction } from './reconciliation.ts';
 
 export interface PaymentRouteDeps extends PricingRouteDeps {
   privateStorage?: PrivateStorage;
@@ -31,6 +32,38 @@ export async function handlePaymentRoutes(request: Request, pathname: string, de
     const listingId = decodeURIComponent(payout[1]);
     if (method === 'GET') return out(await store.getPayout(listingId, actorOf(user)));
     return out(await store.setPayout(listingId, actorOf(user), await readJson(request)));
+  }
+
+  if (pathname === '/api/admin/reconciliations' && method === 'GET') {
+    const user = await requireRole(['admin']);
+    if (user instanceof Response) return user;
+    return out(await store.listReconciliationsForAdmin(actorOf(user)));
+  }
+
+  // Đối soát cọc
+  const rc = pathname.match(/^\/api\/bookings\/([^/]+)\/reconciliation(?:\/([a-z_]+)(?:\/([^/]+))?)?$/);
+  if (rc) {
+    const user = await requireRole(['traveler', 'partner', 'admin']);
+    if (user instanceof Response) return user;
+    const bookingId = decodeURIComponent(rc[1]);
+    if (!rc[2] && method === 'GET') return out(await store.reconView(bookingId, actorOf(user)));
+    if (rc[2] === 'files' && !rc[3] && method === 'POST') {
+      if (Number(request.headers.get('content-length') || 0) > MAX_RECEIPT_BYTES) return json({ success: false, code: 'TOO_LARGE', error: 'Ảnh tối đa 5 MB.' }, 413);
+      return out(await store.uploadReconFile(bookingId, actorOf(user), new Uint8Array(await request.arrayBuffer())), 201);
+    }
+    if (rc[2] === 'files' && rc[3] && method === 'GET') {
+      const r = await store.getReconFile(bookingId, decodeURIComponent(rc[3]), actorOf(user));
+      if (!r.ok) return json({ success: false, code: r.code, error: r.message }, r.status);
+      return new Response(r.bytes as BodyInit, {
+        status: 200,
+        headers: { 'Content-Type': r.contentType, 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'Content-Disposition': 'inline' },
+      });
+    }
+    if (rc[2] && !rc[3] && method === 'POST' && rc[2] in RECON_RULES) {
+      const body = (await readJson(request)) || {};
+      return out(await store.reconAct(bookingId, rc[2] as ReconAction, actorOf(user), body));
+    }
+    return json({ success: false, code: 'NOT_FOUND', error: 'API endpoint not found' }, 404);
   }
 
   const m = pathname.match(/^\/api\/bookings\/([^/]+)\/payment(?:\/(accept-terms|receipts|confirm-balance)(?:\/([^/]+))?)?$/);

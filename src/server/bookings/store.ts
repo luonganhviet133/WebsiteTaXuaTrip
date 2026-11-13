@@ -10,6 +10,7 @@ import { todayInVietnam } from '../../search/searchIntent.ts';
 import { ListingStore } from '../listings/store.ts';
 import { balanceDueAt } from '../../config/payment.ts';
 import { BOOKING_COLUMNS, HoldStore, notifyUserStmt, viDate, bookingEventStmt, notifyOwnersStmt, toBookingView, type BookingView } from './holds.ts';
+import { openReconciliationStmts } from '../payments/reconciliation.ts';
 import { decide, type BookingAction, type BookingStatus, type Party } from './lifecycle.ts';
 
 export interface LifecycleActor {
@@ -116,6 +117,10 @@ export class BookingLifecycle {
       stmts.push(this.d1.prepare(`UPDATE room_night_allocations SET status = 'released', updated_at = ? WHERE source_id = ? AND status IN ('held', 'confirmed')`).bind(nowIso, bookingId));
     }
     stmts.push(bookingEventStmt(this.d1, { bookingId, action, from: d.from, to: d.to, actor: actorRef, reason, now: nowIso }));
+    if (action === 'reject') {
+      // Khách đã gửi biên lai cọc mà cơ sở từ chối → mở đối soát (hoàn trong 3 ngày hoặc giữ khi khách đồng ý).
+      stmts.push(...openReconciliationStmts(this.d1, { where: 'b.id = ?', params: [bookingId], nowIso, reason: 'cơ sở đã từ chối đơn' }));
+    }
     if (action === 'release' || action === 'reject') {
       stmts.push(
         notifyUserStmt(this.d1, {
@@ -220,7 +225,9 @@ export class BookingLifecycle {
       BOOKING_COLUMNS.split(',').map((c) => `b.${c.trim()}`).join(', ') +
       `, b.confirmed_at,
        (SELECT COUNT(*) FROM payment_receipts r WHERE r.booking_id = b.id AND r.kind = 'deposit') AS deposit_receipts,
-       (SELECT COUNT(*) FROM payment_receipts r WHERE r.booking_id = b.id AND r.kind = 'balance') AS balance_receipts`;
+       (SELECT COUNT(*) FROM payment_receipts r WHERE r.booking_id = b.id AND r.kind = 'balance') AS balance_receipts,
+       (SELECT x.status FROM payment_reconciliations x WHERE x.booking_id = b.id) AS recon_status,
+       (SELECT x.due_at FROM payment_reconciliations x WHERE x.booking_id = b.id) AS recon_due_at`;
     const filter = listingId ? ' AND b.listing_id = ?' : '';
     const args: unknown[] = listingId ? [listingId] : [];
     const r =
@@ -237,8 +244,10 @@ export class BookingLifecycle {
       ...toBookingView(row),
       depositReceipts: row.deposit_receipts ?? 0,
       balanceReceipts: row.balance_receipts ?? 0,
-      // Khách đã gửi biên lai cọc nhưng đơn hết hạn/bị hủy trước khi cơ sở xác nhận: cần đối soát, không tự xác nhận lại.
-      needsReconciliation: ['expired', 'cancelled'].includes(row.status) && !row.confirmed_at && (row.deposit_receipts ?? 0) > 0,
+      // Đối soát cọc đang mở (khách đã gửi biên lai nhưng đơn hết hạn/bị từ chối trước khi cơ sở xác nhận).
+      reconStatus: row.recon_status ?? null,
+      reconDueAt: row.recon_due_at ?? null,
+      needsReconciliation: !!row.recon_status && row.recon_status !== 'closed',
     }));
   }
 }

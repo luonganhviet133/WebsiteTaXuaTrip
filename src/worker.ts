@@ -49,8 +49,12 @@ export default {
     const result = await new HoldStore(d1).expireHolds();
     if (result.expired || result.released) console.log(`[holds] expired=${result.expired} released=${result.released}`);
     // N06.1: nhắc khách trả 70% ở mốc 48 giờ và 30 giờ trước giờ nhận phòng (mỗi mốc một lần).
-    const reminders = await new PaymentStore(d1).sendBalanceReminders();
+    const payments = new PaymentStore(d1);
+    const reminders = await payments.sendBalanceReminders();
     if (reminders) console.log(`[payments] balance_reminders=${reminders}`);
+    // Đối soát cọc quá hạn 3 ngày chưa hoàn: báo khách và chủ cơ sở (mỗi hạn một lần).
+    const overdue = await payments.sendReconciliationReminders();
+    if (overdue) console.log(`[payments] reconciliation_overdue=${overdue}`);
   },
 
   async fetch(request: Request, env: Env, ctx?: any): Promise<Response> {

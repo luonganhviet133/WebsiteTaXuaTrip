@@ -604,6 +604,8 @@ export class DatabaseEngine {
     }
 
     await this.d1.exec(`
+      DELETE FROM reconciliation_files;
+      DELETE FROM payment_reconciliations;
       DELETE FROM payment_receipts;
       DELETE FROM booking_payments;
       DELETE FROM listing_payout_accounts;

@@ -10,9 +10,11 @@ import { bankByBin, buildVietQr, isValidAccountNumber } from '../../payment/viet
 import { BookingLifecycle, type LifecycleActor } from '../bookings/store.ts';
 import { HoldStore, bookingEventStmt, notifyOwnersStmt, notifyUserStmt } from '../bookings/holds.ts';
 import type { PrivateStorage } from './storage.ts';
+import { reconDecide, type ReconAction, type ReconParty, type ReconStatus, type ReconOutcome } from './reconciliation.ts';
 
 export const MAX_RECEIPT_BYTES = 5 * 1024 * 1024;
 export const MAX_RECEIPTS_PER_KIND = 3;
+export const MAX_RECON_FILES_PER_SIDE = 5;
 
 export type Fail = { ok: false; status: number; code: string; message: string };
 const fail = (status: number, code: string, message: string): Fail => ({ ok: false, status, code, message });
@@ -283,6 +285,228 @@ export class PaymentStore {
     return { ok: true as const, already: false };
   }
 
+  // ---------- Đối soát cọc (hoàn / giữ khi khách đồng ý / admin phân xử) ----------
+
+  private async reconRow(bookingId: string) {
+    return this.d1.prepare('SELECT * FROM payment_reconciliations WHERE booking_id = ?').bind(bookingId).first<any>();
+  }
+
+  private toRecon(r: any) {
+    return r
+      ? {
+          status: r.status as ReconStatus,
+          outcome: (r.outcome ?? null) as ReconOutcome | null,
+          reason: r.reason,
+          openedAt: r.opened_at,
+          dueAt: r.due_at,
+          refundAmount: r.refund_amount ?? null,
+          ownerNote: r.owner_note ?? null,
+          guestNote: r.guest_note ?? null,
+          adminNote: r.admin_note ?? null,
+          closedAt: r.closed_at ?? null,
+        }
+      : null;
+  }
+
+  private reconParties(parties: string[]): ReconParty[] {
+    return parties.filter((p): p is ReconParty => p === 'guest' || p === 'owner' || p === 'admin');
+  }
+
+  async reconView(bookingId: string, actor: LifecycleActor, now = new Date()) {
+    const b = await this.bookingRow(bookingId);
+    if (!b) return fail(404, 'NOT_FOUND', 'Không tìm thấy đơn.');
+    const parties = await this.lifecycle.partiesOf(b, actor);
+    if (parties.length === 0) return fail(403, 'FORBIDDEN', 'Bạn không có quyền xem đối soát của đơn này.');
+    const [r, files, deposits, events] = await Promise.all([
+      this.reconRow(bookingId),
+      this.d1.prepare('SELECT id, role, created_at FROM reconciliation_files WHERE booking_id = ? ORDER BY created_at, rowid').bind(bookingId).all<any>(),
+      this.d1.prepare("SELECT id, created_at FROM payment_receipts WHERE booking_id = ? AND kind = 'deposit' ORDER BY created_at, rowid").bind(bookingId).all<any>(),
+      this.d1
+        .prepare("SELECT action, from_status, to_status, actor_role, reason, created_at FROM booking_events WHERE booking_id = ? AND action LIKE 'recon_%' ORDER BY rowid")
+        .bind(bookingId)
+        .all<any>(),
+    ]);
+    const recon = this.toRecon(r);
+    return {
+      ok: true as const,
+      data: {
+        bookingId,
+        bookingCode: b.booking_code,
+        depositAmount: b.deposit_amount,
+        totalAmount: b.total_amount,
+        reconciliation: recon,
+        overdue: !!recon && recon.status === 'open' && now.getTime() >= Date.parse(recon.dueAt),
+        files: (files.results || []).map((f: any) => ({ id: f.id, role: f.role, createdAt: f.created_at })),
+        depositReceipts: (deposits.results || []).map((f: any) => ({ id: f.id, createdAt: f.created_at })),
+        events: (events.results || []).map((e: any) => ({
+          action: e.action, fromStatus: e.from_status, toStatus: e.to_status, actorRole: e.actor_role, note: e.reason, createdAt: e.created_at,
+        })),
+      },
+    };
+  }
+
+  async uploadReconFile(bookingId: string, actor: LifecycleActor, bytes: Uint8Array, now = new Date()) {
+    if (!this.storage) return fail(503, 'STORAGE_NOT_CONFIGURED', 'Chưa cấu hình kho lưu bằng chứng.');
+    const b = await this.bookingRow(bookingId);
+    if (!b) return fail(404, 'NOT_FOUND', 'Không tìm thấy đơn.');
+    const parties = await this.lifecycle.partiesOf(b, actor);
+    const role = parties.includes('owner') ? 'owner' : parties.includes('guest') ? 'guest' : null;
+    if (!role) return fail(403, 'FORBIDDEN', 'Chỉ khách và chủ cơ sở của đơn gửi bằng chứng.');
+    const r = await this.reconRow(bookingId);
+    if (!r) return fail(409, 'NO_RECONCILIATION', 'Đơn này không có đối soát cọc.');
+    if (r.status === 'closed') return fail(409, 'CLOSED', 'Đối soát đã kết thúc.');
+    if (bytes.length > MAX_RECEIPT_BYTES) return fail(413, 'TOO_LARGE', 'Ảnh tối đa 5 MB.');
+    const type = detectImageType(bytes);
+    if (!type) return fail(415, 'NOT_AN_IMAGE', 'Chỉ nhận ảnh JPG, PNG hoặc WebP.');
+    const id = rid('rf');
+    const key = `reconciliation/${bookingId}/${id}`;
+    const nowIso = now.toISOString();
+    await this.storage.put(key, bytes, type);
+    const res = await this.d1
+      .prepare(
+        `INSERT INTO reconciliation_files (id, booking_id, role, object_key, content_type, size_bytes, uploaded_by, created_at)
+         SELECT ?, ?, ?, ?, ?, ?, ?, ? WHERE (SELECT COUNT(*) FROM reconciliation_files WHERE booking_id = ? AND role = ?) < ?`
+      )
+      .bind(id, bookingId, role, key, type, bytes.length, actor.id, nowIso, bookingId, role, MAX_RECON_FILES_PER_SIDE)
+      .run();
+    if (!Number(res?.meta?.changes ?? 0)) {
+      await this.storage.delete(key);
+      return fail(409, 'TOO_MANY_FILES', `Mỗi bên gửi tối đa ${MAX_RECON_FILES_PER_SIDE} ảnh bằng chứng.`);
+    }
+    return { ok: true as const, data: { id, role, createdAt: nowIso } };
+  }
+
+  async getReconFile(bookingId: string, fileId: string, actor: LifecycleActor) {
+    const b = await this.bookingRow(bookingId);
+    if (!b) return fail(404, 'NOT_FOUND', 'Không tìm thấy đơn.');
+    if ((await this.lifecycle.partiesOf(b, actor)).length === 0) return fail(403, 'FORBIDDEN', 'Bạn không có quyền xem bằng chứng này.');
+    const r = await this.d1.prepare('SELECT object_key FROM reconciliation_files WHERE id = ? AND booking_id = ?').bind(fileId, bookingId).first<any>();
+    if (!r || !this.storage) return fail(404, 'NOT_FOUND', 'Không tìm thấy ảnh.');
+    const obj = await this.storage.get(r.object_key);
+    if (!obj) return fail(404, 'NOT_FOUND', 'Không tìm thấy ảnh.');
+    return { ok: true as const, ...obj };
+  }
+
+  async reconAct(bookingId: string, action: ReconAction, actor: LifecycleActor, input: { amount?: unknown; note?: unknown } = {}, now = new Date()) {
+    const b = await this.bookingRow(bookingId);
+    if (!b) return fail(404, 'NOT_FOUND', 'Không tìm thấy đơn.');
+    const parties = this.reconParties(await this.lifecycle.partiesOf(b, actor));
+    if (parties.length === 0) return fail(403, 'FORBIDDEN', 'Bạn không có quyền với đơn này.');
+    const r = await this.reconRow(bookingId);
+    if (!r) return fail(409, 'NO_RECONCILIATION', 'Đơn này không có đối soát cọc.');
+    const note = typeof input.note === 'string' ? input.note.trim().slice(0, 500) : '';
+    const proofs = await this.d1.prepare("SELECT COUNT(*) AS n FROM reconciliation_files WHERE booking_id = ? AND role = 'owner'").bind(bookingId).first<{ n: number }>();
+    const d = reconDecide(action, { status: r.status, dueAt: r.due_at, outcome: r.outcome }, parties, { now: now.getTime(), refundProofs: proofs?.n ?? 0 });
+    if (d.kind === 'deny') return fail(d.status, d.code, d.message);
+    if (d.kind === 'already') return { ok: true as const, already: true, data: (await this.reconView(bookingId, actor, now) as any).data };
+
+    let amount: number | null = null;
+    if (action === 'refund') {
+      amount = Number(input.amount);
+      if (!Number.isInteger(amount) || amount <= 0 || amount > b.total_amount) return fail(400, 'INVALID_AMOUNT', 'Số tiền đã hoàn phải là số nguyên dương, không quá tổng đơn.');
+    }
+    const needNote = ['propose_hold', 'dispute', 'resolve_refunded', 'resolve_held', 'resolve_refund_required'].includes(action);
+    if (needNote && note.length < 3) return fail(400, 'NOTE_REQUIRED', 'Vui lòng ghi rõ nội dung (sẽ lưu làm bằng chứng cho hai bên).');
+
+    const nowIso = now.toISOString();
+    const set: [string, unknown][] = [['status', d.to], ['updated_at', nowIso]];
+    if (d.outcome) set.push(['outcome', d.outcome], ['closed_at', nowIso]);
+    if (d.newDueAt) set.push(['due_at', d.newDueAt]);
+    if (action === 'refund') set.push(['refund_amount', amount], ['owner_note', note || null]);
+    if (action === 'propose_hold') set.push(['owner_note', note]);
+    if (['accept_hold', 'reject_hold', 'confirm_received', 'dispute'].includes(action) && note) set.push(['guest_note', note]);
+    if (action.startsWith('resolve_')) set.push(['admin_note', note]);
+
+    const guestActs = ['accept_hold', 'reject_hold', 'confirm_received', 'dispute'].includes(action);
+    const ownerActs = action === 'refund' || action === 'propose_hold';
+    const TEXT: Record<ReconAction, string> = {
+      refund: `Cơ sở báo đã hoàn ${amount ? replaceThousands(amount) : ''} đ (có ảnh chứng từ). Kiểm tài khoản rồi bấm "Đã nhận lại tiền" hoặc "Chưa nhận được".`,
+      propose_hold: `Cơ sở đề nghị giữ tiền: ${note}. Bạn đồng ý hoặc từ chối (từ chối thì cơ sở phải hoàn).`,
+      accept_hold: 'Khách đồng ý để cơ sở giữ tiền theo đề nghị.',
+      reject_hold: `Khách không đồng ý giữ tiền${note ? `: ${note}` : ''}. Vui lòng hoàn trong hạn.`,
+      confirm_received: 'Khách xác nhận đã nhận lại tiền. Đối soát kết thúc.',
+      dispute: `Khách báo Tà Xùa Trip: ${note}. Admin sẽ xem bằng chứng của hai bên.`,
+      resolve_refunded: `Tà Xùa Trip kết luận: đã hoàn tiền. ${note}`,
+      resolve_held: `Tà Xùa Trip kết luận: cơ sở được giữ tiền. ${note}`,
+      resolve_refund_required: `Tà Xùa Trip kết luận: cơ sở phải hoàn trong 3 ngày. ${note}`,
+    };
+    const title = `Đơn ${b.booking_code}: đối soát cọc`;
+    const stmts: any[] = [
+      this.d1
+        .prepare(`UPDATE payment_reconciliations SET ${set.map(([c]) => `${c} = ?`).join(', ')} WHERE booking_id = ? AND status = ?`)
+        .bind(...set.map(([, v]) => v), bookingId, d.from),
+      ...this.holds.assertion('changes() = 1'),
+      bookingEventStmt(this.d1, { bookingId, action: `recon_${action}`, from: d.from, to: d.to, actor: { id: actor.id, role: actor.role }, reason: note || (amount ? String(amount) : null), now: nowIso }),
+    ];
+    if (ownerActs || action.startsWith('resolve_')) {
+      stmts.push(notifyUserStmt(this.d1, { userId: b.user_id, kind: `recon.${action}`, bookingId, title, body: TEXT[action], now: nowIso }));
+    }
+    if (guestActs || action.startsWith('resolve_')) {
+      stmts.push(notifyOwnersStmt(this.d1, { listingId: b.listing_id, kind: `recon.${action}`, bookingId, title, body: TEXT[action], now: nowIso }));
+    }
+    try {
+      await this.d1.batch(stmts);
+    } catch (err: any) {
+      if (!/CHECK constraint failed/i.test(String(err?.message))) throw err;
+      // Yêu cầu khác vừa đổi đối soát: đọc lại; nếu đã ở đúng bước này thì trả "đã làm".
+      const fresh = await this.reconRow(bookingId);
+      const again = reconDecide(action, { status: fresh.status, dueAt: fresh.due_at, outcome: fresh.outcome }, parties, { now: now.getTime(), refundProofs: proofs?.n ?? 0 });
+      if (again.kind === 'already') return { ok: true as const, already: true, data: (await this.reconView(bookingId, actor, now) as any).data };
+      if (again.kind === 'deny') return fail(again.status, again.code, again.message);
+      return fail(409, 'CONFLICT', 'Đối soát vừa thay đổi, vui lòng tải lại.');
+    }
+    return { ok: true as const, already: false, data: (await this.reconView(bookingId, actor, now) as any).data };
+  }
+
+  /** Quá hạn 3 ngày mà chưa hoàn: báo khách và chủ cơ sở một lần cho mỗi hạn. */
+  async sendReconciliationReminders(now = new Date()): Promise<number> {
+    const nowIso = now.toISOString();
+    const body = "'Quá hạn hoàn tiền cọc (' || strftime('%H:%M %d/%m', x.due_at, '+7 hours') || ').'";
+    const cond = "x.status = 'open' AND julianday(x.due_at) <= julianday(?)";
+    const [g, o] = await this.d1.batch([
+      this.d1
+        .prepare(
+          `INSERT OR IGNORE INTO notifications (id, user_id, kind, booking_id, title, body, created_at, read_at, dedupe_key)
+           SELECT 'nt_' || lower(hex(randomblob(10))), b.user_id, 'recon.overdue', b.id, 'Đơn ' || b.booking_code || ': cơ sở quá hạn hoàn cọc',
+                  ${body} || ' Bạn có thể bấm "Báo Tà Xùa Trip" trong Chuyến đi của tôi, kèm ảnh sao kê nếu có.', ?, NULL,
+                  'recon_overdue:' || b.id || ':' || x.due_at || ':' || b.user_id
+           FROM payment_reconciliations x JOIN bookings b ON b.id = x.booking_id WHERE ${cond}`
+        )
+        .bind(nowIso, nowIso),
+      this.d1
+        .prepare(
+          `INSERT OR IGNORE INTO notifications (id, user_id, kind, booking_id, title, body, created_at, read_at, dedupe_key)
+           SELECT 'nt_' || lower(hex(randomblob(10))), p.user_id, 'recon.overdue', b.id, 'Đơn ' || b.booking_code || ': quá hạn hoàn cọc',
+                  ${body} || ' Hoàn ngay và tải ảnh chứng từ; khách có thể báo Tà Xùa Trip.', ?, NULL,
+                  'recon_overdue:' || b.id || ':' || x.due_at || ':' || p.user_id
+           FROM payment_reconciliations x JOIN bookings b ON b.id = x.booking_id
+             JOIN provider_listings pl ON pl.listing_id = b.listing_id JOIN providers p ON p.id = pl.provider_id
+           WHERE ${cond}`
+        )
+        .bind(nowIso, nowIso),
+    ]);
+    return Number(g?.meta?.changes ?? 0) + Number(o?.meta?.changes ?? 0);
+  }
+
+  async listReconciliationsForAdmin(actor: LifecycleActor) {
+    if (actor.role !== 'admin') return fail(403, 'FORBIDDEN', 'Chỉ admin xem danh sách đối soát.');
+    const r = await this.d1
+      .prepare(
+        `SELECT x.*, b.booking_code, b.listing_title, b.guest_name, b.guest_phone, b.deposit_amount, b.total_amount
+         FROM payment_reconciliations x JOIN bookings b ON b.id = x.booking_id
+         ORDER BY CASE x.status WHEN 'disputed' THEN 0 WHEN 'open' THEN 1 WHEN 'refund_reported' THEN 2 WHEN 'hold_proposed' THEN 3 ELSE 4 END, x.due_at
+         LIMIT 200`
+      )
+      .all<any>();
+    return {
+      ok: true as const,
+      data: (r.results || []).map((x: any) => ({
+        bookingId: x.booking_id, bookingCode: x.booking_code, listingTitle: x.listing_title, guestName: x.guest_name, guestPhone: x.guest_phone,
+        depositAmount: x.deposit_amount, totalAmount: x.total_amount, ...this.toRecon(x),
+      })),
+    };
+  }
+
   // ---------- Nhắc 70% (cron) ----------
 
   /** Mốc 48 giờ và 30 giờ trước giờ nhận phòng; mỗi mốc gửi khách một lần (dedupe_key). */
@@ -312,3 +536,4 @@ export class PaymentStore {
   }
 }
 
+const replaceThousands = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
