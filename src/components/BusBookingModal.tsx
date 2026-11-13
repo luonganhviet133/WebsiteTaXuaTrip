@@ -1,4 +1,5 @@
 import { ONLINE_PAYMENT_ENABLED } from '../config/features';
+import { DEPOSIT_PERCENT, depositFor } from '../config/payment.ts';
 import React, { useState } from 'react';
 import { 
   X, 
@@ -146,14 +147,14 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
 
     setIsSubmitting(true);
     setTimeout(() => {
-      const depositAmount = Math.round(comboResult.finalTotal * 0.3);
+      const depositAmount = depositFor(comboResult.finalTotal);
       const proof: PaymentProof | undefined = paymentProofUrl
         ? {
             imageUrl: paymentProofUrl,
             amountPaid: depositAmount,
             amountTransferred: depositAmount,
             uploadedAt: new Date().toISOString(),
-            note: 'Chuyển khoản cọc 30% giữ vé & xe'
+            note: `Chuyển khoản cọc ${DEPOSIT_PERCENT}% giữ vé & xe`
           }
         : undefined;
 
@@ -610,7 +611,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                     <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    <span>Nộp Ảnh Biên Lai Chuyển Khoản (Cọc 30%)</span>
+                    <span>Nộp Ảnh Biên Lai Chuyển Khoản (Cọc {DEPOSIT_PERCENT}%)</span>
                   </span>
                   <span className="text-xs text-slate-400">Tùy chọn</span>
                 </div>
@@ -672,7 +673,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                   <span className="text-teal-400 text-lg">{formatVND(comboResult.finalTotal)}</span>
                 </div>
                 <div className="text-xs text-slate-400 text-right">
-                  Cọc trước 30%: <strong className="text-amber-300">{formatVND(Math.round(comboResult.finalTotal * 0.3))}</strong>
+                  Cọc trước {DEPOSIT_PERCENT}%: <strong className="text-amber-300">{formatVND(depositFor(comboResult.finalTotal))}</strong>
                 </div>
               </div>
 

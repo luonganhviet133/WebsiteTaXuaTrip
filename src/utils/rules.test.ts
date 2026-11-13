@@ -21,7 +21,6 @@ import {
   checkChatPermission,
   parseZaloAvailabilityCommand,
   buildCommunityUtmUrl,
-  buildVietQrPaymentPayload,
   compareHomestaysMatrix,
   buildDeepLinkSearchParams,
   parseDeepLinkSearchParams,
@@ -259,14 +258,6 @@ test('parseZaloAvailabilityCommand and buildCommunityUtmUrl work accurately', ()
   const utm = buildCommunityUtmUrl('https://taxuatrip.vn', 'zalo_oa', 'ban_tin_may_6h');
   assert.ok(utm.includes('utm_source=zalo_oa'));
   assert.ok(utm.includes('utm_campaign=ban_tin_may_6h'));
-});
-
-test('buildVietQrPaymentPayload computes deposit, remaining amount, transfer memo and VietQR image URL', () => {
-  const qr = buildVietQrPaymentPayload('bk-102', 1100000, 50);
-  assert.equal(qr.depositAmount, 550000);
-  assert.equal(qr.remainingAmount, 550000);
-  assert.equal(qr.transferMemo, 'TAXUA BK-102');
-  assert.ok(qr.qrImageUrl.includes('amount=550000'));
 });
 
 test('compareHomestaysMatrix identifies best price and best rating among up to 3 homestays', () => {

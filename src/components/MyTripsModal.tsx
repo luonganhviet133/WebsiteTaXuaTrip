@@ -1,4 +1,3 @@
-import { ONLINE_PAYMENT_ENABLED } from '../config/features';
 import { DemoNotice } from './DemoNotice';
 import React, { useState } from 'react';
 import {
@@ -9,16 +8,10 @@ import {
   CheckCircle2,
   Clock,
   Search,
-  Copy,
-  Check,
-  Sparkles,
   Star,
   MapPin,
   ShieldCheck,
   ArrowRight,
-  UploadCloud,
-  Image as ImageIcon,
-  ExternalLink,
   LogIn,
   AlertCircle
 } from 'lucide-react';
@@ -27,12 +20,9 @@ import { AuthUser } from '../types/auth.ts';
 import { displayBookingStatus } from '../api/holdsApi.ts';
 import { bookingsApi, formatCreatedAt, guestCanCancel, guestCountOf } from '../api/bookingsApi.ts';
 import { CheckinQr } from './CheckinQr.tsx';
-import {
-  formatVND,
-  buildVietQrPaymentPayload,
-  canBookingLeaveReview,
-  verifyPaymentProofStatus
-} from '../utils/rules.ts';
+import { PaymentPanel } from './PaymentPanel.tsx';
+import { GuestNotices } from './GuestNotices.tsx';
+import { formatVND, canBookingLeaveReview } from '../utils/rules.ts';
 
 interface MyTripsModalProps {
   isOpen: boolean;
@@ -60,8 +50,6 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
   const [lookupQuery, setLookupQuery] = useState('');
   const [activeVietQrBookingId, setActiveVietQrBookingId] = useState<string | null>(null);
   const [activeVoucherBookingId, setActiveVoucherBookingId] = useState<string | null>(null);
-  const [copiedMemoId, setCopiedMemoId] = useState<string | null>(null);
-  const [previewReceiptUrl, setPreviewReceiptUrl] = useState<string | null>(null);
   const [serverBookings, setServerBookings] = useState<Booking[] | null>(null);
   const [isLoadingBookings, setIsLoadingBookings] = useState(false);
   const [fetchStatus, setFetchStatus] = useState<'idle' | 'loading' | 'success' | 'unauthenticated' | 'error'>('idle');
@@ -198,15 +186,6 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
     }
   };
 
-  const handleCopyText = async (text: string, id: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedMemoId(id);
-      setTimeout(() => setCopiedMemoId(null), 2500);
-    } catch {
-      setCopiedMemoId(id);
-    }
-  };
 
   return (
     <div
@@ -314,21 +293,21 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
             </div>
           )}
 
-          {!ONLINE_PAYMENT_ENABLED && fetchStatus !== 'unauthenticated' && (
+          {fetchStatus === 'success' && <GuestNotices reloadKey={reloadTick} />}
+
+          {fetchStatus !== 'unauthenticated' && (
             <DemoNotice>
-              Website giữ phòng 30 phút nhưng chưa nhận tiền cọc trực tuyến. Vui lòng chuyển cọc trực tiếp cho cơ sở
-              (số điện thoại trên trang chi tiết); cơ sở bấm xác nhận đã nhận cọc thì đơn chuyển sang Đã xác nhận và có mã QR nhận phòng.
+              Tiền cọc và phần còn lại chuyển thẳng vào tài khoản của cơ sở (Tà Xùa Trip không giữ tiền). Bấm "Thanh toán" ở từng đơn
+              để xem điều khoản và thông tin chuyển khoản. Đơn chỉ tính là đã trả khi cơ sở xác nhận.
             </DemoNotice>
           )}
 
           {/* Render Bookings */}
           {fetchStatus !== 'unauthenticated' && !isLoadingBookings && filteredBookings.map((booking) => {
             const matchedListing = listings.find((l) => l.id === booking.listingId);
-            const vietQr = buildVietQrPaymentPayload(booking.id, booking.totalAmount, 50);
             const isVietQrOpen = activeVietQrBookingId === booking.id;
             const isVoucherOpen = activeVoucherBookingId === booking.id;
             const eligibleForReview = canBookingLeaveReview(booking.status, booking.reviewed);
-            const proofStatus = verifyPaymentProofStatus(booking);
 
             return (
               <div
@@ -341,9 +320,6 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                       #{booking.bookingCode || booking.id}
                     </span>
                     {getStatusBadge(booking)}
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${proofStatus.statusBadgeColor}`}>
-                      {proofStatus.statusLabel}
-                    </span>
                     <span className="text-xs text-slate-500 font-medium">
                       Đặt ngày: {formatCreatedAt(booking.createdAt)}
                     </span>
@@ -381,65 +357,25 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                       <p className="text-xs text-slate-600">Lý do hủy: {booking.cancelReason}</p>
                     )}
 
-                    {/* Dải thông tin biên lai thanh toán đã lưu */}
-                    <div className="pt-2 flex items-center gap-3">
-                      {proofStatus.hasProof && proofStatus.proofImageUrl ? (
-                        <button
-                          type="button"
-                          onClick={() => setPreviewReceiptUrl(proofStatus.proofImageUrl!)}
-                          className="text-xs font-bold text-teal-800 bg-teal-50 hover:bg-teal-100 px-2.5 py-1 rounded-lg border border-teal-200 inline-flex items-center gap-1.5 cursor-pointer"
-                        >
-                          <ImageIcon className="w-3.5 h-3.5 text-teal-700" />
-                          <span>Xem Ảnh Biên Lai Đã Nộp</span>
-                          <ExternalLink className="w-3 h-3 text-teal-600" />
-                        </button>
-                      ) : ONLINE_PAYMENT_ENABLED ? (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            booking.paymentStatus = 'proof_uploaded';
-                            booking.paymentProof = {
-                              imageUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&auto=format&fit=crop&q=80',
-                              amountPaid: Math.round(booking.totalAmount * 0.3),
-                              amountTransferred: Math.round(booking.totalAmount * 0.3),
-                              uploadedAt: new Date().toISOString(),
-                              note: 'Khách bổ sung biên lai sau khi đặt'
-                            };
-                            setPreviewReceiptUrl(booking.paymentProof.imageUrl);
-                          }}
-                          className="text-xs font-bold text-sky-800 bg-sky-50 hover:bg-sky-100 px-2.5 py-1 rounded-lg border border-sky-200 inline-flex items-center gap-1.5 cursor-pointer"
-                        >
-                          <UploadCloud className="w-3.5 h-3.5 text-sky-700" />
-                          <span>+ Tải Biên Lai Chuyển Khoản Bổ Sung</span>
-                        </button>
-                      ) : null}
-
-                      {booking.paymentStatus === 'partner_confirmed' && (
-                        <span className="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                          ✓ Đối tác đã xác nhận đã nhận tiền
-                        </span>
-                      )}
-                    </div>
                   </div>
 
                   {/* Action Buttons */}
                   <div className="md:col-span-5 flex flex-wrap items-center justify-start md:justify-end gap-2">
-                    {ONLINE_PAYMENT_ENABLED && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveVoucherBookingId(null);
-                        setActiveVietQrBookingId(isVietQrOpen ? null : booking.id);
-                      }}
-                      className={`px-3.5 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer border transition-colors ${
-                        isVietQrOpen
-                          ? 'bg-brand-800 text-white border-brand-800'
-                          : 'bg-slate-50 hover:bg-slate-100 text-brand-800 border-slate-200'
-                      }`}
-                    >
-                      <CreditCard className="w-3.5 h-3.5" />
-                      <span>Mã VietQR Cọc (50%)</span>
-                    </button>
+                    {['pending_deposit', 'confirmed', 'checked_in'].includes(booking.status) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveVoucherBookingId(null);
+                          setActiveVietQrBookingId(isVietQrOpen ? null : booking.id);
+                        }}
+                        aria-expanded={isVietQrOpen}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer border transition-colors ${
+                          isVietQrOpen ? 'bg-brand-800 text-white border-brand-800' : 'bg-slate-50 hover:bg-slate-100 text-brand-800 border-slate-200'
+                        }`}
+                      >
+                        <CreditCard className="w-3.5 h-3.5" />
+                        <span>Thanh toán</span>
+                      </button>
                     )}
 
                     <button
@@ -545,82 +481,8 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                   </form>
                 )}
 
-                {/* Expandable Panel 1: Dynamic VietQR Payment */}
-                {ONLINE_PAYMENT_ENABLED && isVietQrOpen && (
-                  <div className="bg-[#f8fafc] border border-teal-200 rounded-2xl p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
-                    <div className="sm:col-span-4 flex flex-col items-center bg-white p-3 rounded-2xl border border-slate-200">
-                      <img
-                        src={vietQr.qrImageUrl}
-                        alt={`Mã VietQR chuyển khoản ${vietQr.transferMemo}`}
-                        className="w-40 h-40 object-contain rounded-lg"
-                      />
-                      <span className="text-xs font-bold text-slate-500 mt-1.5">
-                        Quét bằng App Ngân hàng bất kỳ (Napas 247)
-                      </span>
-                    </div>
-
-                    <div className="sm:col-span-8 space-y-2.5 text-xs">
-                      <div className="inline-flex items-center gap-1.5 text-teal-800 font-extrabold bg-teal-100/80 px-3 py-1 rounded-full text-xs">
-                        <Sparkles className="w-3.5 h-3.5" />
-                        <span>Thanh toán Cọc Bảo Đảm 50% qua VietQR tự động</span>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2.5 bg-white p-3 rounded-xl border border-slate-200">
-                        <div>
-                          <span className="text-slate-500 block text-xs">Ngân hàng thụ hưởng:</span>
-                          <span className="font-extrabold text-brand-800">{vietQr.bankCode} Bank</span>
-                        </div>
-                        <div>
-                          <span className="text-slate-500 block text-xs">Số tài khoản:</span>
-                          <span className="font-mono font-extrabold text-brand-800">
-                            {vietQr.accountNumber}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-slate-500 block text-xs">Số tiền đặt cọc (50%):</span>
-                          <span className="font-extrabold text-emerald-700 text-sm">
-                            {formatVND(vietQr.depositAmount)}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-slate-500 block text-xs">Thanh toán khi nhận phòng:</span>
-                          <span className="font-bold text-slate-700">
-                            {formatVND(vietQr.remainingAmount)}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between bg-white px-3.5 py-2.5 rounded-xl border border-slate-200">
-                        <div>
-                          <span className="text-xs text-slate-500 block">
-                            Nội dung chuyển khoản tự động:
-                          </span>
-                          <span className="font-mono font-extrabold text-brand-800">
-                            {vietQr.transferMemo}
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleCopyText(vietQr.transferMemo, booking.id)}
-                          className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-brand-800 font-bold text-xs inline-flex items-center gap-1 cursor-pointer"
-                        >
-                          {copiedMemoId === booking.id ? (
-                            <>
-                              <Check className="w-3.5 h-3.5 text-emerald-600" />
-                              <span>Đã chép</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-3.5 h-3.5" />
-                              <span>Copy nội dung</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-
-                    </div>
-                  </div>
-                )}
+                {/* N06.1: thanh toán thật theo D03 (điều khoản → tài khoản cơ sở + VietQR → biên lai; cơ sở xác nhận) */}
+                {isVietQrOpen && <PaymentPanel bookingId={booking.id} />}
 
                 {/* Expandable Panel 2: Digital Check-in E-Voucher */}
                 {isVoucherOpen && (
@@ -671,43 +533,6 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
           })}
         </div>
 
-        {/* Modal Xem Ảnh Biên Lai Chuyển Khoản */}
-        {previewReceiptUrl && (
-          <div className="fixed inset-0 z-60 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl p-5 max-w-md w-full space-y-3 shadow-2xl">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                <h4 className="text-sm font-extrabold text-brand-800 flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4 text-teal-700" />
-                  <span>Biên Lai Chuyển Khoản Đã Lưu Trữ</span>
-                </h4>
-                <button
-                  type="button"
-                  onClick={() => setPreviewReceiptUrl(null)}
-                  className="text-slate-400 hover:text-slate-700 p-1 rounded-lg cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="bg-slate-100 rounded-2xl overflow-hidden flex items-center justify-center max-h-[60vh]">
-                <img
-                  src={previewReceiptUrl}
-                  alt="Biên lai chuyển khoản phóng to"
-                  className="w-full h-auto object-contain max-h-[55vh]"
-                />
-              </div>
-              <div className="flex justify-between items-center pt-1 text-xs text-slate-500">
-                <span>Dùng để đối soát & làm bằng chứng khiếu nại</span>
-                <button
-                  type="button"
-                  onClick={() => setPreviewReceiptUrl(null)}
-                  className="bg-brand-800 text-white font-bold px-4 py-1.5 rounded-xl cursor-pointer"
-                >
-                  Đóng
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

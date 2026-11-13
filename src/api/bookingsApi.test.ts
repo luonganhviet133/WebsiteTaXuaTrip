@@ -13,14 +13,21 @@ test('Đường dẫn QR nhận phòng và đọc lại mã từ đường dẫn
   assert.equal(parseCheckinInput('https://x.vn/doi-tac/nhan-phong?ma=ngan'), null);
 });
 
-test('Nút cho chủ cơ sở theo trạng thái (nhận phòng chỉ qua QR)', () => {
+test('Nút cho chủ cơ sở theo trạng thái (nhận phòng chỉ qua QR; 70% và nhả phòng theo D03)', () => {
   const now = Date.parse('2026-11-13T07:00:00Z');
-  assert.deepEqual(ownerActions('pending_deposit', '2026-11-13T07:10:00Z', now), ['confirm', 'reject']);
-  assert.deepEqual(ownerActions('pending_deposit', '2026-11-13T06:59:00Z', now), [], 'giữ chỗ quá hạn');
-  assert.deepEqual(ownerActions('confirmed', null, now), []);
-  assert.deepEqual(ownerActions('checked_in', null, now), ['complete']);
-  assert.deepEqual(ownerActions('completed', null, now), []);
-  assert.deepEqual(ownerActions('cancelled', null, now), []);
+  const b = (status: string, extra: Partial<{ holdExpiresAt: string | null; balanceConfirmedAt: string | null; checkInDate: string }> = {}) => ({
+    status, holdExpiresAt: null, balanceConfirmedAt: null, checkInDate: '2026-11-20', ...extra,
+  });
+  assert.deepEqual(ownerActions(b('pending_deposit', { holdExpiresAt: '2026-11-13T07:10:00Z' }), now), ['confirm', 'reject']);
+  assert.deepEqual(ownerActions(b('pending_deposit', { holdExpiresAt: '2026-11-13T06:59:00Z' }), now), [], 'giữ chỗ quá hạn');
+  assert.deepEqual(ownerActions(b('confirmed'), now), ['confirm_balance']);
+  // Hạn 70%: 14:00 ngày 19/11 (giờ VN) = 07:00Z
+  assert.deepEqual(ownerActions(b('confirmed'), Date.parse('2026-11-19T07:00:00Z')), ['confirm_balance', 'release']);
+  assert.deepEqual(ownerActions(b('confirmed', { balanceConfirmedAt: '2026-11-15T00:00:00Z' }), Date.parse('2026-11-19T08:00:00Z')), []);
+  assert.deepEqual(ownerActions(b('checked_in'), now), ['confirm_balance', 'complete']);
+  assert.deepEqual(ownerActions(b('checked_in', { balanceConfirmedAt: 'x' }), now), ['complete']);
+  assert.deepEqual(ownerActions(b('completed'), now), []);
+  assert.deepEqual(ownerActions(b('cancelled'), now), []);
 });
 
 test('Khách hủy được: giữ chỗ còn hạn; đơn đã xác nhận trước ngày nhận phòng', () => {

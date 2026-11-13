@@ -651,46 +651,6 @@ export function buildCommunityUtmUrl(
 }
 
 /**
- * Tạo dữ liệu thanh toán VietQR động và nội dung chuyển khoản chuẩn cho đơn đặt phòng/xe
- */
-export function buildVietQrPaymentPayload(
-  bookingId: string,
-  totalAmount: number,
-  depositPercent = 50
-): {
-  depositAmount: number;
-  remainingAmount: number;
-  transferMemo: string;
-  bankCode: string;
-  accountNumber: string;
-  accountName: string;
-  qrImageUrl: string;
-} {
-  const safeTotal = Math.max(0, Math.round(totalAmount));
-  const clampedPercent = Math.max(10, Math.min(100, depositPercent));
-  const depositAmount = Math.round((safeTotal * clampedPercent) / 100);
-  const remainingAmount = Math.max(0, safeTotal - depositAmount);
-  const cleanId = bookingId.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase() || 'BK000';
-  const transferMemo = `TAXUA ${cleanId}`;
-  const bankCode = 'MB';
-  const accountNumber = '0981234567888';
-  const accountName = 'TA XUA TRIP ESCROW';
-  const qrImageUrl = `https://img.vietqr.io/image/${bankCode}-${accountNumber}-compact2.png?amount=${depositAmount}&addInfo=${encodeURIComponent(
-    transferMemo
-  )}&accountName=${encodeURIComponent(accountName)}`;
-
-  return {
-    depositAmount,
-    remainingAmount,
-    transferMemo,
-    bankCode,
-    accountNumber,
-    accountName,
-    qrImageUrl
-  };
-}
-
-/**
  * So sánh song song tối đa 3 Homestay theo các tiêu chí cốt lõi tại Tà Xùa
  */
 export function compareHomestaysMatrix(

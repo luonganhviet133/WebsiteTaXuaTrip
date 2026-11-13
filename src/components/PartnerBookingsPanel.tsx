@@ -8,11 +8,19 @@ import { Bell, CheckCircle2, Phone, QrCode, RefreshCw, XCircle } from 'lucide-re
 import { bookingsApi, ownerActions, parseCheckinInput, statusLabel, type OwnerAction, type ServerBooking } from '../api/bookingsApi.ts';
 import { holdExpiryLabel } from '../api/holdsApi.ts';
 import { formatVND } from '../utils/rules.ts';
+import { DEPOSIT_PERCENT, balanceDueAt } from '../config/payment.ts';
+import { formatCreatedAt } from '../api/bookingsApi.ts';
 
 type Notice = { type: 'ok' | 'error'; text: string } | null;
 type NotificationList = { unread: number; items: { id: string; title: string; body: string; createdAt: string; read: boolean }[] };
 
-const ACTION_TEXT: Record<OwnerAction, string> = { confirm: 'Đã nhận cọc', reject: 'Từ chối', complete: 'Hoàn tất (khách đã trả phòng)' };
+const ACTION_TEXT: Record<OwnerAction, string> = {
+  confirm: 'Đã nhận cọc',
+  reject: 'Từ chối',
+  complete: 'Hoàn tất (khách đã trả phòng)',
+  confirm_balance: `Đã nhận đủ ${100 - DEPOSIT_PERCENT}%`,
+  release: `Nhả phòng (quá hạn ${100 - DEPOSIT_PERCENT}%)`,
+};
 const fmtDate = (d: string) => d.split('-').reverse().join('/');
 const zaloLink = (phone: string) => `https://zalo.me/${phone.replace(/\D/g, '')}`;
 
@@ -56,6 +64,64 @@ const NotificationBell: React.FC<{ data: NotificationList | null; onOpen: () => 
   );
 };
 
+/** N06.1: trạng thái tiền của đơn (cơ sở tự kiểm tài khoản rồi xác nhận) + biên lai khách gửi. */
+const PaymentLines: React.FC<{ b: ServerBooking; open: boolean; onToggle: () => void }> = ({ b, open, onToggle }) => {
+  const [thumbs, setThumbs] = useState<{ id: string; kind: string; url: string | null }[] | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    let alive = true;
+    const urls: string[] = [];
+    bookingsApi.payment(b.id).then(async (r) => {
+      if (!r.ok || !alive) return;
+      const list = await Promise.all(r.data.receipts.map(async (x) => ({ id: x.id, kind: x.kind, url: await bookingsApi.receiptObjectUrl(b.id, x.id) })));
+      list.forEach((x) => x.url && urls.push(x.url));
+      if (alive) setThumbs(list);
+    });
+    return () => {
+      alive = false;
+      urls.forEach((u) => URL.revokeObjectURL(u));
+    };
+  }, [open, b.id]);
+
+  const receipts = (b.depositReceipts ?? 0) + (b.balanceReceipts ?? 0);
+  const active = ['pending_deposit', 'confirmed', 'checked_in', 'completed'].includes(b.status);
+  const due = balanceDueAt(b.checkInDate);
+  return (
+    <div className="text-xs space-y-1">
+      {b.needsReconciliation && (
+        <p className="font-bold text-amber-300">
+          Cần đối soát: khách đã gửi biên lai cọc nhưng đơn {b.status === 'expired' ? 'hết hạn giữ chỗ' : 'đã hủy'} trước khi bạn xác nhận. Kiểm tài khoản và liên hệ khách; hệ thống không tự giữ lại phòng.
+        </p>
+      )}
+      {active && (
+        <p className="text-slate-300">
+          {b.status === 'pending_deposit' ? 'Cọc: chưa xác nhận.' : 'Cọc: đã xác nhận.'}{' '}
+          {b.status !== 'pending_deposit' &&
+            (b.balanceConfirmedAt
+              ? `${100 - DEPOSIT_PERCENT}%: đã nhận đủ (${formatCreatedAt(b.balanceConfirmedAt)}).`
+              : Date.now() >= due.getTime()
+                ? `${100 - DEPOSIT_PERCENT}%: QUÁ HẠN (${formatCreatedAt(due.toISOString())}).`
+                : `${100 - DEPOSIT_PERCENT}%: hạn ${formatCreatedAt(due.toISOString())}.`)}
+        </p>
+      )}
+      {receipts > 0 && (
+        <button type="button" onClick={onToggle} aria-expanded={open} className="font-bold text-sky-300 hover:underline cursor-pointer">
+          {open ? 'Ẩn' : 'Xem'} biên lai khách gửi ({receipts}) — chưa phải xác nhận đã nhận tiền
+        </button>
+      )}
+      {open && thumbs && (
+        <div className="flex flex-wrap gap-2 pt-1">
+          {thumbs.map((t) => (
+            <a key={t.id} href={t.url || undefined} target="_blank" rel="noopener noreferrer">
+              {t.url ? <img src={t.url} alt={`Biên lai ${t.kind === 'deposit' ? 'cọc' : 'còn lại'}`} className="w-20 h-20 rounded-xl object-cover border border-slate-600" /> : <span className="block w-20 h-20 rounded-xl bg-slate-800" />}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const PartnerBookingsPanel: React.FC<{
   listingId: string;
   /** Mã từ đường dẫn QR (/doi-tac/nhan-phong?ma=…) */
@@ -67,6 +133,12 @@ export const PartnerBookingsPanel: React.FC<{
   const [notifications, setNotifications] = useState<NotificationList | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [rejecting, setRejecting] = useState<{ id: string; reason: string } | null>(null);
+  const [releasing, setReleasing] = useState<string | null>(null);
+  const [openReceipts, setOpenReceipts] = useState<string | null>(null);
+  const [payoutMissing, setPayoutMissing] = useState(false);
+  useEffect(() => {
+    bookingsApi.getPayout(listingId).then((r) => setPayoutMissing(r.ok && r.data === null));
+  }, [listingId]);
   const [notice, setNotice] = useState<Notice>(null);
   const [checkinInput, setCheckinInput] = useState(initialCheckinToken || '');
   const [checkinPreview, setCheckinPreview] = useState<{ token: string; booking: ServerBooking } | null>(null);
@@ -115,11 +187,18 @@ export const PartnerBookingsPanel: React.FC<{
   const runAction = async (b: ServerBooking, action: OwnerAction, reason?: string) => {
     setBusyId(b.id);
     setNotice(null);
-    const r = await bookingsApi.act(b.id, action, reason);
-    setBusyId(null);
-    if (!r.ok) setNotice({ type: 'error', text: `Đơn ${b.bookingCode}: ${r.message}` });
-    else setNotice({ type: 'ok', text: `Đơn ${b.bookingCode}: ${statusLabel(r.data.status, r.data.holdExpiresAt)}${r.already ? ' (đã làm trước đó)' : ''}.` });
+    if (action === 'confirm_balance') {
+      const r = await bookingsApi.confirmBalance(b.id);
+      setBusyId(null);
+      setNotice(r.ok ? { type: 'ok', text: `Đơn ${b.bookingCode}: đã ghi nhận nhận đủ ${100 - DEPOSIT_PERCENT}%${r.already ? ' (đã làm trước đó)' : ''}.` } : { type: 'error', text: `Đơn ${b.bookingCode}: ${r.message}` });
+    } else {
+      const r = await bookingsApi.act(b.id, action, reason);
+      setBusyId(null);
+      if (!r.ok) setNotice({ type: 'error', text: `Đơn ${b.bookingCode}: ${r.message}` });
+      else setNotice({ type: 'ok', text: `Đơn ${b.bookingCode}: ${statusLabel(r.data.status, r.data.holdExpiresAt)}${r.already ? ' (đã làm trước đó)' : ''}.` });
+    }
     setRejecting(null);
+    setReleasing(null);
     await load();
   };
 
@@ -201,6 +280,11 @@ export const PartnerBookingsPanel: React.FC<{
         )}
       </div>
 
+      {payoutMissing && (
+        <p className="text-xs font-bold text-amber-300 bg-amber-950/30 border border-amber-500/30 rounded-xl p-3">
+          Chưa có tài khoản nhận cọc: khách chưa xem được thông tin chuyển cọc. Vào mục "4. Tài Khoản Nhận Cọc" bên dưới để nhập.
+        </p>
+      )}
       {notice && (
         <p role="status" className={`text-xs font-bold ${notice.type === 'ok' ? 'text-emerald-300' : 'text-rose-300'}`}>
           {notice.text}
@@ -211,7 +295,7 @@ export const PartnerBookingsPanel: React.FC<{
 
       <ul className="space-y-3">
         {(bookings || []).map((b) => {
-          const actions = ownerActions(b.status, b.holdExpiresAt);
+          const actions = ownerActions(b);
           return (
             <li key={b.id} className="bg-slate-900 border border-slate-700 rounded-2xl p-4 space-y-3">
               <div className="flex flex-wrap items-center gap-2">
@@ -230,8 +314,9 @@ export const PartnerBookingsPanel: React.FC<{
                 <span>{b.roomName} × {b.rooms ?? 1}</span>
                 <span>{fmtDate(b.checkInDate)} → {fmtDate(b.checkOutDate)}</span>
                 <span>{(b.adults ?? 0) + (b.children ?? 0)} khách</span>
-                <span>Tổng {formatVND(b.totalAmount)} · Cọc 30% {formatVND(b.depositAmount)}</span>
+                <span>Tổng {formatVND(b.totalAmount)} · Cọc {DEPOSIT_PERCENT}% {formatVND(b.depositAmount)}</span>
               </div>
+              <PaymentLines b={b} open={openReceipts === b.id} onToggle={() => setOpenReceipts(openReceipts === b.id ? null : b.id)} />
               {b.guestNote && <p className="text-xs text-amber-200">Ghi chú: {b.guestNote}</p>}
               {b.cancelReason && <p className="text-xs text-slate-400">Lý do hủy: {b.cancelReason}</p>}
 
@@ -243,7 +328,17 @@ export const PartnerBookingsPanel: React.FC<{
                   <Phone className="w-3.5 h-3.5" /> Gọi
                 </a>
                 {actions.map((a) =>
-                  a === 'reject' ? (
+                  a === 'release' ? (
+                    <button
+                      key={a}
+                      type="button"
+                      disabled={busyId === b.id}
+                      onClick={() => setReleasing(b.id)}
+                      className="px-3 py-2 rounded-xl bg-rose-700/80 hover:bg-rose-600 text-white text-xs font-bold inline-flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                    >
+                      <XCircle className="w-3.5 h-3.5" /> {ACTION_TEXT[a]}
+                    </button>
+                  ) : a === 'reject' ? (
                     <button
                       key={a}
                       type="button"
@@ -266,6 +361,21 @@ export const PartnerBookingsPanel: React.FC<{
                   )
                 )}
               </div>
+              {releasing === b.id && (
+                <div className="bg-rose-950/40 border border-rose-500/40 rounded-xl p-3 space-y-2">
+                  <p className="text-xs font-bold text-rose-200">
+                    Nhả phòng: đơn bị hủy, phòng mở lại cho khách khác, cọc không hoàn (D03). Khách được báo trong Chuyến đi của tôi.
+                  </p>
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => void runAction(b, 'release')} disabled={busyId === b.id} className="px-3 py-2 rounded-xl bg-rose-600 text-white text-xs font-bold cursor-pointer disabled:opacity-50">
+                      Xác nhận nhả phòng
+                    </button>
+                    <button type="button" onClick={() => setReleasing(null)} className="px-3 py-2 rounded-xl bg-slate-700 text-white text-xs font-bold cursor-pointer">
+                      Thôi
+                    </button>
+                  </div>
+                </div>
+              )}
               {rejecting?.id === b.id && (
                 <form
                   className="flex flex-col sm:flex-row gap-2"

@@ -1,4 +1,5 @@
 import { ONLINE_PAYMENT_ENABLED } from '../config/features';
+import { DEPOSIT_PERCENT, depositFor } from '../config/payment.ts';
 import React, { useState, useEffect, useRef } from 'react';
 import {
   X,
@@ -432,7 +433,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
     setIsSubmitting(true);
 
     setTimeout(() => {
-      const depositAmount = Math.round(totalAmount * 0.3);
+      const depositAmount = depositFor(totalAmount);
       const proof: PaymentProof | undefined = paymentProofUrl
         ? {
             imageUrl: paymentProofUrl,
@@ -1827,7 +1828,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                      <span>Đính kèm ảnh chuyển khoản (Cọc 30%)</span>
+                      <span>Đính kèm ảnh chuyển khoản (Cọc {DEPOSIT_PERCENT}%)</span>
                     </span>
                     <span className="text-xs text-slate-400">Bảo vệ quyền lợi</span>
                   </div>

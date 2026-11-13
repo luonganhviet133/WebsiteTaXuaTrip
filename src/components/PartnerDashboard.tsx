@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { PayoutAccountForm } from './PayoutAccountForm.tsx';
+import { depositFor } from '../config/payment.ts';
 import { 
   Building2, 
   Calendar, 
@@ -28,8 +30,7 @@ import {
   CreditCard,
   ExternalLink,
   ChevronRight,
-  ShieldCheck,
-  Sparkles
+  ShieldCheck
 } from 'lucide-react';
 import { 
   Listing, 
@@ -42,7 +43,6 @@ import {
   MenuItem, 
   OpeningHours, 
   RouteStop,
-  PartnerBankAccount,
   ServiceCategory,
   ServicePackageItem
 } from '../types/index.ts';
@@ -396,18 +396,6 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
     isAvailable: true
   });
 
-  // --- BANK & VIETQR CONFIG ---
-  const [bankAccount, setBankAccount] = useState<PartnerBankAccount>(
-    partnerListing.bankAccount || {
-      bankCode: 'MB',
-      bankName: 'MB Bank (Quân Đội)',
-      accountNumber: '999988886666',
-      accountName: 'NGUYEN VAN A - TA XUA HOST',
-      accountHolder: 'NGUYEN VAN A - TA XUA HOST',
-      qrPromptMessage: 'Thanh toán cọc phòng/dịch vụ Tà Xùa'
-    }
-  );
-  const [bankSavedFeedback, setBankSavedFeedback] = useState<string | null>(null);
 
   // Filter bookings for this partner
   const [partnerBookingsState, setPartnerBookingsState] = useState<Booking[]>(bookings);
@@ -428,9 +416,6 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
     setServicePackages(getDefaultServicePackages(partnerListing));
     if (partnerListing.motorbikeFleet) {
       setMotorbikeFleet(partnerListing.motorbikeFleet);
-    }
-    if (partnerListing.bankAccount) {
-      setBankAccount(partnerListing.bankAccount);
     }
     setProfileForm({
       title: partnerListing.title,
@@ -776,7 +761,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
       },
       {
         id: 'bank_vietqr' as PartnerModuleType,
-        label: '4. Ngân Hàng & VietQR',
+        label: '4. Tài Khoản Nhận Cọc',
         icon: CreditCard,
         desc: 'Tài khoản nhận tiền cọc của cơ sở'
       },
@@ -2566,7 +2551,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                             <div className="text-xs">
                               <span className="text-slate-400 block text-xs">Ảnh biên lai khách nộp:</span>
                               <span className="text-emerald-400 font-bold block">
-                                Đã chuyển cọc {formatVND(b.totalAmount * 0.3)}
+                                Đã chuyển cọc {formatVND(depositFor(b.totalAmount))}
                               </span>
                               <button
                                 type="button"
@@ -2617,125 +2602,9 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
         )}
 
         {/* ========================================================
-            MODULE 5: TÀI KHOẢN NGÂN HÀNG & VIETQR (ĐỀ XUẤT NÂNG CẤP)
+            MODULE 5: TÀI KHOẢN NHẬN CỌC (N06.1, lưu trên server)
            ======================================================== */}
-        {activeModule === 'bank_vietqr' && (
-          <div className="space-y-6">
-            <div className="bg-slate-850 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-750">
-                <div>
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    <CreditCard className="w-5 h-5 text-teal-400" />
-                    <span>Cấu Hình Tài Khoản Nhận Cọc & VietQR Trực Tiếp Cơ Sở</span>
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Khách hàng quét mã VietQR chuyển khoản cọc thẳng vào tài khoản của bạn. Không qua bên thứ ba giam giữ tiền.
-                  </p>
-                </div>
-
-                <div className="bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 self-start sm:self-auto">
-                  <Sparkles className="w-4 h-4 text-sky-400" />
-                  <span>Tiền về tài khoản ngay lập tức</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Form cấu hình tài khoản */}
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    setBankSavedFeedback('✅ Đã lưu cấu hình tài khoản VietQR thành công!');
-                    setTimeout(() => setBankSavedFeedback(null), 4000);
-                  }}
-                  className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4"
-                >
-                  <span className="text-xs font-bold text-teal-300 uppercase tracking-wide block">
-                    Thông Tin Tài Khoản Ngân Hàng Thụ Hưởng
-                  </span>
-
-                  <div>
-                    <label className="text-xs text-slate-300 block mb-1">Ngân hàng thụ hưởng *</label>
-                    <select
-                      value={bankAccount.bankName}
-                      onChange={(e) => setBankAccount({ ...bankAccount, bankName: e.target.value })}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
-                    >
-                      <option value="MB Bank (Quân Đội)">MB Bank - Ngân hàng Quân Đội</option>
-                      <option value="Vietcombank">Vietcombank - Ngân hàng Ngoại Thương</option>
-                      <option value="Techcombank">Techcombank - Ngân hàng Kỹ Thương</option>
-                      <option value="BIDV">BIDV - Ngân hàng Đầu Tư và Phát Triển</option>
-                      <option value="Agribank">Agribank - Ngân hàng Nông Nghiệp</option>
-                      <option value="VPBank">VPBank - Ngân hàng Việt Nam Thịnh Vượng</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-slate-300 block mb-1">Số tài khoản ngân hàng *</label>
-                    <input
-                      type="text"
-                      value={bankAccount.accountNumber}
-                      onChange={(e) => setBankAccount({ ...bankAccount, accountNumber: e.target.value })}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-slate-300 block mb-1">Tên chủ tài khoản (In hoa không dấu) *</label>
-                    <input
-                      type="text"
-                      value={bankAccount.accountHolder}
-                      onChange={(e) => setBankAccount({ ...bankAccount, accountHolder: e.target.value.toUpperCase() })}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white uppercase"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-slate-300 block mb-1">Lời nhắn thanh toán gợi ý</label>
-                    <input
-                      type="text"
-                      value={bankAccount.qrPromptMessage || ''}
-                      onChange={(e) => setBankAccount({ ...bankAccount, qrPromptMessage: e.target.value })}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs py-2.5 rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center gap-2"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>Lưu Cấu Hình VietQR</span>
-                  </button>
-
-                  {bankSavedFeedback && (
-                    <div className="text-xs font-bold text-emerald-400 bg-slate-800 p-2.5 rounded-xl border border-emerald-500/30 text-center">
-                      {bankSavedFeedback}
-                    </div>
-                  )}
-                </form>
-
-                {/* Bản xem trước VietQR thực tế */}
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-4">
-                  <span className="text-xs font-bold text-slate-400">Mã VietQR Động Hiển Thị Cho Khách:</span>
-                  <div className="bg-white p-4 rounded-2xl shadow-xl">
-                    <img
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=247000${bankAccount.accountNumber}`}
-                      alt="VietQR Demo"
-                      className="w-44 h-44 object-contain"
-                    />
-                  </div>
-                  <div className="text-xs space-y-1">
-                    <div className="font-extrabold text-white text-sm">{bankAccount.accountHolder}</div>
-                    <div className="text-teal-400 font-mono font-bold">{bankAccount.accountNumber} ({bankAccount.bankName})</div>
-                    <div className="text-xs text-slate-400">Nội dung chuyển khoản tự động gắn mã Booking: <strong>TX-XXXX</strong></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {activeModule === 'bank_vietqr' && <PayoutAccountForm listingId={partnerListing.id} />}
 
         {/* ========================================================
             MODULE 6: VÍ TRẢ TRƯỚC, PHÍ SÀN 50K & HIỆU QUẢ

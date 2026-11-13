@@ -5,6 +5,7 @@
  */
 import { todayInVietnam } from '../search/searchIntent.ts';
 import { displayBookingStatus } from './holdsApi.ts';
+import { balanceDueAt } from '../config/payment.ts';
 
 export interface BookingEventView {
   action: string;
@@ -37,7 +38,12 @@ export interface ServerBooking {
   holdExpiresAt: string | null;
   guestNote: string | null;
   cancelReason: string | null;
+  balanceConfirmedAt?: string | null;
   createdAt: string;
+  /** Chỉ có trong danh sách của chủ cơ sở (N06.1) */
+  depositReceipts?: number;
+  balanceReceipts?: number;
+  needsReconciliation?: boolean;
 }
 
 export interface BookingDetail extends ServerBooking {
@@ -45,7 +51,47 @@ export interface BookingDetail extends ServerBooking {
   checkinToken: string | null;
 }
 
-export type OwnerAction = 'confirm' | 'reject' | 'complete';
+export interface PayoutAccount {
+  bankBin: string;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+}
+
+export interface PaymentSnapshot {
+  bookingId: string;
+  bookingCode: string;
+  payeeBankBin: string;
+  payeeBankName: string;
+  payeeAccountNumber: string;
+  payeeAccountName: string;
+  totalAmount: number;
+  depositAmount: number;
+  balanceAmount: number;
+  depositMemo: string;
+  balanceMemo: string;
+  balanceDueAt: string;
+  termsVersion: string;
+  vietQrDeposit: string;
+  vietQrBalance: string;
+}
+
+export interface PaymentView {
+  bookingId: string;
+  status: string;
+  termsVersion: string;
+  termsPoints: string[];
+  termsAccepted: boolean;
+  payoutReady: boolean;
+  snapshot: PaymentSnapshot | null;
+  receipts: { id: string; kind: 'deposit' | 'balance'; contentType: string; createdAt: string }[];
+  depositConfirmedAt: string | null;
+  balanceConfirmedAt: string | null;
+  balanceDueAt: string;
+  balanceOverdue: boolean;
+}
+
+export type OwnerAction = 'confirm' | 'reject' | 'complete' | 'confirm_balance' | 'release';
 export type ApiOutcome<T> = { ok: true; data: T; already?: boolean } | { ok: false; status: number; code: string; message: string };
 
 const TOKEN_RE = /^[A-Za-z0-9_-]{43}$/;
@@ -68,9 +114,17 @@ export function parseCheckinInput(text: string): string | null {
 
 const holdLive = (holdExpiresAt: string | null, now: number) => !!holdExpiresAt && Date.parse(holdExpiresAt) > now;
 
-export function ownerActions(status: string, holdExpiresAt: string | null, now: number = Date.now()): OwnerAction[] {
-  if (status === 'pending_deposit') return holdLive(holdExpiresAt, now) ? ['confirm', 'reject'] : [];
-  if (status === 'checked_in') return ['complete'];
+export function ownerActions(
+  b: { status: string; holdExpiresAt: string | null; balanceConfirmedAt?: string | null; checkInDate: string },
+  now: number = Date.now()
+): OwnerAction[] {
+  if (b.status === 'pending_deposit') return holdLive(b.holdExpiresAt, now) ? ['confirm', 'reject'] : [];
+  const balancePaid = !!b.balanceConfirmedAt;
+  if (b.status === 'confirmed') {
+    if (balancePaid) return [];
+    return now >= balanceDueAt(b.checkInDate).getTime() ? ['confirm_balance', 'release'] : ['confirm_balance'];
+  }
+  if (b.status === 'checked_in') return balancePaid ? ['complete'] : ['confirm_balance', 'complete'];
   return [];
 }
 
@@ -125,8 +179,38 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<Ap
 
 export const bookingsApi = {
   detail: (id: string) => call<BookingDetail>('GET', `/api/bookings/${encodeURIComponent(id)}`),
-  act: (id: string, action: OwnerAction | 'cancel', reason?: string) =>
+  act: (id: string, action: Exclude<OwnerAction, 'confirm_balance'> | 'cancel', reason?: string) =>
     call<ServerBooking>('POST', `/api/bookings/${encodeURIComponent(id)}/${action}`, reason ? { reason } : {}),
+  // N06.1 — thanh toán (D03)
+  payment: (id: string) => call<PaymentView>('GET', `/api/bookings/${encodeURIComponent(id)}/payment`),
+  acceptTerms: (id: string, termsVersion: string) =>
+    call<PaymentView>('POST', `/api/bookings/${encodeURIComponent(id)}/payment/accept-terms`, { termsVersion }),
+  confirmBalance: (id: string) => call<null>('POST', `/api/bookings/${encodeURIComponent(id)}/payment/confirm-balance`, {}),
+  uploadReceipt: async (id: string, kind: 'deposit' | 'balance', file: Blob): Promise<ApiOutcome<{ id: string }>> => {
+    try {
+      const res = await fetch(`/api/bookings/${encodeURIComponent(id)}/payment/receipts?kind=${kind}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token()}`, 'Content-Type': file.type || 'application/octet-stream' },
+        body: file,
+      });
+      const data: any = await res.json().catch(() => null);
+      if (res.ok && data?.success) return { ok: true, data: data.data };
+      return { ok: false, status: res.status, code: data?.code || `HTTP_${res.status}`, message: data?.error || 'Không gửi được ảnh.' };
+    } catch {
+      return { ok: false, status: 0, code: 'NETWORK', message: 'Mất kết nối máy chủ. Vui lòng thử lại.' };
+    }
+  },
+  /** Ảnh biên lai cần đăng nhập nên tải bằng fetch rồi tạo URL tạm trong trình duyệt. */
+  receiptObjectUrl: async (id: string, receiptId: string): Promise<string | null> => {
+    const res = await fetch(`/api/bookings/${encodeURIComponent(id)}/payment/receipts/${encodeURIComponent(receiptId)}`, {
+      headers: { Authorization: `Bearer ${token()}` },
+    }).catch(() => null);
+    if (!res || !res.ok) return null;
+    return URL.createObjectURL(await res.blob());
+  },
+  getPayout: (listingId: string) => call<PayoutAccount | null>('GET', `/api/partner/listings/${encodeURIComponent(listingId)}/payout-account`),
+  setPayout: (listingId: string, body: { bankBin: string; accountNumber: string; accountName: string }) =>
+    call<PayoutAccount>('PUT', `/api/partner/listings/${encodeURIComponent(listingId)}/payout-account`, body),
   partnerList: (listingId?: string) =>
     call<ServerBooking[]>('GET', `/api/partner/bookings${listingId ? `?listingId=${encodeURIComponent(listingId)}` : ''}`),
   checkinPreview: (t: string) => call<ServerBooking>('GET', `/api/partner/checkin?token=${encodeURIComponent(t)}`),

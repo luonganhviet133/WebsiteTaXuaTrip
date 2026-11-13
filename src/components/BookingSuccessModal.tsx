@@ -15,6 +15,7 @@ import {
 import { Booking } from '../types/index.ts';
 import { formatVND, calculateMemberPoints } from '../utils/rules.ts';
 import { holdExpiryLabel } from '../api/holdsApi.ts';
+import { DEPOSIT_PERCENT } from '../config/payment.ts';
 
 interface BookingSuccessModalProps {
   booking: Booking | null;
@@ -54,8 +55,9 @@ export const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
               </p>
               {typeof booking.depositAmount === 'number' && (
                 <p className="mt-1">
-                  Tiền cọc 30%: <strong className="text-amber-300">{formatVND(booking.depositAmount)}</strong>. Chức năng thanh toán cọc
-                  sẽ mở trong bản cập nhật tới; chưa cọc trước giờ trên thì phòng tự được trả lại.
+                  Tiền cọc {DEPOSIT_PERCENT}%: <strong className="text-amber-300">{formatVND(booking.depositAmount)}</strong>, chuyển thẳng vào tài khoản
+                  của cơ sở. Mở "Chuyến đi của tôi" → "Thanh toán" để đọc điều khoản và xem thông tin chuyển khoản. Chưa được cơ sở
+                  xác nhận nhận cọc trước giờ trên thì phòng tự được trả lại.
                 </p>
               )}
             </div>
