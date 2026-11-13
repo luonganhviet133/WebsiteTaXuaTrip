@@ -24,9 +24,14 @@ export const FEATURES = {
     note: 'Trợ lý AI sẽ gợi ý dựa trên phòng còn trống và giá thật. Hiện bạn có thể lọc cơ sở ở mục Lưu trú và xem đường đi trên Bản đồ.',
   },
   itineraryPlanner: {
-    open: false,
+    open: true,
     title: 'Lên kế hoạch chuyến đi',
-    note: 'Lịch trình 2N1Đ, 3N2Đ, 4N3Đ gắn với phòng, xe và quán có thật đang được hoàn thiện. Hiện bạn có thể xem điểm săn mây trên Bản đồ và đặt phòng ở mục Lưu trú.',
+    note: 'Lịch trình 2N1Đ, 3N2Đ, 4N3Đ dựng từ homestay, quán, nhà xe và điểm tham quan có trong danh bạ. Hiện bạn có thể xem điểm săn mây trên Bản đồ và đặt phòng ở mục Lưu trú.',
+  },
+  itineraryAi: {
+    open: true,
+    title: 'AI hỗ trợ lịch trình',
+    note: 'AI chỉ đọc ghi chú của bạn và viết lời dẫn; lịch luôn dựng từ dữ liệu đã duyệt. Khi AI tạm nghỉ, bạn vẫn lập lịch bình thường.',
   },
   cloudForecast: {
     open: false,
@@ -75,5 +80,6 @@ export function isOpen(key: FeatureKey): boolean {
 export function featureForApi(method: string, pathname: string): FeatureKey | null {
   if (method === 'POST' && (pathname === '/api/ai/consult' || pathname === '/api/ai/quick-quote')) return 'aiAdvisor';
   if (pathname.startsWith('/api/revid/')) return 'aiGateway';
+  if (pathname.startsWith('/api/itinerary/')) return 'itineraryPlanner';
   return null;
 }

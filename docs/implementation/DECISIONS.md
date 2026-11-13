@@ -18,6 +18,14 @@
 
 ---
 
+### D-R5-01: Lịch trình dựng bằng quy tắc, AI chỉ phụ, dữ liệu tra cứu phải duyệt (14/11/2026)
+- **Quyết định (chủ dự án chọn):** lịch luôn do bộ quy tắc dựng từ cơ sở và điểm đã duyệt. AI chỉ đọc ghi chú tự do và viết lời dẫn; đầu ra AI bị kiểm (chỉ giá trị hợp lệ, chỉ tên điểm có thật; lời dẫn không có giá, SĐT, nơi ngoài lịch). AI tắt hoặc hết lượt thì lịch vẫn đầy đủ.
+- **Dữ liệu thiếu:** tra từ nguồn công khai, ghi tên nguồn, link và ngày tra; nạp ở trạng thái chờ duyệt; admin kiểm/sửa rồi mới dùng. Không có nguồn thì để trống ("Chưa tính", "Gợi ý thêm"), không đoán.
+- **Nhà cung cấp AI:** Gemini trước (gói miễn phí), RevidAPI dự phòng. Model chọn theo độ khó, đổi được qua biến môi trường. Có hạn mức lượt/ngày lưu trong D1. Khóa API chỉ đặt bằng secret của Worker, không đưa vào mã (kho GitHub công khai).
+- **Phạm vi R5:** chỉ lập lịch. Lưu/chia sẻ, bản đồ lộ trình, cùng sửa và lộ trình cộng đồng để đợt sau.
+
+---
+
 ### D-R4-01: Ra mắt chỉ với dữ liệu thật (13/11/2026)
 - **Quyết định:** tính năng chưa có dữ liệu hoặc nghiệp vụ thật thì khóa bằng cờ trong `src/config/features.ts`, cả ở giao diện ("Sắp ra mắt" nói việc thay thế làm được ngay) và ở API (503 `FEATURE_LOCKED`). Không hiện số liệu, đánh giá, dự báo hay cam kết chưa kiểm chứng; số trên trang lấy từ cơ sở dữ liệu hoặc không hiện.
 - **Không công bố danh sách lừa đảo** trừ vụ việc đã xác minh có bằng chứng: số điện thoại hoặc số tài khoản sai có thể bôi nhọ người thật.

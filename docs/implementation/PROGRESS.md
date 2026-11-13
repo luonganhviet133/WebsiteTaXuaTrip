@@ -16,6 +16,60 @@
 
 ---
 
+## R5 — Lên lịch trình 2N1Đ / 3N2Đ / 4N3Đ từ dữ liệu thật (14/11/2026, nhánh `dot/R5`)
+
+### Đã làm
+- **Mở tab "Lịch trình"** (`src/components/ItineraryPlanner.tsx`, thay bản AI mẫu cũ đã xóa).
+  - Khách chọn: số ngày, kiểu chuyến (săn mây / nghỉ dưỡng / khám phá / chụp ảnh), ngày đi, số người, ngân sách chỗ ở, đi xe khách hay tự đi.
+  - Kết quả theo ngày và theo giờ. Mỗi mục có số gọi/Zalo của cơ sở, nút **Đổi** (chọn phương án khác) và **Bỏ**; các khung khác giữ nguyên.
+  - Có chi phí đã tính được, phần "Chưa tính", gợi ý thêm, lưu ý, nguồn dữ liệu, nút **Phương án khác** và **In**.
+- **Bộ dựng theo quy tắc** `src/itinerary/engine.ts` (dùng chung server và giao diện):
+  - chỉ dùng cơ sở và điểm đã duyệt; cùng hạt giống thì ra cùng kết quả;
+  - đi xe đêm thì tới nơi săn bình minh ở điểm gần (≤15 phút), có giờ nghỉ bù;
+  - ngày cuối dựng ngược từ giờ xe về; vé khứ hồi chưa có giờ về thì về cùng nhà xe;
+  - giờ bình minh/hoàng hôn và thời gian đi giữa hai điểm ghi "khoảng";
+  - điểm chưa có thời gian đi từ trung tâm chỉ hiện ở "Gợi ý thêm";
+  - chi phí chỉ cộng giá đã duyệt, không đoán phần thiếu.
+- **Dữ liệu tra từ nguồn công khai** (`data/itinerary-sources.json` → `scripts/build-itinerary-seed.ts` → migration `0014_itinerary_seed.sql`). **Tất cả ở trạng thái chờ duyệt.**
+  - 10 điểm tham quan, nguồn: Vietnam Airlines, VnExpress, Finhay, Tổng cục Du lịch, Xanh SM, VnEconomy, danh bạ gốc. 6 điểm có thời gian đi, 4 điểm chưa.
+  - Giờ xe của 4 nhà xe: Hiền Hựu, Khánh Thịnh, Quang Nghĩa, Hùng Xe Ghép.
+  - Giá "từ" của 25 cơ sở lấy từ danh bạ gốc; đơn vị giá là suy đoán, ghi rõ cho admin xác nhận.
+  - Nguồn ghi khác nhau (ví dụ số km) thì ghi chú lại để admin chọn.
+- **Migration `0013_itinerary.sql`:**
+  - bảng `places` và `reference_facts` (có nguồn, trạng thái duyệt, mỗi cơ sở chỉ một dữ kiện đã duyệt mỗi loại);
+  - bảng `ai_usage` đếm lượt gọi AI theo ngày giờ VN.
+- **Trang quản trị → "Dữ liệu lịch trình"** (`AdminItineraryDataPanel.tsx`):
+  - lọc theo trạng thái; xem nguồn kèm ngày tra;
+  - sửa số phút đi, giá vé, giá "từ" và đơn vị (sửa xong mục quay về chờ duyệt);
+  - duyệt/từ chối hàng loạt, từ chối phải có lý do;
+  - mọi thao tác ghi `audit_log` trong cùng batch; duyệt giá mới thì giá cũ chuyển "superseded".
+- **AI phụ** (`src/server/itinerary/ai.ts`, cờ `itineraryAi`):
+  - đọc ghi chú của khách: chỉ nhận kiểu chuyến/ngân sách hợp lệ và tên điểm có thật;
+  - viết lời dẫn từng ngày: bị loại nếu có giá, số điện thoại hoặc nhắc nơi ngoài lịch.
+  - Model theo độ khó:
+    - việc đơn giản: `gemini-flash-lite-latest`, dự phòng Revid `google/gemini-flash-lite`;
+    - việc vừa: `gemini-flash-latest`, dự phòng Revid `deepseek-v4-flash`;
+    - đổi được qua biến `AI_MODEL_*`.
+  - Gemini trước, RevidAPI khi Gemini lỗi. Hạn mức `AI_DAILY_LIMIT` (mặc định 200 lượt/ngày), mỗi IP 6 lượt AI/phút.
+  - Không gửi email/SĐT cho nhà cung cấp AI. AI tắt hoặc hết lượt thì lịch vẫn dựng đầy đủ.
+- **API:**
+  - `POST /api/itinerary/plan` và `GET /api/itinerary/meta` (công khai, 30 lượt/phút/IP);
+  - `GET /api/admin/itinerary-data`, `POST /api/admin/itinerary-data/review`, `POST /api/admin/itinerary-data/(place|fact)/:id` (chỉ admin).
+- Health mong đợi migration `0014_itinerary_seed.sql`.
+
+### Lệnh và kết quả
+- Test mới:
+  - `src/itinerary/engine.test.ts` (10 ca): đầu vào; đủ ngày, giờ tăng dần, không trùng điểm, chỉ id có thật; xe đêm; tự đi; ngân sách và chi phí; đổi/bỏ giữ khung khác; ưu tiên/tránh; ngoài mùa mây; thiếu dữ liệu; vé khứ hồi; không nghỉ hai lần.
+  - `src/server/itinerary/itinerary.api.test.ts` (7 ca): chưa duyệt thì không dùng; phân quyền; từ chối cần lý do; nhật ký; superseded; sửa → chờ duyệt; AI hiểu ghi chú + định tuyến model; lời dẫn có giá bị loại; Gemini lỗi → Revid; hết hạn mức.
+- `npm run typecheck` 0 lỗi · `npm test` 361/361 · `npm run build` đạt · `npm run worker:dry-run` đạt.
+- Giao diện (wrangler dev + D1 cục bộ, Chrome): 375/768/1280 không tràn ngang, không chữ < 12px. Đã thử: tạo lịch, đổi một quán qua bảng chọn, tab ngày; trang quản trị duyệt 39 mục.
+
+### Chưa kiểm chứng
+- Chưa gọi Gemini/RevidAPI thật (môi trường code không ra được mạng ngoài, và không tự gọi dịch vụ trả phí). Đã test bằng phản hồi giả đúng định dạng REST của Gemini (`generateContent`) và OpenAI-compatible (`/chat/completions`). Tên model Revid lấy từ danh mục trong code; cần thử thật sau khi chủ dự án đặt secret.
+- Giờ xe, giá và số phút đi là dữ liệu tham khảo từ bài viết/danh bạ, **chưa gọi cơ sở xác nhận**. Đơn vị giá "từ" là suy đoán.
+- Chưa chạy trên production: chờ "gộp R5". Sau khi gộp, admin cần **duyệt dữ liệu** thì lịch mới có điểm tham quan và giờ xe.
+- Lưu/chia sẻ kế hoạch, bản đồ lộ trình, cùng sửa: để đợt sau (theo phạm vi chủ dự án chọn).
+
 ## Hotfix lịch sao lưu (14/11/2026, nhánh `hotfix/cron-sao-luu`)
 - Lỗi: cron `17 20 * * 6`. Cloudflare đánh số thứ trong tuần 1 = Chủ nhật … 7 = thứ Bảy, nên `6` là thứ Sáu (UTC): bản sao lưu "hằng tuần" chạy 03:17 sáng thứ Bảy giờ VN thay vì Chủ nhật. Phát hiện khi kiểm production: bản đầu tiên chạy lúc 03:17 14/11/2026, 378 dòng, thành công.
 - Sửa: `17 20 * * SAT` (viết chữ như tài liệu Cloudflare khuyên). Test mới buộc chuỗi cron trong `wrangler.toml` khớp đúng chuỗi mà worker so sánh.

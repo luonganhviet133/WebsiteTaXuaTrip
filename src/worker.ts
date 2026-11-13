@@ -30,6 +30,13 @@ export interface Env extends EdgeLimiters {
   GEMINI_API_KEY?: string;
   REVID_BASE_URL?: string;
   REVID_API_KEY?: string;
+  /** R5: hạn mức lượt gọi AI lịch trình mỗi ngày (mặc định 200). */
+  AI_DAILY_LIMIT?: string;
+  /** R5: ghi đè model theo độ khó (tuỳ chọn). */
+  AI_MODEL_GEMINI_SIMPLE?: string;
+  AI_MODEL_GEMINI_MEDIUM?: string;
+  AI_MODEL_REVID_SIMPLE?: string;
+  AI_MODEL_REVID_MEDIUM?: string;
   NODE_ENV?: string;
   /** R1: binding send_email (chỉ có sau khi nâng Workers Paid và bật gửi email cho taxuatrip.vn). */
   EMAIL?: { send(m: any): Promise<any> };
@@ -120,6 +127,11 @@ async function handle(request: Request, env: Env, _ctx?: any): Promise<Response>
         geminiApiKey: env.GEMINI_API_KEY,
         revidBaseUrl: env.REVID_BASE_URL || 'https://ai.revidapi.com/v1',
         revidApiKey: env.REVID_API_KEY || '',
+        aiDailyLimit: Number(env.AI_DAILY_LIMIT) > 0 ? Number(env.AI_DAILY_LIMIT) : 200,
+        aiModels: {
+          gemini: { simple: env.AI_MODEL_GEMINI_SIMPLE, medium: env.AI_MODEL_GEMINI_MEDIUM },
+          revid: { simple: env.AI_MODEL_REVID_SIMPLE, medium: env.AI_MODEL_REVID_MEDIUM },
+        },
         runtime: 'workerd',
         storage: { mediaBucket: Boolean(env.MEDIA_BUCKET), privateBucket: Boolean(env.PRIVATE_BUCKET) },
         backupBucket: env.PRIVATE_BUCKET

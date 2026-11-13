@@ -171,3 +171,15 @@ npx wrangler d1 execute taxua-trip-restore-test --remote --command "SELECT COUNT
 - **Workers Logs** (bật trong `wrangler.toml` `[observability]`): Workers → websitetaxuatrip → Logs, giữ 7 ngày. Tìm `[edge-limit] blocked` (bị chặn vì gửi dồn), `[access] denied`, lỗi API.
 - **`/api/health`**: `status` `ok` khi D1 chạy và đã có đủ migration (`schema.applied` ≥ `schema.expected`); thiếu migration thì `degraded` (503).
 - **CSP báo cáo**: trang có `Content-Security-Policy-Report-Only`. Mở trang, F12 → Console, lỗi dạng "[Report Only] Refused to…" là nguồn cần thêm vào chính sách trước khi bật bắt buộc.
+
+## 9. AI cho lịch trình (R5) — [Chủ dự án]
+Lịch trình chạy được không cần AI. Muốn bật phần AI (đọc ghi chú, viết lời dẫn):
+1. Cloudflare → Workers & Pages → `websitetaxuatrip` → Settings → Variables and Secrets → **Add**, chọn loại **Secret**:
+   - `GEMINI_API_KEY` — khóa Google AI Studio (gói miễn phí);
+   - `REVID_API_KEY` — khóa RevidAPI (dự phòng; tính credit).
+2. Tuỳ chọn (loại Text):
+   - `AI_DAILY_LIMIT` — số lượt gọi AI tối đa mỗi ngày, mặc định 200;
+   - `AI_MODEL_GEMINI_SIMPLE`, `AI_MODEL_GEMINI_MEDIUM`, `AI_MODEL_REVID_SIMPLE`, `AI_MODEL_REVID_MEDIUM` — đổi model.
+3. Không dán khóa vào mã nguồn hay chat. Khóa đã lộ thì tạo khóa mới và xóa khóa cũ ở trang của nhà cung cấp.
+4. Kiểm: `GET /api/itinerary/meta` → `aiAvailable: true`; tạo lịch có ghi chú → khung "AI đã đọc ghi chú".
+

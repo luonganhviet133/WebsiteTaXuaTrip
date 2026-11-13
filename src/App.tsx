@@ -40,7 +40,7 @@ import { pointsApi } from './api/pointsApi.ts';
 import { feedbackApi } from './api/feedbackApi.ts';
 import { BusBookingModal } from './components/BusBookingModal.tsx';
 import { CloudForecastWidget } from './components/CloudForecastWidget.tsx';
-import { AIItineraryGenerator } from './components/AIItineraryGenerator.tsx';
+import { ItineraryPlanner } from './components/ItineraryPlanner.tsx';
 import { CommunitySection } from './components/CommunitySection.tsx';
 import { PartnerDashboard } from './components/PartnerDashboard.tsx';
 import { AdminDashboard } from './components/AdminDashboard.tsx';
@@ -3996,12 +3996,7 @@ export default function App() {
           </div>
         )}
         {currentTab === 'itinerary' && featureOpen('itineraryPlanner') && (
-          <AIItineraryGenerator
-            onOpenAiAdvisor={() => setIsAiAdvisorOpen(true)}
-            listings={listings}
-            onSelectListing={(l) => setSelectedListingDetail(l)}
-            onOpenSosModal={() => setIsSosModalOpen(true)}
-          />
+          <ItineraryPlanner listings={listings} onSelectListing={(l) => setSelectedListingDetail(l)} />
         )}
 
         {/* TAB CHAT CỘNG ĐỒNG RIÊNG */}

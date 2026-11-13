@@ -1,0 +1,156 @@
+{
+  "_note": "R5 — dữ liệu tra từ nguồn công khai ngày 14/11/2026. Mọi mục nạp ở trạng thái 'pending'; admin duyệt trong trang quản trị mới được dùng để xếp lịch. Mô tả là lời tóm tắt của Tà Xùa Trip, không chép nguyên văn nguồn. Khi các nguồn ghi khác nhau, ghi rõ trong notes.",
+  "accessed": "2026-11-14",
+  "sources": {
+    "vna": { "name": "Vietnam Airlines — Cẩm nang du lịch Tà Xùa", "url": "https://www.vietnamairlines.com/kr/vi/plan-book/travel/travel-guide/du-lich-ta-xua" },
+    "vnexpress": { "name": "VnExpress — Cẩm nang du lịch Tà Xùa", "url": "https://vnexpress.net/cam-nang-du-lich-ta-xua-4656282.html" },
+    "finhay": { "name": "Finhay — Top địa điểm du lịch Tà Xùa", "url": "https://www.finhay.com.vn/dia-diem-du-lich-ta-xua" },
+    "vietnamtravel": { "name": "Tổng cục Du lịch — Tà Xùa, nấc thang lên ngàn mây", "url": "https://vietnam.travel/vi/node/1572" },
+    "greensm": { "name": "Xanh SM — Cẩm nang Tà Xùa", "url": "https://www.greensm.com/vn-vi/news/ta-xua" },
+    "vneconomy": { "name": "VnEconomy — Ngẩn ngơ giữa rừng chè cổ thụ Tà Xùa", "url": "https://vneconomy.vn/ngan-ngo-giua-rung-che-co-thu-ta-xua.htm" },
+    "mia": { "name": "MIA.vn — Top hãng xe đi Tà Xùa", "url": "https://mia.vn/cam-nang-du-lich/top-hang-xe-di-ta-xua-19528" },
+    "scrape": { "name": "Danh bạ Tà Xùa thu thập công khai (scraped-taxua-enriched.json)", "url": null }
+  },
+  "places": [
+    {
+      "id": "pl-dinh-gio", "name": "Đỉnh Gió", "kind": "viewpoint", "area": "Trung tâm Tà Xùa",
+      "summary": "Điểm cao thoáng gần trung tâm, nhìn bao quát núi và biển mây; quanh đó có nhiều quán cà phê và homestay.",
+      "bestTimes": ["sunrise", "sunset"], "styles": ["san-may", "chup-anh", "chill"],
+      "visitMinutes": 60, "travelMinutes": 8, "distanceKm": 2, "entryFeeVnd": null, "parkingFeeVnd": null,
+      "difficulty": "de", "bestMonths": [],
+      "notes": "Vietnam Airlines ghi khoảng 2 km/8 phút xe máy; Tổng cục Du lịch ghi khoảng 3 km trên đường đi Xím Vàng.",
+      "sources": ["vna", "vietnamtravel"]
+    },
+    {
+      "id": "pl-song-lung-khung-long", "name": "Sống lưng khủng long (Háng Đồng)", "kind": "trek", "area": "Háng Đồng",
+      "summary": "Dải sống núi hẹp nhìn xuống thung lũng sâu, điểm săn mây nổi tiếng nhất vùng; đường xuống dốc, nhiều đá.",
+      "bestTimes": ["sunrise"], "styles": ["san-may", "kham-pha", "chup-anh"],
+      "visitMinutes": 150, "travelMinutes": 30, "distanceKm": 13, "entryFeeVnd": null, "parkingFeeVnd": null,
+      "difficulty": "kho", "bestMonths": [10, 11, 12, 1, 2, 3, 4],
+      "notes": "Vietnam Airlines: khoảng 13 km/30 phút, xe ôm địa phương khoảng 50.000đ/người khứ hồi; VnExpress ghi khoảng 15 km. Ngày mây dày có thể chưa tan trước 10h (VnExpress). Không tự lái nếu tay lái chưa vững.",
+      "sources": ["vna", "vnexpress"]
+    },
+    {
+      "id": "pl-mom-ca-heo", "name": "Mỏm Cá Heo", "kind": "viewpoint", "area": "Bản Bẹ",
+      "summary": "Phiến đá tự nhiên nhô ra vực, hình như đầu cá heo giữa tầng mây; điểm chụp ảnh nổi tiếng.",
+      "bestTimes": ["morning", "afternoon"], "styles": ["chup-anh", "kham-pha", "san-may"],
+      "visitMinutes": 60, "travelMinutes": 30, "distanceKm": 15, "entryFeeVnd": null, "parkingFeeVnd": null,
+      "difficulty": "trung-binh", "bestMonths": [],
+      "notes": "Vietnam Airlines: khoảng 15 km/30 phút; Finhay ghi khoảng 10 km trên đường Tà Xùa – Háng Đồng.",
+      "sources": ["vna", "finhay"]
+    },
+    {
+      "id": "pl-cay-co-don", "name": "Cây cô đơn (Suối Sập)", "kind": "viewpoint", "area": "Háng Đồng",
+      "summary": "Cây đứng một mình trên đồi nhỏ, phía dưới là dòng Suối Sập; thường đi cùng chuyến Mỏm Cá Heo.",
+      "bestTimes": ["morning", "afternoon"], "styles": ["chup-anh", "chill"],
+      "visitMinutes": 45, "travelMinutes": 35, "distanceKm": 16, "entryFeeVnd": 10000, "parkingFeeVnd": 5000,
+      "difficulty": "de", "bestMonths": [],
+      "notes": "Phí vào 10.000đ/người, gửi xe 5.000đ/xe (Vietnam Airlines). Thời gian đi 35 phút là ước tính: cách Mỏm Cá Heo khoảng 1–1,5 km (Finhay) — admin xác nhận khi duyệt. Về trước khi trời tối vì không có đèn đường. VnExpress nhắc tới một cây táo mèo cô đơn khác ở Đỉnh Gió, cách trung tâm hơn 1 km.",
+      "sources": ["vna", "finhay", "vnexpress"]
+    },
+    {
+      "id": "pl-thao-nguyen", "name": "Thảo nguyên Tà Xùa", "kind": "nature", "area": "Bản Bẹ",
+      "summary": "Đồi cỏ thoải rộng, hợp dã ngoại, cắm trại và ngắm hoàng hôn; cùng cung đường Mỏm Cá Heo.",
+      "bestTimes": ["afternoon", "sunset"], "styles": ["chill", "chup-anh", "kham-pha"],
+      "visitMinutes": 90, "travelMinutes": 40, "distanceKm": 14, "entryFeeVnd": 30000, "parkingFeeVnd": null,
+      "difficulty": "de", "bestMonths": [],
+      "notes": "Vietnam Airlines: khoảng 14 km/40 phút, vé 30.000đ/người; VnExpress ghi khoảng 10 km, đường rộng ít cua.",
+      "sources": ["vna", "vnexpress"]
+    },
+    {
+      "id": "pl-mam-xoi-xim-vang", "name": "Mâm xôi Xím Vàng", "kind": "nature", "area": "Xím Vàng",
+      "summary": "Ruộng bậc thang hình vòng cung giữa thung lũng, đẹp nhất mùa lúa chín.",
+      "bestTimes": ["morning", "afternoon"], "styles": ["chup-anh", "kham-pha"],
+      "visitMinutes": 60, "travelMinutes": 40, "distanceKm": 20, "entryFeeVnd": null, "parkingFeeVnd": null,
+      "difficulty": "de", "bestMonths": [9, 10],
+      "notes": "Vietnam Airlines: khoảng 20 km/40 phút, đường lớn dễ đi; lúa chín tháng 9–10.",
+      "sources": ["vna"]
+    },
+    {
+      "id": "pl-doi-che-shan-tuyet", "name": "Rừng chè Shan tuyết cổ thụ (bản Bẹ)", "kind": "village", "area": "Bản Bẹ",
+      "summary": "Vùng chè Shan tuyết cổ thụ của người Mông; có thể xem hái, sao chè và thưởng trà.",
+      "bestTimes": ["morning", "afternoon"], "styles": ["kham-pha", "chill"],
+      "visitMinutes": 90, "travelMinutes": null, "distanceKm": 7, "entryFeeVnd": null, "parkingFeeVnd": null,
+      "difficulty": "trung-binh", "bestMonths": [],
+      "notes": "VnEconomy: bản Bẹ cách trung tâm xã khoảng 7 km, nhiều cây chè cổ thụ nhất xã. Chưa có nguồn về thời gian đi nên chỉ hiện ở mục gợi ý thêm.",
+      "sources": ["vneconomy"]
+    },
+    {
+      "id": "pl-khe-cai", "name": "Khe Cải", "kind": "viewpoint", "area": "Khe Cải",
+      "summary": "Khoảng đồi rộng ngắm bình minh, hoàng hôn và cắm trại; không quá xa trung tâm.",
+      "bestTimes": ["sunrise", "sunset"], "styles": ["san-may", "chill", "chup-anh"],
+      "visitMinutes": 60, "travelMinutes": null, "distanceKm": null, "entryFeeVnd": null, "parkingFeeVnd": null,
+      "difficulty": "de", "bestMonths": [],
+      "notes": "Xanh SM mô tả đường đi khá dễ, không xa trung tâm nhưng không ghi số km/phút.",
+      "sources": ["greensm"]
+    },
+    {
+      "id": "pl-ho-mat-ngoc", "name": "Hồ Mắt Ngọc", "kind": "nature", "area": "Mống Vàng",
+      "summary": "Hồ nhỏ khu Mống Vàng; nên đến sáng sớm hoặc chiều muộn ngày trời quang.",
+      "bestTimes": ["morning", "afternoon"], "styles": ["kham-pha", "chup-anh"],
+      "visitMinutes": 60, "travelMinutes": null, "distanceKm": null, "entryFeeVnd": null, "parkingFeeVnd": null,
+      "difficulty": "trung-binh", "bestMonths": [],
+      "notes": "Theo danh bạ gốc: độ khó trung bình. Chưa có nguồn về quãng đường.",
+      "sources": ["scrape"]
+    },
+    {
+      "id": "pl-thac-khong-ten", "name": "Thác Không Tên", "kind": "trek", "area": "Tà Xùa",
+      "summary": "Thác nước trong rừng, đường đi khó; nên đi cùng người địa phương.",
+      "bestTimes": ["morning"], "styles": ["kham-pha"],
+      "visitMinutes": 120, "travelMinutes": null, "distanceKm": null, "entryFeeVnd": null, "parkingFeeVnd": null,
+      "difficulty": "kho", "bestMonths": [],
+      "notes": "Theo danh bạ gốc: độ khó cao. Chưa có nguồn về quãng đường.",
+      "sources": ["scrape"]
+    }
+  ],
+  "busFacts": [
+    {
+      "listingId": "tx-bus-134",
+      "value": {
+        "outbound": { "from": "Hà Nội", "departures": ["06:00", "07:00", "21:00", "22:00"], "pickup": "Cổng sau BigC Thăng Long, Royal City" },
+        "inbound": { "to": "Hà Nội", "departures": ["12:00", "13:00", "14:00", "20:00", "20:15"] },
+        "durationMinutes": 300,
+        "priceFromVnd": 300000, "priceToVnd": null, "priceUnit": "lượt",
+        "vehicles": "Limousine, cabin đơn, cabin đôi, giường nằm"
+      },
+      "notes": "Giờ chạy và giá từ danh bạ gốc; thời gian khoảng 5 tiếng theo VnExpress (xe đêm 22h tới sau ~5 tiếng).",
+      "sources": ["scrape", "vnexpress"]
+    },
+    {
+      "listingId": "tx-bus-146",
+      "value": {
+        "outbound": { "from": "Hà Nội", "departures": ["22:00"], "pickup": null },
+        "inbound": null,
+        "durationMinutes": 300,
+        "priceFromVnd": 180000, "priceToVnd": 350000, "priceUnit": "lượt",
+        "vehicles": "Limousine 29 chỗ"
+      },
+      "notes": "MIA.vn: 180.000–350.000đ/lượt; VnExpress: limousine Khánh Thịnh, Quang Nghĩa khoảng 700.000đ/người khứ hồi, xuất phát 22h, tới sau ~5 tiếng. Chưa có giờ chiều về.",
+      "sources": ["mia", "vnexpress"]
+    },
+    {
+      "listingId": "tx-bus-136",
+      "value": {
+        "outbound": { "from": "Hà Nội", "departures": ["22:00"], "pickup": null },
+        "inbound": null,
+        "durationMinutes": 300,
+        "priceFromVnd": 700000, "priceToVnd": null, "priceUnit": "khứ hồi",
+        "vehicles": "Cabin đôi, cabin đơn, limousine ghế ngả"
+      },
+      "notes": "VnExpress: khoảng 700.000đ/người khứ hồi, xuất phát 22h, ~5 tiếng. Loại xe theo danh bạ gốc.",
+      "sources": ["vnexpress", "scrape"]
+    },
+    {
+      "listingId": "tx-bus-145",
+      "value": {
+        "outbound": null,
+        "inbound": { "to": "Hà Nội", "departures": ["07:00", "08:00", "09:00"] },
+        "durationMinutes": null,
+        "priceFromVnd": null, "priceToVnd": null, "priceUnit": null,
+        "vehicles": "Xe ghép, bao xe"
+      },
+      "notes": "Danh bạ gốc: chiều Tà Xùa – Hà Nội chạy khoảng 7h–9h sáng.",
+      "sources": ["scrape"]
+    }
+  ]
+}

@@ -3,7 +3,7 @@
  * nên thêm migration mới mà quên cập nhật ở đây thì test báo.
  * /api/health so với bảng d1_migrations: thiếu migration thì báo "degraded" để phát hiện sớm khi deploy lệch.
  */
-export const EXPECTED_MIGRATION = '0012_accounts.sql';
+export const EXPECTED_MIGRATION = '0014_itinerary_seed.sql';
 
 export async function schemaStatus(d1: { prepare(sql: string): any }) {
   try {

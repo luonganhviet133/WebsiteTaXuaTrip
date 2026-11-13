@@ -3,6 +3,8 @@
  * Nhận và trả Request/Response chuẩn web nên chạy được trên cả workerd và Node 22.
  * Mọi thay đổi route chỉ sửa ở đây; src/server/api.contract.test.ts chạy cùng bộ kiểm tra trên cả hai.
  */
+import { handleItineraryRoutes } from './itinerary/routes.ts';
+import type { AiConfig } from './itinerary/ai.ts';
 import {
   consultWithGeminiAI,
   generateLocalRuleBasedConsultation,
@@ -57,6 +59,11 @@ export interface ApiContext {
   backupBucket?: BackupBucket;
   /** R1: gửi email (Worker: binding EMAIL khi đã nâng Workers Paid + bật gửi email cho tên miền). Không có → báo chưa bật. */
   email?: EmailSender;
+  /** R5: hạn mức lượt gọi AI/ngày cho lịch trình (mặc định 200) và model theo độ khó (tuỳ chọn, ghi đè mặc định). */
+  aiDailyLimit?: number;
+  aiModels?: AiConfig['models'];
+  /** Chỉ dùng trong test: thay fetch khi gọi nhà cung cấp AI. */
+  aiFetch?: typeof fetch;
 }
 
 type Role = AuthenticatedUser['role'];
@@ -395,6 +402,21 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
       }
     }
     return json({ success: false, code: 'NOT_FOUND', error: 'API endpoint not found' }, 404);
+  }
+
+  // ==================== LỊCH TRÌNH (R5) ====================
+  if (pathname.startsWith('/api/itinerary/') || pathname.startsWith('/api/admin/itinerary-data')) {
+    const itin = await handleItineraryRoutes(request, pathname, {
+      d1: ctx.db.d1,
+      json,
+      readJson,
+      requireRole: (allowed) => requireRole(request, ctx, allowed),
+      rateLimit: (key, max) => checkRateLimit(key, max, 60 * 1000).allowed,
+      clientIp: ctx.clientIp,
+      ai: { geminiKey: ctx.geminiApiKey, revidKey: ctx.revidApiKey || undefined, revidBaseUrl: ctx.revidBaseUrl, models: ctx.aiModels, dailyLimit: ctx.aiDailyLimit ?? 200 },
+      aiFetch: ctx.aiFetch,
+    });
+    if (itin) return itin;
   }
 
   // ==================== AI & GATEWAY ====================

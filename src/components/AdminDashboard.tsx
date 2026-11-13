@@ -108,6 +108,7 @@ import {
 import { JarvisAdminAssistant } from './JarvisAdminAssistant.tsx';
 import { AdminFeedbackPanel } from './AdminFeedbackPanel.tsx';
 import { AdminMembersPanel } from './AdminMembersPanel.tsx';
+import { AdminItineraryDataPanel } from './AdminItineraryDataPanel.tsx';
 import { AdminReconciliationPanel } from './AdminReconciliationPanel.tsx';
 import { AdminCommunityPanel } from './AdminCommunityPanel.tsx';
 import { isOpen as featureOpen } from '../config/features.ts';
@@ -192,6 +193,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Admin Tab Switcher
   const [adminTab, setAdminTab] = useState<
     | 'members'
+    | 'itinerary_data'
     | 'reconciliation'
     | 'fees_points'
     | 'jarvis_command'
@@ -1085,6 +1087,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="bg-slate-900 border border-slate-700 p-2 rounded-2xl flex flex-wrap gap-2">
           {[
             { id: 'members', label: 'Thành viên & Đối tác', icon: Users },
+            { id: 'itinerary_data', label: 'Dữ liệu lịch trình', icon: Compass },
             { id: 'smart_listings', label: `Cơ sở & dịch vụ (${listings.length})`, icon: Building2 },
             { id: 'claims', label: `Duyệt chính chủ (${claimRequests.length})`, icon: ShieldCheck },
             { id: 'reconciliation', label: 'Đối soát cọc', icon: Scale },
@@ -1134,6 +1137,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             TAB 0: SIÊU TRỢ LÝ ĐIỀU HÀNH J.A.R.V.I.S. (ĐỘC QUYỀN ADMIN)
            ======================================================== */}
         {adminTab === 'members' && <AdminMembersPanel currentUserId={currentUserId} />}
+        {adminTab === 'itinerary_data' && <AdminItineraryDataPanel />}
         {adminTab === 'reconciliation' && <AdminReconciliationPanel />}
         {adminTab === 'fees_points' && <AdminCommunityPanel listings={listings.map((l) => ({ id: l.id, title: l.title }))} />}
 
