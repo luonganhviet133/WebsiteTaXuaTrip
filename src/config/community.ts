@@ -59,3 +59,38 @@ export function previousVnMonth(d: Date): string {
   const [y, m] = vnMonth(d).split('-').map(Number);
   return m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, '0')}`;
 }
+
+/** Kỳ trao quà top 3 (D-N06-04): tháng YYYY-MM, quý YYYY-Qn, năm YYYY — tính theo giờ Việt Nam. */
+export type PeriodKind = 'month' | 'quarter' | 'year';
+export const PERIOD_RE = /^\d{4}(-(0[1-9]|1[0-2])|-Q[1-4])?$/;
+
+export function periodKind(p: string): PeriodKind {
+  return p.length === 4 ? 'year' : p.includes('Q') ? 'quarter' : 'month';
+}
+
+/** [bắt đầu, kết thúc) của kỳ theo giờ VN, dạng ISO UTC để so sánh chuỗi với effective_at. */
+export function periodRange(p: string): [string, string] {
+  const y = Number(p.slice(0, 4));
+  const kind = periodKind(p);
+  const m0 = kind === 'year' ? 0 : kind === 'quarter' ? (Number(p.slice(6)) - 1) * 3 : Number(p.slice(5)) - 1;
+  const len = kind === 'year' ? 12 : kind === 'quarter' ? 3 : 1;
+  const at = (month: number) => new Date(Date.UTC(y, month, 1) - 7 * 3600_000).toISOString();
+  return [at(m0), at(m0 + len)];
+}
+
+export function currentPeriod(kind: PeriodKind, now: Date): string {
+  const [y, m] = vnMonth(now).split('-').map(Number);
+  return kind === 'year' ? String(y) : kind === 'quarter' ? `${y}-Q${Math.ceil(m / 3)}` : vnMonth(now);
+}
+
+export function previousPeriod(kind: PeriodKind, now: Date): string {
+  const start = Date.parse(periodRange(currentPeriod(kind, now))[0]);
+  return currentPeriod(kind, new Date(start - 1));
+}
+
+export function periodLabel(p: string): string {
+  const kind = periodKind(p);
+  if (kind === 'year') return `năm ${p}`;
+  if (kind === 'quarter') return `quý ${p.slice(6)}/${p.slice(0, 4)}`;
+  return `tháng ${p.slice(5)}/${p.slice(0, 4)}`;
+}

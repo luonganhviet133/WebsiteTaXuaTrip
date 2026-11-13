@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   POINT_RULES, TITLES, REDEMPTION_ENABLED, POINTS_WINDOW_DAYS, shortName, titleFor, feeFor, vnMonth, previousVnMonth,
+  PERIOD_RE, periodKind, periodRange, currentPeriod, previousPeriod, periodLabel,
 } from './community.ts';
 
 test('Điểm Mây theo đóng góp (chủ dự án chốt 13/11/2026), không theo tiền', () => {
@@ -65,4 +66,26 @@ test('Giao diện không tự cộng/trừ Điểm Mây trong trình duyệt và
     });
   }
   assert.deepEqual(offenders, []);
+});
+
+test('Kỳ trao quà top 3: tháng / quý / năm theo giờ Việt Nam (chủ dự án chốt 13/11/2026)', () => {
+  for (const ok of ['2026-11', '2026-Q4', '2026']) assert.ok(PERIOD_RE.test(ok), ok);
+  for (const bad of ['2026-13', '2026-Q5', '26', '2026-1', 'x']) assert.ok(!PERIOD_RE.test(bad), bad);
+  assert.equal(periodKind('2026-11'), 'month');
+  assert.equal(periodKind('2026-Q4'), 'quarter');
+  assert.equal(periodKind('2026'), 'year');
+  assert.deepEqual(periodRange('2026-11'), ['2026-10-31T17:00:00.000Z', '2026-11-30T17:00:00.000Z']);
+  assert.deepEqual(periodRange('2026-Q4'), ['2026-09-30T17:00:00.000Z', '2026-12-31T17:00:00.000Z']);
+  assert.deepEqual(periodRange('2026-Q1'), ['2025-12-31T17:00:00.000Z', '2026-03-31T17:00:00.000Z']);
+  assert.deepEqual(periodRange('2026'), ['2025-12-31T17:00:00.000Z', '2026-12-31T17:00:00.000Z']);
+  const now = new Date('2026-01-10T03:00:00Z');
+  assert.equal(currentPeriod('quarter', now), '2026-Q1');
+  assert.equal(previousPeriod('month', now), '2025-12');
+  assert.equal(previousPeriod('quarter', now), '2025-Q4');
+  assert.equal(previousPeriod('year', now), '2025');
+  // 31/12 lúc 18:00 UTC đã là 01/01 giờ VN
+  assert.equal(currentPeriod('year', new Date('2026-12-31T18:00:00Z')), '2027');
+  assert.equal(periodLabel('2026-11'), 'tháng 11/2026');
+  assert.equal(periodLabel('2026-Q4'), 'quý 4/2026');
+  assert.equal(periodLabel('2026'), 'năm 2026');
 });

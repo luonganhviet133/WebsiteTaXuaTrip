@@ -231,7 +231,8 @@ export class BookingLifecycle {
        (SELECT COUNT(*) FROM payment_receipts r WHERE r.booking_id = b.id AND r.kind = 'deposit') AS deposit_receipts,
        (SELECT COUNT(*) FROM payment_receipts r WHERE r.booking_id = b.id AND r.kind = 'balance') AS balance_receipts,
        (SELECT x.status FROM payment_reconciliations x WHERE x.booking_id = b.id) AS recon_status,
-       (SELECT x.due_at FROM payment_reconciliations x WHERE x.booking_id = b.id) AS recon_due_at`;
+       (SELECT x.due_at FROM payment_reconciliations x WHERE x.booking_id = b.id) AS recon_due_at,
+       (SELECT c.status FROM complaints c WHERE c.booking_id = b.id ORDER BY c.created_at DESC, c.rowid DESC LIMIT 1) AS complaint_status`;
     const filter = listingId ? ' AND b.listing_id = ?' : '';
     const args: unknown[] = listingId ? [listingId] : [];
     const r =
@@ -252,6 +253,8 @@ export class BookingLifecycle {
       reconStatus: row.recon_status ?? null,
       reconDueAt: row.recon_due_at ?? null,
       needsReconciliation: !!row.recon_status && row.recon_status !== 'closed',
+      // N06.3: khiếu nại gần nhất của đơn (null = chưa có)
+      complaintStatus: row.complaint_status ?? null,
     }));
   }
 }

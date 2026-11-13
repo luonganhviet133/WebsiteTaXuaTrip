@@ -604,6 +604,11 @@ export class DatabaseEngine {
     }
 
     await this.d1.exec(`
+      DELETE FROM complaint_files;
+      DELETE FROM complaint_events;
+      DELETE FROM complaints;
+      DELETE FROM review_photos;
+      DELETE FROM reviews;
       DELETE FROM monthly_awards;
       DELETE FROM point_redemptions;
       DELETE FROM point_rewards;

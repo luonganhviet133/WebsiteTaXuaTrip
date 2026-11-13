@@ -2,13 +2,11 @@ import type {
   Listing, 
   CloudLandmark,
   Booking,
-  Review,
   BusTrip, 
   CloudHuntingForecast, 
   CommunityPost, 
   MemberProfile, 
   PartnerClaimRequest,
-  BookingDispute,
   PromoVoucher,
   ServiceRewardSetting,
   SiteContentConfig,
@@ -12678,53 +12676,6 @@ export const INITIAL_BOOKINGS: Booking[] = [
   }
 ];
 
-export const INITIAL_REVIEWS: Review[] = [
-  {
-    id: 'rev-01',
-    listingId: 'homestay-may',
-    bookingId: 'TX-2026-6410',
-    reviewerName: 'Phạm Hoàng Yến',
-    rating: 5,
-    comment: 'Đúng như hồ sơ thẩm định! Phòng Bungalow kính nhìn thẳng ra biển mây Đỉnh Gió ngay từ trên giường lúc 5h45 sáng. Nước nóng ổn định, có điều hòa 2 chiều ấm áp.',
-    roomName: 'Bungalow Kính Mặt Trời (View Biển Mây)',
-    createdAt: '2026-10-29',
-    isVerifiedStay: true
-  },
-  {
-    id: 'rev-02',
-    listingId: 'homestay-may',
-    bookingId: 'TX-2026-5922',
-    reviewerName: 'Vũ Quốc Huy',
-    rating: 5,
-    comment: 'Đường ô tô 16 chỗ vào tận cổng rất tiện. Chủ nhà chuẩn bị sẵn trà Shan Tuyết cổ thụ nóng và hỗ trợ gọi xe máy đi Sống Lưng Khủng Long giá niêm yết.',
-    roomName: 'Phòng Đôi Mây Ngàn Thảo Nguyên',
-    createdAt: '2026-10-21',
-    isVerifiedStay: true
-  },
-  {
-    id: 'rev-03',
-    listingId: 'homestay-lu-tre',
-    bookingId: 'TX-2026-5108',
-    reviewerName: 'Đỗ Minh Tâm',
-    rating: 5,
-    comment: 'Vị trí cao nhất Đỉnh Gió nên tầm nhìn 360 độ không bị mái tôn nào che khuất. Lều glamping có đệm sưởi điện rất ấm dù ngoài trời 13 độ.',
-    roomName: 'Lều Glamping Mây Bồng Bềnh',
-    createdAt: '2026-10-26',
-    isVerifiedStay: true
-  },
-  {
-    id: 'rev-04',
-    listingId: 'coffee-mi-oi',
-    bookingId: 'TX-2026-4819',
-    reviewerName: 'Nguyễn Bảo Ngọc',
-    rating: 5,
-    comment: 'Cà phê muối ấm nóng cực ngon, sàn gỗ ngắm mây buổi sáng đẹp mê hồn. Nên đến trước 6h30 sáng để chọn bàn sát lan can.',
-    roomName: 'Đặt bàn săn mây sớm',
-    createdAt: '2026-10-28',
-    isVerifiedStay: true
-  }
-];
-
 export const INITIAL_USER_PROFILE: MemberProfile = {
   id: 'user-vip-01',
   name: 'Lê Thành Đạt',
@@ -12759,22 +12710,6 @@ export const INITIAL_CLAIM_REQUESTS: PartnerClaimRequest[] = [
     proofDocumentNote: 'Hợp đồng thuê mặt bằng Đỉnh Gió 5 năm & Giấy phép an toàn VSTP',
     status: 'pending',
     createdAt: '2026-11-05 14:15'
-  }
-];
-
-export const INITIAL_DISPUTES: BookingDispute[] = [
-  {
-    id: 'disp-01',
-    bookingId: 'TX-2026-9902',
-    listingId: 'homestay-may',
-    listingTitle: 'Mẩy Tà Xùa Homestay & Cloud Lounge',
-    guestName: 'Lê Thành Đạt',
-    guestPhone: '0986 555 777',
-    issueType: 'service_attitude',
-    description: 'Sáng ngày 26/10 bị cúp điện tạm thời do mưa gió 30 phút, homestay đã khắc phục bằng máy phát nhưng bình nóng lạnh hoạt động chậm. Đề nghị admin hỗ trợ tích thêm điểm bồi thường trải nghiệm.',
-    status: 'investigating',
-    adminAssigned: 'Admin Điều Phối Tà Xùa',
-    createdAt: '2026-10-27 18:00'
   }
 ];
 

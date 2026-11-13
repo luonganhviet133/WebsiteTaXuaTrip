@@ -2,9 +2,9 @@
  * N06.2 — Route Điểm Mây (đóng góp), bảng xếp hạng, top 3 tháng, phí nền tảng.
  *   GET  /api/me/points                               điểm 12 tháng, danh hiệu, lịch sử
  *   POST /api/me/points/redeem                        đổi quà (đang khóa)
- *   GET  /api/community/leaderboard?scope=month|12m   công khai, tên rút gọn
+ *   GET  /api/community/leaderboard?scope=month|quarter|year|12m&period=   công khai, tên rút gọn
  *   GET  /api/community/monthly-winners?month=        công khai
- *   GET  /api/admin/community/monthly?month=          admin: xếp hạng + quà đã ghi
+ *   GET  /api/admin/community/monthly?period=         admin: xếp hạng + quà đã ghi (kỳ tháng/quý/năm, N06.3)
  *   POST /api/admin/community/monthly/:month/award    admin chốt hạng và ghi quà
  *   POST /api/admin/points/award, /api/admin/points/:id/revoke, GET /api/admin/points?email=
  *   GET  /api/admin/fees/rates, PUT /api/admin/fees/rates/:listingId
@@ -23,7 +23,7 @@ export async function handleCommunityRoutes(request: Request, pathname: string, 
   const store = new CommunityStore(d1);
   const actorOf = (u: AuthenticatedUser) => ({ id: u.id, role: u.role, providerId: u.providerId ?? null });
   const out = (r: any) => (r.ok ? json({ success: true, data: r.data ?? null }) : json({ success: false, code: r.code, error: r.message }, r.status));
-  const month = () => url.searchParams.get('month') || vnMonth(new Date());
+  const month = () => url.searchParams.get('period') || url.searchParams.get('month') || vnMonth(new Date());
 
   if (pathname === '/api/me/points' && method === 'GET') {
     const user = await requireRole(['traveler', 'partner', 'admin']);
@@ -38,7 +38,7 @@ export async function handleCommunityRoutes(request: Request, pathname: string, 
     return r.ok ? json({ success: true, data: { giftCode: r.giftCode, replay: r.replay } }) : json({ success: false, code: r.code, error: r.message }, r.status);
   }
   if (pathname === '/api/community/leaderboard' && method === 'GET') {
-    return out(await store.leaderboard(url.searchParams.get('scope') || 'month', url.searchParams.get('month')));
+    return out(await store.leaderboard(url.searchParams.get('scope') || 'month', url.searchParams.get('period') || url.searchParams.get('month')));
   }
   if (pathname === '/api/community/monthly-winners' && method === 'GET') return out(await store.monthlyWinners(month()));
 
