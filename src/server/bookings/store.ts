@@ -11,6 +11,7 @@ import { ListingStore } from '../listings/store.ts';
 import { balanceDueAt } from '../../config/payment.ts';
 import { BOOKING_COLUMNS, HoldStore, notifyUserStmt, viDate, bookingEventStmt, notifyOwnersStmt, toBookingView, type BookingView } from './holds.ts';
 import { openReconciliationStmts } from '../payments/reconciliation.ts';
+import { completionLedgerStmts } from '../community/ledger.ts';
 import { decide, type BookingAction, type BookingStatus, type Party } from './lifecycle.ts';
 
 export interface LifecycleActor {
@@ -111,6 +112,9 @@ export class BookingLifecycle {
           .bind(nowIso, bookingId, nowIso),
         ...this.holds.assertion(`(SELECT COUNT(*) FROM room_night_allocations WHERE source_id = ? AND status != 'confirmed') = 0`, bookingId)
       );
+    } else if (action === 'complete') {
+      // N06.2: Điểm Mây cho khách + nghĩa vụ phí nền tảng, cùng batch (hoàn tất lặp/đồng thời chỉ ghi một lần).
+      stmts.push(...completionLedgerStmts(this.d1, bookingId, now));
     } else if (action === 'check_in') {
       stmts.push(this.d1.prepare(`UPDATE room_night_allocations SET status = 'checked_in', updated_at = ? WHERE source_id = ? AND status = 'confirmed'`).bind(nowIso, bookingId));
     } else if (d.to === 'cancelled') {

@@ -244,7 +244,7 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
       experimental: { disableExperimentalWarning: true }
     });
     const call: Fetcher = (route, init) => holdWorker!.fetch(route, init as any) as unknown as Promise<Response>;
-    await t.test('N05.2–N05.3 trên D1 thật: 20 yêu cầu đồng thời chỉ 1 đơn thắng; hủy trả phòng; xác nhận, quét QR đồng thời, hoàn tất; thanh toán D03 với R2; đối soát cọc', async () => {
+    await t.test('N05.2–N05.3 trên D1 thật: 20 yêu cầu đồng thời chỉ 1 đơn thắng; hủy trả phòng; xác nhận, quét QR đồng thời, hoàn tất; thanh toán D03 với R2; đối soát cọc; Điểm Mây và sổ phí', async () => {
       const reg = await call('/api/auth/register', jsonInit('POST', { email: `hold.${Date.now()}@example.com`, password: 'MatKhau123!', fullName: 'Khách Giữ Chỗ', role: 'traveler' }));
       assert.equal(reg.status, 201);
       const token = ((await reg.json()) as any).token;
@@ -302,9 +302,23 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
       assert.equal(scans.filter((r) => r.body.already === false).length, 1, 'đúng một lần nhận phòng');
       const hist = ((await (await call(`/api/bookings/${b2.id}`, authInit(token2))).json()) as any).data.events.map((e: any) => e.action);
       assert.deepEqual(hist, ['hold', 'confirm', 'check_in']);
+      // N06.2: mức phí cơ sở do admin cài trước khi hoàn tất
+      assert.equal((await call('/api/admin/fees/rates/tx-stay-5', jsonInit('PUT', { mode: 'percent_bp', value: 500 }, opsToken))).status, 200);
       const done = await call(`/api/bookings/${b2.id}/complete`, jsonInit('POST', {}, opsToken));
       assert.equal(done.status, 200);
       assert.equal(((await done.json()) as any).data.status, 'completed');
+      assert.equal(((await (await call(`/api/bookings/${b2.id}/complete`, jsonInit('POST', {}, opsToken))).json()) as any).already, true);
+
+      // N06.2 trên D1 thật: +20 Điểm Mây, một dòng phí 5%, bảng xếp hạng công khai tên rút gọn
+      const mine: any = await (await call('/api/me/points', authInit(token2))).json();
+      assert.equal(mine.data.points12m, 20);
+      assert.equal(mine.data.title, 'Lữ khách mới');
+      const fees: any = await (await call(`/api/admin/fees/ledger?month=${new Date(Date.now() + 7 * 3600_000).toISOString().slice(0, 7)}`, authInit(opsToken))).json();
+      const feeRows = fees.data.entries.filter((e: any) => e.bookingId === b2.id);
+      assert.equal(feeRows.length, 1, 'hoàn tất hai lần chỉ một dòng phí');
+      assert.equal(feeRows[0].amount, Math.floor((b2.totalAmount * 500 + 5000) / 10000));
+      const lb: any = await (await call('/api/community/leaderboard?scope=month')).json();
+      assert.ok(lb.data.items.some((x: any) => x.name === 'Khách H.' && x.points === 20), JSON.stringify(lb.data.items));
 
       // N06.1 trên D1 + R2 thật: tài khoản nhận cọc → điều khoản → snapshot → biên lai lưu R2 → xác nhận cọc và 70%.
       const payout = await call('/api/partner/listings/tx-stay-5/payout-account', jsonInit('PUT', { bankBin: '970436', accountNumber: '0011004455667', accountName: 'Chủ Dốc Mơ' }, opsToken));
