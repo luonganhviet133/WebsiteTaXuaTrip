@@ -31,24 +31,34 @@
   - Tách script đăng ký service worker khỏi `index.html` thành `public/sw-register.js` để không cần cho phép script nội tuyến.
 - **Cloudflare Access cho `/quan-tri` và `/api/admin/*`** (`src/server/security/access.ts`): Worker tự kiểm chữ ký RS256, hạn, issuer, audience; khóa công khai nhớ 10 phút. **Đang tắt**; chỉ bật khi đặt `ACCESS_TEAM_DOMAIN` + `ACCESS_AUD` sau khi có tên miền (runbook mục 5).
 - **`/api/health` báo phiên bản cấu trúc D1** (`schema.expected` / `schema.applied`); production thiếu migration thì `degraded` (503). Test buộc `src/server/schemaVersion.ts` khớp migration mới nhất.
-- **Sao lưu D1 hằng tuần** (`.github/workflows/backup-d1.yml`): 03:17 Chủ nhật giờ VN, xuất → kiểm có cấu trúc và dữ liệu tài khoản → nén → bucket R2 riêng tư `taxua-trip-backups` + `d1/LATEST.txt` (tên tệp và SHA-256). Không lưu lên GitHub vì kho công khai. Cần chủ dự án nhập 2 secret (runbook mục 7).
+- **Sao lưu D1 hằng tuần ngay trong Cloudflare, không cần API token/secret** (`src/server/backup/d1Backup.ts`):
+  - cron 03:17 Chủ nhật giờ VN bắt đầu, mỗi lần cron 5 phút làm tiếp một bước ≤ 1.500 dòng (hợp 10 ms CPU gói Free);
+  - ghi vào R2 riêng tư `backups/d1/<thời điểm>/`, giữ 12 bản;
+  - trang quản trị có ô "Sao lưu dữ liệu" (bản gần nhất, nút "Sao lưu ngay"); API `GET/POST /api/admin/backups[/run]` chỉ admin;
+  - khôi phục bằng `scripts/d1-backup-to-sql.ts`.
+
+  Ban đầu định dùng GitHub Actions + `wrangler d1 export`, nhưng cách đó cần chủ dự án tạo API token và nhập secret trên GitHub, nên đã bỏ.
 - **Workers Logs** bật (`[observability]`, giữ 7 ngày). Log không ghi IP.
 - `UPGRADE_RUNBOOK.md`: mục 5 (biến Access), mục 7 (bật sao lưu, cách khôi phục vào cơ sở dữ liệu mới), mục 8 (theo dõi).
 
 ### Lệnh đã chạy và kết quả
-- `npm run typecheck` 0 lỗi; `npm test` **336/336 pass** (thêm 7 test `security.test.ts`, mở rộng test workerd); `npm run build`, `npm run worker:dry-run` đạt (dry-run hiện đủ 3 binding Rate Limit).
+- `npm run typecheck` 0 lỗi; `npm test` **339/339 pass** (thêm 7 test `security.test.ts`, 3 test sao lưu, mở rộng test workerd); `npm run build`, `npm run worker:dry-run` đạt (dry-run hiện đủ 3 binding Rate Limit).
 - Test workerd chạy binding thật ở chế độ local:
   - `/api/health` và các trang SPA có header bảo mật;
   - trang chủ (tệp tĩnh) có header từ `_headers`;
   - gửi dồn đăng nhập thì bị chặn 429 sau khoảng 20 yêu cầu.
 - Kiểm đỏ: bỏ header ở Worker / bỏ giới hạn cửa vào / thiếu `_headers` → mỗi trường hợp test workerd đều hỏng.
 - Access: test bằng cặp khóa RSA tự sinh. Đúng thì qua. Sai chữ ký, sửa nội dung, sai audience, sai issuer, hết hạn, khóa lạ, thiếu token đều bị từ chối. Chưa cấu hình thì không ảnh hưởng.
-- Diễn tập sao lưu/khôi phục trên D1 local: `wrangler d1 export` → bản xuất qua đủ bước kiểm của workflow → nạp vào cơ sở dữ liệu trống (466 lệnh) → số tài khoản, cơ sở, nhật ký, mã, migration khớp hoàn toàn.
+- Sao lưu (test): chia nhiều bước; khôi phục vào SQLite trống ra đúng số dòng từng bảng và đúng từng giá trị (dấu nháy, tiếng Việt, xuống dòng, NULL); giữ 12 bản, xóa bản cũ; bản treo quá 6 giờ thì bắt đầu lại. Kiểm đỏ: bỏ thoát dấu nháy / lệch trang / không dọn bản cũ → mỗi trường hợp test hỏng.
+- Sao lưu (chạy thật trên Worker + D1 + R2 local):
+  - bấm "Sao lưu ngay" ở trang quản trị → "Đã sao lưu xong", 386 dòng, 38 bảng;
+  - kích cron hằng tuần → bản mới;
+  - tải tệp từ R2 → ghép SQL → nạp vào cơ sở dữ liệu trống → khớp hoàn toàn.
 - Trình duyệt (wrangler dev): `/`, `/luu-tru`, `/ban-do`, `/quan-tri` tải bình thường, có header, service worker đăng ký từ tệp mới. **CSP báo cáo không ghi nhận vi phạm nào**; đã kiểm trình duyệt có báo khi cố ý vi phạm (script nội tuyến, ảnh http, gọi tên miền lạ → 4 báo cáo).
 
 ### Chưa kiểm chứng / còn lại
 - Chưa chạy trên production (chờ "gộp R3"). Sau khi gộp sẽ kiểm header, health, và xem Console trên trang thật bằng trình duyệt.
-- Sao lưu tự động chỉ chạy được sau khi anh tạo API token và nhập 2 secret trên GitHub. Lần chạy thật đầu tiên cần anh bấm Run workflow.
+- Sao lưu trên production: kiểm bằng nút "Sao lưu ngay" sau khi gộp.
 - WAF/Bot Fight Mode/quy tắc rate limit của Cloudflare cần tên miền riêng (workers.dev không có) → làm ở C1.
 - Chưa bật CSP đầy đủ ở chế độ bắt buộc: chờ xem báo cáo trên production vài ngày.
 - `public/` còn gói mẫu cũ (`ta-xua-trip-source.zip`, `ta-xua-trip-build.zip`, `ta-xua-trip-chay-ngay.html`, PDF kế hoạch) do tính năng "đóng gói" từ bản AI Studio dùng. Đã quét, không có khóa bí mật, và kho GitHub vốn công khai. Đề xuất gỡ cùng tính năng đó ở R4.

@@ -55,6 +55,11 @@ export interface AdminOverview {
   listings: number;
   openComplaints: number;
 }
+export interface BackupStatus {
+  latest: { runId: string; reason: string; startedAt: string; finishedAt: string; totalRows: number; files: number; tables: Record<string, number> } | null;
+  running: { runId: string; startedAt: string; tablesDone: number; tablesTotal: number } | null;
+}
+
 export interface MemberFilter {
   q?: string;
   role?: string;
@@ -78,6 +83,8 @@ const path = (id: string, action = '') => `/api/admin/members/${encodeURICompone
 
 export const adminMembersApi = {
   overview: () => call<AdminOverview>('GET', '/api/admin/overview'),
+  backupStatus: () => call<BackupStatus>('GET', '/api/admin/backups'),
+  runBackup: () => call<BackupStatus & { runId: string; state: string }>('POST', '/api/admin/backups/run'),
   list: (f: MemberFilter) => call<MemberPage>('GET', `/api/admin/members${memberQuery(f)}`),
   detail: (id: string) => call<MemberDetail>('GET', path(id)),
   lock: (id: string, reason: string) => call<Member>('POST', path(id, 'lock'), { reason }),

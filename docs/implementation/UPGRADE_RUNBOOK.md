@@ -139,33 +139,32 @@ Quay lại: xóa khối `[[send_email]]` và gộp lại → các tính năng em
 
 ## 7. Sao lưu D1 hằng tuần và khôi phục (R3)
 
-**Hai lớp:**
-- **Time Travel** (có sẵn, gói Free giữ 7 ngày, Paid 30 ngày): quay cả cơ sở dữ liệu về một thời điểm. Dùng khi lỗi phát hiện sớm.
-- **Bản xuất hằng tuần** (`.github/workflows/backup-d1.yml`): 03:17 sáng Chủ nhật giờ VN, xuất toàn bộ D1 → nén → bucket R2 riêng tư `taxua-trip-backups`, đường dẫn `d1/<năm>/<tháng>/taxua-trip-db-<thời điểm>.sql.gz`; `d1/LATEST.txt` ghi tệp mới nhất và mã SHA-256. **Không** lưu trên GitHub vì kho công khai.
+**Hai lớp, đều không cần API token hay secret:**
+- **Time Travel** (có sẵn, gói Free giữ 7 ngày, Paid 30 ngày): quay cả cơ sở dữ liệu về đúng một thời điểm. Dùng khi phát hiện lỗi sớm.
+- **Bản sao lưu hằng tuần do chính Worker làm** (`src/server/backup/d1Backup.ts`):
+  - Cron 03:17 sáng Chủ nhật giờ VN bắt đầu; mỗi lần cron 5 phút chạy tiếp một bước nhỏ (hợp giới hạn 10 ms CPU của gói Free).
+  - Ghi vào bucket R2 riêng tư `taxua-trip-private`, thư mục `backups/d1/<thời điểm>/`: `schema.sql`, `data/<bảng>.<phần>.jsonl`, `manifest.json`; `backups/d1/LATEST.json` là bản mới nhất.
+  - Giữ 12 bản gần nhất.
+  - Trang quản trị → Thành viên & Đối tác → ô **Sao lưu dữ liệu** cho xem bản gần nhất và có nút **Sao lưu ngay**.
+  - Không lưu trên GitHub vì kho công khai.
+  - Bản sao lưu đọc qua vài phút nên không phải ảnh chụp đúng một thời điểm; cần đúng thời điểm thì dùng Time Travel.
 
-**Bật lần đầu — [Chủ dự án]:**
-1. Cloudflare → My Profile → API Tokens → Create Token → Custom token:
-   - Permissions: *Account → D1 → Edit*; *Account → Workers R2 Storage → Edit*.
-   - Account Resources: chỉ tài khoản của Tà Xùa Trip. Đặt hạn dùng nếu muốn (nhớ gia hạn).
-2. GitHub → kho WebsiteTaXuaTrip → Settings → Secrets and variables → Actions → New repository secret:
-   - `CLOUDFLARE_API_TOKEN` = token vừa tạo
-   - `CLOUDFLARE_ACCOUNT_ID` = mã tài khoản (Cloudflare → Workers & Pages → bên phải "Account ID")
-3. GitHub → Actions → "Sao lưu D1 hằng tuần" → Run workflow. Thành công thì phần tóm tắt hiện tên tệp và SHA-256.
-4. (Khuyên) R2 → `taxua-trip-backups` → Settings → Object lifecycle rules: xóa đối tượng tiền tố `d1/` sau 180 ngày.
-
-**Khôi phục từ bản xuất (luôn thử vào cơ sở dữ liệu MỚI trước, không ghi đè production ngay):**
+**Khôi phục từ bản sao lưu (luôn vào cơ sở dữ liệu MỚI trước, không ghi đè production):**
+1. Cloudflare → R2 → `taxua-trip-private` → `backups/d1/` → mở thư mục bản cần dùng → tải `manifest.json`, `schema.sql` và cả thư mục `data/` về một thư mục trên máy (giữ nguyên cấu trúc `data/`).
+   Hoặc dùng dòng lệnh sau `npx wrangler login`: `npx wrangler r2 object get "taxua-trip-private/backups/d1/<bản>/<tệp>" --remote --file "<bản>/<tệp>"` cho từng tệp trong `manifest.json` → `fileList`.
+2. Ghép thành tệp SQL và nạp vào cơ sở dữ liệu thử:
 ```bash
-npx wrangler r2 object get taxua-trip-backups/d1/LATEST.txt --remote --pipe        # tên tệp mới nhất
-npx wrangler r2 object get "taxua-trip-backups/<tên tệp>" --remote --file backup.sql.gz
-sha256sum backup.sql.gz                                                            # so với LATEST.txt
-gunzip backup.sql.gz
+npx tsx scripts/d1-backup-to-sql.ts <thư-mục-bản> > restore.sql
 npx wrangler d1 create taxua-trip-restore-test
-npx wrangler d1 execute taxua-trip-restore-test --remote --file backup.sql
+npx wrangler d1 execute taxua-trip-restore-test --remote --file restore.sql
 npx wrangler d1 execute taxua-trip-restore-test --remote --command "SELECT COUNT(*) FROM profiles"
 ```
-Đối chiếu số liệu xong mới quyết định: dùng Time Travel về mốc trước sự cố, hoặc đổi `database_id` trong `wrangler.toml` sang cơ sở dữ liệu đã khôi phục rồi deploy. Xóa tệp `backup.sql` trên máy sau khi xong (có dữ liệu cá nhân).
+3. Đối chiếu xong mới quyết định: dùng Time Travel về mốc trước sự cố, hoặc đổi `database_id` trong `wrangler.toml` sang cơ sở dữ liệu đã khôi phục rồi deploy. Xóa `restore.sql` và thư mục tải về (có dữ liệu cá nhân).
 
-Đã diễn tập (13/11/2026, D1 local): xuất → nạp vào cơ sở dữ liệu trống → số tài khoản, cơ sở, nhật ký, migration khớp hoàn toàn.
+**Đã diễn tập (13/11/2026, Worker + D1 + R2 chạy local):**
+- Bấm "Sao lưu ngay" trên trang quản trị → 386 dòng, 38 bảng.
+- Kích cron hằng tuần → bản mới.
+- Tải 8 tệp dữ liệu từ R2 → `d1-backup-to-sql.ts` → nạp vào cơ sở dữ liệu trống (466 lệnh) → tài khoản, cơ sở, nhật ký, phiên, migration khớp hoàn toàn.
 
 ## 8. Theo dõi (R3)
 

@@ -53,7 +53,8 @@ head_sampling_rate = 1
 
 # N05.2 — mỗi 5 phút dọn giữ chỗ quá hạn (src/worker.ts scheduled). Cron miễn phí trên gói Workers Free.
 [triggers]
-crons = ["*/5 * * * *"]
+# R3: "17 20 * * 6" = 03:17 Chủ nhật giờ VN bắt đầu sao lưu D1 sang R2 riêng tư (src/server/backup/d1Backup.ts).
+crons = ["*/5 * * * *", "17 20 * * 6"]
 
 # Bản xem trước cho các nhánh khác main (Workers Builds chạy `npx wrangler preview`).
 # Dùng tài nguyên riêng, không đụng D1/R2 production. NODE_ENV = production để đăng ký/đăng nhập

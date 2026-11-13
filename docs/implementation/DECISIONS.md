@@ -22,7 +22,7 @@
 - **Giới hạn tần suất:** dùng binding Rate Limiting của Workers (miễn phí, chạy cả trên workers.dev), coi là bộ lọc lỏng; giữ giới hạn nghiệp vụ trong API. Quy tắc rate limit/WAF của Cloudflare đợi tên miền (C1).
 - **CSP:** bắt buộc phần không thể làm hỏng trang; chính sách đầy đủ chạy chỉ báo cáo trước, bật bắt buộc sau khi production không còn báo vi phạm.
 - **Access:** viết sẵn phần kiểm JWT trong Worker nhưng tắt theo mặc định; bật bằng biến môi trường sau khi có tên miền (Access theo đường dẫn cần tên miền riêng).
-- **Sao lưu:** GitHub Actions + `wrangler d1 export` (không bị giới hạn 10 ms CPU của Worker gói Free), lưu bucket R2 riêng tư. Không bao giờ lưu bản sao lưu trên GitHub vì kho công khai. Time Travel 7 ngày vẫn là lớp khôi phục nhanh.
+- **Sao lưu:** do chính Worker làm qua binding D1 → R2 riêng tư, chia bước nhỏ theo cron 5 phút để hợp giới hạn 10 ms CPU. Không cần API token hay secret: trợ lý không được nhập khóa bí mật thay chủ dự án, và bớt một thứ phải gia hạn. Không bao giờ lưu bản sao lưu trên GitHub vì kho công khai. Time Travel 7 ngày vẫn là lớp khôi phục đúng thời điểm.
 
 ---
 

@@ -17,6 +17,9 @@ import { CloudflareEmailSender } from './server/email.ts';
 import { withSecurityHeaders } from './server/security/headers.ts';
 import { applyEdgeLimit, type EdgeLimiters } from './server/security/edgeLimit.ts';
 import { accessConfigFrom, enforceAccess } from './server/security/access.ts';
+import { D1Backup } from './server/backup/d1Backup.ts';
+
+const WEEKLY_BACKUP_CRON = '17 20 * * 6';
 
 export interface Env extends EdgeLimiters {
   DB: any;
@@ -61,8 +64,20 @@ function getClientIp(request: Request): string {
 export default {
   // N05.2 — Cron (wrangler.toml [triggers]) mỗi 5 phút: chuyển giữ chỗ quá hạn sang 'expired' và nhả phòng.
   // Tồn phòng không phụ thuộc cron (giữ chỗ hết hạn tự không được tính); cron chỉ dọn trạng thái cho đúng.
-  async scheduled(_event: unknown, env: Env): Promise<void> {
+  async scheduled(event: { cron?: string } | undefined, env: Env): Promise<void> {
     const d1 = new DatabaseEngine({ d1: env.DB }).d1;
+    // R3: sao lưu D1 sang R2 riêng tư — bắt đầu 03:17 Chủ nhật (giờ VN), mỗi lần cron 5 phút chạy tiếp một bước nhỏ.
+    if (env.PRIVATE_BUCKET) {
+      try {
+        const backup = new D1Backup(d1, env.PRIVATE_BUCKET);
+        if (event?.cron === WEEKLY_BACKUP_CRON) await backup.start('weekly');
+        const r = await backup.step();
+        if (r !== 'idle') console.log(`[backup] ${r}`);
+      } catch (err: any) {
+        console.error('[backup] error', String(err?.message || err));
+      }
+      if (event?.cron === WEEKLY_BACKUP_CRON) return;
+    }
     const result = await new HoldStore(d1).expireHolds();
     if (result.expired || result.released) console.log(`[holds] expired=${result.expired} released=${result.released}`);
     // N06.1: nhắc khách trả 70% ở mốc 48 giờ và 30 giờ trước giờ nhận phòng (mỗi mốc một lần).
@@ -106,7 +121,8 @@ async function handle(request: Request, env: Env, _ctx?: any): Promise<Response>
         revidBaseUrl: env.REVID_BASE_URL || 'https://ai.revidapi.com/v1',
         revidApiKey: env.REVID_API_KEY || '',
         runtime: 'workerd',
-        storage: { mediaBucket: Boolean(env.MEDIA_BUCKET), privateBucket: Boolean(env.PRIVATE_BUCKET) }
+        storage: { mediaBucket: Boolean(env.MEDIA_BUCKET), privateBucket: Boolean(env.PRIVATE_BUCKET) },
+        backupBucket: env.PRIVATE_BUCKET
       });
     }
 
