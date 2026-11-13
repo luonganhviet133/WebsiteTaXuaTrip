@@ -30,6 +30,8 @@ import { BookingLifecycle } from './bookings/store.ts';
 import { handlePaymentRoutes } from './payments/routes.ts';
 import { handleCommunityRoutes } from './community/routes.ts';
 import { handleFeedbackRoutes } from './feedback/routes.ts';
+import { AccountStore } from './accounts/store.ts';
+import { NoEmailSender, type EmailSender } from './email.ts';
 import type { PrivateStorage } from './payments/storage.ts';
 
 export interface ApiContext {
@@ -47,6 +49,8 @@ export interface ApiContext {
   storage?: { mediaBucket: boolean; privateBucket: boolean };
   /** N06.1: kho biên lai riêng tư (Worker: R2 PRIVATE_BUCKET; Express: thư mục; test: bộ nhớ). */
   privateStorage?: PrivateStorage;
+  /** R1: gửi email (Worker: binding EMAIL khi đã nâng Workers Paid + bật gửi email cho tên miền). Không có → báo chưa bật. */
+  email?: EmailSender;
 }
 
 type Role = AuthenticatedUser['role'];
@@ -113,7 +117,7 @@ function rateLimited(key: string): Response | undefined {
   return json({ success: false, error: check.error, retryAfter: check.retryAfter }, 429, { 'Retry-After': String(check.retryAfter) });
 }
 
-async function checkTurnstile(body: any, request: Request, ctx: ApiContext, action: 'login' | 'register'): Promise<Response | undefined> {
+async function checkTurnstile(body: any, request: Request, ctx: ApiContext, action: 'login' | 'register' | 'forgot'): Promise<Response | undefined> {
   const token = body.turnstileToken || request.headers.get('cf-turnstile-token') || undefined;
   const result = await verifyTurnstileToken(token, ctx.clientIp, action, ctx.turnstileHostnames, ctx.turnstileSecret);
   if (result.success) return undefined;
@@ -131,6 +135,8 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
   const method = request.method;
   const route = `${method} ${pathname}`;
 
+  const accounts = new AccountStore(ctx.db.d1, ctx.email ?? new NoEmailSender());
+
   // ==================== AUTH ====================
   if (route === 'POST /api/auth/register' || route === 'POST /api/auth/login') {
     const body = await readJson(request);
@@ -142,17 +148,72 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
     const turnstileFailure = await checkTurnstile(body, request, ctx, isRegister ? 'register' : 'login');
     if (turnstileFailure) return turnstileFailure;
 
+    const userAgent = request.headers.get('user-agent');
     try {
       if (isRegister) {
-        const result = await registerUser(body, ctx.db);
-        return json({ success: true, ...result }, 201);
+        const result = await registerUser({ ...body, userAgent }, ctx.db);
+        // R1: gửi mã xác minh email ngay nếu đã bật dịch vụ email; lỗi gửi không chặn đăng ký.
+        let emailVerificationSent = false;
+        if (accounts.config().emailEnabled) {
+          const v = await accounts.requestEmailVerification(result.user.id);
+          emailVerificationSent = v.ok;
+        }
+        return json({ success: true, ...result, emailVerificationSent }, 201);
       }
-      const result = await loginUser(body, ctx.db);
+      const result = await loginUser({ ...body, userAgent }, ctx.db);
       return json({ success: true, ...result });
     } catch (err: any) {
-      if (!isRegister) return json({ success: false, error: err.message }, 401);
-      return json({ success: false, error: err.message }, err.message.startsWith('FORBIDDEN') ? 403 : 400);
+      const msg = String(err.message);
+      const code = msg.split(':')[0];
+      if (!isRegister) {
+        return json({ success: false, code, error: msg }, code === 'ACCOUNT_LOCKED' ? 403 : code === 'TOO_MANY_ATTEMPTS' ? 429 : 401);
+      }
+      const status = msg.startsWith('FORBIDDEN') ? 403 : code === 'EMAIL_EXISTS' || code === 'PHONE_EXISTS' ? 409 : 400;
+      return json({ success: false, code, error: msg }, status);
     }
+  }
+
+  // ==================== TÀI KHOẢN (R1) ====================
+  const accountOut = (r: any, okStatus = 200) =>
+    r.ok ? json({ success: true, already: r.already, data: r.data ?? null }, okStatus) : json({ success: false, code: r.code, error: r.message }, r.status);
+
+  if (route === 'GET /api/auth/config') return json({ success: true, data: accounts.config() });
+
+  if (route === 'POST /api/auth/forgot-password' || route === 'POST /api/auth/reset-password') {
+    const body = await readJson(request);
+    if (body === null) return json({ success: false, error: 'INVALID_JSON: Dữ liệu gửi lên không hợp lệ.' }, 400);
+    const limited = rateLimited(`pwreset:${ctx.clientIp}:${String(body.email || '').toLowerCase()}`);
+    if (limited) return limited;
+    if (pathname.endsWith('/forgot-password')) {
+      if (!accounts.config().emailEnabled) return accountOut(await accounts.forgotPassword(body.email));
+      const turnstileFailure = await checkTurnstile(body, request, ctx, 'forgot');
+      if (turnstileFailure) return turnstileFailure;
+      return accountOut(await accounts.forgotPassword(body.email));
+    }
+    return accountOut(await accounts.resetPassword(body));
+  }
+
+  if (pathname.startsWith('/api/me/') && (pathname === '/api/me/profile' || pathname.startsWith('/api/me/email') || pathname.startsWith('/api/me/sessions'))) {
+    const user = await requireRole(request, ctx);
+    if (user instanceof Response) return user;
+    const token = getToken(request) || '';
+    if (route === 'GET /api/me/profile') return accountOut(await accounts.profile(user.id));
+    if (route === 'PUT /api/me/profile') return accountOut(await accounts.updateProfile(user.id, (await readJson(request)) || {}));
+    if (route === 'POST /api/me/email/send-code') {
+      const limited = rateLimited(`verifymail:${user.id}`);
+      if (limited) return limited;
+      return accountOut(await accounts.requestEmailVerification(user.id));
+    }
+    if (route === 'POST /api/me/email/verify') {
+      const limited = rateLimited(`verifycode:${user.id}`);
+      if (limited) return limited;
+      return accountOut(await accounts.verifyEmail(user.id, String(((await readJson(request)) || {}).code || '')));
+    }
+    if (route === 'GET /api/me/sessions') return accountOut(await accounts.sessions(user.id, token));
+    if (route === 'POST /api/me/sessions/revoke-others') return accountOut(await accounts.revokeOtherSessions(user.id, token));
+    const sm = method === 'DELETE' && pathname.match(/^\/api\/me\/sessions\/([^/]+)$/);
+    if (sm) return accountOut(await accounts.revokeSession(user.id, decodeURIComponent(sm[1])));
+    return json({ success: false, code: 'NOT_FOUND', error: 'API endpoint not found' }, 404);
   }
 
   if (route === 'POST /api/auth/logout') {

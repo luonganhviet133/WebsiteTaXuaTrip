@@ -13,6 +13,7 @@ import { handleApiRequest } from './server/api.ts';
 import { HoldStore } from './server/bookings/holds.ts';
 import { PaymentStore } from './server/payments/store.ts';
 import { R2Storage } from './server/payments/storage.ts';
+import { CloudflareEmailSender } from './server/email.ts';
 
 export interface Env {
   DB: any;
@@ -24,6 +25,10 @@ export interface Env {
   REVID_BASE_URL?: string;
   REVID_API_KEY?: string;
   NODE_ENV?: string;
+  /** R1: binding send_email (chỉ có sau khi nâng Workers Paid và bật gửi email cho taxuatrip.vn). */
+  EMAIL?: { send(m: any): Promise<any> };
+  /** Địa chỉ gửi, vd "Tà Xùa Trip <no-reply@taxuatrip.vn>". */
+  MAIL_FROM?: string;
 }
 
 // Secret Turnstile từ binding của Worker (Settings → Variables and Secrets).
@@ -66,6 +71,7 @@ export default {
       return handleApiRequest(request, {
         db: new DatabaseEngine({ d1: env.DB }),
         privateStorage: env.PRIVATE_BUCKET ? new R2Storage(env.PRIVATE_BUCKET) : undefined,
+        email: env.EMAIL ? new CloudflareEmailSender(env.EMAIL, env.MAIL_FROM || 'Tà Xùa Trip <no-reply@taxuatrip.vn>') : undefined,
         clientIp: getClientIp(request),
         turnstileSecret: getTurnstileSecret(env),
         turnstileHostnames: [url.hostname],

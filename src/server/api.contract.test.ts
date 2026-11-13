@@ -17,6 +17,7 @@ import { fileURLToPath } from 'node:url';
 import { unstable_dev } from 'wrangler';
 import { createExpressApp } from '../../server.ts';
 import { DatabaseEngine } from './db.ts';
+import { TERMS_VERSION } from './accounts/rules.ts';
 import { addDays, todayInVietnam } from '../search/searchIntent.ts';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -95,7 +96,7 @@ async function runContract(t: any, call: Fetcher, label: string): Promise<void> 
   });
 
   await t.test('Đăng ký traveler trả 201 kèm token', async () => {
-    const res = await call('/api/auth/register', jsonInit('POST', { email, password, fullName: 'Khách Hợp Đồng', role: 'traveler' }));
+    const res = await call('/api/auth/register', jsonInit('POST', { email, password, fullName: 'Khách Hợp Đồng', role: 'traveler', termsAccepted: true, termsVersion: TERMS_VERSION }));
     assert.equal(res.status, 201);
     const body: any = await res.json();
     assert.equal(body.success, true);
@@ -221,7 +222,7 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
     await runContract(t, (route, init) => worker.fetch(route, init as any) as unknown as Promise<Response>, 'worker');
     // N05.3: một tài khoản sẽ được nâng làm admin (vai trò đọc lại từ hồ sơ mỗi yêu cầu, token vẫn dùng được).
     const opsEmail = `ops.${Date.now()}@example.com`;
-    const opsReg = await worker.fetch('/api/auth/register', jsonInit('POST', { email: opsEmail, password: 'MatKhau123!', fullName: 'Vận Hành', role: 'traveler' }) as any);
+    const opsReg = await worker.fetch('/api/auth/register', jsonInit('POST', { email: opsEmail, password: 'MatKhau123!', fullName: 'Vận Hành', role: 'traveler', termsAccepted: true, termsVersion: TERMS_VERSION }) as any);
     assert.equal(opsReg.status, 201);
     const opsToken = ((await opsReg.json()) as any).token as string;
     await worker.stop();
@@ -245,7 +246,7 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
     });
     const call: Fetcher = (route, init) => holdWorker!.fetch(route, init as any) as unknown as Promise<Response>;
     await t.test('N05.2–N05.3 trên D1 thật: 20 yêu cầu đồng thời chỉ 1 đơn thắng; hủy trả phòng; xác nhận, quét QR đồng thời, hoàn tất; thanh toán D03 với R2; đối soát cọc; Điểm Mây và sổ phí', async () => {
-      const reg = await call('/api/auth/register', jsonInit('POST', { email: `hold.${Date.now()}@example.com`, password: 'MatKhau123!', fullName: 'Khách Giữ Chỗ', role: 'traveler' }));
+      const reg = await call('/api/auth/register', jsonInit('POST', { email: `hold.${Date.now()}@example.com`, password: 'MatKhau123!', fullName: 'Khách Giữ Chỗ', role: 'traveler', termsAccepted: true, termsVersion: TERMS_VERSION }));
       assert.equal(reg.status, 201);
       const token = ((await reg.json()) as any).token;
       let checkIn = addDays(todayInVietnam(), 7);
@@ -281,7 +282,7 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
 
       // N05.3 trên D1 thật: xác nhận → mã QR (chỉ mục duy nhất có điều kiện) → 5 lần quét cùng lúc chỉ nhận phòng một lần.
       // Khách thứ hai: khách đầu đã dùng hết 20 lần giữ chỗ/phút trong ca tranh phòng.
-      const reg2 = await call('/api/auth/register', jsonInit('POST', { email: `hold2.${Date.now()}@example.com`, password: 'MatKhau123!', fullName: 'Khách Hai', role: 'traveler' }));
+      const reg2 = await call('/api/auth/register', jsonInit('POST', { email: `hold2.${Date.now()}@example.com`, password: 'MatKhau123!', fullName: 'Khách Hai', role: 'traveler', termsAccepted: true, termsVersion: TERMS_VERSION }));
       assert.equal(reg2.status, 201);
       const token2 = ((await reg2.json()) as any).token as string;
       const today = todayInVietnam();
