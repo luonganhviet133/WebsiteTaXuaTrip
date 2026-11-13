@@ -32,6 +32,8 @@ import { handleCommunityRoutes } from './community/routes.ts';
 import { handleFeedbackRoutes } from './feedback/routes.ts';
 import { AccountStore } from './accounts/store.ts';
 import { MemberAdminStore } from './admin/members.ts';
+import { schemaStatus } from './schemaVersion.ts';
+import { D1Backup, type BackupBucket } from './backup/d1Backup.ts';
 import { NoEmailSender, type EmailSender } from './email.ts';
 import type { PrivateStorage } from './payments/storage.ts';
 
@@ -50,6 +52,8 @@ export interface ApiContext {
   storage?: { mediaBucket: boolean; privateBucket: boolean };
   /** N06.1: kho biên lai riêng tư (Worker: R2 PRIVATE_BUCKET; Express: thư mục; test: bộ nhớ). */
   privateStorage?: PrivateStorage;
+  /** R3: bucket R2 riêng tư cho sao lưu D1 (Worker). Express/dev không có. */
+  backupBucket?: BackupBucket;
   /** R1: gửi email (Worker: binding EMAIL khi đã nâng Workers Paid + bật gửi email cho tên miền). Không có → báo chưa bật. */
   email?: EmailSender;
 }
@@ -343,6 +347,23 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
   });
   if (pricingResponse) return pricingResponse;
 
+  // ==================== SAO LƯU D1 (R3) ====================
+  if (pathname === '/api/admin/backups' || pathname === '/api/admin/backups/run') {
+    const user = await requireRole(request, ctx, ['admin']);
+    if (user instanceof Response) return user;
+    if (!ctx.backupBucket) return json({ success: false, code: 'BACKUP_NOT_CONFIGURED', error: 'Sao lưu chỉ chạy trên Cloudflare (cần bucket R2 riêng tư).' }, 503);
+    const backup = new D1Backup(ctx.db.d1, ctx.backupBucket);
+    if (route === 'GET /api/admin/backups') return json({ success: true, data: await backup.status() });
+    if (route === 'POST /api/admin/backups/run') {
+      const limited = rateLimited(`backup:${user.id}`);
+      if (limited) return limited;
+      const s = await backup.start(`manual:${user.id}`);
+      const r = s.started ? await backup.step() : 'progress';
+      return json({ success: true, already: !s.started, data: { runId: s.runId, state: r, ...(await backup.status()) } });
+    }
+    return json({ success: false, code: 'NOT_FOUND', error: 'API endpoint not found' }, 404);
+  }
+
   // ==================== QUẢN TRỊ THÀNH VIÊN & ĐỐI TÁC (R2) ====================
   if (route === 'GET /api/admin/overview' || pathname === '/api/admin/members' || pathname.startsWith('/api/admin/members/')) {
     const user = await requireRole(request, ctx, ['admin']);
@@ -394,9 +415,12 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
 
   if (route === 'GET /api/health') {
     const health = await ctx.db.checkHealth();
+    const schema = health.databaseOk ? await schemaStatus(ctx.db.d1) : null;
+    const healthy = health.databaseOk && (schema?.ok ?? false);
     return json(
       {
-        status: health.databaseOk ? 'ok' : 'degraded',
+        status: healthy ? 'ok' : 'degraded',
+        schema,
         runtime: ctx.runtime,
         database: health.database,
         databaseOk: health.databaseOk,
@@ -405,7 +429,7 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
         hasRevidKey: Boolean(ctx.revidApiKey),
         timestamp: new Date().toISOString()
       },
-      health.databaseOk ? 200 : 503
+      healthy ? 200 : 503
     );
   }
 

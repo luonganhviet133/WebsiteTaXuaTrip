@@ -18,6 +18,14 @@
 
 ---
 
+### D-R3-01: Bảo vệ trên gói Free và sao lưu (13/11/2026)
+- **Giới hạn tần suất:** dùng binding Rate Limiting của Workers (miễn phí, chạy cả trên workers.dev), coi là bộ lọc lỏng; giữ giới hạn nghiệp vụ trong API. Quy tắc rate limit/WAF của Cloudflare đợi tên miền (C1).
+- **CSP:** bắt buộc phần không thể làm hỏng trang; chính sách đầy đủ chạy chỉ báo cáo trước, bật bắt buộc sau khi production không còn báo vi phạm.
+- **Access:** viết sẵn phần kiểm JWT trong Worker nhưng tắt theo mặc định; bật bằng biến môi trường sau khi có tên miền (Access theo đường dẫn cần tên miền riêng).
+- **Sao lưu:** do chính Worker làm qua binding D1 → R2 riêng tư, chia bước nhỏ theo cron 5 phút để hợp giới hạn 10 ms CPU. Không cần API token hay secret: trợ lý không được nhập khóa bí mật thay chủ dự án, và bớt một thứ phải gia hạn. Không bao giờ lưu bản sao lưu trên GitHub vì kho công khai. Time Travel 7 ngày vẫn là lớp khôi phục đúng thời điểm.
+
+---
+
 ### D-R2-01: Quản trị thành viên (13/11/2026)
 - **Quyết định:** admin khóa/mở, đổi vai trò, xác minh đối tác và cấp mã đặt lại mật khẩu ngay trong trang quản trị. Mọi thao tác bắt buộc lý do, ghi `audit_log` cùng batch. Không tự thao tác trên chính mình; luôn còn ít nhất một admin hoạt động.
 - **Mã đặt lại do admin cấp** thay cho đặt mật khẩu tạm: admin không bao giờ biết mật khẩu của khách; mã 6 số hiện một lần, lưu băm, hạn 60 phút, dùng một lần. Khách đăng nhập bằng email hoặc SĐT.

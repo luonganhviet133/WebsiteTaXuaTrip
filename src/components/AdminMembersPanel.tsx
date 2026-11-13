@@ -10,6 +10,7 @@ import {
   ROLE_LABEL,
   VERIFY_LABEL,
   type AdminOverview,
+  type BackupStatus,
   type Member,
   type MemberDetail,
   type MemberFilter,
@@ -246,6 +247,49 @@ const MemberRow: React.FC<{ m: Member; currentUserId?: string; onChanged: (messa
   );
 };
 
+/** R3: tình trạng sao lưu D1 (chạy trong Cloudflare, không cần token). */
+const BackupCard: React.FC = () => {
+  const [st, setSt] = useState<BackupStatus | null>(null);
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const load = useCallback(async () => {
+    const r = await adminMembersApi.backupStatus();
+    if (r.ok) setSt(r.data);
+    else if (r.code === 'BACKUP_NOT_CONFIGURED') setMsg({ ok: false, text: r.message });
+  }, []);
+  useEffect(() => {
+    void load();
+  }, [load]);
+  const run = async () => {
+    setBusy(true);
+    const r = await adminMembersApi.runBackup();
+    setBusy(false);
+    if (!r.ok) return setMsg({ ok: false, text: r.message });
+    setSt(r.data);
+    setMsg({
+      ok: true,
+      text: r.data.running ? 'Đã bắt đầu sao lưu. Hệ thống chạy tiếp mỗi 5 phút đến khi xong.' : 'Đã sao lưu xong.',
+    });
+  };
+  return (
+    <div className="bg-slate-900 border border-slate-700 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2" data-testid="backup-card">
+      <div className="text-xs text-slate-300 min-w-0 break-words">
+        <b className="text-white">Sao lưu dữ liệu:</b>{' '}
+        {st?.running
+          ? `đang chạy (${st.running.tablesDone}/${st.running.tablesTotal} bảng, bắt đầu ${formatCreatedAt(st.running.startedAt)})`
+          : st?.latest
+            ? `bản gần nhất ${formatCreatedAt(st.latest.finishedAt)} · ${st.latest.totalRows.toLocaleString('vi-VN')} dòng · ${Object.keys(st.latest.tables).length} bảng`
+            : 'chưa có bản nào'}
+        <span className="text-slate-500"> · tự động 03:17 sáng Chủ nhật, giữ 12 bản</span>
+        {msg && <span role="status" className={`block font-bold ${msg.ok ? 'text-emerald-300' : 'text-rose-300'}`}>{msg.text}</span>}
+      </div>
+      <button type="button" onClick={run} disabled={busy || !!st?.running} className="px-3 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-xs font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+        {busy ? 'Đang sao lưu…' : 'Sao lưu ngay'}
+      </button>
+    </div>
+  );
+};
+
 export const AdminMembersPanel: React.FC<{ currentUserId?: string }> = ({ currentUserId }) => {
   const [overview, setOverview] = useState<AdminOverview | null>(null);
   const [filter, setFilter] = useState<MemberFilter>({});
@@ -291,6 +335,8 @@ export const AdminMembersPanel: React.FC<{ currentUserId?: string }> = ({ curren
           <b className="text-slate-200">{overview.openComplaints}</b>
         </p>
       )}
+
+      <BackupCard />
 
       <form
         onSubmit={(e) => {
