@@ -604,6 +604,9 @@ export class DatabaseEngine {
     }
 
     await this.d1.exec(`
+      DELETE FROM payment_receipts;
+      DELETE FROM booking_payments;
+      DELETE FROM listing_payout_accounts;
       DELETE FROM notifications;
       DELETE FROM booking_events;
       DELETE FROM voucher_redemptions;

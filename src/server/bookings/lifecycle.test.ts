@@ -70,3 +70,15 @@ test('Khách hủy đơn đã xác nhận chỉ trước ngày nhận phòng; ad
   // Chủ cơ sở chưa được tự hủy đơn đã xác nhận (chờ quy tắc 70% ở N06.1)
   assert.equal(decide('cancel', 'confirmed', ['owner'], ctx({ today: '2026-11-19' })).kind, 'deny');
 });
+
+test('N06.1: nhả phòng (D03) — chủ cơ sở/admin, đơn đã xác nhận, quá hạn 70% và chưa trả đủ', () => {
+  assert.deepEqual(TRANSITIONS.release, { from: ['confirmed'], to: 'cancelled', who: ['owner', 'admin'] });
+  assert.equal(decide('release', 'confirmed', ['owner'], ctx({ balanceOverdue: true })).kind, 'apply');
+  assert.equal(decide('release', 'confirmed', ['guest'], ctx({ balanceOverdue: true })).kind, 'deny');
+  const early = decide('release', 'confirmed', ['owner'], ctx({ balanceOverdue: false }));
+  assert.equal(early.kind === 'deny' && early.code, 'NOT_OVERDUE');
+  const paid = decide('release', 'confirmed', ['owner'], ctx({ balanceOverdue: true, balancePaid: true }));
+  assert.equal(paid.kind === 'deny' && paid.code, 'BALANCE_PAID');
+  const pending = decide('release', 'pending_deposit', ['owner'], ctx({ balanceOverdue: true }));
+  assert.equal(pending.kind === 'deny' && pending.code, 'INVALID_STATE');
+});

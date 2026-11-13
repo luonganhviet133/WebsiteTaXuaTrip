@@ -4,7 +4,8 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { Readable } from 'node:stream';
-import { getDefaultDb, DatabaseEngine } from './src/server/db.ts';
+import { getDefaultDb, DatabaseEngine, resolveProjectRoot } from './src/server/db.ts';
+import { DirStorage } from './src/server/payments/dirStorage.ts';
 import { TURNSTILE_TEST_SECRET, getClientIp } from './src/server/antiAbuse.ts';
 import { handleApiRequest } from './src/server/api.ts';
 
@@ -48,6 +49,8 @@ export async function createExpressApp(options: CreateAppOptions = {}): Promise<
   const port = process.env.PORT || 3000;
 
   const databaseInstance = options.db || getDefaultDb();
+  // N06.1: biên lai khi chạy bằng Express (dev) lưu trong .data/private; Worker dùng R2.
+  const privateStorage = new DirStorage(path.resolve(resolveProjectRoot(), '.data', 'private'));
 
   // STRICT R2 & S4: Verify database health on startup
   const dbHealth = await databaseInstance.checkHealth();
@@ -86,7 +89,8 @@ export async function createExpressApp(options: CreateAppOptions = {}): Promise<
         geminiApiKey: process.env.GEMINI_API_KEY,
         revidBaseUrl: process.env.REVID_BASE_URL || 'https://ai.revidapi.com/v1',
         revidApiKey: process.env.REVID_API_KEY || '',
-        runtime: 'node'
+        runtime: 'node',
+        privateStorage: privateStorage
       });
 
       res.status(response.status);

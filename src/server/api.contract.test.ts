@@ -244,7 +244,7 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
       experimental: { disableExperimentalWarning: true }
     });
     const call: Fetcher = (route, init) => holdWorker!.fetch(route, init as any) as unknown as Promise<Response>;
-    await t.test('N05.2–N05.3 trên D1 thật: 20 yêu cầu đồng thời chỉ 1 đơn thắng; hủy trả phòng; xác nhận, quét QR đồng thời, hoàn tất', async () => {
+    await t.test('N05.2–N05.3 trên D1 thật: 20 yêu cầu đồng thời chỉ 1 đơn thắng; hủy trả phòng; xác nhận, quét QR đồng thời, hoàn tất; thanh toán D03 với R2', async () => {
       const reg = await call('/api/auth/register', jsonInit('POST', { email: `hold.${Date.now()}@example.com`, password: 'MatKhau123!', fullName: 'Khách Giữ Chỗ', role: 'traveler' }));
       assert.equal(reg.status, 201);
       const token = ((await reg.json()) as any).token;
@@ -305,6 +305,37 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
       const done = await call(`/api/bookings/${b2.id}/complete`, jsonInit('POST', {}, opsToken));
       assert.equal(done.status, 200);
       assert.equal(((await done.json()) as any).data.status, 'completed');
+
+      // N06.1 trên D1 + R2 thật: tài khoản nhận cọc → điều khoản → snapshot → biên lai lưu R2 → xác nhận cọc và 70%.
+      const payout = await call('/api/partner/listings/tx-stay-5/payout-account', jsonInit('PUT', { bankBin: '970436', accountNumber: '0011004455667', accountName: 'Chủ Dốc Mơ' }, opsToken));
+      assert.equal(payout.status, 200);
+      const q3 = await call('/api/quotes', jsonInit('POST', { listingId: 'tx-stay-5', roomTypeId: 'r1', checkIn: addDays(today, 3), checkOut: addDays(today, 4), adults: 2, children: 0, rooms: 1 }));
+      const h3 = await call('/api/bookings/holds', jsonInit('POST', { quoteId: ((await q3.json()) as any).data.id, idempotencyKey: 'pay-1', guestName: 'Khách Hai', guestPhone: '0912345678' }, token2));
+      assert.equal(h3.status, 201);
+      const b3 = ((await h3.json()) as any).data;
+      const p0: any = await (await call(`/api/bookings/${b3.id}/payment`, authInit(token2))).json();
+      assert.equal(p0.data.snapshot, null);
+      const acc = await call(`/api/bookings/${b3.id}/payment/accept-terms`, jsonInit('POST', { termsVersion: p0.data.termsVersion }, token2));
+      assert.equal(acc.status, 200);
+      const snap = ((await acc.json()) as any).data.snapshot;
+      assert.equal(snap.payeeAccountName, 'CHU DOC MO');
+      assert.equal(snap.depositAmount, b3.depositAmount);
+      assert.equal(snap.depositAmount + snap.balanceAmount, b3.totalAmount);
+      const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3, 4]);
+      const up = await call(`/api/bookings/${b3.id}/payment/receipts?kind=deposit`, { method: 'POST', headers: { Authorization: `Bearer ${token2}`, 'Content-Type': 'image/png' }, body: png });
+      assert.equal(up.status, 201);
+      const rcId = ((await up.json()) as any).data.id;
+      const img = await call(`/api/bookings/${b3.id}/payment/receipts/${rcId}`, authInit(opsToken));
+      assert.equal(img.status, 200);
+      assert.equal(img.headers.get('content-type'), 'image/png');
+      assert.deepEqual(new Uint8Array(await img.arrayBuffer()), png, 'đọc lại đúng ảnh từ R2');
+      const txt = await call(`/api/bookings/${b3.id}/payment/receipts?kind=deposit`, { method: 'POST', headers: { Authorization: `Bearer ${token2}`, 'Content-Type': 'image/png' }, body: 'not an image' });
+      assert.equal(txt.status, 415);
+      assert.equal((await call(`/api/bookings/${b3.id}/confirm`, jsonInit('POST', {}, opsToken))).status, 200);
+      assert.equal((await call(`/api/bookings/${b3.id}/payment/confirm-balance`, jsonInit('POST', {}, opsToken))).status, 200);
+      const p1: any = await (await call(`/api/bookings/${b3.id}/payment`, authInit(token2))).json();
+      assert.ok(p1.data.depositConfirmedAt && p1.data.balanceConfirmedAt, 'khách thấy cơ sở đã xác nhận');
+      assert.equal(p1.data.receipts.length, 1);
     });
   } finally {
     await worker.stop().catch(() => undefined);

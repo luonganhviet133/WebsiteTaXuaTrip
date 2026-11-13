@@ -4,6 +4,7 @@
  *   pending_deposit ──confirm (chủ/admin, còn hạn)──▶ confirmed ──check_in (chủ/admin, QR, đúng ngày)──▶ checked_in ──complete (chủ/admin)──▶ completed
  *        │  └─reject (chủ/admin, còn hạn)──▶ cancelled                │
  *        └─cancel (khách/admin, còn hạn)──▶ cancelled  ◀──cancel (khách trước ngày nhận phòng; admin)──┘
+ *                                                     ◀──release (chủ/admin, quá hạn 70% chưa trả đủ; D03)──┘
  *   pending_deposit ──(cron/hết giờ)──▶ expired
  *
  * Làm lại thao tác đã xong → "already" (không ghi gì thêm). Chủ cơ sở chưa tự hủy đơn đã xác nhận
@@ -11,7 +12,7 @@
  */
 export type BookingStatus =
   | 'draft' | 'pending' | 'pending_deposit' | 'confirmed' | 'checked_in' | 'completed' | 'cancelled' | 'expired';
-export type BookingAction = 'confirm' | 'reject' | 'check_in' | 'complete' | 'cancel';
+export type BookingAction = 'confirm' | 'reject' | 'check_in' | 'complete' | 'cancel' | 'release';
 /** Quan hệ của người thao tác với đơn: khách đặt, chủ cơ sở của đơn, admin. */
 export type Party = 'guest' | 'owner' | 'admin';
 
@@ -27,6 +28,8 @@ export const TRANSITIONS: Record<BookingAction, Transition> = {
   check_in: { from: ['confirmed'], to: 'checked_in', who: ['owner', 'admin'] },
   complete: { from: ['checked_in'], to: 'completed', who: ['owner', 'admin'] },
   cancel: { from: ['pending_deposit', 'confirmed'], to: 'cancelled', who: ['guest', 'admin'] },
+  // N06.1 (D03): quá hạn trả 70% mà chưa đủ → cơ sở được nhả phòng, cọc không hoàn.
+  release: { from: ['confirmed'], to: 'cancelled', who: ['owner', 'admin'] },
 };
 
 export const ACTION_LABEL: Record<BookingAction, string> = {
@@ -35,6 +38,7 @@ export const ACTION_LABEL: Record<BookingAction, string> = {
   check_in: 'nhận phòng',
   complete: 'hoàn tất',
   cancel: 'hủy đơn',
+  release: 'nhả phòng',
 };
 
 export interface DecideContext {
@@ -44,6 +48,10 @@ export interface DecideContext {
   checkOut: string;
   /** Đơn pending_deposit đã quá hold_expires_at */
   holdExpired: boolean;
+  /** N06.1: đã qua hạn trả 70% (24 giờ trước giờ nhận phòng) */
+  balanceOverdue?: boolean;
+  /** N06.1: cơ sở đã xác nhận nhận đủ 70% */
+  balancePaid?: boolean;
 }
 
 export type Decision =
@@ -71,6 +79,10 @@ export function decide(action: BookingAction, current: BookingStatus, parties: P
   }
   if (action === 'cancel' && current === 'confirmed' && !parties.includes('admin')) {
     if (c.today >= c.checkIn) return deny(409, 'TOO_LATE_TO_CANCEL', 'Đã tới ngày nhận phòng, không tự hủy được. Vui lòng liên hệ cơ sở hoặc Tà Xùa Trip.');
+  }
+  if (action === 'release') {
+    if (c.balancePaid) return deny(409, 'BALANCE_PAID', 'Cơ sở đã xác nhận nhận đủ 70%, không nhả phòng được.');
+    if (!c.balanceOverdue) return deny(409, 'NOT_OVERDUE', 'Chưa quá hạn trả 70% (24 giờ trước giờ nhận phòng).');
   }
   return { kind: 'apply', from: current, to: t.to };
 }

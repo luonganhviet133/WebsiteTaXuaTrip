@@ -49,11 +49,11 @@ export async function handleBookingRoutes(request: Request, pathname: string, de
   const actorOf = (u: AuthenticatedUser) => ({ id: u.id, role: u.role, providerId: u.providerId ?? null });
 
   // N05.3 — đổi trạng thái đơn. Nhận phòng KHÔNG có ở đây: chỉ qua mã QR (/api/partner/checkin).
-  const act = request.method === 'POST' && pathname.match(/^\/api\/bookings\/([^/]+)\/(confirm|reject|complete|cancel)$/);
+  const act = request.method === 'POST' && pathname.match(/^\/api\/bookings\/([^/]+)\/(confirm|reject|complete|cancel|release)$/);
   if (act) {
     const user = await requireRole(['traveler', 'partner', 'admin']);
     if (user instanceof Response) return user;
-    const action = act[2] as 'confirm' | 'reject' | 'complete' | 'cancel';
+    const action = act[2] as 'confirm' | 'reject' | 'complete' | 'cancel' | 'release';
     const body = (await readJson(request)) || {};
     const reason = typeof body.reason === 'string' ? body.reason.trim().slice(0, 300) : '';
     if (action === 'reject' && reason.length < 3) {

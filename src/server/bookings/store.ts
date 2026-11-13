@@ -8,7 +8,8 @@
 import type { D1Database } from '../d1.ts';
 import { todayInVietnam } from '../../search/searchIntent.ts';
 import { ListingStore } from '../listings/store.ts';
-import { BOOKING_COLUMNS, HoldStore, viDate, bookingEventStmt, notifyOwnersStmt, toBookingView, type BookingView } from './holds.ts';
+import { balanceDueAt } from '../../config/payment.ts';
+import { BOOKING_COLUMNS, HoldStore, notifyUserStmt, viDate, bookingEventStmt, notifyOwnersStmt, toBookingView, type BookingView } from './holds.ts';
 import { decide, type BookingAction, type BookingStatus, type Party } from './lifecycle.ts';
 
 export interface LifecycleActor {
@@ -68,6 +69,8 @@ export class BookingLifecycle {
       checkIn: row.check_in_date,
       checkOut: row.check_out_date,
       holdExpired: row.status === 'pending_deposit' && !!row.hold_expires_at && Date.parse(row.hold_expires_at) <= now.getTime(),
+      balanceOverdue: now.getTime() >= balanceDueAt(row.check_in_date).getTime(),
+      balancePaid: !!row.balance_confirmed_at,
     });
   }
 
@@ -80,9 +83,11 @@ export class BookingLifecycle {
     if (d.kind === 'already') return { ok: true, already: true, booking: toBookingView(row) };
 
     const nowIso = now.toISOString();
-    const reason = opts.reason?.trim() || null;
+    const reason = action === 'release'
+      ? `Quá hạn trả 70% trước giờ nhận phòng 24 giờ (D03), cọc không hoàn.${opts.reason?.trim() ? ` ${opts.reason.trim()}` : ''}`
+      : opts.reason?.trim() || null;
     const actorRef = { id: actor.id, role: actor.role };
-    const holdCond = d.from === 'pending_deposit' ? ' AND hold_expires_at > ?' : '';
+    const holdCond = (d.from === 'pending_deposit' ? ' AND hold_expires_at > ?' : '') + (action === 'release' ? ' AND balance_confirmed_at IS NULL' : '');
     const holdArgs = d.from === 'pending_deposit' ? [nowIso] : [];
     const fields: [string, unknown][] = [['status', d.to], ['updated_at', nowIso]];
     if (action === 'confirm') fields.push(['confirmed_at', nowIso], ['checkin_token', newCheckinToken()]);
@@ -111,6 +116,18 @@ export class BookingLifecycle {
       stmts.push(this.d1.prepare(`UPDATE room_night_allocations SET status = 'released', updated_at = ? WHERE source_id = ? AND status IN ('held', 'confirmed')`).bind(nowIso, bookingId));
     }
     stmts.push(bookingEventStmt(this.d1, { bookingId, action, from: d.from, to: d.to, actor: actorRef, reason, now: nowIso }));
+    if (action === 'release' || action === 'reject') {
+      stmts.push(
+        notifyUserStmt(this.d1, {
+          userId: row.user_id,
+          kind: action === 'release' ? 'booking.released' : 'booking.rejected',
+          bookingId,
+          title: `Đơn ${row.booking_code} đã bị ${action === 'release' ? 'nhả phòng' : 'từ chối'}`,
+          body: reason || '',
+          now: nowIso,
+        })
+      );
+    }
     if (action === 'cancel') {
       stmts.push(
         notifyOwnersStmt(this.d1, {
@@ -199,7 +216,11 @@ export class BookingLifecycle {
   }
 
   async listForOwner(actor: LifecycleActor, listingId?: string): Promise<BookingView[]> {
-    const cols = BOOKING_COLUMNS.split(',').map((c) => `b.${c.trim()}`).join(', ');
+    const cols =
+      BOOKING_COLUMNS.split(',').map((c) => `b.${c.trim()}`).join(', ') +
+      `, b.confirmed_at,
+       (SELECT COUNT(*) FROM payment_receipts r WHERE r.booking_id = b.id AND r.kind = 'deposit') AS deposit_receipts,
+       (SELECT COUNT(*) FROM payment_receipts r WHERE r.booking_id = b.id AND r.kind = 'balance') AS balance_receipts`;
     const filter = listingId ? ' AND b.listing_id = ?' : '';
     const args: unknown[] = listingId ? [listingId] : [];
     const r =
@@ -212,7 +233,13 @@ export class BookingLifecycle {
             )
             .bind(actor.providerId ?? '', ...args)
             .all<any>();
-    return (r.results || []).map(toBookingView);
+    return (r.results || []).map((row: any) => ({
+      ...toBookingView(row),
+      depositReceipts: row.deposit_receipts ?? 0,
+      balanceReceipts: row.balance_receipts ?? 0,
+      // Khách đã gửi biên lai cọc nhưng đơn hết hạn/bị hủy trước khi cơ sở xác nhận: cần đối soát, không tự xác nhận lại.
+      needsReconciliation: ['expired', 'cancelled'].includes(row.status) && !row.confirmed_at && (row.deposit_receipts ?? 0) > 0,
+    }));
   }
 }
 

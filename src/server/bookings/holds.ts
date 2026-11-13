@@ -19,10 +19,9 @@ import { ACTIVE_ALLOCATION_SQL } from '../inventory/availability.ts';
 import { todayInVietnam } from '../../search/searchIntent.ts';
 
 export const HOLD_TTL_MS = 30 * 60 * 1000; // D04: giữ chỗ chờ cọc 30 phút
-export const DEPOSIT_PERCENT = 30; // D03: cọc 30%
-
-/** Cọc 30% làm tròn LÊN tới đồng (không thu thiếu cho cơ sở). */
-export const depositFor = (total: number) => Math.ceil((total * DEPOSIT_PERCENT) / 100);
+// N06.1: tỉ lệ cọc ở một nơi duy nhất (D03)
+export { DEPOSIT_PERCENT, depositFor } from '../../config/payment.ts';
+import { depositFor } from '../../config/payment.ts';
 
 /** Trạng thái đơn còn chiếm lượt voucher (giữ chỗ còn hạn hoặc đã xác nhận trở đi). */
 export const ACTIVE_BOOKING_SQL = `(b.status IN ('confirmed','checked_in','completed') OR (b.status = 'pending_deposit' AND b.hold_expires_at > ?))`;
@@ -71,6 +70,8 @@ export interface BookingView {
   completedAt: string | null;
   cancelledAt: string | null;
   cancelReason: string | null;
+  /** N06.1: cơ sở xác nhận đã nhận đủ 70% */
+  balanceConfirmedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -96,7 +97,7 @@ async function sha256Hex(text: string): Promise<string> {
 export const BOOKING_COLUMNS = `id, booking_code, user_id, listing_id, listing_title, provider_id, guest_name, guest_phone,
   check_in_date, check_out_date, room_type_id, room_name, rooms, adults, children, subtotal, discount, voucher_code,
   total_amount, deposit_amount, status, hold_expires_at, quote_id, guest_note, confirmed_at, checked_in_at, completed_at,
-  cancelled_at, cancel_reason, created_at, updated_at, request_hash`;
+  cancelled_at, cancel_reason, balance_confirmed_at, created_at, updated_at, request_hash`;
 
 export function toBookingView(r: any): BookingView {
   return {
@@ -129,6 +130,7 @@ export function toBookingView(r: any): BookingView {
     completedAt: r.completed_at ?? null,
     cancelledAt: r.cancelled_at ?? null,
     cancelReason: r.cancel_reason ?? null,
+    balanceConfirmedAt: r.balance_confirmed_at ?? null,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };
@@ -160,6 +162,16 @@ export function notifyOwnersStmt(
        WHERE pl.listing_id = ?`
     )
     .bind(n.kind, n.bookingId, n.title.slice(0, 120), n.body.slice(0, 300), n.now, n.listingId);
+}
+
+/** Thông báo cho một tài khoản (khách). dedupeKey: chỉ gửi một lần theo khóa. */
+export function notifyUserStmt(
+  d1: D1Database,
+  n: { userId: string; kind: string; bookingId: string; title: string; body: string; now: string; dedupeKey?: string }
+) {
+  return d1
+    .prepare('INSERT OR IGNORE INTO notifications (id, user_id, kind, booking_id, title, body, created_at, read_at, dedupe_key) VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?)')
+    .bind(`nt_${rand(20)}`, n.userId, n.kind, n.bookingId, n.title.slice(0, 120), n.body.slice(0, 300), n.now, n.dedupeKey ?? null);
 }
 
 export class HoldStore {

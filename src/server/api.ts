@@ -27,6 +27,8 @@ import { handlePricingRoutes } from './pricing/routes.ts';
 import { handleInventoryRoutes } from './inventory/routes.ts';
 import { handleBookingRoutes } from './bookings/routes.ts';
 import { BookingLifecycle } from './bookings/store.ts';
+import { handlePaymentRoutes } from './payments/routes.ts';
+import type { PrivateStorage } from './payments/storage.ts';
 
 export interface ApiContext {
   db: DatabaseEngine;
@@ -41,6 +43,8 @@ export interface ApiContext {
   runtime: 'workerd' | 'node';
   /** Chỉ Worker có binding R2. */
   storage?: { mediaBucket: boolean; privateBucket: boolean };
+  /** N06.1: kho biên lai riêng tư (Worker: R2 PRIVATE_BUCKET; Express: thư mục; test: bộ nhớ). */
+  privateStorage?: PrivateStorage;
 }
 
 type Role = AuthenticatedUser['role'];
@@ -195,6 +199,18 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
     }
     return json({ success: true, data: booking });
   }
+
+  // ==================== THANH TOÁN (N06.1, D03) ====================
+  const paymentResponse = await handlePaymentRoutes(request, pathname, {
+    d1: ctx.db.d1,
+    json,
+    readJson,
+    requireRole: (allowed) => requireRole(request, ctx, allowed),
+    rateLimit: (key, max) => checkRateLimit(key, max, 60 * 1000).allowed,
+    clientIp: ctx.clientIp,
+    privateStorage: ctx.privateStorage,
+  });
+  if (paymentResponse) return paymentResponse;
 
   // ==================== GIỮ CHỖ (N05.2) ====================
   const bookingResponse = await handleBookingRoutes(request, pathname, {
