@@ -23,7 +23,6 @@ import { BusTrip, RouteStop, Booking, PaymentProof } from '../types/index.ts';
 import { 
   formatVND, 
   estimatePickupTime, 
-  calculateMemberPoints,
   calculateMotorbikeRentalCost,
   calculateBusAndMotorbikeCombo,
   generateVehicleSeatLayout
@@ -100,7 +99,6 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
     10
   );
 
-  const pointsEarned = calculateMemberPoints(comboResult.finalTotal);
 
   // Sơ đồ ghế trực quan theo loại xe
   const seatLayout = generateVehicleSeatLayout(
@@ -664,10 +662,6 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                     <span>-{formatVND(comboResult.discountAmount)}</span>
                   </div>
                 )}
-                <div className="flex justify-between text-slate-400">
-                  <span>Tích điểm thành viên:</span>
-                  <span className="text-amber-300 font-semibold">+{pointsEarned} Điểm Mây</span>
-                </div>
                 <div className="flex justify-between text-sm font-bold pt-2 border-t border-slate-800">
                   <span className="text-white">Tổng thanh toán:</span>
                   <span className="text-teal-400 text-lg">{formatVND(comboResult.finalTotal)}</span>

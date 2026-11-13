@@ -18,6 +18,63 @@
 
 ---
 
+### D-N06-04: Thu phí, voucher dịch vụ, quà Điểm Mây (chủ dự án chốt 13/11/2026, áp dụng ở N06.3)
+
+- **Thu phí nền tảng:**
+  - Cuối tháng, hệ thống chốt kỳ phí của mỗi cơ sở từ `fee_ledger`.
+  - Chủ cơ sở chuyển khoản vào **tài khoản của admin**, rồi tải ảnh chuyển khoản lên.
+  - Admin xác nhận đã nhận đủ thì kỳ phí chuyển sang "đã kết toán".
+  - Xác nhận là thủ công, có log; không có cổng thanh toán. Thiếu tiền hoặc ảnh không hợp lệ thì admin ghi lý do và trả lại cho cơ sở.
+- **Voucher dịch vụ:**
+  - Tà Xùa Trip deal với từng bên dịch vụ (quán, xe, chụp ảnh...). Bên nào đồng ý cấp voucher thì bên đó chịu phần giảm.
+  - Tại nơi dùng dịch vụ, khách đọc **mã booking** đã đặt thực tế trên website. Bên dịch vụ tra mã, xác nhận rồi khấu trừ % theo voucher.
+  - Hệ thống ghi lần dùng (một lần mỗi voucher mỗi booking) để hai bên đối chiếu.
+  - Tà Xùa Trip không bù tiền voucher.
+- **Điểm Mây:**
+  - Giá trị quy đổi điểm triển khai sau; đổi điểm tiếp tục khóa.
+  - Quà trao cho top 3 người đóng góp nhiều nhất theo **tháng / quý / năm**, mức quà theo bậc điểm.
+  - Bảng xếp hạng và phần admin chốt quà mở rộng thêm kỳ quý và năm.
+
+### D-N08-01: Kế hoạch chuyến đi trong hồ sơ khách (chốt hướng 13/11/2026, làm sau N06.3)
+
+- **Tham khảo:** trang lịch trình của Cravel.
+  - Phần đầu tóm tắt chuyến: số ngày, số người, số điểm dừng, chỗ ở, chi phí dự kiến mỗi người.
+  - Khối "Nhà xe, thuê xe & chỗ ở".
+  - Lịch theo ngày, mỗi điểm có giờ, loại, thời lượng ở lại, ghi chú và chi phí/người.
+  - Bản đồ và link Google Maps theo ngày.
+  - Bảng chi phí theo nhóm, tổng/người và tổng nhóm; danh sách đồ cần mang.
+- **Hai phần gợi ý:**
+  1. Lộ trình trải nghiệm theo gói 2N1Đ / 3N2Đ / 4N3Đ.
+  2. Phòng, xe và dịch vụ lấy từ CSDL (homestay, nhà xe, quán, cà phê, chụp ảnh, trang phục, tour). Các gợi ý này **gắn ngay vào từng mốc của lộ trình**, ví dụ: ngày 1 lúc 14:00 nhận phòng ở X, xe Y đi lúc 07:00.
+- **Cách tạo:**
+  - Server dựng lộ trình bằng bộ luật từ CSDL: mẫu ngày, giờ đẹp săn mây, chọn cơ sở đã duyệt.
+  - Giá phòng và xe lấy từ quote/tồn phòng thật và **tính bằng code**.
+  - Khi có khóa AI, AI chỉ viết lời mô tả và cá nhân hóa. AI không tạo giá, phòng trống hay cơ sở không có trong CSDL. Phần nào chưa có AI thì không gắn nhãn "AI trực tiếp".
+- **Điểm tham quan:** bảng mới do admin quản lý. Tôi nạp sẵn khoảng 12–15 điểm quen thuộc (giờ đẹp, thời lượng). Giá vé để "chưa xác minh" đến khi admin nhập.
+- **Lưu và chia sẻ:**
+  - Kế hoạch lưu theo tài khoản, nằm ở mục "Kế hoạch của tôi" trong hồ sơ.
+  - Mặc định riêng tư. Chủ kế hoạch bật được link chia sẻ chỉ đọc cho người cùng nhóm, và tắt link được.
+  - Chưa làm trang khám phá công khai.
+- Từ kế hoạch có thể bấm đặt phòng hoặc xe, đi qua luồng giữ chỗ/đặt cọc sẵn có (N05/N06).
+
+### D-N06-03: Điểm Mây theo đóng góp, phí nền tảng theo từng cơ sở (chủ dự án chốt 13/11/2026)
+
+- **Điểm Mây tính theo đóng góp thật, không theo tiền chi tiêu.** Nguồn duy nhất là sổ `points_ledger` ở server; trình duyệt không tự cộng điểm.
+  - Hoàn tất chuyến ở (cơ sở xác nhận): +20, ghi cùng batch với bước "hoàn tất"; một đơn chỉ được cộng một lần.
+  - Đánh giá xác thực: +30, có ảnh thật thêm +20. Hằng số đã có, nhưng nối vào luồng đánh giá ở N06.3.
+  - Admin cộng điểm cho đóng góp được duyệt: 1–500 điểm mỗi lần, phải ghi lý do, có khóa chống bấm lặp.
+  - Admin thu hồi bằng một dòng trừ bù, không xóa dòng gốc.
+- **Danh hiệu** tính theo điểm 12 tháng gần nhất: Lữ khách mới (0), Người săn mây (100), Thổ địa Tà Xùa (300), Đại sứ Tà Xùa (800).
+- **Bảng xếp hạng** công khai chỉ hiện khách du lịch, dùng tên rút gọn (ví dụ "Nguyễn V. K.").
+- **Top 3 mỗi tháng:** sau khi tháng kết thúc, admin chốt và ghi quà đã trao. Mỗi hạng và mỗi người chỉ được ghi một lần.
+- **Đổi điểm lấy quà: khóa** (`REDEMPTION_ENABLED=false`). Giá trị quy đổi và người chịu chi phí voucher chưa chốt. Server đã có API đổi điểm nhưng trả 403 cho tới khi chủ dự án chốt.
+- **Phí nền tảng:**
+  - Admin cài mức phí cho từng cơ sở sau khi đã thỏa thuận. Có hai dạng: số tiền cố định mỗi đơn (0–10.000.000đ), hoặc phần trăm (0–50%, làm tròn tới đồng theo quy tắc thường).
+  - Khi đơn hoàn tất, hệ thống ghi một dòng vào `fee_ledger` theo mức phí lúc đó. Cơ sở chưa được cài mức phí thì không ghi dòng nào.
+  - Đảo phí phải có lý do và giữ nguyên kỳ (tháng) của dòng gốc.
+  - **Chưa thu tiền.** Không còn ví trả trước và không tự trừ 50.000đ. Hóa đơn cuối tháng làm ở N06.3.
+- **Bỏ** các lời hứa điểm cũ trong giao diện: điểm theo % tiền đặt, +50 khi đánh giá, điểm cộng tại trình duyệt. Có test quét mã nguồn để chặn chúng quay lại.
+
 ### D-N06-02: Đối soát cọc (chủ dự án chốt 13/11/2026)
 
 - **Khi nào mở:** khách đã gửi biên lai cọc nhưng đơn **hết hạn giữ chỗ** hoặc **bị cơ sở từ chối** trước khi cơ sở xác nhận nhận cọc. Không mở khi khách tự hủy hoặc cơ sở nhả phòng vì quá hạn 70% (D03: cọc không hoàn).

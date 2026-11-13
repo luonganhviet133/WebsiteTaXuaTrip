@@ -1097,7 +1097,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="flex items-center justify-between gap-4 mb-2">
               <div>
                 <span className="text-xs font-bold text-white block">Cờ Thu Phí `billing_enabled`:</span>
-                <span className="text-xs text-slate-400">50.000đ khi booking hoàn tất</span>
+                <span className="text-xs text-slate-400">Mức phí từng cơ sở: mục "Phí nền tảng & Điểm Mây"; hóa đơn cuối tháng làm ở bước sau</span>
               </div>
               <button
                 type="button"

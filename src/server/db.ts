@@ -604,6 +604,12 @@ export class DatabaseEngine {
     }
 
     await this.d1.exec(`
+      DELETE FROM monthly_awards;
+      DELETE FROM point_redemptions;
+      DELETE FROM point_rewards;
+      DELETE FROM fee_ledger;
+      DELETE FROM listing_fee_rates;
+      DELETE FROM points_ledger;
       DELETE FROM reconciliation_files;
       DELETE FROM payment_reconciliations;
       DELETE FROM payment_receipts;

@@ -7,7 +7,6 @@ import type {
   CloudHuntingForecast, 
   CommunityPost, 
   MemberProfile, 
-  PartnerWallet,
   PartnerClaimRequest,
   BookingDispute,
   PromoVoucher,
@@ -12730,19 +12729,10 @@ export const INITIAL_USER_PROFILE: MemberProfile = {
   id: 'user-vip-01',
   name: 'Lê Thành Đạt',
   phone: '0986 555 777',
-  cloudPoints: 180, // 180 điểm Mây
+  cloudPoints: 0, // N06.2: lấy từ server (/api/me/points) khi đăng nhập
   membershipTier: 'Thợ Săn Mây Bạc',
   savedListings: ['homestay-may', 'coffee-mi-oi', 'tour-song-lung'],
   bookingHistory: INITIAL_BOOKINGS
-};
-
-export const INITIAL_PARTNER_WALLET: PartnerWallet = {
-  partnerId: 'partner-01',
-  partnerName: 'Mẩy Tà Xùa Homestay & Cloud Lounge',
-  balance: 1500000, // 1.500.000đ trong ví trả trước payOS
-  pendingFeeTotal: 50000,
-  completedBookingsCount: 18,
-  billingEnabled: false // cờ tính phí hiện tại (sẽ bật khi đủ 10.000 member theo kế hoạch)
 };
 
 export const INITIAL_CLAIM_REQUESTS: PartnerClaimRequest[] = [

@@ -51,7 +51,6 @@ interface CommunitySectionProps {
   initialSpaceId?: string;
   siteContent?: SiteContentConfig;
   listings?: Listing[];
-  onEarnCloudPoints?: (points: number, reason: string) => void;
 }
 
 interface ChatMessageItem {
@@ -703,8 +702,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
   onClosePopup,
   initialSpaceId,
   siteContent = INITIAL_SITE_CONTENT,
-  listings = INITIAL_LISTINGS,
-  onEarnCloudPoints
+  listings = INITIAL_LISTINGS
 }) => {
   // Main 4-Module Navigation derived from PDF 1 & PDF 2
   const [activeMainTab, setActiveMainTab] = useState<
@@ -979,7 +977,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
               completedTrips: 2,
               verifiedReviews: 2,
               trustScore: 95,
-              badge: 'Thợ săn mây · 180 Điểm Mây',
+              badge: 'Người săn mây',
               status: 'pending',
               privatePhone: '0989 123 456'
             }
@@ -1055,10 +1053,6 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
       pinned: true
     };
     setSocialMessages((prev) => [...prev, autoChatMsg]);
-
-    if (onEarnCloudPoints) {
-      onEarnCloudPoints(15, 'Đăng kèo ghép đi chung minh bạch');
-    }
   };
 
   const handleCreateCloudReport = (e: React.FormEvent) => {
@@ -1088,10 +1082,6 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
     setIsCreatingCloudReport(false);
     setNewReportNote('');
     setNewReportVideoUrl('');
-
-    if (onEarnCloudPoints) {
-      onEarnCloudPoints(20, 'Báo mây thực tế kèm tọa độ GPS');
-    }
   };
 
   const handleVoteReportHelpful = (reportId: string) => {
@@ -1855,7 +1845,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   className="shrink-0 bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-4 py-3 rounded-2xl inline-flex items-center gap-2 shadow-md cursor-pointer self-start lg:self-auto"
                 >
                   <Plus className="w-4 h-4 text-amber-300" />
-                  <span>{isCreatingDeal ? 'Đóng Form Đăng Kèo' : '+ Đăng Kèo Ghép Mới (+15 Điểm Mây)'}</span>
+                  <span>{isCreatingDeal ? 'Đóng Form Đăng Kèo' : '+ Đăng Kèo Ghép Mới'}</span>
                 </button>
               </div>
 
@@ -1927,7 +1917,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     </h3>
                   </div>
                   <span className="text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full">
-                    🎁 Thưởng +15 Điểm Mây
+                    🎁 Đóng góp hữu ích được cộng Điểm Mây
                   </span>
                 </div>
 
@@ -2319,7 +2309,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   <span>
                     {isCreatingCloudReport
                       ? 'Đóng Form Báo Mây'
-                      : '+ Báo Mây Thực Tế & Nhúng Video (+20 Điểm Mây)'}
+                      : '+ Báo Mây Thực Tế & Nhúng Video'}
                   </span>
                 </button>
               </div>
@@ -2352,7 +2342,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-extrabold text-brand-800 uppercase">
-                      📸 Gửi Báo Cáo Biển Mây & Tình Trạng Đường Đèo Thực Tế (Nhận +20 Điểm Mây)
+                      📸 Gửi Báo Cáo Biển Mây & Tình Trạng Đường Đèo Thực Tế (báo chính xác được cộng Điểm Mây)
                     </span>
                     <span className="text-xs font-bold text-emerald-700 bg-white px-2.5 py-1 rounded-full border border-emerald-200">
                       ✓ Tự động gắn nhãn GPS
@@ -2458,7 +2448,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       type="submit"
                       className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl cursor-pointer shrink-0"
                     >
-                      Đăng Báo Mây Ngay (+20đ)
+                      Đăng Báo Mây Ngay
                     </button>
                   </div>
                 </form>
@@ -3091,15 +3081,12 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     onClick={() => {
                       navigator.clipboard?.writeText(referralShareUrl);
                       setCopiedReferral(true);
-                      if (onEarnCloudPoints) {
-                        onEarnCloudPoints(30, 'Chia sẻ liên kết cộng đồng cho bạn bè');
-                      }
                       setTimeout(() => setCopiedReferral(false), 2500);
                     }}
                     className="shrink-0 bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs px-4 py-2 rounded-xl inline-flex items-center gap-1.5 cursor-pointer"
                   >
                     {copiedReferral ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
-                    <span>{copiedReferral ? 'Đã chép & +30 Điểm Mây!' : 'Sao chép Link (+30đ)'}</span>
+                    <span>{copiedReferral ? 'Đã chép link!' : 'Sao chép Link'}</span>
                   </button>
                 </div>
               </div>

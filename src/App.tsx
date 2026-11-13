@@ -10,7 +10,6 @@ import {
   INITIAL_BOOKINGS,
   INITIAL_REVIEWS,
   INITIAL_USER_PROFILE,
-  INITIAL_PARTNER_WALLET,
   CLOUD_LANDMARKS,
   INITIAL_DISPUTES,
   INITIAL_REWARD_SETTINGS,
@@ -41,6 +40,9 @@ import { ListingCard } from './components/ListingCard.tsx';
 import { ListingDetailModal } from './components/ListingDetailModal.tsx';
 import { PartnerBookingsPanel } from './components/PartnerBookingsPanel.tsx';
 import { AdminReconciliationPanel } from './components/AdminReconciliationPanel.tsx';
+import { AdminCommunityPanel } from './components/AdminCommunityPanel.tsx';
+import { LeaderboardCard } from './components/LeaderboardCard.tsx';
+import { pointsApi } from './api/pointsApi.ts';
 import { BusBookingModal } from './components/BusBookingModal.tsx';
 import { CloudForecastWidget } from './components/CloudForecastWidget.tsx';
 import { AIItineraryGenerator } from './components/AIItineraryGenerator.tsx';
@@ -71,7 +73,6 @@ import { EmptyState, ErrorState, Skeleton } from './components/ui/index.ts';
 import { AuthUser, DEMO_ACCOUNTS } from './types/auth.ts';
 import {
   formatVND,
-  calculateMemberPoints,
   calculateUpdatedRating,
   QUICK_SUGGESTIONS,
   matchesQuickSuggestion,
@@ -336,7 +337,6 @@ export default function App() {
   const [bookings, setBookings] = useState<Booking[]>(INITIAL_BOOKINGS);
   const [reviews, setReviews] = useState<Review[]>(INITIAL_REVIEWS);
   const [userProfile, setUserProfile] = useState(INITIAL_USER_PROFILE);
-  const [partnerWallet, setPartnerWallet] = useState(INITIAL_PARTNER_WALLET);
   const [billingEnabled, setBillingEnabled] = useState(false);
   const [disputes, setDisputes] = useState<BookingDispute[]>(INITIAL_DISPUTES);
   // N04.3: voucher lưu ở server, admin tạo; không còn voucher mẫu trong trình duyệt.
@@ -626,12 +626,8 @@ export default function App() {
         return l;
       })
     );
-    // Award +20 points
-    setUserProfile((prev) => ({
-      ...prev,
-      cloudPoints: prev.cloudPoints + 20
-    }));
-    showToast('Đã gửi đánh giá thành công! Bạn nhận được +20 Điểm Mây thưởng.');
+    // N06.2: Điểm Mây chỉ do server ghi (đánh giá xác thực cộng điểm ở N06.3)
+    showToast('Đã gửi đánh giá thành công! Cảm ơn bạn đã đóng góp cho cộng đồng.');
   };
 
   const handleRegisterMember = (name: string, phone: string) => {
@@ -1044,10 +1040,9 @@ export default function App() {
     const attribution = typeof window !== 'undefined' ? readAttribution(window.localStorage) : null;
     const newBooking: Booking = attribution ? { ...bookingInput, attribution } : bookingInput;
     setBookings((prev) => [newBooking, ...prev]);
-    const earnedPoints = calculateMemberPoints(newBooking.totalAmount);
+    // N06.2 (D05): Điểm Mây chỉ cộng khi chuyến HOÀN TẤT, do server ghi — không cộng lúc đặt.
     setUserProfile((prev) => ({
       ...prev,
-      cloudPoints: prev.cloudPoints + earnedPoints,
       bookingHistory: [newBooking, ...prev.bookingHistory]
     }));
 
@@ -1136,20 +1131,12 @@ export default function App() {
         if (b.id === bookingId) {
           return {
             ...b,
-            status: 'completed',
-            feeCharged: billingEnabled
+            status: 'completed'
           };
         }
         return b;
       })
     );
-
-    setPartnerWallet((prev) => ({
-      ...prev,
-      completedBookingsCount: prev.completedBookingsCount + 1,
-      balance: billingEnabled ? Math.max(0, prev.balance - 50000) : prev.balance,
-      pendingFeeTotal: billingEnabled ? prev.pendingFeeTotal : prev.pendingFeeTotal + 50000
-    }));
 
     showToast('Đã hoàn tất lưu trú! Bạn đã có thể để lại đánh giá xác thực.');
   };
@@ -1192,12 +1179,7 @@ export default function App() {
       };
     });
 
-    setUserProfile((prev) => ({
-      ...prev,
-      cloudPoints: prev.cloudPoints + 50
-    }));
-
-    showToast('Đã đăng đánh giá xác thực thành công! (+50 Điểm Mây)');
+    showToast('Đã đăng đánh giá xác thực thành công!');
   };
 
   // Admin handlers
@@ -1205,7 +1187,7 @@ export default function App() {
     setBillingEnabled(!billingEnabled);
     showToast(
       !billingEnabled
-        ? 'Đã BẬT cờ thu phí 50.000đ/booking!'
+        ? 'Đã BẬT cờ thu phí (gửi hóa đơn phí cuối tháng ở N06.3)'
         : 'Đã TẮT thu phí - Chế độ Beta miễn phí'
     );
   };
@@ -1254,13 +1236,21 @@ export default function App() {
     showToast('Đăng bài lên cộng đồng thành công!');
   };
 
-  const handleRedeemReward = (title: string, cost: number) => {
-    if (userProfile.cloudPoints >= cost) {
-      setUserProfile((prev) => ({ ...prev, cloudPoints: prev.cloudPoints - cost }));
-      setIsPointsModalOpen(false);
-      showToast(`Đổi thành công: ${title}! Mã ưu đãi đã được lưu vào hồ sơ.`);
+
+  // N06.2: Điểm Mây hiển thị trên thanh điều hướng lấy từ sổ điểm của server (điểm đóng góp 12 tháng).
+  useEffect(() => {
+    if (!currentUser) {
+      setUserProfile((prev) => ({ ...prev, cloudPoints: 0 }));
+      return;
     }
-  };
+    let alive = true;
+    pointsApi.me().then((r) => {
+      if (alive && r.ok) setUserProfile((prev) => ({ ...prev, cloudPoints: r.data.points12m }));
+    });
+    return () => {
+      alive = false;
+    };
+  }, [currentUser?.id]);
 
   const partnerOwnedListings = currentUser?.role === 'partner' ? managedAsListings : [];
 
@@ -4084,15 +4074,16 @@ export default function App() {
 
         {/* TAB CHAT CỘNG ĐỒNG RIÊNG */}
         {currentTab === 'community' && (
+          <div className="max-w-5xl mx-auto px-4 pt-6">
+            <LeaderboardCard />
+          </div>
+        )}
+        {currentTab === 'community' && (
           <CommunitySection
             posts={communityPosts}
             onAddPost={handleAddCommunityPost}
             siteContent={siteContent}
             listings={listings}
-            onEarnCloudPoints={(pts, reason) => {
-              setUserProfile((prev) => ({ ...prev, cloudPoints: prev.cloudPoints + pts }));
-              showToast(`+${pts} Điểm Mây: ${reason}!`);
-            }}
           />
         )}
 
@@ -4105,7 +4096,6 @@ export default function App() {
                 onSelectPartnerListing={(listingId) => setSelectedPartnerListingId(listingId)}
                 onUpdateListing={handleUpdateListingFromPartnerOrAdmin}
                 bookings={bookings.filter((b) => b.listingId === partnerListing.id)}
-                wallet={partnerWallet}
                 onUpdateAvailability={handleUpdateAvailability}
                 inventoryDate={partnerInventoryDate}
                 onChangeInventoryDate={setPartnerInventoryDate}
@@ -4210,6 +4200,7 @@ export default function App() {
         )}
 
         {currentTab === 'admin' && currentUser?.role === 'admin' && <AdminReconciliationPanel />}
+        {currentTab === 'admin' && currentUser?.role === 'admin' && <AdminCommunityPanel listings={adminListings.map((l) => ({ id: l.id, title: l.title }))} />}
         {currentTab === 'admin' && (
           currentUser?.role === 'admin' ? (
             <AdminDashboard
@@ -4394,10 +4385,6 @@ export default function App() {
           initialSpaceId={communityPopupSpaceId}
           siteContent={siteContent}
           listings={listings}
-          onEarnCloudPoints={(pts, reason) => {
-            setUserProfile((prev) => ({ ...prev, cloudPoints: prev.cloudPoints + pts }));
-            showToast(`+${pts} Điểm Mây: ${reason}!`);
-          }}
         />
       )}
 
@@ -4438,7 +4425,6 @@ export default function App() {
           reviews={reviews.filter((r) => r.listingId === selectedListingDetail.id)}
           userBookings={bookings.filter((b) => b.listingId === selectedListingDetail.id)}
           vouchers={vouchers}
-          rewardSettings={rewardSettings}
           onClose={() => setSelectedListingDetail(null)}
           onBookSuccess={handleBookingSuccess}
           onAddReview={handleAddReview}
@@ -4463,9 +4449,13 @@ export default function App() {
 
       {isPointsModalOpen && (
         <PointsModal
-          profile={userProfile}
+          isLoggedIn={!!currentUser}
           onClose={() => setIsPointsModalOpen(false)}
-          onRedeemReward={handleRedeemReward}
+          onLogin={() => {
+            setIsPointsModalOpen(false);
+            handleOpenAuthModal('traveler', 'login');
+          }}
+          onLoaded={(pts) => setUserProfile((prev) => ({ ...prev, cloudPoints: pts }))}
         />
       )}
 

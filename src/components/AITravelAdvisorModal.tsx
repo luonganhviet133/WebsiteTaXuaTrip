@@ -696,7 +696,7 @@ Hotline hỗ trợ: 0981 234 567`;
                       </span>
                       <div>
                         <div className="text-xs font-black text-slate-900">
-                          Ưu đãi thành viên: Tích lũy +{result.memberPointsReward} Điểm Mây
+                          Thành viên: nhận {result.memberPointsReward} Điểm Mây khi chuyến ở hoàn tất
                         </div>
                         <p className="text-xs text-slate-600 mt-0.5">
                           Đặt qua Tà Xùa Trip để được đảm bảo phòng thẩm định, hỗ trợ giải quyết khiếu nại 24/7

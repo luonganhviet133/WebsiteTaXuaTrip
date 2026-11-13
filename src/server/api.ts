@@ -28,6 +28,7 @@ import { handleInventoryRoutes } from './inventory/routes.ts';
 import { handleBookingRoutes } from './bookings/routes.ts';
 import { BookingLifecycle } from './bookings/store.ts';
 import { handlePaymentRoutes } from './payments/routes.ts';
+import { handleCommunityRoutes } from './community/routes.ts';
 import type { PrivateStorage } from './payments/storage.ts';
 
 export interface ApiContext {
@@ -199,6 +200,17 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
     }
     return json({ success: true, data: booking });
   }
+
+  // ==================== ĐIỂM MÂY, XẾP HẠNG, PHÍ NỀN TẢNG (N06.2) ====================
+  const communityResponse = await handleCommunityRoutes(request, pathname, {
+    d1: ctx.db.d1,
+    json,
+    readJson,
+    requireRole: (allowed) => requireRole(request, ctx, allowed),
+    rateLimit: (key, max) => checkRateLimit(key, max, 60 * 1000).allowed,
+    clientIp: ctx.clientIp,
+  });
+  if (communityResponse) return communityResponse;
 
   // ==================== THANH TOÁN (N06.1, D03) ====================
   const paymentResponse = await handlePaymentRoutes(request, pathname, {

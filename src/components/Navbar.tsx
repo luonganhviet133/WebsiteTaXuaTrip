@@ -427,7 +427,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                               <span>Điểm Mây tích lũy</span>
                             </span>
                             <span className="font-extrabold text-teal-700 text-xs bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200/60 tabular-nums">
-                              {cloudPoints}đ
+                              {cloudPoints} điểm
                             </span>
                           </button>
                         </div>

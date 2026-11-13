@@ -319,7 +319,7 @@ export const AIItineraryGenerator: React.FC<AIItineraryGeneratorProps> = ({
               ? 'Nhà xe đón tận Homestay lúc 13:00 chiều, về tới Hà Nội khoảng 18:15 tối.'
               : 'Chiều thong thả săn hoàng hôn tại Mỏm Đầu Rùa và tắm lá thuốc người vùng cao.',
           location: 'Trung tâm Tà Xùa ➔ Hà Nội',
-          tip: 'Đừng quên đăng ảnh review chuyến đi để nhận ngay +50 Điểm Mây đổi Voucher giảm giá.',
+          tip: 'Sau chuyến đi, chia sẻ đánh giá và ảnh thật để giúp người đi sau — đóng góp hữu ích được cộng Điểm Mây.',
           defaultCostPerPerson: duration === '2n1d' ? 320000 : 180000,
           linkedCategory: 'bus',
           preferredArea: 'Bắc Yên'
