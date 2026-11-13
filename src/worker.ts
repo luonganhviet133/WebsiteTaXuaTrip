@@ -10,6 +10,7 @@
 import { DatabaseEngine } from './server/db.ts';
 import { TURNSTILE_TEST_SECRET } from './server/antiAbuse.ts';
 import { handleApiRequest } from './server/api.ts';
+import { HoldStore } from './server/bookings/holds.ts';
 
 export interface Env {
   DB: any;
@@ -39,6 +40,13 @@ function getClientIp(request: Request): string {
 }
 
 export default {
+  // N05.2 — Cron (wrangler.toml [triggers]) mỗi 5 phút: chuyển giữ chỗ quá hạn sang 'expired' và nhả phòng.
+  // Tồn phòng không phụ thuộc cron (giữ chỗ hết hạn tự không được tính); cron chỉ dọn trạng thái cho đúng.
+  async scheduled(_event: unknown, env: Env): Promise<void> {
+    const result = await new HoldStore(new DatabaseEngine({ d1: env.DB }).d1).expireHolds();
+    if (result.expired || result.released) console.log(`[holds] expired=${result.expired} released=${result.released}`);
+  },
+
   async fetch(request: Request, env: Env, ctx?: any): Promise<Response> {
     const url = new URL(request.url);
     const pathname = url.pathname;

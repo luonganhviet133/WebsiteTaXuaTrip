@@ -25,6 +25,7 @@ import { handleListingRoutes } from './listings/routes.ts';
 import { ListingStore } from './listings/store.ts';
 import { handlePricingRoutes } from './pricing/routes.ts';
 import { handleInventoryRoutes } from './inventory/routes.ts';
+import { handleBookingRoutes } from './bookings/routes.ts';
 
 export interface ApiContext {
   db: DatabaseEngine;
@@ -192,6 +193,17 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
     }
     return json({ success: true, data: booking });
   }
+
+  // ==================== GIỮ CHỖ (N05.2) ====================
+  const bookingResponse = await handleBookingRoutes(request, pathname, {
+    d1: ctx.db.d1,
+    json,
+    readJson,
+    requireRole: (allowed) => requireRole(request, ctx, allowed),
+    rateLimit: (key, max) => checkRateLimit(key, max, 60 * 1000).allowed,
+    clientIp: ctx.clientIp,
+  });
+  if (bookingResponse) return bookingResponse;
 
   // ==================== TỒN PHÒNG THEO ĐÊM (N05.1) ====================
   // Đặt trước route danh bạ để /api/partner/listings/:id/inventory không bị route sửa hồ sơ bắt nhầm.

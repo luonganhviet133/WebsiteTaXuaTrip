@@ -7,7 +7,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { execSync } from 'node:child_process';
+import { execFileSync, execSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -17,6 +17,7 @@ import { fileURLToPath } from 'node:url';
 import { unstable_dev } from 'wrangler';
 import { createExpressApp } from '../../server.ts';
 import { DatabaseEngine } from './db.ts';
+import { addDays, todayInVietnam } from '../search/searchIntent.ts';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -215,10 +216,65 @@ test('Hợp đồng API trên Worker (workerd)', { timeout: 180_000 }, async (t)
     logLevel: 'error',
     experimental: { disableExperimentalWarning: true }
   });
+  let holdWorker: Awaited<ReturnType<typeof unstable_dev>> | undefined;
   try {
     await runContract(t, (route, init) => worker.fetch(route, init as any) as unknown as Promise<Response>, 'worker');
-  } finally {
     await worker.stop();
+
+    // N05.2 — giữ chỗ trên D1 thật (workerd): migration 0006 dựng lại bảng bookings, batch rollback nhờ CHECK,
+    // changes() trong UPDATE có điều kiện. Cho tx-stay-5 một hạng phòng chỉ còn 1 phòng rồi khởi động lại Worker.
+    const roomTypes = JSON.stringify([{ id: 'r1', name: 'Phòng đôi', capacity: 2, priceWeekday: 500000, priceWeekend: 800000, totalRooms: 1, availableRooms: 1, amenities: [], viewType: 'Sân vườn' }]);
+    execFileSync(
+      'npx',
+      ['wrangler', 'd1', 'execute', 'DB', '--local', '--persist-to', persistTo, '--command',
+        `UPDATE listing_versions SET content_json = json_set(content_json, '$.roomTypes', json('${roomTypes}')) WHERE listing_id = 'tx-stay-5'`],
+      { cwd: projectRoot, stdio: 'ignore' }
+    );
+    holdWorker = await unstable_dev(path.join(projectRoot, 'src/worker.ts'), {
+      config: path.join(projectRoot, 'wrangler.toml'),
+      local: true,
+      persistTo,
+      vars: { NODE_ENV: 'development' },
+      logLevel: 'error',
+      experimental: { disableExperimentalWarning: true }
+    });
+    const call: Fetcher = (route, init) => holdWorker!.fetch(route, init as any) as unknown as Promise<Response>;
+    await t.test('N05.2 giữ chỗ trên D1 thật: 20 yêu cầu đồng thời chỉ 1 đơn thắng; hủy trả phòng', async () => {
+      const reg = await call('/api/auth/register', jsonInit('POST', { email: `hold.${Date.now()}@example.com`, password: 'MatKhau123!', fullName: 'Khách Giữ Chỗ', role: 'traveler' }));
+      assert.equal(reg.status, 201);
+      const token = ((await reg.json()) as any).token;
+      let checkIn = addDays(todayInVietnam(), 7);
+      while (new Date(`${checkIn}T00:00:00Z`).getUTCDay() !== 1) checkIn = addDays(checkIn, 1);
+      const checkOut = addDays(checkIn, 2);
+      const q = await call('/api/quotes', jsonInit('POST', { listingId: 'tx-stay-5', roomTypeId: 'r1', checkIn, checkOut, adults: 2, children: 0, rooms: 1 }));
+      assert.equal(q.status, 200);
+      const quoteId = ((await q.json()) as any).data.id;
+
+      const results = await Promise.all(
+        Array.from({ length: 20 }, (_, i) =>
+          call('/api/bookings/holds', jsonInit('POST', { quoteId, idempotencyKey: `race-${i}`, guestName: 'Khách Giữ Chỗ', guestPhone: '0912345678' }, token))
+            .then(async (r) => ({ status: r.status, body: (await r.json()) as any }))
+        )
+      );
+      const won = results.filter((r) => r.status === 201);
+      assert.equal(won.length, 1, JSON.stringify(results.map((r) => r.status)));
+      assert.ok(results.filter((r) => r.status !== 201).every((r) => r.status === 409 && r.body.code === 'SOLD_OUT'));
+      const booking = won[0].body.data;
+      assert.equal(booking.totalAmount, 1000000);
+      assert.equal(booking.depositAmount, 300000);
+
+      const soldOut: any = await (await call(`/api/listings/tx-stay-5/availability?checkIn=${checkIn}&checkOut=${checkOut}`)).json();
+      assert.equal(soldOut.data.rooms[0].available, 0);
+
+      const cancel = await call(`/api/bookings/${booking.id}/cancel`, jsonInit('POST', { reason: 'Thử hủy' }, token));
+      assert.equal(cancel.status, 200);
+      assert.equal((await call(`/api/bookings/${booking.id}/cancel`, jsonInit('POST', {}, token))).status, 409);
+      const freed: any = await (await call(`/api/listings/tx-stay-5/availability?checkIn=${checkIn}&checkOut=${checkOut}`)).json();
+      assert.equal(freed.data.rooms[0].available, 1);
+    });
+  } finally {
+    await worker.stop().catch(() => undefined);
+    await holdWorker?.stop();
     fs.rmSync(persistTo, { recursive: true, force: true });
   }
 });

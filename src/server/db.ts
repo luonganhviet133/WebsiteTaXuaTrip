@@ -602,6 +602,8 @@ export class DatabaseEngine {
     }
 
     await this.d1.exec(`
+      DELETE FROM voucher_redemptions;
+      DELETE FROM batch_assertions;
       DELETE FROM room_night_allocations;
       DELETE FROM room_night_closures;
       DELETE FROM quotes;
