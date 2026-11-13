@@ -416,7 +416,7 @@ export function buildPlan(req: PlanRequest, catalog: Catalog): Plan {
         const mo = visit(k('morning'), 'morning', t);
         if (mo.item) {
           items.push(mo.item);
-          t = mo.endAt;
+          t = mo.endAt + mo.back;
         } else if (ctx.req.styles.includes('chill')) {
           items.push({ slotKey: null, kind: 'free', start: fmt(t), end: '11:30', approx: false, title: 'Thong thả tại homestay', detail: null, travelMinutes: null, ref: null, alternatives: [] });
         }
@@ -426,7 +426,8 @@ export function buildPlan(req: PlanRequest, catalog: Catalog): Plan {
 
     if (isLast && !isFirst) {
       // Ngày cuối dựng ngược từ giờ xe về: ăn trưa xong trước giờ xe ≥ 20 phút.
-      const inbound = returnDeps.find((x) => x >= t + 90) ?? returnDeps[returnDeps.length - 1];
+      // Ưu tiên chuyến từ 12:30 trở đi để kịp ăn trưa thong thả; không có thì lấy chuyến sớm nhất còn kịp.
+      const inbound = returnDeps.find((x) => x >= Math.max(t + 90, 12 * 60 + 30)) ?? returnDeps.find((x) => x >= t + 90) ?? returnDeps[returnDeps.length - 1];
       const hasBus = req.transport === 'xe-khach' && !!busIn && inbound !== undefined && inbound > t;
       const lunchAt = hasBus ? Math.min(Math.max(t, 11 * 60), inbound - 80) : Math.max(t, 11 * 60 + 15);
       if (lunchAt >= t) {
@@ -479,6 +480,9 @@ export function buildPlan(req: PlanRequest, catalog: Catalog): Plan {
       }
       const ss = visit(k('sunset'), 'sunset', sunset - 30, { startIsArrival: true, notBefore: t });
       if (ss.item) items.push(ss.item);
+      else if (!af.item && sunset - 30 - t >= 90) {
+        items.push({ slotKey: null, kind: 'free', start: fmt(t), end: fmt(sunset), approx: true, title: 'Thời gian tự do', detail: 'Nghỉ tại homestay, dạo bản, hoặc ghé một điểm trong mục "Gợi ý thêm" (hỏi homestay đường đi).', travelMinutes: null, ref: null, alternatives: [] });
+      }
       const di = eat(k('dinner'), Math.max(ss.item ? ss.endAt + ss.back + 15 : sunset + 30, 18 * 60 + 30), 'meal', 'Ăn tối', { area: stayArea });
       if (di) items.push(di);
     }

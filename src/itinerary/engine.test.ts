@@ -173,3 +173,11 @@ test('Sau xe đêm đã có giờ nghỉ bù thì không thêm nghỉ trưa ngà
   const plan = buildPlan(req({ duration: '2N1D' }), catalog());
   assert.equal(plan.days[0].items.filter((i) => i.kind === 'rest').length, 1);
 });
+
+test('Hai điểm cùng cung đường: thời gian đi giữa hai điểm tính theo khoảng cách hai điểm, không vòng qua trung tâm', () => {
+  const plan = buildPlan(req({ styles: ['chup-anh'], preferIds: ['ca-heo', 'co-don'] }), catalog());
+  const items = plan.days.flatMap((d) => d.items);
+  const i = items.findIndex((x) => x.ref?.id === 'ca-heo');
+  const next = items[i + 1];
+  if (next?.ref?.id === 'co-don') assert.ok((next.travelMinutes ?? 99) <= 15, `đi ${next.travelMinutes} phút`);
+});

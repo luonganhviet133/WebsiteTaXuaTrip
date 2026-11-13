@@ -59,9 +59,10 @@
 
 ### Lệnh và kết quả
 - Test mới:
-  - `src/itinerary/engine.test.ts` (10 ca): đầu vào; đủ ngày, giờ tăng dần, không trùng điểm, chỉ id có thật; xe đêm; tự đi; ngân sách và chi phí; đổi/bỏ giữ khung khác; ưu tiên/tránh; ngoài mùa mây; thiếu dữ liệu; vé khứ hồi; không nghỉ hai lần.
+  - `src/itinerary/engine.test.ts` (11 ca): đầu vào; đủ ngày, giờ tăng dần, không trùng điểm, chỉ id có thật; xe đêm; tự đi; ngân sách và chi phí; đổi/bỏ giữ khung khác; ưu tiên/tránh; ngoài mùa mây; thiếu dữ liệu; vé khứ hồi; không nghỉ hai lần; hai điểm cùng cung đường không vòng qua trung tâm.
   - `src/server/itinerary/itinerary.api.test.ts` (7 ca): chưa duyệt thì không dùng; phân quyền; từ chối cần lý do; nhật ký; superseded; sửa → chờ duyệt; AI hiểu ghi chú + định tuyến model; lời dẫn có giá bị loại; Gemini lỗi → Revid; hết hạn mức.
-- `npm run typecheck` 0 lỗi · `npm test` 361/361 · `npm run build` đạt · `npm run worker:dry-run` đạt.
+- `npm run typecheck` 0 lỗi · `npm test` 362/362 · `npm run build` đạt · `npm run worker:dry-run` đạt.
+- Đọc lại lịch 2N1Đ/3N2Đ/4N3Đ từ dữ liệu thật và sửa: Cây cô đơn xếp chung khu với Mỏm Cá Heo (trước đó tính đi 65 phút thay vì ~10); tính thời gian quay về sau điểm buổi sáng; ngày cuối ưu tiên xe từ 12:30; chiều trống thì ghi "Thời gian tự do".
 - Giao diện (wrangler dev + D1 cục bộ, Chrome): 375/768/1280 không tràn ngang, không chữ < 12px. Đã thử: tạo lịch, đổi một quán qua bảng chọn, tab ngày; trang quản trị duyệt 39 mục.
 
 ### Chưa kiểm chứng

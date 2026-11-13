@@ -40,12 +40,12 @@
       "sources": ["vna", "finhay"]
     },
     {
-      "id": "pl-cay-co-don", "name": "Cây cô đơn (Suối Sập)", "kind": "viewpoint", "area": "Háng Đồng",
+      "id": "pl-cay-co-don", "name": "Cây cô đơn (Suối Sập)", "kind": "viewpoint", "area": "Bản Bẹ",
       "summary": "Cây đứng một mình trên đồi nhỏ, phía dưới là dòng Suối Sập; thường đi cùng chuyến Mỏm Cá Heo.",
       "bestTimes": ["morning", "afternoon"], "styles": ["chup-anh", "chill"],
       "visitMinutes": 45, "travelMinutes": 35, "distanceKm": 16, "entryFeeVnd": 10000, "parkingFeeVnd": 5000,
       "difficulty": "de", "bestMonths": [],
-      "notes": "Phí vào 10.000đ/người, gửi xe 5.000đ/xe (Vietnam Airlines). Thời gian đi 35 phút là ước tính: cách Mỏm Cá Heo khoảng 1–1,5 km (Finhay) — admin xác nhận khi duyệt. Về trước khi trời tối vì không có đèn đường. VnExpress nhắc tới một cây táo mèo cô đơn khác ở Đỉnh Gió, cách trung tâm hơn 1 km.",
+      "notes": "Phí vào 10.000đ/người, gửi xe 5.000đ/xe (Vietnam Airlines). Thời gian đi 35 phút là ước tính: cách Mỏm Cá Heo khoảng 1–1,5 km (Finhay) — admin xác nhận khi duyệt. Cùng cung đường Mỏm Cá Heo, thuộc khu thủy điện Suối Sập xã Háng Đồng (Finhay) — xếp chung khu Bản Bẹ để tính quãng đi. Về trước khi trời tối vì không có đèn đường. VnExpress nhắc tới một cây táo mèo cô đơn khác ở Đỉnh Gió, cách trung tâm hơn 1 km.",
       "sources": ["vna", "finhay", "vnexpress"]
     },
     {
