@@ -184,7 +184,8 @@ export async function changeUserPassword(
     throw new Error('Mật khẩu mới phải có tối thiểu 8 ký tự');
   }
   const newHash = hashPassword(newPass);
-  await customDb.updateAdminPasswordAndRevokeSessions(userId, newHash);
+  // Không dùng hàm của bootstrap admin: hàm đó đặt role = 'admin'.
+  await customDb.updatePasswordAndRevokeSessions(userId, newHash);
   return true;
 }
 

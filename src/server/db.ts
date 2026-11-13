@@ -468,7 +468,16 @@ export class DatabaseEngine {
     return res.meta.changes ?? 0;
   }
 
-  // --- Atomic Admin Password Update & Session Invalidation (S3) ---
+  // --- Đổi mật khẩu của chính người dùng: KHÔNG đụng vai trò; thu hồi mọi phiên (hotfix 13/11/2026) ---
+  public async updatePasswordAndRevokeSessions(userId: string, newPasswordHash: string): Promise<void> {
+    const now = new Date().toISOString();
+    await this.d1.batch([
+      this.d1.prepare('UPDATE profiles SET password_hash = ?, updated_at = ? WHERE id = ?').bind(newPasswordHash, now, userId),
+      this.d1.prepare('UPDATE user_sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL').bind(now, userId),
+    ]);
+  }
+
+  // --- Atomic Admin Password Update & Session Invalidation (S3) — CHỈ dùng cho bootstrap admin ---
   public async updateAdminPasswordAndRevokeSessions(userId: string, newPasswordHash: string): Promise<void> {
     const now = new Date().toISOString();
     await this.d1.batch([
@@ -561,7 +570,7 @@ export class DatabaseEngine {
     depositAmount: number;
     status?: 'draft' | 'pending' | 'confirmed' | 'completed' | 'cancelled';
   }): Promise<BookingDTO> {
-    const id = `bk_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    const id = `bk_${crypto.randomUUID().replace(/-/g, "").slice(0, 20)}`;
     const bookingCode = `TX-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
     const now = new Date().toISOString();
     const status = data.status || 'pending';
