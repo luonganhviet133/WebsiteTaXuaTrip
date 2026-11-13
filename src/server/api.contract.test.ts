@@ -7,6 +7,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { FEATURES } from '../config/features.ts';
 import { execFileSync, execSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -146,11 +147,18 @@ async function runContract(t: any, call: Fetcher, label: string): Promise<void> 
     assert.equal((await call('/api/partner/listings', authInit(token))).status, 403);
     assert.equal((await call('/api/partner/listings/homestay-may', jsonInit('PUT', {}, token))).status, 403);
     assert.equal((await call('/api/admin/overview', authInit(token))).status, 403);
-    assert.equal((await call('/api/revid/test-connection', jsonInit('POST', {}, token))).status, 403);
-    assert.equal((await call('/api/revid/playground-chat', jsonInit('POST', { prompt: 'x' }, token))).status, 403);
+    // R4: cổng Revid đang khóa với mọi người (503); khi mở lại thì traveler phải bị 403.
+    const gw = FEATURES.aiGateway.open ? 403 : 503;
+    assert.equal((await call('/api/revid/test-connection', jsonInit('POST', {}, token))).status, gw);
+    assert.equal((await call('/api/revid/playground-chat', jsonInit('POST', { prompt: 'x' }, token))).status, gw);
   });
 
   await t.test('POST /api/revid/classify trả mức độ tác vụ', async () => {
+    if (!FEATURES.aiGateway.open) {
+      const locked = await call('/api/revid/classify', jsonInit('POST', { prompt: 'x' }));
+      assert.equal(locked.status, 503, 'R4: đang khóa');
+      return;
+    }
     const res = await call('/api/revid/classify', jsonInit('POST', { prompt: 'Lên lịch trình 3 ngày 2 đêm săn mây Tà Xùa' }));
     assert.equal(res.status, 200);
     const body: any = await res.json();
@@ -159,6 +167,10 @@ async function runContract(t: any, call: Fetcher, label: string): Promise<void> 
 
   await t.test('POST /api/ai/quick-quote và /api/ai/consult trả báo giá (bộ quy tắc nội bộ)', async () => {
     const trip = { checkIn: '2026-11-20', checkOut: '2026-11-22', guests: 2, budget: 2500000, pickupLocation: 'Hà Nội' };
+    if (!FEATURES.aiAdvisor.open) {
+      for (const path of ['/api/ai/quick-quote', '/api/ai/consult']) assert.equal((await call(path, jsonInit('POST', trip))).status, 503, `R4: ${path} đang khóa`);
+      return;
+    }
     const quick = await call('/api/ai/quick-quote', jsonInit('POST', trip));
     assert.equal(quick.status, 200);
     assert.equal(((await quick.json()) as any).data.stayDurationNights, 2);

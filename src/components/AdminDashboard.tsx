@@ -108,6 +108,9 @@ import {
 import { JarvisAdminAssistant } from './JarvisAdminAssistant.tsx';
 import { AdminFeedbackPanel } from './AdminFeedbackPanel.tsx';
 import { AdminMembersPanel } from './AdminMembersPanel.tsx';
+import { AdminReconciliationPanel } from './AdminReconciliationPanel.tsx';
+import { AdminCommunityPanel } from './AdminCommunityPanel.tsx';
+import { isOpen as featureOpen } from '../config/features.ts';
 
 interface AdminDashboardProps {
   listings: Listing[];
@@ -130,7 +133,6 @@ interface AdminDashboardProps {
   onUpdateTier: (listingId: string, newTier: VerificationTier) => void;
   onApproveListing: (listingId: string) => void;
   onRejectListing: (listingId: string) => void;
-  verifiedMembersCount: number;
   disputes?: BookingDispute[];
   vouchers?: PromoVoucher[];
   onToggleVoucher?: (voucherId: string) => void;
@@ -175,7 +177,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onUpdateTier,
   onApproveListing,
   onRejectListing,
-  verifiedMembersCount,
   disputes = [],
   vouchers = [],
   onToggleVoucher,
@@ -187,12 +188,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onRejectClaim,
   currentUserId
 }) => {
-  const targetMembers = 10000;
-  const progressPercent = Math.min(100, Math.round((verifiedMembersCount / targetMembers) * 100));
 
   // Admin Tab Switcher
   const [adminTab, setAdminTab] = useState<
     | 'members'
+    | 'reconciliation'
+    | 'fees_points'
     | 'jarvis_command'
     | 'smart_listings'
     | 'cms_content'
@@ -1074,100 +1075,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   return (
     <div className="bg-slate-900 py-8 px-4 sm:px-6 lg:px-8 text-white min-h-[850px]">
       <div className="max-w-6xl mx-auto space-y-6">
-        {/* Admin Header */}
-        <div className="bg-gradient-to-r from-indigo-950 via-slate-850 to-slate-900 border border-indigo-700/60 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div>
-            <div className="flex flex-wrap items-center gap-2 mb-1.5">
-              <span className="text-xs font-black uppercase tracking-wider text-indigo-400">
-                TRUNG TÂM ĐIỀU HÀNH & QUẢN TRỊ ADMIN TOÀN DIỆN
-              </span>
-              <span className="text-xs bg-indigo-500/20 text-indigo-300 px-2.5 py-0.5 rounded-full border border-indigo-500/40 font-bold">
-                Admin Master Control
-              </span>
-              <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">
-                Toàn quyền Thêm / Sửa / Xóa Dịch Vụ & CMS
-              </span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-white">
-              Quản Trị Cơ Sở Đa Ngành, CMS Toàn Trang & AI Chatbot Studio
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1">
-              Kiểm soát sâu tính năng từng bên dịch vụ (Homestay, Nhà xe, Quán ăn, Xe máy, Tour) • Tùy biến 100% ảnh & nội dung hiển thị trên website.
-            </p>
-          </div>
-
-          {/* Feature Flag Toggle: billing_enabled */}
-          <div className="bg-slate-900/90 border border-slate-750 p-4 rounded-2xl shrink-0 w-full md:w-auto">
-            <div className="flex items-center justify-between gap-4 mb-2">
-              <div>
-                <span className="text-xs font-bold text-white block">Cờ Thu Phí `billing_enabled`:</span>
-                <span className="text-xs text-slate-400">Mức phí từng cơ sở: mục "Phí nền tảng & Điểm Mây"; hóa đơn cuối tháng làm ở bước sau</span>
-              </div>
-              <button
-                type="button"
-                onClick={onToggleBilling}
-                className="text-2xl text-teal-400 hover:text-teal-300 transition-colors cursor-pointer"
-                title="Bật / Tắt tính phí đối tác"
-              >
-                {billingEnabled ? (
-                  <ToggleRight className="w-8 h-8 text-teal-400" />
-                ) : (
-                  <ToggleLeft className="w-8 h-8 text-slate-500" />
-                )}
-              </button>
-            </div>
-            <div
-              className={`text-xs font-bold px-2.5 py-1 rounded-xl text-center ${
-                billingEnabled
-                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                  : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-              }`}
-            >
-              {billingEnabled ? '🔴 ĐÃ BẬT THU PHÍ (50K/ĐƠN)' : '🟢 MIỄN PHÍ TOÀN BỘ ĐỐI TÁC (BETA)'}
-            </div>
-          </div>
-        </div>
-
-        {/* Milestone Progress Bar */}
-        <div className="bg-slate-850 border border-slate-750 rounded-3xl p-5 shadow-xl">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
-            <div>
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Users className="w-4 h-4 text-sky-400" />
-                <span>Cột Mốc Miễn Phí: 10.000 Thành Viên Đã Xác Minh (Hướng tới 100.000 Member)</span>
-              </h3>
-              <p className="text-xs text-slate-400">
-                Cam kết văn bản với 200 nhà cung cấp: Miễn phí thu sàn cho đến khi đạt 10.000 thành viên đã xác minh.
-              </p>
-            </div>
-            <div className="text-right">
-              <span className="text-sm font-black text-teal-300">
-                {verifiedMembersCount.toLocaleString()} / {targetMembers.toLocaleString()} members ({progressPercent}%)
-              </span>
-            </div>
-          </div>
-
-          <div className="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden border border-slate-750">
-            <div
-              className="bg-gradient-to-r from-teal-500 via-sky-500 to-indigo-500 h-full rounded-full transition-all duration-500"
-              style={{ width: `${Math.max(5, progressPercent)}%` }}
-            />
-          </div>
+        {/* R4: tiêu đề gọn, không số liệu giả, không công tắc thu phí chỉ đổi trong trình duyệt */}
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Quản trị Tà Xùa Trip</h1>
+          <p className="text-sm text-slate-400 mt-1">Thành viên, cơ sở, đơn đặt, đối soát, khiếu nại và nội dung trang.</p>
         </div>
 
         {/* CỤM ĐIỀU HƯỚNG SUB-TABS ADMIN */}
         <div className="bg-slate-850 border border-slate-750 p-2 rounded-2xl flex flex-wrap gap-2">
           {[
             { id: 'members', label: 'Thành viên & Đối tác', icon: Users },
-            { id: 'jarvis_command', label: '💠 J.A.R.V.I.S. Siêu Trợ Lý Điều Hành', icon: Sparkles },
-            { id: 'smart_listings', label: `1. Quản Trị Cơ Sở & Dịch Vụ (${listings.length})`, icon: Building2 },
-            { id: 'cms_content', label: `2. Kênh Social (${(cmsConfig.socialChannels || []).length}) & CMS Toàn Trang`, icon: Globe },
-            { id: 'ai_studio', label: '3. AI Chatbot Studio & RAG', icon: Bot },
-            { id: 'revid_api_gateway', label: '4. Quản Trị RevidAPI Gateway (17+ Models)', icon: Layers },
-            { id: 'disputes', label: `5. Khiếu nại & đánh giá (${disputes.filter((d) => d.status === 'opening' || d.status === 'investigating').length} mở)`, icon: Scale },
-            { id: 'vouchers_rewards', label: `6. Vouchers & Tích Điểm (${vouchers.length})`, icon: Gift },
-            { id: 'claims', label: `7. Duyệt Chính Chủ (${claimRequests.length})`, icon: ShieldCheck },
-            { id: 'evidence_audit', label: '8. Kiểm Toán Bằng Chứng', icon: Lock }
+            { id: 'smart_listings', label: `Cơ sở & dịch vụ (${listings.length})`, icon: Building2 },
+            { id: 'claims', label: `Duyệt chính chủ (${claimRequests.length})`, icon: ShieldCheck },
+            { id: 'reconciliation', label: 'Đối soát cọc', icon: Scale },
+            { id: 'fees_points', label: 'Phí nền tảng & Điểm Mây', icon: Gift },
+            { id: 'disputes', label: `Khiếu nại & đánh giá (${disputes.filter((d) => d.status === 'opening' || d.status === 'investigating').length} mở)`, icon: Scale },
+            { id: 'vouchers_rewards', label: `Voucher (${vouchers.length})`, icon: Gift },
+            { id: 'cms_content', label: 'Nội dung trang & kênh liên hệ', icon: Globe },
+            { id: 'evidence_audit', label: 'Kiểm toán bằng chứng', icon: Lock },
+            ...(featureOpen('adminAssistant') ? [{ id: 'jarvis_command', label: 'Trợ lý J.A.R.V.I.S.', icon: Sparkles }] : []),
+            ...(featureOpen('aiGateway')
+              ? [
+                  { id: 'ai_studio', label: 'AI Chatbot Studio', icon: Bot },
+                  { id: 'revid_api_gateway', label: 'Cổng RevidAPI', icon: Layers },
+                ]
+              : []),
           ].map((tab) => {
             const Icon = tab.icon;
             const isSelected = adminTab === tab.id;
@@ -1202,8 +1134,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             TAB 0: SIÊU TRỢ LÝ ĐIỀU HÀNH J.A.R.V.I.S. (ĐỘC QUYỀN ADMIN)
            ======================================================== */}
         {adminTab === 'members' && <AdminMembersPanel currentUserId={currentUserId} />}
+        {adminTab === 'reconciliation' && <AdminReconciliationPanel />}
+        {adminTab === 'fees_points' && <AdminCommunityPanel listings={listings.map((l) => ({ id: l.id, title: l.title }))} />}
 
-        {adminTab === 'jarvis_command' && (
+        {adminTab === 'jarvis_command' && featureOpen('adminAssistant') && (
           <JarvisAdminAssistant
             listings={listings}
             disputes={disputes}
@@ -4814,7 +4748,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* ========================================================
             TAB 3: AI CHATBOT STUDIO & QUẢN LÝ RAG (THEO YÊU CẦU 2)
            ======================================================== */}
-        {adminTab === 'ai_studio' && (
+        {adminTab === 'ai_studio' && featureOpen('aiGateway') && (
           <div className="space-y-6">
             <div className="bg-slate-850 border border-slate-750 rounded-3xl p-6 shadow-xl space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-750 pb-4">
@@ -5409,7 +5343,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* ========================================================
             TAB 4: QUẢN TRỊ & ĐIỀU PHỐI REVIDAPI GATEWAY (https://revidapi.com/dashboard/docs)
            ======================================================== */}
-        {adminTab === 'revid_api_gateway' && (
+        {adminTab === 'revid_api_gateway' && featureOpen('aiGateway') && (
           <div className="bg-slate-850 border border-slate-750 rounded-3xl p-6 shadow-xl space-y-6">
             {/* Header & Global Gateway Status */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-750 pb-5">

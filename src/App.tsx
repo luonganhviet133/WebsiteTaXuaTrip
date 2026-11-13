@@ -36,8 +36,6 @@ import { HeroSection, HeroConsoleMode } from './components/HeroSection.tsx';
 import { ListingCard } from './components/ListingCard.tsx';
 import { ListingDetailModal } from './components/ListingDetailModal.tsx';
 import { PartnerBookingsPanel } from './components/PartnerBookingsPanel.tsx';
-import { AdminReconciliationPanel } from './components/AdminReconciliationPanel.tsx';
-import { AdminCommunityPanel } from './components/AdminCommunityPanel.tsx';
 import { LeaderboardCard } from './components/LeaderboardCard.tsx';
 import { pointsApi } from './api/pointsApi.ts';
 import { feedbackApi } from './api/feedbackApi.ts';
@@ -55,6 +53,8 @@ import { AccountModal } from './components/AccountModal.tsx';
 import { LegalPage } from './components/LegalPage.tsx';
 import { InteractiveMapSection } from './components/InteractiveMapSection.tsx';
 import { AITravelAdvisorModal } from './components/AITravelAdvisorModal.tsx';
+import { ComingSoon, ComingSoonModal } from './components/ComingSoon.tsx';
+import { isOpen as featureOpen, type FeatureKey } from './config/features.ts';
 import {
   CompareFloatingBar,
   CompareHomestaysModal,
@@ -293,7 +293,8 @@ export default function App() {
   );
 
   const [selectedPartnerListingId, setSelectedPartnerListingId] = useState<string>('');
-  const [trips, setTrips] = useState(BUS_TRIPS);
+  // R4: lịch xe mẫu chưa được nhà xe xác nhận → không hiện khi chưa mở đặt vé xe.
+  const [trips, setTrips] = useState(featureOpen('busBooking') ? BUS_TRIPS : []);
   const [landmarks, setLandmarks] = useState<CloudLandmark[]>(CLOUD_LANDMARKS);
   const [forecasts, setForecasts] = useState<CloudHuntingForecast[]>(CLOUD_FORECASTS);
   // Nội dung trang (CMS) lưu ở server; chưa có thì dùng nội dung mặc định.
@@ -373,7 +374,11 @@ export default function App() {
   const [calcBikes, setCalcBikes] = useState<number>(1);
   const [calcReturnBeforeNoon, setCalcReturnBeforeNoon] = useState<boolean>(true);
 
+  // R4: tính năng chưa mở thì nút dẫn tới nó mở hộp "Sắp ra mắt".
+  const [lockedFeatureModal, setLockedFeatureModal] = useState<FeatureKey | null>(null);
+
   const handleOpenBusBookingModal = (tripId?: string, enableCombo: boolean = false) => {
+    if (!featureOpen('busBooking')) return setLockedFeatureModal('busBooking');
     setActiveBusModalTripId(tripId);
     setActiveBusModalCombo(enableCombo);
     setIsBusModalOpen(true);
@@ -460,7 +465,7 @@ export default function App() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'j') {
-        if (currentUser?.role === 'admin') {
+        if (currentUser?.role === 'admin' && featureOpen('adminAssistant')) {
           e.preventDefault();
           setIsJarvisOverlayOpen((prev) => !prev);
         }
@@ -471,6 +476,7 @@ export default function App() {
   }, [currentUser]);
 
   const handleOpenCommunityPopup = (spaceId: string = 'space-1') => {
+    if (!featureOpen('communityChat')) return setLockedFeatureModal('communityChat');
     setCommunityPopupSpaceId(spaceId);
     setIsCommunityPopupOpen(true);
   };
@@ -1365,7 +1371,10 @@ export default function App() {
 
             {/* 2. KHU VỰC COMBO GỢI Ý & TOUR TREKKING ĐẶC BIỆT DO ADMIN TUYỂN CHỌN */}
             {(() => {
-              const allActiveCombos = [...(siteContent.curatedCombos || INITIAL_CURATED_COMBOS)]
+              // R4: gói mẫu (giá, ảnh kho, "Bán chạy nhất") không phải gói thật → chỉ hiện gói do admin tạo.
+              const sampleComboIds = new Set(INITIAL_CURATED_COMBOS.map((c) => c.id));
+              const allActiveCombos = [...(siteContent.curatedCombos || [])]
+                .filter((c) => !sampleComboIds.has(c.id))
                 .filter((c) => c.isActive !== false)
                 .filter(
                   (c) =>
@@ -1405,6 +1414,9 @@ export default function App() {
                   setSelectedListingDetail(targetListing);
                 }
               };
+
+              const hasRealCombo = (siteContent.curatedCombos || []).some((c) => !sampleComboIds.has(c.id) && c.isActive !== false);
+              if (!hasRealCombo) return null;
 
               return (
                 <section
@@ -1648,35 +1660,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    {/* 3 Cam Kết Vàng Tà Xùa Biker */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      <div className="bg-white border border-amber-200/90 rounded-2xl p-4 shadow-2xs">
-                        <div className="text-xs font-extrabold text-brand-800 mb-1">
-                          ⏱️ 1. Trả Trước 12:00 Trưa = Tính 0.5 Ngày
-                        </div>
-                        <p className="text-xs text-slate-600">
-                          Nhận xe từ sáng hôm trước, trả xe trước 12h trưa ngày hôm sau chỉ cộng thêm nửa ngày thuê (75.000đ – 90.000đ), không bị tính tròn 2 ngày.
-                        </p>
-                      </div>
-                      <div className="bg-white border border-amber-200/90 rounded-2xl p-4 shadow-2xs">
-                        <div className="text-xs font-extrabold text-brand-800 mb-1">
-                          🛠️ 2. Bảo Dưỡng Phanh Đĩa & Nhông Xích Đổ Đèo
-                        </div>
-                        <p className="text-xs text-slate-600">
-                          Dòng xe Wave Alpha, Honda Blade 2025, Sirius FI và Winner X chuyên trị dốc Sống Lưng Khủng Long & Khe Cải.
-                        </p>
-                      </div>
-                      <div className="bg-white border border-amber-200/90 rounded-2xl p-4 shadow-2xs">
-                        <div className="text-xs font-extrabold text-brand-800 mb-1">
-                          🚨 3. Đổi Xe & Cứu Hộ Đèo Tà Xùa 24/7
-                        </div>
-                        <p className="text-xs text-slate-600">
-                          Hỗ trợ xử lý thủng lốp, hết xăng hoặc đổi xe tận nơi trên toàn trục Đỉnh Gió – Háng Đồng – Thảo Nguyên.
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Danh sách 4 Trạm Xe Máy Chính Chủ */}
+                    {/* Trạm xe máy có trong danh bạ (dữ liệu thật) */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       {motorbikeStations.map((station) => (
                         <ListingCard
@@ -2126,6 +2110,7 @@ export default function App() {
 
                   {/* Quick Community & Compare Shortcuts */}
                   <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    {featureOpen('communityChat') && (
                     <button
                       type="button"
                       onClick={() => handleOpenCommunityPopup('space-5')}
@@ -2134,6 +2119,7 @@ export default function App() {
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                       <span>🏡 Review Thật (24 Online)</span>
                     </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => handleOpenCommunityPopup('space-7')}
@@ -3050,7 +3036,18 @@ export default function App() {
           />
         )}
 
-        {currentTab === 'weather' && (
+        {currentTab === 'weather' && !featureOpen('cloudForecast') && (
+          <div className="max-w-3xl mx-auto px-4 py-8">
+            <ComingSoon
+              feature="cloudForecast"
+              actions={[
+                { label: 'Xem bản đồ điểm săn mây', onClick: () => setCurrentTab('map') },
+                { label: 'Tìm chỗ ở', onClick: () => setCurrentTab('stay') },
+              ]}
+            />
+          </div>
+        )}
+        {currentTab === 'weather' && featureOpen('cloudForecast') && (
           <CloudForecastWidget
             forecasts={forecasts}
             listings={listings}
@@ -3231,6 +3228,7 @@ export default function App() {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2 self-start lg:self-auto shrink-0">
+                    {featureOpen('communityChat') && (
                     <button
                       type="button"
                       onClick={() => handleOpenCommunityPopup('space-2')}
@@ -3239,9 +3237,10 @@ export default function App() {
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                       <span>💬 Nhóm Ghép Xe & Đi Chung (38 Online)</span>
                     </button>
+                    )}
                     <button
                       type="button"
-                      onClick={() => setShowTransportComboCalc((prev) => !prev)}
+                      onClick={() => (featureOpen('busBooking') ? setShowTransportComboCalc((prev) => !prev) : setLockedFeatureModal('busBooking'))}
                       className={`font-extrabold px-3.5 py-2.5 rounded-full text-xs transition-all cursor-pointer flex items-center gap-1.5 border ${
                         showTransportComboCalc
                           ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-md'
@@ -3364,7 +3363,7 @@ export default function App() {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-7">
               {/* Interactive Motorbike Combo 12h Rule Calculator Drawer */}
-              {showTransportComboCalc && (
+              {showTransportComboCalc && featureOpen('busBooking') && (
                 <div className="bg-gradient-to-r from-amber-50 via-white to-teal-50 border-2 border-amber-300/80 rounded-3xl p-5 sm:p-6 shadow-sm animate-fade-in">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
                     <div className="space-y-1.5 max-w-2xl">
@@ -3840,6 +3839,7 @@ export default function App() {
                   </p>
                 </div>
 
+                {featureOpen('communityChat') && (
                 <button
                   type="button"
                   onClick={() => handleOpenCommunityPopup('space-8')}
@@ -3848,6 +3848,7 @@ export default function App() {
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   <span>📸 Nhóm Ghép Tour & Thợ Chụp Ảnh (14 Online)</span>
                 </button>
+                )}
               </div>
 
               {/* Sub-Category Filter Buttons */}
@@ -3921,6 +3922,7 @@ export default function App() {
                   </p>
                 </div>
 
+                {featureOpen('communityChat') && (
                 <button
                   type="button"
                   onClick={() => handleOpenCommunityPopup('space-6')}
@@ -3929,6 +3931,7 @@ export default function App() {
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   <span>🍲 Nhóm Review Ẩm Thực & Quán Cafe (18 Online)</span>
                 </button>
+                )}
               </div>
 
               {/* Sub-Category Filter Buttons */}
@@ -3979,7 +3982,18 @@ export default function App() {
           );
         })()}
 
-        {currentTab === 'itinerary' && (
+        {currentTab === 'itinerary' && !featureOpen('itineraryPlanner') && (
+          <div className="max-w-3xl mx-auto px-4 py-8">
+            <ComingSoon
+              feature="itineraryPlanner"
+              actions={[
+                { label: 'Tìm chỗ ở', onClick: () => setCurrentTab('stay') },
+                { label: 'Xem bản đồ', onClick: () => setCurrentTab('map') },
+              ]}
+            />
+          </div>
+        )}
+        {currentTab === 'itinerary' && featureOpen('itineraryPlanner') && (
           <AIItineraryGenerator
             onOpenAiAdvisor={() => setIsAiAdvisorOpen(true)}
             listings={listings}
@@ -3994,7 +4008,12 @@ export default function App() {
             <LeaderboardCard />
           </div>
         )}
-        {currentTab === 'community' && (
+        {currentTab === 'community' && !featureOpen('communityChat') && (
+          <div className="max-w-5xl mx-auto px-4 pb-8">
+            <ComingSoon feature="communityChat" />
+          </div>
+        )}
+        {currentTab === 'community' && featureOpen('communityChat') && (
           <CommunitySection
             posts={communityPosts}
             onAddPost={handleAddCommunityPost}
@@ -4115,8 +4134,6 @@ export default function App() {
           )
         )}
 
-        {currentTab === 'admin' && currentUser?.role === 'admin' && <AdminReconciliationPanel />}
-        {currentTab === 'admin' && currentUser?.role === 'admin' && <AdminCommunityPanel listings={adminListings.map((l) => ({ id: l.id, title: l.title }))} />}
         {currentTab === 'admin' && (
           currentUser?.role === 'admin' ? (
             <AdminDashboard
@@ -4139,7 +4156,6 @@ export default function App() {
               onUpdateForecasts={setForecasts}
               communityPosts={communityPosts}
               onUpdateCommunityPosts={setCommunityPosts}
-              verifiedMembersCount={1240}
               disputes={disputes}
               vouchers={vouchers}
               onToggleVoucher={handleToggleVoucher}
@@ -4247,7 +4263,7 @@ export default function App() {
             </button>
           )}
 
-          {currentUser?.role === 'admin' && (
+          {currentUser?.role === 'admin' && featureOpen('adminAssistant') && (
             <button
               type="button"
               onClick={() => setIsJarvisOverlayOpen(true)}
@@ -4268,15 +4284,8 @@ export default function App() {
             aria-label="Mở Popup Cộng Đồng Tà Xùa Trip"
             className="h-9 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-extrabold text-xs px-3.5 rounded-full flex items-center gap-1.5 transition-transform active:scale-95 cursor-pointer"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-200 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-300" />
-            </span>
             <MessageCircle className="w-3.5 h-3.5 text-white" />
             <span>Cộng Đồng</span>
-            <span className="px-1.5 py-0.5 rounded-full bg-white/20 text-xs font-black tabular-nums">
-              185
-            </span>
           </button>
 
           <button
@@ -4292,7 +4301,7 @@ export default function App() {
       </div>
 
       {/* Community Hub Popup Modal (9 Optimized Chat Spaces & Live Online Members) */}
-      {isCommunityPopupOpen && (
+      {isCommunityPopupOpen && featureOpen('communityChat') && (
         <CommunitySection
           posts={communityPosts}
           onAddPost={handleAddCommunityPost}
@@ -4305,7 +4314,7 @@ export default function App() {
       )}
 
       {/* Admin-Only J.A.R.V.I.S. Tactical HUD Overlay (Summoned from any page via Orb or Ctrl+J) */}
-      {currentUser?.role === 'admin' && isJarvisOverlayOpen && (
+      {currentUser?.role === 'admin' && featureOpen('adminAssistant') && isJarvisOverlayOpen && (
         <JarvisAdminAssistant
           listings={adminListings}
           disputes={disputes}
@@ -4455,8 +4464,16 @@ export default function App() {
       )}
 
       {/* AI Travel Advisor & Quote Modal */}
+      {isAiAdvisorOpen && !featureOpen('aiAdvisor') && (
+        <ComingSoonModal
+          feature="aiAdvisor"
+          onClose={() => setIsAiAdvisorOpen(false)}
+          actions={[{ label: 'Tìm chỗ ở', onClick: () => setCurrentTab('stay') }]}
+        />
+      )}
+      {lockedFeatureModal && <ComingSoonModal feature={lockedFeatureModal} onClose={() => setLockedFeatureModal(null)} />}
       <AITravelAdvisorModal
-        isOpen={isAiAdvisorOpen}
+        isOpen={isAiAdvisorOpen && featureOpen('aiAdvisor')}
         onClose={() => setIsAiAdvisorOpen(false)}
         allListings={listings}
         vouchers={vouchers}

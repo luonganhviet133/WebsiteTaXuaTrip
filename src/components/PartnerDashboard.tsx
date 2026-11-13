@@ -7,7 +7,6 @@ import {
   Calendar, 
   TrendingUp, 
   Eye, 
-  PhoneCall, 
   CheckCircle2, 
   QrCode, 
   AlertCircle, 
@@ -699,7 +698,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
         setQrScanFeedback(`✅ Quét thành công! Khách ${matchedBooking.guestName} đã được Check-in.`);
       } else if (matchedBooking.status === 'checked_in') {
         onCompleteBooking(matchedBooking.id);
-        setQrScanFeedback(`🎉 Khách đã trả phòng & Hoàn tất! Phí 50.000đ được ghi nhận vào ví.`);
+        setQrScanFeedback('Khách đã trả phòng, đơn đã hoàn tất.');
       } else {
         setQrScanFeedback(`Thông báo: Booking này đang ở trạng thái "${matchedBooking.status}".`);
       }
@@ -2598,37 +2597,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
           <div className="space-y-6">
             {/* N06.2: sổ phí nền tảng thật (server) thay ví trả trước 50.000đ mẫu */}
             <PartnerFeeLedger />
-            <div className="bg-slate-850 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
-              {/* Hiệu quả & Thống kê */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
-                <div className="bg-slate-900 border border-slate-750 p-5 rounded-2xl">
-                  <div className="flex items-center justify-between text-slate-400 mb-2 text-xs">
-                    <span>Lượt xem cơ sở trên bản đồ mây</span>
-                    <Eye className="w-4 h-4 text-sky-400" />
-                  </div>
-                  <div className="text-2xl font-black text-white">{partnerListing.stats.views.toLocaleString()}</div>
-                  <span className="text-xs text-emerald-400 mt-1 block">Tăng 38% trong mùa săn mây</span>
-                </div>
-
-                <div className="bg-slate-900 border border-slate-750 p-5 rounded-2xl">
-                  <div className="flex items-center justify-between text-slate-400 mb-2 text-xs">
-                    <span>Lượt bấm gọi Hotline & Zalo</span>
-                    <PhoneCall className="w-4 h-4 text-teal-400" />
-                  </div>
-                  <div className="text-2xl font-black text-teal-400">{partnerListing.stats.callClicks} lượt</div>
-                  <span className="text-xs text-slate-400 mt-1 block">Liên hệ trực tiếp không qua trung gian</span>
-                </div>
-
-                <div className="bg-slate-900 border border-slate-750 p-5 rounded-2xl">
-                  <div className="flex items-center justify-between text-slate-400 mb-2 text-xs">
-                    <span>Tổng booking tiếp nhận</span>
-                    <CheckCircle2 className="w-4 h-4 text-indigo-400" />
-                  </div>
-                  <div className="text-2xl font-black text-indigo-300">{partnerListing.stats.bookingsCount} đơn</div>
-                  <span className="text-xs text-slate-400 mt-1 block">Tỷ lệ hài lòng 98%</span>
-                </div>
-              </div>
-            </div>
+            {/* R4: bỏ ô lượt xem/lượt gọi/tỷ lệ hài lòng: chưa đo thật (số cũ là số mẫu). */}
           </div>
         )}
 

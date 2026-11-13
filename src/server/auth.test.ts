@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { FEATURES } from '../config/features.ts';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -471,6 +472,12 @@ test('N02: Real Database, Authentication & Multi-Tenant Authorization Test Suite
 
   // 12. R5: GATEWAY LOCKDOWN
   await t.test('R5: Revid Gateway ignores arbitrary client baseUrl and apiKey from request body', async () => {
+    if (!FEATURES.aiGateway.open) {
+      // R4: cổng đang khóa → không gọi ra ngoài được; khi mở lại, phần kiểm SSRF bên dưới chạy lại.
+      const locked = await fetch(`${baseUrl}/api/revid/playground-chat`, { method: 'POST', headers: { Authorization: `Bearer ${adminToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ baseUrl: 'http://malicious-ssrf-domain.example.com', prompt: 'x' }) });
+      assert.equal(locked.status, 503);
+      return;
+    }
     const res = await fetch(`${baseUrl}/api/revid/playground-chat`, {
       method: 'POST',
       headers: {

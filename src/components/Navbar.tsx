@@ -38,6 +38,7 @@ import {
 import { UserRole } from '../types/index.ts';
 import { AuthUser } from '../types/auth.ts';
 import { HostingModal } from './HostingModal.tsx';
+import { isOpen as featureOpen } from '../config/features.ts';
 import { PWAInstallButton } from './PwaAndNetworkBar.tsx';
 
 interface NavbarProps {
@@ -847,6 +848,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
               )}
 
+              {featureOpen('hostingExport') && (
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
@@ -876,13 +878,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <span>Tải bản .HTML</span>
                 </button>
               </div>
+              )}
             </div>
           </div>
         </div>
       )}
 
       <HostingModal
-        isOpen={isDownloadModalOpen}
+        isOpen={isDownloadModalOpen && featureOpen('hostingExport')}
         onClose={() => setIsDownloadModalOpen(false)}
         initialTab={hostingModalTab}
         onDownloadFile={handleBlobDownload}

@@ -201,3 +201,14 @@ test('Gửi email lỗi: mã đó hết hiệu lực và ghi nhật ký lỗi', 
   const open = await db.d1.prepare('SELECT COUNT(*) AS n FROM auth_codes WHERE user_id = ? AND used_at IS NULL').bind(r.body.user.id).first<any>();
   assert.equal(open.n, 0);
 });
+
+test('R4: API của tính năng đang khóa trả 503 FEATURE_LOCKED, kể cả với admin; API bình thường không bị ảnh hưởng', async () => {
+  const { call, login } = await setup();
+  const admin = (await login('admin@taxuatrip.vn', 'admin123')).body.token;
+  for (const [path, body] of [['/api/ai/consult', { checkIn: '2026-12-01', checkOut: '2026-12-02' }], ['/api/ai/quick-quote', {}], ['/api/revid/classify', { prompt: 'x' }], ['/api/revid/playground-chat', { prompt: 'x' }]] as const) {
+    const r = await call('POST', path, admin, body);
+    assert.equal(r.status, 503, `${path} trả ${r.status}`);
+    assert.equal(r.body.code, 'FEATURE_LOCKED');
+  }
+  assert.equal((await call('GET', '/api/health')).status, 200);
+});
