@@ -29,6 +29,28 @@ bucket_name = "taxua-trip-private"
 [vars]
 NODE_ENV = "production"
 
+# R3 — Giới hạn tần suất ở cửa vào Worker (binding Rate Limiting, miễn phí). Đếm theo IP, theo từng điểm
+# Cloudflare, gần đúng (bộ lọc lỏng). Chu kỳ chỉ được 10 hoặc 60 giây. Xem src/server/security/edgeLimit.ts.
+[[ratelimits]]
+name = "RL_AUTH"
+namespace_id = "2101"
+simple = { limit = 20, period = 60 }
+
+[[ratelimits]]
+name = "RL_WRITE"
+namespace_id = "2102"
+simple = { limit = 60, period = 60 }
+
+[[ratelimits]]
+name = "RL_READ"
+namespace_id = "2103"
+simple = { limit = 300, period = 60 }
+
+# R3 — Workers Logs: lưu log 7 ngày, xem ở Cloudflare → Workers → websitetaxuatrip → Logs. Miễn phí trong hạn mức gói Free.
+[observability]
+enabled = true
+head_sampling_rate = 1
+
 # N05.2 — mỗi 5 phút dọn giữ chỗ quá hạn (src/worker.ts scheduled). Cron miễn phí trên gói Workers Free.
 [triggers]
 crons = ["*/5 * * * *"]

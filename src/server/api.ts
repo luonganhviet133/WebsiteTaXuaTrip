@@ -32,6 +32,7 @@ import { handleCommunityRoutes } from './community/routes.ts';
 import { handleFeedbackRoutes } from './feedback/routes.ts';
 import { AccountStore } from './accounts/store.ts';
 import { MemberAdminStore } from './admin/members.ts';
+import { schemaStatus } from './schemaVersion.ts';
 import { NoEmailSender, type EmailSender } from './email.ts';
 import type { PrivateStorage } from './payments/storage.ts';
 
@@ -394,9 +395,12 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
 
   if (route === 'GET /api/health') {
     const health = await ctx.db.checkHealth();
+    const schema = health.databaseOk ? await schemaStatus(ctx.db.d1) : null;
+    const healthy = health.databaseOk && (schema?.ok ?? false);
     return json(
       {
-        status: health.databaseOk ? 'ok' : 'degraded',
+        status: healthy ? 'ok' : 'degraded',
+        schema,
         runtime: ctx.runtime,
         database: health.database,
         databaseOk: health.databaseOk,
@@ -405,7 +409,7 @@ export async function handleApiRequest(request: Request, ctx: ApiContext): Promi
         hasRevidKey: Boolean(ctx.revidApiKey),
         timestamp: new Date().toISOString()
       },
-      health.databaseOk ? 200 : 503
+      healthy ? 200 : 503
     );
   }
 

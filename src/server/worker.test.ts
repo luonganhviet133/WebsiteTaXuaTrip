@@ -32,9 +32,13 @@ test('Worker khởi động được trong workerd và /api/health trả JSON', 
     const res = await worker.fetch('/api/health');
     assert.equal(res.status, 200);
     assert.match(res.headers.get('content-type') || '', /application\/json/);
-    const body = (await res.json()) as { status?: string; runtime?: string };
+    const body = (await res.json()) as { status?: string; runtime?: string; schema?: { expected: string } };
     assert.equal(body.status, 'ok');
     assert.equal(body.runtime, 'workerd');
+    assert.ok(body.schema?.expected, 'R3: health báo phiên bản cấu trúc D1');
+    // R3: phản hồi do Worker tạo có header bảo mật.
+    assert.equal(res.headers.get('x-frame-options'), 'DENY');
+    assert.match(res.headers.get('content-security-policy') || '', /frame-ancestors 'none'/);
 
     // Trang chủ phải trỏ tới JS/CSS mà Worker thật sự phục vụ (không 404 do sai base path).
     const home = await worker.fetch('/');
@@ -53,7 +57,13 @@ test('Worker khởi động được trong workerd và /api/health trả JSON', 
       const page = await worker.fetch(route, { headers: { Accept: 'text/html' } });
       assert.equal(page.status, 200, `${route} trả ${page.status}`);
       assert.match(await page.text(), /<div id="root">/, `${route} không trả index.html`);
+      assert.equal(page.headers.get('x-frame-options'), 'DENY', `${route} thiếu header bảo mật`);
     }
+    // Tệp tĩnh phục vụ thẳng (không qua code Worker) lấy header từ public/_headers.
+    const homeAgain = await worker.fetch('/');
+    await homeAgain.text();
+    assert.equal(homeAgain.headers.get('x-content-type-options'), 'nosniff', 'trang chủ thiếu header từ _headers');
+    assert.ok(homeAgain.headers.get('content-security-policy-report-only'), 'trang chủ thiếu CSP báo cáo');
 
     // G0.3: production (NODE_ENV=production trong wrangler.toml) chưa có TURNSTILE_SECRET_KEY
     // thì đăng ký/đăng nhập phải bị chặn, kể cả khi gửi token test công khai của Cloudflare.
@@ -74,6 +84,22 @@ test('Worker khởi động được trong workerd và /api/health trả JSON', 
       const body = (await res.json()) as { error?: string };
       assert.equal(body.error, 'TURNSTILE_NOT_CONFIGURED');
     }
+
+    // R3: binding Rate Limiting chặn ở cửa vào khi một IP gửi dồn yêu cầu đăng nhập (giới hạn 20/phút).
+    let edge429: any = null;
+    for (let i = 0; i < 40 && !edge429; i++) {
+      const r = await worker.fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: `dồn${i}@example.com`, password: 'x', turnstileToken: 'x' })
+      });
+      const b = (await r.json()) as any;
+      if (r.status === 429) edge429 = { b, retry: r.headers.get('retry-after'), i };
+    }
+    assert.ok(edge429, 'không bị chặn sau 40 yêu cầu');
+    assert.equal(edge429.b.code, 'TOO_MANY_REQUESTS');
+    assert.equal(edge429.retry, '60');
+    assert.ok(edge429.i >= 15, `chặn quá sớm ở yêu cầu thứ ${edge429.i + 1}`);
   } finally {
     await worker.stop();
   }

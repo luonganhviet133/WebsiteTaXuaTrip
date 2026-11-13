@@ -14,8 +14,11 @@ import { HoldStore } from './server/bookings/holds.ts';
 import { PaymentStore } from './server/payments/store.ts';
 import { R2Storage } from './server/payments/storage.ts';
 import { CloudflareEmailSender } from './server/email.ts';
+import { withSecurityHeaders } from './server/security/headers.ts';
+import { applyEdgeLimit, type EdgeLimiters } from './server/security/edgeLimit.ts';
+import { accessConfigFrom, enforceAccess } from './server/security/access.ts';
 
-export interface Env {
+export interface Env extends EdgeLimiters {
   DB: any;
   MEDIA_BUCKET?: any;
   PRIVATE_BUCKET?: any;
@@ -29,7 +32,16 @@ export interface Env {
   EMAIL?: { send(m: any): Promise<any> };
   /** Địa chỉ gửi, vd "Tà Xùa Trip <no-reply@taxuatrip.vn>". */
   MAIL_FROM?: string;
+  /** R3: Cloudflare Access cho trang quản trị — chỉ bật khi đặt cả hai (sau khi có tên miền). */
+  ACCESS_TEAM_DOMAIN?: string;
+  ACCESS_AUD?: string;
 }
+
+const fetchJson = async (url: string) => {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+};
 
 // Secret Turnstile từ binding của Worker (Settings → Variables and Secrets).
 // Production thiếu secret thì trả undefined để chặn đăng ký/đăng nhập; dev/test dùng secret test.
@@ -63,8 +75,23 @@ export default {
   },
 
   async fetch(request: Request, env: Env, ctx?: any): Promise<Response> {
+    // R3: mọi phản hồi do Worker tạo đều có header bảo mật (tệp tĩnh dùng public/_headers).
+    return withSecurityHeaders(await handle(request, env, ctx));
+  }
+};
+
+async function handle(request: Request, env: Env, _ctx?: any): Promise<Response> {
     const url = new URL(request.url);
     const pathname = url.pathname;
+    const clientIp = getClientIp(request);
+
+    // R3: Cloudflare Access cho /quan-tri và /api/admin (tắt khi chưa cấu hình).
+    const denied = await enforceAccess(request, pathname, accessConfigFrom(env), fetchJson);
+    if (denied) return denied;
+
+    // R3: giới hạn tần suất ở cửa vào bằng binding Rate Limiting (bỏ qua khi chưa có binding).
+    const limited = await applyEdgeLimit(env, request.method, pathname, clientIp);
+    if (limited) return limited;
 
     // 1. API: dùng chung bộ xử lý với Express (src/server/api.ts)
     if (pathname === '/api' || pathname.startsWith('/api/')) {
@@ -72,7 +99,7 @@ export default {
         db: new DatabaseEngine({ d1: env.DB }),
         privateStorage: env.PRIVATE_BUCKET ? new R2Storage(env.PRIVATE_BUCKET) : undefined,
         email: env.EMAIL ? new CloudflareEmailSender(env.EMAIL, env.MAIL_FROM || 'Tà Xùa Trip <no-reply@taxuatrip.vn>') : undefined,
-        clientIp: getClientIp(request),
+        clientIp,
         turnstileSecret: getTurnstileSecret(env),
         turnstileHostnames: [url.hostname],
         geminiApiKey: env.GEMINI_API_KEY,
@@ -114,5 +141,4 @@ export default {
       status: 200,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' }
     });
-  }
-};
+}

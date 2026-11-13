@@ -24,6 +24,7 @@
     "db:bootstrap": "tsx scripts/bootstrap-admin.js",
     "worker:dev": "wrangler dev",
     "worker:dry-run": "wrangler deploy --dry-run",
+    "gen:headers": "tsx -e \"import {headersFileContent} from './src/server/security/headers.ts'; import fs from 'node:fs'; fs.writeFileSync('public/_headers', headersFileContent());\"",
     "deploy": "npm run db:migrate:remote && wrangler deploy",
     "deploy:preview": "npm run db:migrate:preview && wrangler preview",
     "listings:import": "tsx scripts/import-listings.ts"

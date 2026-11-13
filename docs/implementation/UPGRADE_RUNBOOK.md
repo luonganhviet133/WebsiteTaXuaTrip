@@ -115,17 +115,60 @@ Quay lại: xóa khối `[[send_email]]` và gộp lại → các tính năng em
 
 ---
 
-## 5. Cloudflare Access cho trang quản trị — [Chủ dự án] (đợt R3 sẽ thêm kiểm tra phía Worker)
+## 5. Cloudflare Access cho trang quản trị — [Chủ dự án] + [Biến môi trường]
 
 1. Cloudflare Zero Trust (gói Free, tối đa 50 người) → Access → Applications → Add → Self-hosted.
 2. Domain: `taxuatrip.vn`, path `quan-tri` và một ứng dụng nữa cho path `api/admin`.
 3. Policy Allow → Emails: `vanhuy171099@gmail.com`, `vtmedia0910@gmail.com`, `luonganhvietbds@gmail.com`. Đăng nhập bằng mã một lần gửi qua email.
 4. Đây là lớp thứ hai; trong website vẫn cần tài khoản có vai trò admin.
+5. Bật kiểm tra phía Worker (R3, `src/server/security/access.ts`): Workers → websitetaxuatrip → Settings → Variables:
+   - `ACCESS_TEAM_DOMAIN` = tên nhóm Zero Trust, ví dụ `taxuatrip.cloudflareaccess.com`
+   - `ACCESS_AUD` = Application Audience (AUD) Tag của ứng dụng ở bước 2 (Access → Applications → chọn ứng dụng → Overview)
+   Khi đủ hai biến, Worker tự kiểm chữ ký Access cho `/quan-tri` và `/api/admin/*`; thiếu hoặc sai trả 403.
+   **Quay lại:** xóa một trong hai biến là tắt. Chưa có tên miền thì KHÔNG đặt hai biến này (workers.dev không chạy Access theo đường dẫn → admin bị chặn).
 
 ---
 
 ## 6. Sau khi chuyển xong
 
 - Ghi bookmark Time Travel trước mỗi lần gộp có migration.
-- Xuất D1 hằng tuần (đợt R3 sẽ tự động hóa bằng cron xuất sang R2).
+- Xuất D1 hằng tuần: tự động từ R3 (mục 7).
 - Ghi kết quả từng bước vào `docs/implementation/PROGRESS.md`.
+
+---
+
+## 7. Sao lưu D1 hằng tuần và khôi phục (R3)
+
+**Hai lớp:**
+- **Time Travel** (có sẵn, gói Free giữ 7 ngày, Paid 30 ngày): quay cả cơ sở dữ liệu về một thời điểm. Dùng khi lỗi phát hiện sớm.
+- **Bản xuất hằng tuần** (`.github/workflows/backup-d1.yml`): 03:17 sáng Chủ nhật giờ VN, xuất toàn bộ D1 → nén → bucket R2 riêng tư `taxua-trip-backups`, đường dẫn `d1/<năm>/<tháng>/taxua-trip-db-<thời điểm>.sql.gz`; `d1/LATEST.txt` ghi tệp mới nhất và mã SHA-256. **Không** lưu trên GitHub vì kho công khai.
+
+**Bật lần đầu — [Chủ dự án]:**
+1. Cloudflare → My Profile → API Tokens → Create Token → Custom token:
+   - Permissions: *Account → D1 → Edit*; *Account → Workers R2 Storage → Edit*.
+   - Account Resources: chỉ tài khoản của Tà Xùa Trip. Đặt hạn dùng nếu muốn (nhớ gia hạn).
+2. GitHub → kho WebsiteTaXuaTrip → Settings → Secrets and variables → Actions → New repository secret:
+   - `CLOUDFLARE_API_TOKEN` = token vừa tạo
+   - `CLOUDFLARE_ACCOUNT_ID` = mã tài khoản (Cloudflare → Workers & Pages → bên phải "Account ID")
+3. GitHub → Actions → "Sao lưu D1 hằng tuần" → Run workflow. Thành công thì phần tóm tắt hiện tên tệp và SHA-256.
+4. (Khuyên) R2 → `taxua-trip-backups` → Settings → Object lifecycle rules: xóa đối tượng tiền tố `d1/` sau 180 ngày.
+
+**Khôi phục từ bản xuất (luôn thử vào cơ sở dữ liệu MỚI trước, không ghi đè production ngay):**
+```bash
+npx wrangler r2 object get taxua-trip-backups/d1/LATEST.txt --remote --pipe        # tên tệp mới nhất
+npx wrangler r2 object get "taxua-trip-backups/<tên tệp>" --remote --file backup.sql.gz
+sha256sum backup.sql.gz                                                            # so với LATEST.txt
+gunzip backup.sql.gz
+npx wrangler d1 create taxua-trip-restore-test
+npx wrangler d1 execute taxua-trip-restore-test --remote --file backup.sql
+npx wrangler d1 execute taxua-trip-restore-test --remote --command "SELECT COUNT(*) FROM profiles"
+```
+Đối chiếu số liệu xong mới quyết định: dùng Time Travel về mốc trước sự cố, hoặc đổi `database_id` trong `wrangler.toml` sang cơ sở dữ liệu đã khôi phục rồi deploy. Xóa tệp `backup.sql` trên máy sau khi xong (có dữ liệu cá nhân).
+
+Đã diễn tập (13/11/2026, D1 local): xuất → nạp vào cơ sở dữ liệu trống → số tài khoản, cơ sở, nhật ký, migration khớp hoàn toàn.
+
+## 8. Theo dõi (R3)
+
+- **Workers Logs** (bật trong `wrangler.toml` `[observability]`): Workers → websitetaxuatrip → Logs, giữ 7 ngày. Tìm `[edge-limit] blocked` (bị chặn vì gửi dồn), `[access] denied`, lỗi API.
+- **`/api/health`**: `status` `ok` khi D1 chạy và đã có đủ migration (`schema.applied` ≥ `schema.expected`); thiếu migration thì `degraded` (503).
+- **CSP báo cáo**: trang có `Content-Security-Policy-Report-Only`. Mở trang, F12 → Console, lỗi dạng "[Report Only] Refused to…" là nguồn cần thêm vào chính sách trước khi bật bắt buộc.

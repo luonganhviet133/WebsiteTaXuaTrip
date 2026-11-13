@@ -16,6 +16,44 @@
 
 ---
 
+## R3 — Bảo vệ Cloudflare, sao lưu D1, theo dõi (13/11/2026, nhánh `dot/R3`)
+
+### Đã làm
+- **Giới hạn tần suất ở cửa vào** bằng binding Rate Limiting của Cloudflare (miễn phí; `src/server/security/edgeLimit.ts`, `wrangler.toml` `[[ratelimits]]`). Theo IP, mỗi phút:
+  - đăng nhập/đăng ký/quên-đặt lại-đổi mật khẩu/mã email: 20;
+  - các thao tác ghi khác: 60;
+  - các yêu cầu đọc: 300.
+
+  Vượt thì trả 429 `TOO_MANY_REQUESTS`, `Retry-After: 60`. `/api/health` không tính. Bộ đếm lỗi thì cho qua, không làm sập trang. Đây là lớp thêm; giới hạn cũ trong API giữ nguyên. Theo Cloudflare, bộ đếm gần đúng, tính riêng từng điểm Cloudflare.
+- **Header bảo mật** cho mọi phản hồi (`src/server/security/headers.ts`; tệp tĩnh dùng `public/_headers`, sinh bằng `npm run gen:headers`):
+  - HSTS 1 năm, `nosniff`, chặn nhúng trang vào web khác (`X-Frame-Options: DENY`, `frame-ancestors 'none'`), `Referrer-Policy`, `Permissions-Policy` (chỉ cho vị trí).
+  - CSP chạy hai tầng: bắt buộc phần an toàn (cấm nhúng, cấm plugin, khóa `<base>`); chính sách đầy đủ ở chế độ chỉ báo cáo.
+  - Tách script đăng ký service worker khỏi `index.html` thành `public/sw-register.js` để không cần cho phép script nội tuyến.
+- **Cloudflare Access cho `/quan-tri` và `/api/admin/*`** (`src/server/security/access.ts`): Worker tự kiểm chữ ký RS256, hạn, issuer, audience; khóa công khai nhớ 10 phút. **Đang tắt**; chỉ bật khi đặt `ACCESS_TEAM_DOMAIN` + `ACCESS_AUD` sau khi có tên miền (runbook mục 5).
+- **`/api/health` báo phiên bản cấu trúc D1** (`schema.expected` / `schema.applied`); production thiếu migration thì `degraded` (503). Test buộc `src/server/schemaVersion.ts` khớp migration mới nhất.
+- **Sao lưu D1 hằng tuần** (`.github/workflows/backup-d1.yml`): 03:17 Chủ nhật giờ VN, xuất → kiểm có cấu trúc và dữ liệu tài khoản → nén → bucket R2 riêng tư `taxua-trip-backups` + `d1/LATEST.txt` (tên tệp và SHA-256). Không lưu lên GitHub vì kho công khai. Cần chủ dự án nhập 2 secret (runbook mục 7).
+- **Workers Logs** bật (`[observability]`, giữ 7 ngày). Log không ghi IP.
+- `UPGRADE_RUNBOOK.md`: mục 5 (biến Access), mục 7 (bật sao lưu, cách khôi phục vào cơ sở dữ liệu mới), mục 8 (theo dõi).
+
+### Lệnh đã chạy và kết quả
+- `npm run typecheck` 0 lỗi; `npm test` **336/336 pass** (thêm 7 test `security.test.ts`, mở rộng test workerd); `npm run build`, `npm run worker:dry-run` đạt (dry-run hiện đủ 3 binding Rate Limit).
+- Test workerd chạy binding thật ở chế độ local:
+  - `/api/health` và các trang SPA có header bảo mật;
+  - trang chủ (tệp tĩnh) có header từ `_headers`;
+  - gửi dồn đăng nhập thì bị chặn 429 sau khoảng 20 yêu cầu.
+- Kiểm đỏ: bỏ header ở Worker / bỏ giới hạn cửa vào / thiếu `_headers` → mỗi trường hợp test workerd đều hỏng.
+- Access: test bằng cặp khóa RSA tự sinh. Đúng thì qua. Sai chữ ký, sửa nội dung, sai audience, sai issuer, hết hạn, khóa lạ, thiếu token đều bị từ chối. Chưa cấu hình thì không ảnh hưởng.
+- Diễn tập sao lưu/khôi phục trên D1 local: `wrangler d1 export` → bản xuất qua đủ bước kiểm của workflow → nạp vào cơ sở dữ liệu trống (466 lệnh) → số tài khoản, cơ sở, nhật ký, mã, migration khớp hoàn toàn.
+- Trình duyệt (wrangler dev): `/`, `/luu-tru`, `/ban-do`, `/quan-tri` tải bình thường, có header, service worker đăng ký từ tệp mới. **CSP báo cáo không ghi nhận vi phạm nào**; đã kiểm trình duyệt có báo khi cố ý vi phạm (script nội tuyến, ảnh http, gọi tên miền lạ → 4 báo cáo).
+
+### Chưa kiểm chứng / còn lại
+- Chưa chạy trên production (chờ "gộp R3"). Sau khi gộp sẽ kiểm header, health, và xem Console trên trang thật bằng trình duyệt.
+- Sao lưu tự động chỉ chạy được sau khi anh tạo API token và nhập 2 secret trên GitHub. Lần chạy thật đầu tiên cần anh bấm Run workflow.
+- WAF/Bot Fight Mode/quy tắc rate limit của Cloudflare cần tên miền riêng (workers.dev không có) → làm ở C1.
+- Chưa bật CSP đầy đủ ở chế độ bắt buộc: chờ xem báo cáo trên production vài ngày.
+- `public/` còn gói mẫu cũ (`ta-xua-trip-source.zip`, `ta-xua-trip-build.zip`, `ta-xua-trip-chay-ngay.html`, PDF kế hoạch) do tính năng "đóng gói" từ bản AI Studio dùng. Đã quét, không có khóa bí mật, và kho GitHub vốn công khai. Đề xuất gỡ cùng tính năng đó ở R4.
+- Người dùng mạng di động có thể dùng chung một IP. Mức 300 lượt đọc/phút/IP rộng với hiện tại; xem lại khi đông khách.
+
 ## R2 — Thành viên & Đối tác cho admin (13/11/2026, nhánh `dot/R2`)
 
 Không có migration mới: dùng các cột trạng thái tài khoản đã thêm ở R1 (0012), bảng `audit_log` và `auth_codes` có sẵn.
