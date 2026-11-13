@@ -2090,10 +2090,10 @@ export default function App() {
                     <div className="flex flex-wrap items-center gap-2 mb-1.5">
                       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-teal-400/20 border border-teal-300/40 text-teal-200">
                         <ShieldCheck className="w-3.5 h-3.5 text-teal-300" />
-                        <span>{allHomestays.length} Homestay & Bungalow Đã Thẩm Định Thực Tế</span>
+                        <span>{allHomestays.length} homestay & bungalow · {allHomestays.filter((l) => l.verificationTier >= 2).length} đã xác minh</span>
                       </span>
                       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/10 border border-white/15 text-slate-200">
-                        <span>✓ Giá & lịch phòng trống đối chiếu độc lập từng đêm</span>
+                        <span>Giá và phòng trống theo từng đêm do cơ sở cập nhật</span>
                       </span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
@@ -2104,7 +2104,7 @@ export default function App() {
                     <p className="text-xs sm:text-sm text-slate-200 max-w-3xl mt-1">
                       {staySecBanner?.isActive
                         ? staySecBanner.subtitle
-                        : 'Minh bạch góc nhìn biển mây từ giường, bình nóng lạnh, đệm sưởi, đường ô tô vào tận sân và số phòng trống theo ngày thực tế.'}
+                        : 'Xem view, tiện nghi (nóng lạnh, đệm sưởi…), đường vào và phòng trống theo từng đêm của từng cơ sở.'}
                     </p>
                   </div>
 
@@ -2120,13 +2120,15 @@ export default function App() {
                       <span>🏡 Review Thật (24 Online)</span>
                     </button>
                     )}
+                    {featureOpen('communityChat') && (
                     <button
                       type="button"
                       onClick={() => handleOpenCommunityPopup('space-7')}
                       className="px-3 py-1.5 rounded-full bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 border border-amber-300/30 text-xs font-bold transition-colors cursor-pointer inline-flex items-center gap-1.5"
                     >
-                      <span>🔥 Săn Pass Phòng Giờ Chót</span>
+                      <span>Săn pass phòng giờ chót</span>
                     </button>
+                    )}
                   </div>
                 </div>
 
