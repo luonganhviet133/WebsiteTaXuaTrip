@@ -85,7 +85,7 @@ export const PointsModal: React.FC<{ isLoggedIn: boolean; onClose: () => void; o
               <p className="text-sm font-extrabold text-brand-800">Cách nhận Điểm Mây</p>
               <ul className="text-sm text-slate-700 space-y-1">
                 <li>• Hoàn tất một chuyến ở (cơ sở xác nhận): <strong>+{POINT_RULES.stay_completed}</strong></li>
-                <li>• Đánh giá xác thực sau chuyến: <strong>+{POINT_RULES.review}</strong>, có ảnh thật thêm <strong>+{POINT_RULES.review_photo}</strong> (sắp mở)</li>
+                <li>• Đánh giá xác thực sau chuyến: <strong>+{POINT_RULES.review}</strong>, có ảnh thật thêm <strong>+{POINT_RULES.review_photo}</strong> (viết trong Chuyến đi của tôi)</li>
                 <li>• Góp ý, báo tin đường/mây chính xác… được Tà Xùa Trip duyệt: điểm theo mức đóng góp</li>
               </ul>
               <p className="text-xs text-slate-600">

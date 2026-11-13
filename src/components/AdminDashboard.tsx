@@ -106,6 +106,7 @@ import {
   buildCommunityUtmUrl
 } from '../utils/rules.ts';
 import { JarvisAdminAssistant } from './JarvisAdminAssistant.tsx';
+import { AdminFeedbackPanel } from './AdminFeedbackPanel.tsx';
 
 interface AdminDashboardProps {
   listings: Listing[];
@@ -130,7 +131,6 @@ interface AdminDashboardProps {
   onRejectListing: (listingId: string) => void;
   verifiedMembersCount: number;
   disputes?: BookingDispute[];
-  onResolveDispute?: (disputeId: string, resolution: 'resolved' | 'refunded' | 'investigating', note: string) => void;
   vouchers?: PromoVoucher[];
   onToggleVoucher?: (voucherId: string) => void;
   onAddVoucher?: (voucher: PromoVoucher) => void;
@@ -174,7 +174,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onRejectListing,
   verifiedMembersCount,
   disputes = [],
-  onResolveDispute,
   vouchers = [],
   onToggleVoucher,
   onAddVoucher,
@@ -1159,7 +1158,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             { id: 'cms_content', label: `2. Kênh Social (${(cmsConfig.socialChannels || []).length}) & CMS Toàn Trang`, icon: Globe },
             { id: 'ai_studio', label: '3. AI Chatbot Studio & RAG', icon: Bot },
             { id: 'revid_api_gateway', label: '4. Quản Trị RevidAPI Gateway (17+ Models)', icon: Layers },
-            { id: 'disputes', label: `5. Trọng Tài Khiếu Nại (${disputes.length})`, icon: Scale },
+            { id: 'disputes', label: `5. Khiếu nại & đánh giá (${disputes.filter((d) => d.status === 'opening' || d.status === 'investigating').length} mở)`, icon: Scale },
             { id: 'vouchers_rewards', label: `6. Vouchers & Tích Điểm (${vouchers.length})`, icon: Gift },
             { id: 'claims', label: `7. Duyệt Chính Chủ (${claimRequests.length})`, icon: ShieldCheck },
             { id: 'evidence_audit', label: '8. Kiểm Toán Bằng Chứng', icon: Lock }
@@ -1209,7 +1208,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             onUpdateTier={onUpdateTier}
             onUpdateListing={onUpdateListing}
             onApproveClaim={onApproveClaim}
-            onResolveDispute={onResolveDispute}
             onUpdateSiteContent={(updated) => {
               setCmsConfig(updated);
               if (onUpdateSiteContent) onUpdateSiteContent(updated);
@@ -5270,73 +5268,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* ========================================================
             TAB 4: TRỌNG TÀI KHIẾU NẠI & ĐỐI SOÁT BẰNG CHỨNG
            ======================================================== */}
-        {adminTab === 'disputes' && (
-          <div className="bg-slate-850 border border-slate-750 rounded-3xl p-6 shadow-xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-750 pb-3">
-              <div>
-                <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-                  <Scale className="w-5 h-5 text-rose-400" />
-                  <span>Trọng Tài Khiếu Nại Dịch Vụ & Tranh Chấp Cọc ({disputes.length})</span>
-                </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Đối soát dữ liệu 2 chiều giữa khách và cơ sở dựa trên chuỗi băm bằng chứng thanh toán.
-                </p>
-              </div>
-            </div>
-
-            {disputes.length === 0 ? (
-              <div className="p-8 text-center text-xs text-slate-500 bg-slate-900 rounded-2xl">
-                Hiện tại không có tranh chấp khiếu nại nào đang mở!
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {disputes.map((d) => (
-                  <div key={d.id} className="bg-slate-900 border border-slate-750 rounded-2xl p-4.5 space-y-3">
-                    <div className="flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-sky-400 font-bold">#{d.id}</span>
-                        <span className="text-slate-400">• Đơn: {d.bookingId}</span>
-                        <span className="text-amber-400 font-semibold">• Loại: {d.issueType}</span>
-                      </div>
-                      <span className="text-xs bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded-full font-bold">
-                        {d.status.toUpperCase()}
-                      </span>
-                    </div>
-
-                    <div>
-                      <h4 className="font-bold text-white text-sm">{d.listingTitle}</h4>
-                      <p className="text-xs text-slate-300 mt-1 italic bg-slate-850 p-2.5 rounded-xl border border-slate-750">
-                        "{d.description}"
-                      </p>
-                      <div className="text-xs text-slate-400 mt-1">
-                        Khách: {d.guestName} ({d.guestPhone}) • Tạo ngày: {d.createdAt}
-                      </div>
-                    </div>
-
-                    {onResolveDispute && d.status === 'opening' && (
-                      <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
-                        <button
-                          type="button"
-                          onClick={() => onResolveDispute(d.id, 'refunded', 'Xác thực cơ sở sai lệch, hoàn tiền cọc cho khách')}
-                          className="bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer"
-                        >
-                          Hoàn Tiền Cho Khách
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => onResolveDispute(d.id, 'resolved', 'Hai bên đã thống nhất phương án xử lý')}
-                          className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer"
-                        >
-                          Đóng Khiếu Nại (Đã Giải Quyết)
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        {adminTab === 'disputes' && <AdminFeedbackPanel />}
 
         {/* ========================================================
             TAB 5: VOUCHERS & TÍCH ĐIỂM

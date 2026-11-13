@@ -6,8 +6,6 @@ import {
   formatVND,
   calculateDistanceKm,
   estimateMountainTravelMinutes,
-  canBookingLeaveReview,
-  calculateUpdatedRating,
   matchesQuickSuggestion,
   doDateRangesOverlap,
   isHomestayAvailableInDateRange,
@@ -74,24 +72,6 @@ test('calculateDistanceKm computes mountain road distance between Đỉnh Gió a
   assert.ok(dist >= 5 && dist <= 12, `Expected distance between 5 and 12 km, got ${dist}`);
   const mins = estimateMountainTravelMinutes(dist);
   assert.ok(mins >= 15 && mins <= 35, `Expected travel time 15-35 mins, got ${mins}`);
-});
-
-test('canBookingLeaveReview only allows completed and unreviewed bookings', () => {
-  assert.equal(canBookingLeaveReview('completed', false), true);
-  assert.equal(canBookingLeaveReview('completed', true), false);
-  assert.equal(canBookingLeaveReview('confirmed', false), false);
-  assert.equal(canBookingLeaveReview('pending', false), false);
-  assert.equal(canBookingLeaveReview('cancelled', false), false);
-});
-
-test('calculateUpdatedRating recalculates weighted average rating and increments count', () => {
-  const updated = calculateUpdatedRating(4.8, 4, 5);
-  assert.equal(updated.reviewCount, 5);
-  assert.equal(updated.rating, 4.84);
-
-  const lower = calculateUpdatedRating(5.0, 1, 3);
-  assert.equal(lower.reviewCount, 2);
-  assert.equal(lower.rating, 4.0);
 });
 
 test('matchesQuickSuggestion accurately filters homestays by hot criteria', () => {

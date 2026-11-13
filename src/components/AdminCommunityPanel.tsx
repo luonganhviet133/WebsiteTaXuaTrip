@@ -5,7 +5,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { pointsApi, rateLabel, newKey, SOURCE_LABEL, type FeeEntry, type MyPoints } from '../api/pointsApi.ts';
 import { formatCreatedAt } from '../api/bookingsApi.ts';
-import { POINT_RULES, previousVnMonth, vnMonth } from '../config/community.ts';
+import { POINT_RULES, currentPeriod, periodLabel, periodRange, previousPeriod, vnMonth, type PeriodKind } from '../config/community.ts';
 import { formatVND } from '../utils/rules.ts';
 
 type Tab = 'fees' | 'points' | 'monthly';
@@ -220,7 +220,14 @@ const PointsTab: React.FC = () => {
 };
 
 const MonthlyTab: React.FC = () => {
-  const [month, setMonth] = useState(previousVnMonth(new Date()));
+  const [kind, setKind] = useState<PeriodKind>('month');
+  const [month, setMonth] = useState(previousPeriod('month', new Date()));
+  // Các quý/năm gần đây để chọn (kỳ đang diễn ra vẫn xem được, chưa chốt được).
+  const recent = useMemo(() => {
+    const out = [currentPeriod(kind, new Date())];
+    while (out.length < (kind === 'year' ? 3 : 8)) out.push(previousPeriod(kind, new Date(periodRange(out[out.length - 1])[0])));
+    return out;
+  }, [kind]);
   const [data, setData] = useState<Awaited<ReturnType<typeof pointsApi.adminMonthly>> | null>(null);
   const [gift, setGift] = useState<Record<number, { userId: string; note: string }>>({});
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
@@ -233,9 +240,31 @@ const MonthlyTab: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm font-bold">Tháng</span>
-        <input type="month" value={month} onChange={(e) => e.target.value && setMonth(e.target.value)} aria-label="Tháng" className="bg-slate-950 border border-slate-600 rounded-xl px-3 py-1.5 text-sm text-white" />
-        {d && !d.finished && <span className="text-xs text-amber-300">Tháng chưa kết thúc — chỉ xem, chưa chốt được.</span>}
+        <label className="sr-only" htmlFor="award-kind">Loại kỳ</label>
+        <select
+          id="award-kind"
+          value={kind}
+          onChange={(e) => {
+            const k = e.target.value as PeriodKind;
+            setKind(k);
+            setMonth(previousPeriod(k, new Date()));
+          }}
+          className="bg-slate-950 border border-slate-600 rounded-xl px-3 py-1.5 text-sm text-white"
+        >
+          <option value="month">Tháng</option>
+          <option value="quarter">Quý</option>
+          <option value="year">Năm</option>
+        </select>
+        {kind === 'month' ? (
+          <input type="month" value={month} onChange={(e) => e.target.value && setMonth(e.target.value)} aria-label="Tháng" className="bg-slate-950 border border-slate-600 rounded-xl px-3 py-1.5 text-sm text-white" />
+        ) : (
+          <select value={month} onChange={(e) => setMonth(e.target.value)} aria-label={kind === 'year' ? 'Năm' : 'Quý'} className="bg-slate-950 border border-slate-600 rounded-xl px-3 py-1.5 text-sm text-white">
+            {recent.map((p) => (
+              <option key={p} value={p}>{periodLabel(p)}</option>
+            ))}
+          </select>
+        )}
+        {d && !d.finished && <span className="text-xs text-amber-300">{periodLabel(month)} chưa kết thúc — chỉ xem, chưa chốt được.</span>}
       </div>
       {d && (
         <>
@@ -289,7 +318,7 @@ export const AdminCommunityPanel: React.FC<{ listings: { id: string; title: stri
       <section aria-labelledby="admin-community-title" className="max-w-6xl mx-auto bg-slate-850 border border-teal-500/30 rounded-3xl p-4 sm:p-6 space-y-4 text-white">
         <h2 id="admin-community-title" className="text-lg font-black">Phí nền tảng & Điểm Mây</h2>
         <div role="tablist" className="flex flex-wrap gap-2">
-          {([['fees', 'Phí nền tảng'], ['points', 'Điểm Mây'], ['monthly', 'Top 3 tháng']] as const).map(([k, label]) => (
+          {([['fees', 'Phí nền tảng'], ['points', 'Điểm Mây'], ['monthly', 'Top 3 (tháng/quý/năm)']] as const).map(([k, label]) => (
             <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={`${btn} ${tab === k ? 'bg-teal-500 text-slate-950' : 'bg-slate-700 text-white'}`}>{label}</button>
           ))}
         </div>

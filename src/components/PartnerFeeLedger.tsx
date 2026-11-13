@@ -1,6 +1,6 @@
 /**
  * N06.2 — Sổ phí nền tảng của cơ sở (đọc server): mỗi đơn hoàn tất một dòng theo mức phí đã thỏa thuận.
- * Chưa thu tiền: Tà Xùa Trip gửi hóa đơn cuối tháng (N06.3). Không có ví trả trước, không tự trừ tiền.
+ * Chưa thu tiền: kết toán cuối tháng làm ở N06.5 (D-N06-04). Không có ví trả trước, không tự trừ tiền.
  */
 import React, { useEffect, useState } from 'react';
 import { Receipt } from 'lucide-react';

@@ -11,6 +11,7 @@ import { formatVND } from '../utils/rules.ts';
 import { DEPOSIT_PERCENT, balanceDueAt } from '../config/payment.ts';
 import { formatCreatedAt } from '../api/bookingsApi.ts';
 import { ReconciliationPanel } from './ReconciliationPanel.tsx';
+import { ComplaintPanel } from './ComplaintPanel.tsx';
 
 type Notice = { type: 'ok' | 'error'; text: string } | null;
 type NotificationList = { unread: number; items: { id: string; title: string; body: string; createdAt: string; read: boolean }[] };
@@ -93,6 +94,12 @@ const PaymentLines: React.FC<{ b: ServerBooking; open: boolean; onToggle: () => 
         <>
           {b.needsReconciliation && <p className="font-bold text-amber-300">Cần đối soát cọc — hoàn trong 3 ngày (kèm ảnh chứng từ) hoặc đề nghị giữ tiền nếu khách đồng ý.</p>}
           <ReconciliationPanel bookingId={b.id} mode="owner" />
+        </>
+      )}
+      {b.complaintStatus && (
+        <>
+          {b.complaintStatus !== 'closed' && <p className="font-bold text-rose-300">Khách đang khiếu nại — trả lời và gửi ảnh bằng chứng; Tà Xùa Trip sẽ kết luận.</p>}
+          <ComplaintPanel bookingId={b.id} mode="owner" />
         </>
       )}
       {active && (

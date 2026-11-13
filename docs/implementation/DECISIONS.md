@@ -18,6 +18,24 @@
 
 ---
 
+### D-N06-05: Đánh giá xác thực và khiếu nại (chủ dự án chốt 13/11/2026, làm ở N06.3)
+
+- **Phạm vi:** N06.3 gồm đánh giá, khiếu nại và top 3 theo quý/năm. Kết toán phí cuối tháng và voucher dịch vụ (D-N06-04) chuyển sang **N06.5**, vì N06.4 đã là Pass phòng.
+- **Đánh giá:**
+  - Chỉ khách của đơn **đã hoàn tất** viết được, mỗi đơn một lần, trong **30 ngày** kể từ lúc cơ sở bấm hoàn tất.
+  - +30 Điểm Mây ghi cùng lúc với đánh giá. Ảnh thật đầu tiên +20 (kiểm định dạng JPG/PNG/WebP, tối đa 3 ảnh).
+  - Tên hiển thị là tên tài khoản dạng rút gọn; không lộ mã đơn ra công khai.
+  - Điểm sao và số đánh giá của cơ sở chỉ tính từ đánh giá xác thực đang hiện.
+  - Chủ cơ sở trả lời công khai.
+  - Admin **ẩn** (không xóa), phải ghi lý do. Ẩn thì thu hồi điểm của đánh giá bằng dòng bù, và ảnh không còn công khai. Ẩn là quyết định cuối.
+- **Khiếu nại:**
+  - Khách mở từ khi cơ sở đã xác nhận cọc đến **7 ngày sau ngày trả phòng** (12:00 giờ VN). Mỗi đơn chỉ một khiếu nại đang mở; rút rồi thì mở lại được trong hạn.
+  - Hai bên gửi ảnh, tối đa 5 ảnh mỗi bên. Cơ sở trả lời; admin nhận xử lý rồi ghi kết luận: khách đúng hoặc không chấp nhận, kèm căn cứ.
+  - **Kết luận tách khỏi hoàn tiền.** Nếu có số tiền hoàn, **cơ sở hoàn trực tiếp** trong 3 ngày (dùng cùng hạn của D-N06-02), kèm ảnh chứng từ gửi trong đợt hoàn hiện tại. Chỉ khi **khách xác nhận** đã nhận mới đóng là "đã hoàn".
+  - Quá hạn hoặc khách báo chưa nhận thì admin phân xử: xác nhận đã hoàn theo chứng từ, hoặc yêu cầu hoàn lại với hạn mới.
+  - Website không chuyển tiền. Admin không xác nhận thay khách. J.A.R.V.I.S. chỉ đọc số đếm, không đóng vụ nào.
+- Bỏ đánh giá và khiếu nại giả lập trong trình duyệt (`ReviewModal`, `DisputeModal`, dữ liệu mẫu, nút "Hoàn tiền cho khách" một bấm ở bảng quản trị).
+
 ### D-N06-04: Thu phí, voucher dịch vụ, quà Điểm Mây (chủ dự án chốt 13/11/2026, áp dụng ở N06.3)
 
 - **Thu phí nền tảng:**

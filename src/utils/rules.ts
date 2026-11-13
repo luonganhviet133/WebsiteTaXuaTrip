@@ -104,33 +104,6 @@ export function estimateMountainTravelMinutes(distanceKm: number): number {
   return Math.max(2, Math.round((distanceKm / 22) * 60));
 }
 
-/**
- * Kiểm tra xem một đơn đặt phòng có đủ điều kiện để lại đánh giá hay không:
- * Chỉ cho phép khi trạng thái là 'completed' và chưa đánh giá
- */
-export function canBookingLeaveReview(status: string, alreadyReviewed = false): boolean {
-  return status === 'completed' && !alreadyReviewed;
-}
-
-/**
- * Tính toán điểm trung bình mới và tổng số lượt đánh giá sau khi thêm 1 đánh giá mới
- */
-export function calculateUpdatedRating(
-  currentRating: number,
-  currentReviewCount: number,
-  newStarRating: number
-): { rating: number; reviewCount: number } {
-  const clampedStars = Math.max(1, Math.min(5, Math.round(newStarRating)));
-  const safeCount = Math.max(0, currentReviewCount);
-  const nextCount = safeCount + 1;
-  const totalScore = currentRating * safeCount + clampedStars;
-  const nextRating = Math.round((totalScore / nextCount) * 100) / 100;
-  return {
-    rating: Math.max(1, Math.min(5, nextRating)),
-    reviewCount: nextCount
-  };
-}
-
 export type QuickSuggestionId =
   | 'cloud_bedroom'
   | 'car_parking'

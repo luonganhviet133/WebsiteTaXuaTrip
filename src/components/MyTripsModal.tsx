@@ -8,7 +8,6 @@ import {
   CheckCircle2,
   Clock,
   Search,
-  Star,
   MapPin,
   ShieldCheck,
   ArrowRight,
@@ -23,7 +22,9 @@ import { CheckinQr } from './CheckinQr.tsx';
 import { PaymentPanel } from './PaymentPanel.tsx';
 import { GuestNotices } from './GuestNotices.tsx';
 import { ReconciliationPanel } from './ReconciliationPanel.tsx';
-import { formatVND, canBookingLeaveReview } from '../utils/rules.ts';
+import { ReviewPanel } from './ReviewPanel.tsx';
+import { ComplaintPanel } from './ComplaintPanel.tsx';
+import { formatVND } from '../utils/rules.ts';
 
 interface MyTripsModalProps {
   isOpen: boolean;
@@ -31,9 +32,6 @@ interface MyTripsModalProps {
   bookings: Booking[];
   listings: Listing[];
   onClose: () => void;
-  onSelectListingForReview: (listing: Listing) => void;
-  onOpenDispute?: (booking: Booking) => void;
-  onOpenReviewModal?: (booking: Booking) => void;
   onRequireLogin?: () => void;
 }
 
@@ -43,9 +41,6 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
   bookings,
   listings,
   onClose,
-  onSelectListingForReview,
-  onOpenDispute,
-  onOpenReviewModal,
   onRequireLogin
 }) => {
   const [lookupQuery, setLookupQuery] = useState('');
@@ -308,7 +303,6 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
             const matchedListing = listings.find((l) => l.id === booking.listingId);
             const isVietQrOpen = activeVietQrBookingId === booking.id;
             const isVoucherOpen = activeVoucherBookingId === booking.id;
-            const eligibleForReview = canBookingLeaveReview(booking.status, booking.reviewed);
 
             return (
               <div
@@ -395,42 +389,6 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                       <span>Phiếu Check-in QR</span>
                     </button>
 
-                    {/* Dispute / Trọng tài khiếu nại Button */}
-                    {onOpenDispute && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onClose();
-                          onOpenDispute(booking);
-                        }}
-                        className={`px-3 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer border transition-colors ${
-                          booking.hasDispute
-                            ? 'bg-rose-100 text-rose-800 border-rose-300'
-                            : 'bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 border-slate-200'
-                        }`}
-                      >
-                        <ShieldCheck className="w-3.5 h-3.5 text-rose-600" />
-                        <span>{booking.hasDispute ? 'Đang khiếu nại (Admin hỗ trợ)' : 'Khiếu nại dịch vụ'}</span>
-                      </button>
-                    )}
-
-                    {eligibleForReview && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onClose();
-                          if (onOpenReviewModal) {
-                            onOpenReviewModal(booking);
-                          } else if (matchedListing) {
-                            onSelectListingForReview(matchedListing);
-                          }
-                        }}
-                        className="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-amber-400 hover:bg-amber-300 text-slate-950 inline-flex items-center gap-1.5 cursor-pointer shadow-2xs"
-                      >
-                        <Star className="w-3.5 h-3.5 fill-slate-950" />
-                        <span>Viết Đánh Giá</span>
-                      </button>
-                    )}
 
                     {/* N05.3: khách không tự hoàn tất; chỉ hủy được theo bảng trạng thái (server kiểm lại) */}
                     {guestCanCancel({ status: booking.status, holdExpiresAt: booking.holdExpiresAt ?? null, checkInDate: booking.checkInDate }) && cancelling?.id !== booking.id && (
@@ -447,6 +405,11 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
 
                 {/* Đối soát cọc: chỉ hiện khi đơn có đối soát (khách đã gửi biên lai nhưng đơn hết hạn/bị từ chối) */}
                 {['expired', 'cancelled'].includes(booking.status) && <ReconciliationPanel bookingId={booking.id} mode="guest" onChanged={() => setReloadTick((n) => n + 1)} />}
+                {/* N06.3: đánh giá xác thực (đơn đã hoàn tất) và khiếu nại (từ khi cơ sở xác nhận cọc) — lưu ở server */}
+                {booking.status === 'completed' && <ReviewPanel bookingId={booking.id} />}
+                {['confirmed', 'checked_in', 'completed', 'cancelled'].includes(booking.status) && (
+                  <ComplaintPanel bookingId={booking.id} mode="guest" />
+                )}
 
                 {cancelling?.id === booking.id && (
                   <form

@@ -8,10 +8,8 @@ import {
   CLOUD_FORECASTS,
   COMMUNITY_POSTS,
   INITIAL_BOOKINGS,
-  INITIAL_REVIEWS,
   INITIAL_USER_PROFILE,
   CLOUD_LANDMARKS,
-  INITIAL_DISPUTES,
   INITIAL_REWARD_SETTINGS,
   INITIAL_SITE_CONTENT,
   INITIAL_CURATED_COMBOS,
@@ -20,7 +18,6 @@ import {
 import {
   Listing,
   Booking,
-  Review,
   UserRole,
   CommunityPost,
   VerificationTier,
@@ -43,6 +40,7 @@ import { AdminReconciliationPanel } from './components/AdminReconciliationPanel.
 import { AdminCommunityPanel } from './components/AdminCommunityPanel.tsx';
 import { LeaderboardCard } from './components/LeaderboardCard.tsx';
 import { pointsApi } from './api/pointsApi.ts';
+import { feedbackApi } from './api/feedbackApi.ts';
 import { BusBookingModal } from './components/BusBookingModal.tsx';
 import { CloudForecastWidget } from './components/CloudForecastWidget.tsx';
 import { AIItineraryGenerator } from './components/AIItineraryGenerator.tsx';
@@ -64,8 +62,6 @@ import { MyTripsModal } from './components/MyTripsModal.tsx';
 import { DirectChatModal } from './components/DirectChatModal.tsx';
 import { PartnerClaimModal } from './components/PartnerClaimModal.tsx';
 import { VerificationMethodologySection } from './components/VerificationMethodologySection.tsx';
-import { DisputeModal } from './components/DisputeModal.tsx';
-import { ReviewModal } from './components/ReviewModal.tsx';
 import { AuthModal } from './components/AuthModal.tsx';
 import { listingsApi, managedToListing, claimToRequest, toContent, voucherFromServer, ApiError, type ManagedListing } from './api/listingsApi.ts';
 import { onlyMappable, applyAvailability } from './utils/listingDisplay.ts';
@@ -73,7 +69,6 @@ import { EmptyState, ErrorState, Skeleton } from './components/ui/index.ts';
 import { AuthUser, DEMO_ACCOUNTS } from './types/auth.ts';
 import {
   formatVND,
-  calculateUpdatedRating,
   QUICK_SUGGESTIONS,
   matchesQuickSuggestion,
   QuickSuggestionId,
@@ -335,10 +330,24 @@ export default function App() {
 
   const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>(COMMUNITY_POSTS);
   const [bookings, setBookings] = useState<Booking[]>(INITIAL_BOOKINGS);
-  const [reviews, setReviews] = useState<Review[]>(INITIAL_REVIEWS);
   const [userProfile, setUserProfile] = useState(INITIAL_USER_PROFILE);
   const [billingEnabled, setBillingEnabled] = useState(false);
-  const [disputes, setDisputes] = useState<BookingDispute[]>(INITIAL_DISPUTES);
+  // N06.3: khiếu nại thật từ server (admin) — dùng cho số đếm ở bảng quản trị và J.A.R.V.I.S. (chỉ đọc).
+  const [disputes, setDisputes] = useState<BookingDispute[]>([]);
+  useEffect(() => {
+    if (currentUser?.role !== 'admin') return setDisputes([]);
+    void feedbackApi.adminComplaints().then((r) => {
+      if (!r.ok) return;
+      const issue: Record<string, BookingDispute['issueType']> = { room: 'room_mismatch', price: 'pricing_scam' };
+      setDisputes(
+        r.data.map((c) => ({
+          id: c.id, bookingId: c.bookingId, listingId: '', listingTitle: c.listingTitle, guestName: c.guestName, guestPhone: c.guestPhone,
+          issueType: issue[c.category] || 'service_attitude', description: c.description, createdAt: c.createdAt,
+          status: c.status === 'open' ? 'opening' : c.status !== 'closed' ? 'investigating' : c.outcome === 'refunded' ? 'refunded' : 'resolved',
+        }))
+      );
+    });
+  }, [currentUser?.id, currentUser?.role]);
   // N04.3: voucher lưu ở server, admin tạo; không còn voucher mẫu trong trình duyệt.
   const [vouchers, setVouchers] = useState<PromoVoucher[]>([]);
   const [rewardSettings, setRewardSettings] = useState<ServiceRewardSetting[]>(INITIAL_REWARD_SETTINGS);
@@ -471,8 +480,6 @@ export default function App() {
   const isMyTripsModalOpen = Boolean(route.myTrips);
   const [activeDirectChatListing, setActiveDirectChatListing] = useState<Listing | null>(null);
   const [activeClaimListing, setActiveClaimListing] = useState<Listing | null>(null);
-  const [activeDisputeBooking, setActiveDisputeBooking] = useState<Booking | null>(null);
-  const [activeReviewBooking, setActiveReviewBooking] = useState<Booking | null>(null);
   const [compareIds, setCompareIds] = useState<string[]>([]);
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const [lowDataMode, setLowDataMode] = useState(false);
@@ -483,16 +490,6 @@ export default function App() {
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 4000);
-  };
-
-  // Dispute resolution handler
-  const handleResolveDispute = (disputeId: string, resolution: 'resolved' | 'refunded' | 'investigating', note: string) => {
-    setDisputes((prev) =>
-      prev.map((d) =>
-        d.id === disputeId ? { ...d, status: resolution, resolutionNote: note } : d
-      )
-    );
-    showToast(`Đã cập nhật trạng thái khiếu nại: ${resolution === 'resolved' ? 'Đã giải quyết thỏa đáng' : resolution === 'refunded' ? 'Đã hoàn tiền cho du khách' : 'Đang đối soát'}`);
   };
 
   // Voucher toggle handler
@@ -585,49 +582,6 @@ export default function App() {
     } catch (e) {
       showToast(e instanceof ApiError ? e.message : 'Không gửi được hồ sơ.');
     }
-  };
-
-  const handleSubmitDispute = (disputeData: Omit<BookingDispute, 'id' | 'createdAt' | 'status'>) => {
-    const newDispute: BookingDispute = {
-      ...disputeData,
-      id: `disp-${Date.now()}`,
-      status: 'investigating',
-      adminAssigned: 'Admin Điều Phối Tà Xùa',
-      createdAt: new Date().toISOString().replace('T', ' ').slice(0, 16)
-    };
-    setDisputes((prev) => [newDispute, ...prev]);
-    setBookings((prev) =>
-      prev.map((b) => (b.id === disputeData.bookingId ? { ...b, hasDispute: true, disputeId: newDispute.id } : b))
-    );
-    showToast('Khiếu nại đã được chuyển đến bộ phận Trọng tài Admin!');
-  };
-
-  const handleSubmitReview = (reviewData: Omit<Review, 'id' | 'createdAt' | 'isVerifiedStay'>) => {
-    const newRev: Review = {
-      ...reviewData,
-      id: `rev-${Date.now()}`,
-      createdAt: new Date().toISOString().slice(0, 10),
-      isVerifiedStay: true
-    };
-    setReviews((prev) => [newRev, ...prev]);
-    if (reviewData.bookingId) {
-      setBookings((prev) =>
-        prev.map((b) => (b.id === reviewData.bookingId ? { ...b, reviewed: true } : b))
-      );
-    }
-    // Update listing rating and review count
-    setListings((prev) =>
-      prev.map((l) => {
-        if (l.id === reviewData.listingId) {
-          const nextCount = l.reviewCount + 1;
-          const nextRating = Number(((l.rating * l.reviewCount + reviewData.rating) / nextCount).toFixed(2));
-          return { ...l, reviewCount: nextCount, rating: nextRating };
-        }
-        return l;
-      })
-    );
-    // N06.2: Điểm Mây chỉ do server ghi (đánh giá xác thực cộng điểm ở N06.3)
-    showToast('Đã gửi đánh giá thành công! Cảm ơn bạn đã đóng góp cho cộng đồng.');
   };
 
   const handleRegisterMember = (name: string, phone: string) => {
@@ -1141,53 +1095,12 @@ export default function App() {
     showToast('Đã hoàn tất lưu trú! Bạn đã có thể để lại đánh giá xác thực.');
   };
 
-  // Add verified review from a completed booking
-  const handleAddReview = (newReview: Review, bookingId?: string) => {
-    setReviews((prev) => [newReview, ...prev]);
-
-    if (bookingId) {
-      setBookings((prev) =>
-        prev.map((b) => (b.id === bookingId ? { ...b, reviewed: true } : b))
-      );
-    }
-
-    setListings((prev) =>
-      prev.map((l) => {
-        if (l.id === newReview.listingId) {
-          const updated = calculateUpdatedRating(l.rating, l.reviewCount, newReview.rating);
-          return {
-            ...l,
-            rating: updated.rating,
-            reviewCount: updated.reviewCount
-          };
-        }
-        return l;
-      })
-    );
-
-    setSelectedListingDetailState((prev) => {
-      if (!prev || prev.id !== newReview.listingId) return prev;
-      const updated = calculateUpdatedRating(
-        prev.rating,
-        prev.reviewCount,
-        newReview.rating
-      );
-      return {
-        ...prev,
-        rating: updated.rating,
-        reviewCount: updated.reviewCount
-      };
-    });
-
-    showToast('Đã đăng đánh giá xác thực thành công!');
-  };
-
   // Admin handlers
   const handleToggleBilling = () => {
     setBillingEnabled(!billingEnabled);
     showToast(
       !billingEnabled
-        ? 'Đã BẬT cờ thu phí (gửi hóa đơn phí cuối tháng ở N06.3)'
+        ? 'Đã BẬT cờ thu phí (kết toán phí cuối tháng làm ở bước sau)'
         : 'Đã TẮT thu phí - Chế độ Beta miễn phí'
     );
   };
@@ -3103,13 +3016,7 @@ export default function App() {
           <VerificationMethodologySection
             listings={listings}
             onSelectListing={(listing) => setSelectedListingDetail(listing)}
-            onOpenDispute={() => {
-              if (bookings.length > 0) {
-                setActiveDisputeBooking(bookings[0]);
-              } else {
-                setIsSosModalOpen(true);
-              }
-            }}
+            onOpenDispute={() => setIsMyTripsModalOpen(true)}
             onOpenPartnerClaim={(listing) => {
               if (listing) {
                 setActiveClaimListing(listing);
@@ -4225,7 +4132,6 @@ export default function App() {
               onUpdateCommunityPosts={setCommunityPosts}
               verifiedMembersCount={1240}
               disputes={disputes}
-              onResolveDispute={handleResolveDispute}
               vouchers={vouchers}
               onToggleVoucher={handleToggleVoucher}
               onAddVoucher={handleAddVoucher}
@@ -4404,7 +4310,6 @@ export default function App() {
           onUpdateTier={handleUpdateTier}
           onUpdateListing={handleUpdateListingFromPartnerOrAdmin}
           onApproveClaim={handleApproveClaim}
-          onResolveDispute={handleResolveDispute}
           onUpdateSiteContent={handleUpdateSiteContent}
           onUpdateForecasts={setForecasts}
           onAddVoucher={handleAddVoucher}
@@ -4422,12 +4327,10 @@ export default function App() {
           listing={applyAvailability([selectedListingDetail], availabilityMap)[0]}
           searchIntent={{ checkIn: stayCheckIn, checkOut: stayCheckOut, adults: stayAdults, children: stayChildren, rooms: stayRooms }}
           onChangeSearchIntent={updateSearchIntent}
-          reviews={reviews.filter((r) => r.listingId === selectedListingDetail.id)}
-          userBookings={bookings.filter((b) => b.listingId === selectedListingDetail.id)}
           vouchers={vouchers}
           onClose={() => setSelectedListingDetail(null)}
           onBookSuccess={handleBookingSuccess}
-          onAddReview={handleAddReview}
+          canReplyReviews={currentUser?.role === 'partner' && !!currentUser.ownedListingIds?.includes(selectedListingDetail.id)}
           onOpenDirectChat={(l) => setActiveDirectChatListing(l)}
           onClaimListing={(l) => setActiveClaimListing(l)}
           isLoggedIn={!!currentUser}
@@ -4508,9 +4411,6 @@ export default function App() {
         listings={listings}
         onClose={() => setIsMyTripsModalOpen(false)}
         onRequireLogin={() => setIsAuthModalOpen(true)}
-        onSelectListingForReview={(l) => setSelectedListingDetail(l)}
-        onOpenDispute={(b) => setActiveDisputeBooking(b)}
-        onOpenReviewModal={(b) => setActiveReviewBooking(b)}
       />
 
       {/* Direct Host Chat Modal */}
@@ -4531,26 +4431,6 @@ export default function App() {
           isOpen={true}
           onClose={() => setActiveClaimListing(null)}
           onSubmitClaim={handleSubmitClaim}
-        />
-      )}
-
-      {/* Booking Dispute & Complaint Mediation Modal */}
-      {activeDisputeBooking && (
-        <DisputeModal
-          booking={activeDisputeBooking}
-          isOpen={true}
-          onClose={() => setActiveDisputeBooking(null)}
-          onSubmitDispute={handleSubmitDispute}
-        />
-      )}
-
-      {/* Verified Stay Review Modal */}
-      {activeReviewBooking && (
-        <ReviewModal
-          booking={activeReviewBooking}
-          isOpen={true}
-          onClose={() => setActiveReviewBooking(null)}
-          onSubmitReview={handleSubmitReview}
         />
       )}
 

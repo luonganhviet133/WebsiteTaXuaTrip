@@ -16,6 +16,65 @@
 
 ---
 
+## N06.3 — Đánh giá xác thực, khiếu nại, top 3 theo quý/năm (13/11/2026, nhánh `dot/N06.3`)
+
+**Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp".** Gộp sẽ chạy migration `0011_reviews_complaints.sql` trên D1 production (chỉ thêm bảng mới). Quyết định: D-N06-05. Kết toán phí và voucher dịch vụ chuyển sang N06.5.
+
+### Đã làm
+- Server:
+  - `feedback/rules.ts`: luật thuần cho đánh giá (30 ngày) và khiếu nại (7 ngày, bảng trạng thái).
+  - Migration `0011`: `reviews`, `review_photos`, `complaints` (mỗi đơn một khiếu nại đang mở), `complaint_events`, `complaint_files`.
+  - `feedback/store.ts`, `routes.ts`, gồm các API:
+    - đánh giá theo đơn, ảnh thật, danh sách công khai của cơ sở, ảnh công khai;
+    - chủ cơ sở trả lời; admin ẩn đánh giá;
+    - khiếu nại: xem, mở, ảnh hai bên, các bước xử lý, danh sách cho admin.
+  - Mỗi bước là UPDATE có điều kiện + kiểm `changes() = 1`, kèm lịch sử và thông báo cho bên liên quan.
+  - Điểm sao và số đánh giá trong hồ sơ cơ sở lấy từ đánh giá xác thực.
+  - Danh sách đơn của đối tác có trạng thái khiếu nại.
+  - Top 3 theo **tháng / quý / năm** (`periodRange`, `previousPeriod`): xếp hạng công khai và phần admin chốt quà dùng chung một bảng, khóa theo kỳ.
+- Giao diện:
+  - Chuyến đi của tôi:
+    - `ReviewPanel`: viết đánh giá và thêm ảnh, báo số điểm được cộng;
+    - `ComplaintPanel` (khách): mở khiếu nại, gửi ảnh, xác nhận đã nhận tiền hoặc báo chưa nhận.
+  - Trang cơ sở: `ListingReviews` hiện đánh giá xác thực kèm ảnh và trả lời của cơ sở; chủ cơ sở trả lời ngay tại đó.
+  - Đối tác: khiếu nại hiện trong danh sách đơn; cơ sở trả lời và báo đã hoàn (phải có chứng từ).
+  - Admin: thẻ "5. Khiếu nại & đánh giá" dùng `AdminFeedbackPanel`, gồm danh sách khiếu nại (việc chờ admin lên đầu) và kiểm duyệt đánh giá.
+  - Top 3 chọn được tháng / quý / năm. Bảng xếp hạng có thêm "Quý này", "Năm nay" và top 3 kỳ trước.
+- Bỏ phần giả lập:
+  - `ReviewModal`, `DisputeModal`;
+  - form đánh giá chỉ ghi vào trình duyệt ở trang cơ sở;
+  - `INITIAL_REVIEWS`, `INITIAL_DISPUTES`;
+  - `canBookingLeaveReview`, `calculateUpdatedRating`;
+  - nút "Hoàn tiền cho khách / Đóng khiếu nại" một bấm.
+  - J.A.R.V.I.S. nhận số khiếu nại thật (chỉ đọc).
+
+### Lệnh đã chạy và kết quả
+- `npm run typecheck`: 0 lỗi.
+- `npm test`: **300/300** pass. Mới: `feedback/rules.test.ts` (7), `feedback.api.test.ts` (6), `feedbackApi.test.ts` (1), kỳ quý/năm (2). Bỏ 2 test của hàm giả lập.
+- Kiểm đỏ (cố ý làm sai để test phải fail, rồi khôi phục):
+  - Bỏ điều kiện "chứng từ phải thuộc đợt hoàn hiện tại" → test quá hạn fail.
+  - Để đánh giá bị ẩn lọt vào danh sách công khai → test ảnh/ẩn fail. Lần đầu test **không** bắt được lỗi này; đã bổ sung kiểm tra danh sách.
+- `npm run build`, `npm run worker:dry-run`: đạt.
+- Kiểm tay trên `wrangler dev --local` (D1 local có 0011), bằng trình duyệt:
+  - Khách viết đánh giá 4 sao, server ghi +30; thêm ảnh, server ghi +20. Trang cơ sở hiện "4 (1)", ảnh, "Đã ở thật".
+  - Chủ cơ sở trả lời đánh giá.
+  - Khách mở khiếu nại "Thu thêm tiền, sai giá" kèm ảnh. Cơ sở trả lời. Admin nhận xử lý, kết luận khách đúng, cơ sở hoàn 100.000đ (hạn 3 ngày).
+  - Cơ sở bấm "Đã hoàn tiền" khi chưa có chứng từ thì bị chặn; tải ảnh xong mới báo được. Khách xác nhận thì khiếu nại đóng là "đã hoàn". Lịch sử ghi đủ 6 bước và người làm.
+  - 375/768/1280px (thẻ chuyến đi, đánh giá trang cơ sở, khiếu nại phía đối tác, bảng admin hai thẻ, top 3 quý, bảng xếp hạng quý): không tràn ngang, không chữ nhỏ hơn 12px.
+  - Lỗi phát hiện khi kiểm tay và đã sửa:
+    - Ô chọn "Vấn đề" bọc trong nhãn nên tên đọc màn hình gồm cả các lựa chọn; đã đổi sang nhãn `htmlFor`.
+    - Chuyến đi của tôi tải lại cả danh sách sau khi gửi khiếu nại nên mất thông báo; đã bỏ việc tải lại không cần thiết.
+  - Để thử, đã sửa D1 local trực tiếp bằng SQL: thêm `confirmed_at` cho đơn đã "hoàn tất" bằng SQL ở N06.2. Bước này không qua luồng thật.
+
+### Chưa kiểm chứng / còn lại
+- Chưa chạy migration 0011 trên production (chờ "gộp").
+- Khi gộp, cần xóa `DisputeModal.tsx` và `ReviewModal.tsx` trong thư mục máy của chủ dự án. Việc xóa cần anh cho phép, nếu không tôi chuyển vào `_to_delete/`.
+- Chưa có nhắc tự động khi quá hạn hoàn theo khiếu nại (đối soát cọc đã có). Khách vẫn báo được khi quá hạn.
+- Mục "Thẩm định" mở Chuyến đi của tôi thay cho hộp khiếu nại cũ.
+- **N06.5:** kết toán phí cuối tháng (chuyển khoản vào tài khoản admin + ảnh, admin xác nhận) và voucher dịch vụ đọc mã booking (D-N06-04).
+
+---
+
 ## N06.2 — Điểm Mây theo đóng góp, sổ phí nền tảng theo cơ sở (13/11/2026, nhánh `dot/N06.2`)
 
 **Trạng thái: ĐẠT phần kiểm được, chờ chủ dự án "gộp".** Gộp sẽ chạy migration `0010_points_fees.sql` trên D1 production (chỉ thêm bảng mới). Quyết định: D-N06-03. **Chưa thu tiền và chưa mở đổi điểm.**

@@ -61,7 +61,7 @@ export const SOURCE_LABEL: Record<string, string> = {
 
 export const pointsApi = {
   me: () => call<MyPoints>('GET', '/api/me/points'),
-  leaderboard: (scope: 'month' | '12m', month?: string) =>
+  leaderboard: (scope: 'month' | 'quarter' | 'year' | '12m', month?: string) =>
     call<{ items: LeaderRow[]; month: string | null }>('GET', `/api/community/leaderboard?scope=${scope}${month ? `&month=${month}` : ''}`, undefined, false),
   winners: (month: string) => call<{ month: string; winners: { rank: number; name: string; points: number }[] }>('GET', `/api/community/monthly-winners?month=${month}`, undefined, false),
   partnerFees: (month: string) => call<{ month: string; entries: FeeEntry[]; total: number }>('GET', `/api/partner/fees?month=${month}`),

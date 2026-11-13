@@ -1,19 +1,22 @@
 /**
- * N06.2 — Bảng xếp hạng người đóng góp (công khai, tên rút gọn) + top 3 tháng trước đã được trao quà.
+ * N06.2 — Bảng xếp hạng người đóng góp (công khai, tên rút gọn) + top 3 kỳ trước đã được trao quà.
+ * N06.3: thêm kỳ quý và năm (quà top 3 theo tháng / quý / năm).
  * Dùng ở trang Cộng đồng và trong hộp Điểm Mây.
  */
 import React, { useEffect, useState } from 'react';
 import { Trophy } from 'lucide-react';
 import { pointsApi, type LeaderRow } from '../api/pointsApi.ts';
-import { previousVnMonth } from '../config/community.ts';
+import { periodLabel, previousPeriod } from '../config/community.ts';
 
 const MEDAL = ['🥇', '🥈', '🥉'];
+type Scope = 'month' | 'quarter' | 'year' | '12m';
+const SCOPE_TEXT: Record<Scope, string> = { month: 'Tháng này', quarter: 'Quý này', year: 'Năm nay', '12m': '12 tháng' };
+const EMPTY_TEXT: Record<Scope, string> = { month: 'tháng này', quarter: 'quý này', year: 'năm nay', '12m': '12 tháng qua' };
 
 export const LeaderboardCard: React.FC<{ compact?: boolean }> = ({ compact }) => {
-  const [scope, setScope] = useState<'month' | '12m'>('month');
+  const [scope, setScope] = useState<Scope>('month');
   const [rows, setRows] = useState<LeaderRow[] | null>(null);
-  const [winners, setWinners] = useState<{ rank: number; name: string; points: number }[]>([]);
-  const prev = previousVnMonth(new Date());
+  const [winners, setWinners] = useState<{ period: string; items: { rank: number; name: string; points: number }[] }[]>([]);
 
   useEffect(() => {
     let alive = true;
@@ -24,8 +27,12 @@ export const LeaderboardCard: React.FC<{ compact?: boolean }> = ({ compact }) =>
     };
   }, [scope]);
   useEffect(() => {
-    pointsApi.winners(prev).then((r) => r.ok && setWinners(r.data.winners));
-  }, [prev]);
+    // Top 3 của kỳ vừa kết thúc (tháng, quý, năm) — chỉ hiện kỳ đã được admin ghi quà.
+    const periods = (['month', 'quarter', 'year'] as const).map((k) => previousPeriod(k, new Date()));
+    Promise.all(periods.map((p) => pointsApi.winners(p))).then((rs) =>
+      setWinners(rs.flatMap((r, i) => (r.ok && r.data.winners.length > 0 ? [{ period: periods[i], items: r.data.winners }] : [])))
+    );
+  }, []);
 
   const list = compact ? (rows || []).slice(0, 10) : rows || [];
   return (
@@ -38,7 +45,7 @@ export const LeaderboardCard: React.FC<{ compact?: boolean }> = ({ compact }) =>
           <p className="text-xs text-slate-600 mt-0.5">Điểm Mây tính theo đóng góp thật cho cộng đồng Tà Xùa, không theo số tiền chi tiêu.</p>
         </div>
         <div role="tablist" aria-label="Khoảng thời gian" className="inline-flex rounded-xl border border-slate-200 p-1 bg-slate-50">
-          {(['month', '12m'] as const).map((s) => (
+          {(Object.keys(SCOPE_TEXT) as Scope[]).map((s) => (
             <button
               key={s}
               type="button"
@@ -47,29 +54,29 @@ export const LeaderboardCard: React.FC<{ compact?: boolean }> = ({ compact }) =>
               onClick={() => setScope(s)}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${scope === s ? 'bg-brand-800 text-white' : 'text-slate-700 hover:bg-white'}`}
             >
-              {s === 'month' ? 'Tháng này' : '12 tháng'}
+              {SCOPE_TEXT[s]}
             </button>
           ))}
         </div>
       </div>
 
-      {winners.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3">
-          <p className="text-xs font-extrabold text-amber-900 mb-1">Top 3 tháng {prev.split('-').reverse().join('/')} — đã nhận quà</p>
+      {winners.map((w) => (
+        <div key={w.period} className="bg-amber-50 border border-amber-200 rounded-2xl p-3">
+          <p className="text-xs font-extrabold text-amber-900 mb-1">Top 3 {periodLabel(w.period)} — đã nhận quà</p>
           <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-            {winners.map((w) => (
-              <li key={w.rank}>
-                {MEDAL[w.rank - 1]} <strong>{w.name}</strong> <span className="text-slate-600">· {w.points} điểm</span>
+            {w.items.map((x) => (
+              <li key={x.rank}>
+                {MEDAL[x.rank - 1]} <strong>{x.name}</strong> <span className="text-slate-600">· {x.points} điểm</span>
               </li>
             ))}
           </ul>
         </div>
-      )}
+      ))}
 
       {rows === null ? (
         <div className="h-24 rounded-2xl bg-slate-100 animate-pulse" aria-label="Đang tải bảng xếp hạng" />
       ) : list.length === 0 ? (
-        <p className="text-sm text-slate-600">Chưa có ai được cộng điểm trong {scope === 'month' ? 'tháng này' : '12 tháng qua'}. Hãy là người đầu tiên!</p>
+        <p className="text-sm text-slate-600">Chưa có ai được cộng điểm trong {EMPTY_TEXT[scope]}. Hãy là người đầu tiên!</p>
       ) : (
         <ol className="divide-y divide-slate-100">
           {list.map((r) => (
@@ -84,7 +91,7 @@ export const LeaderboardCard: React.FC<{ compact?: boolean }> = ({ compact }) =>
           ))}
         </ol>
       )}
-      <p className="text-xs text-slate-600">Mỗi tháng Tà Xùa Trip trao quà cho 3 người đóng góp nhiều nhất.</p>
+      <p className="text-xs text-slate-600">Tà Xùa Trip trao quà cho 3 người đóng góp nhiều nhất mỗi tháng, mỗi quý và mỗi năm.</p>
     </section>
   );
 };

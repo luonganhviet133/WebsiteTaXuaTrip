@@ -46,6 +46,8 @@ export interface ServerBooking {
   needsReconciliation?: boolean;
   reconStatus?: ReconStatusView | null;
   reconDueAt?: string | null;
+  /** N06.3 — khiếu nại gần nhất (chỉ trong danh sách của chủ cơ sở) */
+  complaintStatus?: string | null;
 }
 
 export interface BookingDetail extends ServerBooking {
