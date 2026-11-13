@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { Booking } from '../types/index.ts';
 import { formatVND, calculateMemberPoints } from '../utils/rules.ts';
+import { holdExpiryLabel } from '../api/holdsApi.ts';
 
 interface BookingSuccessModalProps {
   booking: Booking | null;
@@ -44,13 +45,32 @@ export const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
           <CheckCircle2 className="w-10 h-10" />
         </div>
 
-        <h2 className="text-xl sm:text-2xl font-black text-white mb-1">
-          Đã Tạo Phiếu Đặt Chỗ
-        </h2>
-        <DemoNotice dark className="mb-6 text-left">
-          Phiếu này chỉ lưu trên trình duyệt của bạn, chưa gửi tới chủ cơ sở và chưa giữ phòng.
-          Vui lòng gọi hoặc nhắn Zalo cho cơ sở để xác nhận phòng và đặt cọc.
-        </DemoNotice>
+        {booking.holdExpiresAt ? (
+          <>
+            <h2 className="text-xl sm:text-2xl font-black text-white mb-1">Đã Giữ Phòng</h2>
+            <div className="mb-6 rounded-2xl border border-amber-400/40 bg-amber-500/10 p-3 text-left text-xs leading-relaxed text-amber-100">
+              <p className="font-bold">
+                Phòng được giữ đến <span className="text-amber-300">{holdExpiryLabel(booking.holdExpiresAt)}</span> (30 phút).
+              </p>
+              {typeof booking.depositAmount === 'number' && (
+                <p className="mt-1">
+                  Tiền cọc 30%: <strong className="text-amber-300">{formatVND(booking.depositAmount)}</strong>. Chức năng thanh toán cọc
+                  sẽ mở trong bản cập nhật tới; chưa cọc trước giờ trên thì phòng tự được trả lại.
+                </p>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            <h2 className="text-xl sm:text-2xl font-black text-white mb-1">
+              Đã Tạo Phiếu Đặt Chỗ
+            </h2>
+            <DemoNotice dark className="mb-6 text-left">
+              Phiếu này chỉ lưu trên trình duyệt của bạn, chưa gửi tới chủ cơ sở và chưa giữ phòng.
+              Vui lòng gọi hoặc nhắn Zalo cho cơ sở để xác nhận phòng và đặt cọc.
+            </DemoNotice>
+          </>
+        )}
 
         {/* QR Code Container */}
         <div className="bg-white p-4 rounded-2xl max-w-[200px] mx-auto mb-4 shadow-xl">

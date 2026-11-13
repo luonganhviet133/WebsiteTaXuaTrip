@@ -4433,6 +4433,8 @@ export default function App() {
           onCompleteBooking={handleCompleteBooking}
           onOpenDirectChat={(l) => setActiveDirectChatListing(l)}
           onClaimListing={(l) => setActiveClaimListing(l)}
+          isLoggedIn={!!currentUser}
+          onRequireLogin={() => handleOpenAuthModal('traveler', 'login')}
         />
       )}
 
