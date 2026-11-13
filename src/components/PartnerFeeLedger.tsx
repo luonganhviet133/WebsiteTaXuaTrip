@@ -42,7 +42,7 @@ export const PartnerFeeLedger: React.FC = () => {
   }, [month]);
 
   return (
-    <section aria-labelledby="fee-ledger-title" className="bg-slate-850 border border-slate-700 rounded-3xl p-4 sm:p-6 space-y-4 text-white">
+    <section aria-labelledby="fee-ledger-title" className="bg-slate-900 border border-slate-700 rounded-3xl p-4 sm:p-6 space-y-4 text-white">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 id="fee-ledger-title" className="text-lg font-bold flex items-center gap-2">

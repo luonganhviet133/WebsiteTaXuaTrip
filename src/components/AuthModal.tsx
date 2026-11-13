@@ -528,7 +528,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           {successNotice && (
             <div className="mb-3.5 p-3 rounded-xl bg-teal-50 border border-teal-200 text-teal-800 text-xs flex items-center gap-2 animate-in fade-in">
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-teal-600" />
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-teal-700" />
               <span>{successNotice}</span>
             </div>
           )}
@@ -557,7 +557,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
                       disabled={forgotStep === 'code' && !codeFromAdmin}
-                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl disabled:bg-slate-50"
+                      className="w-full px-3 py-2 text-base border border-slate-500 rounded-xl disabled:bg-slate-50"
                       required
                     />
                   </div>
@@ -572,7 +572,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           maxLength={6}
                           value={forgotCode}
                           onChange={(e) => setForgotCode(e.target.value.replace(/\D/g, ''))}
-                          className="w-full px-3 py-2 text-sm tracking-[0.4em] font-bold border border-slate-200 rounded-xl"
+                          className="w-full px-3 py-2 text-sm tracking-[0.4em] font-bold border border-slate-500 rounded-xl"
                           required
                         />
                       </div>
@@ -584,7 +584,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           autoComplete="new-password"
                           value={forgotNewPassword}
                           onChange={(e) => setForgotNewPassword(e.target.value)}
-                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl"
+                          className="w-full px-3 py-2 text-base border border-slate-500 rounded-xl"
                           required
                         />
                       </div>
@@ -631,7 +631,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         ? 'chuhome.may@taxuatrip.vn hoặc SĐT'
                         : 'khachhang@gmail.com hoặc SĐT'
                     }
-                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
+                    className="w-full pl-9 pr-3 py-2 text-base border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                 </div>
@@ -660,7 +660,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Nhập mật khẩu"
-                    className="w-full pl-9 pr-9 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
+                    className="w-full pl-9 pr-9 py-2 text-base border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                   <button
@@ -728,7 +728,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Ví dụ: Vàng A Tủa / Nguyễn Thùy Linh"
-                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
+                    className="w-full pl-9 pr-3 py-2 text-base border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                 </div>
@@ -747,7 +747,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={regEmail}
                     onChange={(e) => setRegEmail(e.target.value)}
                     placeholder="ban@gmail.com"
-                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
+                    className="w-full pl-9 pr-3 py-2 text-base border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                 </div>
@@ -767,7 +767,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={regPhone}
                     onChange={(e) => setRegPhone(e.target.value)}
                     placeholder="0912345678"
-                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
+                    className="w-full pl-9 pr-3 py-2 text-base border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required={selectedRole === 'partner'}
                   />
                 </div>
@@ -785,7 +785,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       value={facilityName}
                       onChange={(e) => setFacilityName(e.target.value)}
                       placeholder="Ví dụ: A Lầu Homestay / Xe ghép Bắc Yên - Tà Xùa"
-                      className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
+                      className="w-full pl-9 pr-3 py-2 text-base border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                       required
                     />
                   </div>
@@ -802,7 +802,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={regPassword}
                     onChange={(e) => setRegPassword(e.target.value)}
                     placeholder="Tối thiểu 8 ký tự"
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
+                    className="w-full px-3 py-2 text-base border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                 </div>
@@ -815,7 +815,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={regConfirmPassword}
                     onChange={(e) => setRegConfirmPassword(e.target.value)}
                     placeholder="Nhập lại mật khẩu"
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
+                    className="w-full px-3 py-2 text-base border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800/20 focus:border-brand-800"
                     required
                   />
                 </div>

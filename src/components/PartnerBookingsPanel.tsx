@@ -212,7 +212,7 @@ export const PartnerBookingsPanel: React.FC<{
   };
 
   return (
-    <section aria-labelledby="partner-bookings-title" className="bg-slate-850 border border-teal-500/30 rounded-3xl p-4 sm:p-6 space-y-5">
+    <section aria-labelledby="partner-bookings-title" className="bg-slate-900 border border-teal-500/30 rounded-3xl p-4 sm:p-6 space-y-5">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 id="partner-bookings-title" className="text-lg font-black text-white">Đơn đặt phòng</h2>

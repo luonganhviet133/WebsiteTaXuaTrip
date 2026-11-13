@@ -593,7 +593,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                   className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-white/95 text-brand-800 shadow-xs"
                   title={verificationLabel(listing).detail}
                 >
-                  <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-teal-700" />
                   {listing.verificationTier >= 2 ? `Cấp ${listing.verificationTier} · ` : ''}
                   {verificationLabel(listing).title}
                 </span>
@@ -679,7 +679,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                 .getElementById('listing-booking-console')
                 ?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="ml-auto px-3.5 py-1.5 rounded-full bg-brand-800 text-white text-xs font-extrabold whitespace-nowrap shrink-0 cursor-pointer"
+            className="ml-auto px-3.5 py-1.5 rounded-full bg-brand-800 text-white text-xs font-bold whitespace-nowrap shrink-0 cursor-pointer"
           >
             Đặt ngay ↓
           </button>
@@ -754,7 +754,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     onClick={() => onClaimListing(listing)}
                     className="w-full text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 rounded-xl py-2 px-3 flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
-                    <Building2 className="w-4 h-4 text-amber-600" />
+                    <Building2 className="w-4 h-4 text-amber-700" />
                     <span>Bạn Là Chủ Cơ Sở Này? Đăng Ký Thành Viên Để Xác Nhận Uy Tín →</span>
                   </button>
                 )}
@@ -1072,23 +1072,23 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
               </h4>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700">
                 <li className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                   <span>
                     {canBookOnline ? <>Nhận <strong>{earnedPoints} Điểm Mây</strong> khi chuyến hoàn tất</> : 'Nhận Điểm Mây khi đặt online và hoàn tất chuyến'}
                   </span>
                 </li>
                 {ONLINE_PAYMENT_ENABLED && (
                 <li className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                   <span>Lưu bằng chứng chuyển khoản (UNC) chống tranh chấp</span>
                 </li>
                 )}
                 <li className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                   <span>Đúng giá niêm yết • Không qua cò mồi trung gian</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                   <span>Được để lại đánh giá xác thực gắn mã đơn</span>
                 </li>
               </ul>
@@ -1145,7 +1145,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           value={checkIn}
                           min={todayInVietnam()}
                           onChange={(e) => setCheckIn(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900 focus:outline-none focus:border-brand-800"
                           required
                         />
                       </div>
@@ -1158,7 +1158,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           value={checkOut}
                           min={checkIn}
                           onChange={(e) => setCheckOut(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900 focus:outline-none focus:border-brand-800"
                           required
                         />
                       </div>
@@ -1182,7 +1182,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                             max={max}
                             value={value}
                             onChange={(e) => setStayGuests({ [key]: Number(e.target.value) })}
-                            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-base text-slate-900 focus:outline-none focus:border-brand-800"
+                            className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900 focus:outline-none focus:border-brand-800"
                           />
                         </div>
                       ))}
@@ -1203,7 +1203,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           type="date"
                           value={checkIn}
                           onChange={(e) => setCheckIn(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900 focus:outline-none focus:border-brand-800"
                           required
                         />
                       </div>
@@ -1216,7 +1216,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           value={checkOut}
                           min={checkIn}
                           onChange={(e) => setCheckOut(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900 focus:outline-none focus:border-brand-800"
                           required
                         />
                       </div>
@@ -1245,7 +1245,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                         <select
                           value={selectedBikeModel}
                           onChange={(e) => setSelectedBikeModel(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900"
                         >
                           {(
                             listing.motorbikeFleet?.models || [
@@ -1268,7 +1268,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                         <select
                           value={serviceQuantity}
                           onChange={(e) => setServiceQuantity(Number(e.target.value))}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900"
                         >
                           {[1, 2, 3, 4, 5].map((n) => (
                             <option key={n} value={n}>
@@ -1293,7 +1293,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           type="date"
                           value={checkIn}
                           onChange={(e) => setCheckIn(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900"
                           required
                         />
                       </div>
@@ -1304,7 +1304,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                         <select
                           value={serviceQuantity}
                           onChange={(e) => setServiceQuantity(Number(e.target.value))}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900"
                         >
                           {[1, 2, 3, 4, 5, 6].map((n) => (
                             <option key={n} value={n}>
@@ -1322,7 +1322,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                       <select
                         value={serviceTimeSlot}
                         onChange={(e) => setServiceTimeSlot(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900"
+                        className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900"
                       >
                         <option value="06:30 Sáng (Đến Tà Xùa 12:00 trưa)">
                           06:30 Sáng (Đến Tà Xùa 12:00 trưa)
@@ -1343,7 +1343,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                       <select
                         value={busPickupPoint}
                         onChange={(e) => setBusPickupPoint(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900"
+                        className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900"
                       >
                         <option value="Bến xe Mỹ Đình / Cầu Giấy (Hà Nội)">
                           Bến xe Mỹ Đình / Cầu Giấy (Hà Nội)
@@ -1374,7 +1374,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           type="date"
                           value={checkIn}
                           onChange={(e) => setCheckIn(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900"
                           required
                         />
                       </div>
@@ -1385,7 +1385,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                         <select
                           value={guestsCount}
                           onChange={(e) => setGuestsCount(Number(e.target.value))}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900"
                         >
                           <option value={1}>1 khách</option>
                           <option value={2}>2 khách (Bàn view ban công)</option>
@@ -1403,7 +1403,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                       <select
                         value={serviceTimeSlot}
                         onChange={(e) => setServiceTimeSlot(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900"
+                        className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900"
                       >
                         <option value="05:30 - 07:30 (Đón bình minh săn mây)">
                           05:30 - 07:30 (Đón bình minh săn mây)
@@ -1440,7 +1440,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                           type="date"
                           value={checkIn}
                           onChange={(e) => setCheckIn(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900"
                           required
                         />
                       </div>
@@ -1451,7 +1451,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                         <select
                           value={serviceQuantity}
                           onChange={(e) => setServiceQuantity(Number(e.target.value))}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900"
                         >
                           {[1, 2, 3, 4, 5, 6].map((n) => (
                             <option key={n} value={n}>
@@ -1469,7 +1469,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                       <select
                         value={serviceTimeSlot}
                         onChange={(e) => setServiceTimeSlot(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900"
+                        className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2.5 text-base text-slate-900"
                       >
                         <option value="05:00 - 08:00 (Khung giờ vàng săn mây bình minh)">
                           05:00 - 08:00 (Khung giờ vàng săn mây bình minh)
@@ -1499,7 +1499,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     value={guestName}
                     onChange={(e) => setGuestName(e.target.value)}
                     placeholder="Ví dụ: Nguyễn Văn A"
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-800"
+                    className="w-full bg-white border border-slate-500 rounded-xl px-3.5 py-2.5 text-base text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-800"
                     required
                   />
                 </div>
@@ -1513,7 +1513,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     value={guestPhone}
                     onChange={(e) => setGuestPhone(e.target.value)}
                     placeholder="Ví dụ: 0912 345 678"
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-800"
+                    className="w-full bg-white border border-slate-500 rounded-xl px-3.5 py-2.5 text-base text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-800"
                     required
                   />
                 </div>
@@ -1527,7 +1527,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Ghi chú điểm đón tại homestay, size váy, món ăn kiêng..."
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-800"
+                    className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2 text-base text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-800"
                   />
                 </div>
 
@@ -1546,7 +1546,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                       value={voucherCodeInput}
                       onChange={(e) => setVoucherCodeInput(e.target.value.toUpperCase())}
                       placeholder="Nhập mã: TAXUA10 / SANMAY50K"
-                      className="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs uppercase font-bold text-slate-800 placeholder:normal-case placeholder:font-normal focus:outline-none focus:border-brand-800"
+                      className="flex-1 bg-white border border-slate-500 rounded-xl px-3 py-2 text-base uppercase font-bold text-slate-800 placeholder:normal-case placeholder:font-normal focus:outline-none focus:border-brand-800"
                     />
                     <button
                       type="button"
@@ -1684,7 +1684,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting || !canBookOnline}
-                  className="w-full min-h-[48px] bg-brand-800 hover:bg-brand-700 text-white font-extrabold py-3.5 rounded-2xl text-sm transition-all shadow-md active:scale-98 flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                  className="w-full min-h-[48px] bg-brand-800 hover:bg-brand-700 text-white font-bold py-3.5 rounded-full text-sm transition-all shadow-md active:scale-98 flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <span>Đang xử lý đơn đặt...</span>
@@ -1728,7 +1728,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
               const input = document.getElementById('booking-guest-name-input');
               if (input) setTimeout(() => input.focus(), 350);
             }}
-            className="min-h-[44px] bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-5 py-2.5 rounded-full shadow-md flex items-center gap-1.5 shrink-0 cursor-pointer"
+            className="min-h-[44px] bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs px-5 py-2.5 rounded-full shadow-md flex items-center gap-1.5 shrink-0 cursor-pointer"
           >
             <span>Đặt ngay</span>
             <ArrowRight className="w-3.5 h-3.5" />

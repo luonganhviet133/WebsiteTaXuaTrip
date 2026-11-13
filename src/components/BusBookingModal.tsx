@@ -313,7 +313,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                 </div>
               </div>
 
-              <div className="text-xs bg-slate-900/80 p-3 rounded-xl border border-slate-750 flex items-center justify-between text-slate-300">
+              <div className="text-xs bg-slate-900/80 p-3 rounded-xl border border-slate-700 flex items-center justify-between text-slate-300">
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-rose-400" />
                   <span>{currentPickup.name} ➔ {currentDropoff.name}</span>
@@ -348,7 +348,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                 {seatLayout.isTwoFloors ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Tầng 1 */}
-                    <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-750">
+                    <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-700">
                       <div className="text-xs font-bold text-sky-300 mb-2.5 flex justify-between">
                         <span>TẦNG 1 (DƯỚI)</span>
                         <span className="text-xs text-slate-400">Êm ái, ít rung lắc</span>
@@ -379,7 +379,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                     </div>
 
                     {/* Tầng 2 */}
-                    <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-750">
+                    <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-700">
                       <div className="text-xs font-bold text-amber-300 mb-2.5 flex justify-between">
                         <span>TẦNG 2 (TRÊN)</span>
                         <span className="text-xs text-slate-400">Ngắm đèo thoáng đãng</span>
@@ -530,7 +530,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
                   </div>
 
                   {/* Giải thích cách tính tiền theo mốc 12h trưa */}
-                  <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-750 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
                       <span className="text-slate-400 block text-xs">Công thức tính ngày thuê xe:</span>
                       <span className="text-sky-300 font-bold">
@@ -549,7 +549,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
           </div>
 
           {/* Right Column: Passenger Info, Payment Proof & Checkout */}
-          <div className="lg:col-span-5 bg-slate-850 border border-slate-750 rounded-3xl p-6 flex flex-col justify-between space-y-5">
+          <div className="lg:col-span-5 bg-slate-900 border border-slate-700 rounded-3xl p-6 flex flex-col justify-between space-y-5">
             <form onSubmit={handleConfirmBus} className="space-y-4">
               <div>
                 <h3 className="text-base font-extrabold text-white mb-1">
@@ -605,7 +605,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
 
               {/* Nộp biên lai: tắt cho tới khi có thanh toán thật (N06, quyết định D03) */}
               {ONLINE_PAYMENT_ENABLED && (
-              <div className="bg-slate-900 p-3.5 rounded-2xl border border-slate-750 space-y-2">
+              <div className="bg-slate-900 p-3.5 rounded-2xl border border-slate-700 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                     <ShieldCheck className="w-4 h-4 text-emerald-400" />
@@ -645,7 +645,7 @@ export const BusBookingModal: React.FC<BusBookingModalProps> = ({
               )}
 
               {/* Summary breakdown */}
-              <div className="bg-slate-900/90 rounded-2xl p-4 border border-slate-750 space-y-2 text-xs">
+              <div className="bg-slate-900/90 rounded-2xl p-4 border border-slate-700 space-y-2 text-xs">
                 <div className="flex justify-between text-slate-400">
                   <span>Tiền vé xe khách:</span>
                   <span className="text-white font-medium">{formatVND(comboResult.busTotal)}</span>

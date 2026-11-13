@@ -38,6 +38,11 @@ export const FEATURES = {
     title: 'Chat cộng đồng',
     note: 'Phòng chat cho khách và người địa phương đang được hoàn thiện. Bảng xếp hạng Điểm Mây đã hoạt động.',
   },
+  directChat: {
+    open: false,
+    title: 'Nhắn tin với cơ sở',
+    note: 'Nhắn tin qua Tà Xùa Trip đang được hoàn thiện. Hiện bạn có thể gọi hoặc nhắn Zalo theo số điện thoại trên trang của cơ sở.',
+  },
   busBooking: {
     open: false,
     title: 'Đặt vé xe khách',

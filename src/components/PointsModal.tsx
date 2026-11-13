@@ -55,7 +55,7 @@ export const PointsModal: React.FC<{ isLoggedIn: boolean; onClose: () => void; o
         ) : !isLoggedIn ? (
           <div className="bg-white border border-slate-200 rounded-2xl p-4 text-sm space-y-3">
             <p>Đăng nhập để xem Điểm Mây và danh hiệu của bạn.</p>
-            <button type="button" onClick={onLogin} className="px-4 py-2.5 rounded-xl bg-brand-800 text-white font-bold cursor-pointer">Đăng nhập</button>
+            <button type="button" onClick={onLogin} className="px-4 py-2.5 rounded-full bg-brand-800 text-white font-bold cursor-pointer">Đăng nhập</button>
           </div>
         ) : error ? (
           <p className="text-sm font-bold text-rose-700">{error}</p>

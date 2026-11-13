@@ -375,7 +375,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
             </div>
 
             <p className="text-xs text-slate-600 font-medium line-clamp-1 mb-2.5 flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-teal-700 shrink-0" />
               <span className="truncate">{highlight.primary}</span>
             </p>
 
@@ -543,7 +543,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
                   e.stopPropagation();
                   onSelect(listing);
                 }}
-                className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-4 py-2 rounded-xl transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+                className="bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-full transition-all active:scale-95 cursor-pointer whitespace-nowrap"
               >
                 {meta.ctaLabel}
               </button>
@@ -733,7 +733,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
           </h3>
 
           <p className="text-xs text-slate-600 font-medium line-clamp-2 mb-2.5 flex items-start gap-1.5 leading-relaxed">
-            <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0 mt-0.5" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-teal-700 shrink-0 mt-0.5" />
             <span>{highlight.primary}</span>
           </p>
 
@@ -839,7 +839,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
                 e.stopPropagation();
                 onSelect(listing);
               }}
-              className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs h-8 px-3 rounded-full transition-all active:scale-95 cursor-pointer whitespace-nowrap shadow-xs flex items-center"
+              className="bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs h-8 px-3 rounded-full transition-all active:scale-95 cursor-pointer whitespace-nowrap shadow-xs flex items-center"
             >
               {meta.ctaLabel}
             </button>

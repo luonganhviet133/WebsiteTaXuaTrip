@@ -781,7 +781,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Thanh chuyển đổi giữa các cơ sở sở hữu (chỉ hiển thị khi đối tác sở hữu từ 2 cơ sở trở lên) */}
         {accessibleListings.length > 1 && onSelectPartnerListing && (
-          <div className="bg-slate-850/90 border border-teal-500/30 rounded-2xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div className="bg-slate-900/90 border border-teal-500/30 rounded-2xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             <div>
               <div className="text-xs font-extrabold text-teal-300 flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-teal-400" />
@@ -809,7 +809,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
         )}
 
         {/* Host Header */}
-        <div className="bg-gradient-to-r from-slate-850 via-slate-800 to-slate-850 border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <img
               src={partnerListing.coverImage}
@@ -844,7 +844,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
         {bookingsPanel}
 
         {/* CỤM ĐIỀU HƯỚNG PHÂN HỆ CHUYÊN BIỆT (CHỈ HIỂN THỊ ĐÚNG DỊCH VỤ CỦA ĐỐI TÁC ĐANG ĐĂNG NHẬP) */}
-        <div className="bg-slate-850 border border-slate-750 p-2 rounded-2xl flex flex-wrap gap-2">
+        <div className="bg-slate-900 border border-slate-700 p-2 rounded-2xl flex flex-wrap gap-2">
           {allowedModules.map((mod) => {
             const Icon = mod.icon;
             const isSelected = activeModule === mod.id;
@@ -856,7 +856,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                 className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   isSelected
                     ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/30'
-                    : 'bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-750'
+                    : 'bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-teal-400'}`} />
@@ -871,8 +871,8 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
            ======================================================== */}
         {activeModule === 'homestay' && partnerListing.category === 'homestay' && (
           <div className="space-y-6">
-            <div className="bg-slate-850 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-750">
+            <div className="bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-700">
                 <div>
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     <Building2 className="w-5 h-5 text-teal-400" />
@@ -1084,7 +1084,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   return (
                     <div
                       key={room.id}
-                      className="bg-slate-900 border border-slate-750 rounded-2xl p-5 flex flex-col justify-between space-y-4"
+                      className="bg-slate-900 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between space-y-4"
                     >
                       <div className="space-y-2">
                         <div className="flex items-start justify-between gap-3">
@@ -1120,7 +1120,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                         </div>
 
                         {/* View Description */}
-                        <div className="bg-slate-850 p-2.5 rounded-xl border border-slate-750 text-xs">
+                        <div className="bg-slate-900 p-2.5 rounded-xl border border-slate-700 text-xs">
                           <span className="text-slate-400 block text-xs">Hướng nhìn (View):</span>
                           <span className="text-sky-300 font-semibold">{summary.viewText}</span>
                         </div>
@@ -1229,7 +1229,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   )}
                 </div>
 
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-4 text-xs space-y-3 flex flex-col justify-between">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-4 text-xs space-y-3 flex flex-col justify-between">
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
                       <span className="font-extrabold text-teal-300">
@@ -1275,9 +1275,9 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
            ======================================================== */}
         {activeModule === 'bus' && partnerListing.category === 'bus' && (
           <div className="space-y-6">
-            <div className="bg-slate-850 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
+            <div className="bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
               {/* Header & Bộ chọn xe */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-750">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-700">
                 <div>
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     <Bus className="w-5 h-5 text-teal-400" />
@@ -1313,12 +1313,12 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       className={`px-4 py-2.5 rounded-2xl text-left border transition-all cursor-pointer ${
                         isSel
                           ? 'bg-slate-800 border-teal-500 shadow-md ring-1 ring-teal-500'
-                          : 'bg-slate-900 border-slate-750 hover:border-slate-600'
+                          : 'bg-slate-900 border-slate-700 hover:border-slate-600'
                       }`}
                     >
                       <div className="text-xs font-bold text-white flex items-center gap-2">
                         <span>{veh.vehicleName}</span>
-                        <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-750 text-sky-300">
+                        <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-700 text-sky-300">
                           {veh.licensePlate}
                         </span>
                       </div>
@@ -1445,7 +1445,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
               )}
 
               {/* SƠ ĐỒ GHẾ NGỒI TRỰC QUAN (VỊ TRÍ CÒN TRỐNG / ĐÃ ĐẶT) */}
-              <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+              <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
                   <div>
                     <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
@@ -1480,7 +1480,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                 {seatLayout.isTwoFloors ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Tầng 1 */}
-                    <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-3">
+                    <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
                       <div className="flex items-center justify-between text-xs font-bold text-sky-300">
                         <span>TẦNG 1 (DƯỚI) - Thuận tiện lên xuống</span>
                         <span className="text-xs text-slate-400">{seatLayout.floor1.length} vị trí</span>
@@ -1494,7 +1494,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                             className={`p-2 rounded-xl text-center text-xs font-black transition-all cursor-pointer border ${
                               seat.isBooked
                                 ? 'bg-rose-900/60 border-rose-600 text-rose-200'
-                                : 'bg-slate-800 hover:bg-slate-750 border-teal-500/40 text-teal-300 hover:border-teal-400'
+                                : 'bg-slate-800 hover:bg-slate-700 border-teal-500/40 text-teal-300 hover:border-teal-400'
                             }`}
                             title={seat.isBooked ? 'Bấm để mở trống' : 'Bấm để đánh dấu đã đặt'}
                           >
@@ -1508,7 +1508,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                     </div>
 
                     {/* Tầng 2 */}
-                    <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-3">
+                    <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
                       <div className="flex items-center justify-between text-xs font-bold text-amber-300">
                         <span>TẦNG 2 (TRÊN) - Ngắm cảnh thoáng mát</span>
                         <span className="text-xs text-slate-400">{seatLayout.floor2.length} vị trí</span>
@@ -1522,7 +1522,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                             className={`p-2 rounded-xl text-center text-xs font-black transition-all cursor-pointer border ${
                               seat.isBooked
                                 ? 'bg-rose-900/60 border-rose-600 text-rose-200'
-                                : 'bg-slate-800 hover:bg-slate-750 border-teal-500/40 text-teal-300 hover:border-teal-400'
+                                : 'bg-slate-800 hover:bg-slate-700 border-teal-500/40 text-teal-300 hover:border-teal-400'
                             }`}
                             title={seat.isBooked ? 'Bấm để mở trống' : 'Bấm để đánh dấu đã đặt'}
                           >
@@ -1537,7 +1537,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   </div>
                 ) : (
                   /* Xe 1 tầng Limousine */
-                  <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-3">
+                  <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
                     <div className="flex items-center justify-between text-xs font-bold text-teal-300">
                       <span>KHOANG HÀNH KHÁCH LIMOUSINE VIP</span>
                       <span className="text-xs text-slate-400">{seatLayout.floor1.length} ghế</span>
@@ -1553,7 +1553,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                               ? 'bg-rose-900/60 border-rose-600 text-rose-200'
                               : seat.isVip
                               ? 'bg-amber-950/40 border-amber-500/60 text-amber-300 hover:border-amber-400'
-                              : 'bg-slate-800 hover:bg-slate-750 border-teal-500/40 text-teal-300'
+                              : 'bg-slate-800 hover:bg-slate-700 border-teal-500/40 text-teal-300'
                           }`}
                         >
                           <span className="block text-sm">{seat.code}</span>
@@ -1568,7 +1568,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
               </div>
 
               {/* LỘ TRÌNH & ĐIỂM ĐÓN TRÊN ĐƯỜNG */}
-              <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+              <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                   <div>
                     <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
@@ -1590,7 +1590,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                 {/* Form thêm điểm đón */}
                 {isAddingStop && (
-                  <form onSubmit={handleAddStop} className="bg-slate-850 p-4 rounded-xl border border-teal-500/30 space-y-3">
+                  <form onSubmit={handleAddStop} className="bg-slate-900 p-4 rounded-xl border border-teal-500/30 space-y-3">
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                       <div className="sm:col-span-2">
                         <label className="text-xs text-slate-300 block mb-1">Tên điểm đón/trả *</label>
@@ -1656,7 +1656,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   {currentVehicle.stops.map((stop, index) => (
                     <div
                       key={stop.id}
-                      className="bg-slate-850 p-3 rounded-xl border border-slate-750 flex items-center justify-between gap-3 text-xs"
+                      className="bg-slate-900 p-3 rounded-xl border border-slate-700 flex items-center justify-between gap-3 text-xs"
                     >
                       <div className="flex items-center gap-3">
                         <span className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-300 flex items-center justify-center font-bold text-xs">
@@ -1718,7 +1718,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                 {motorbikeFleet.enabled && (
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {/* Thẻ 1: Cấu hình ban đầu */}
-                    <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-2">
+                    <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-2">
                       <span className="text-xs text-slate-400 block">Cấu hình kho xe ban đầu:</span>
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-slate-300">Tổng xe hiện có:</span>
@@ -1743,7 +1743,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                     </div>
 
                     {/* Thẻ 2: Cụm xác nhận cho thuê thêm bên ngoài (Theo đúng yêu cầu) */}
-                    <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-2">
+                    <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-2">
                       <span className="text-xs text-slate-400 block">Xe đã cho thuê trực tiếp bên ngoài:</span>
                       <div className="flex items-center justify-between pt-1">
                         <span className="text-base font-black text-amber-400">
@@ -1774,7 +1774,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                     </div>
 
                     {/* Thẻ 3: Tình trạng khả dụng cho khách trên web */}
-                    <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-2 flex flex-col justify-between">
+                    <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-2 flex flex-col justify-between">
                       <div>
                         <span className="text-xs text-slate-400 block">Số xe còn lại cho khách đặt Web:</span>
                         <div className="text-2xl font-black text-emerald-400 mt-1">
@@ -1799,8 +1799,8 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
         {activeModule === 'restaurant_coffee' &&
           (partnerListing.category === 'restaurant' || partnerListing.category === 'coffee') && (
           <div className="space-y-6">
-            <div className="bg-slate-850 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-750">
+            <div className="bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-700">
                 <div>
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     <Utensils className="w-5 h-5 text-teal-400" />
@@ -1822,7 +1822,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
               </div>
 
               {/* Giờ mở - đóng cửa */}
-              <div className="bg-slate-900 border border-slate-750 p-5 rounded-2xl space-y-3">
+              <div className="bg-slate-900 border border-slate-700 p-5 rounded-2xl space-y-3">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                   <span className="text-xs font-bold text-teal-300 flex items-center gap-2">
                     <Clock className="w-4 h-4 text-teal-400" />
@@ -1987,7 +1987,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                 {menuItems.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-slate-900 border border-slate-750 p-4 rounded-2xl flex items-start justify-between gap-3"
+                    className="bg-slate-900 border border-slate-700 p-4 rounded-2xl flex items-start justify-between gap-3"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
@@ -2052,8 +2052,8 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
         {activeModule === 'other_service' &&
           !['homestay', 'bus', 'restaurant', 'coffee'].includes(partnerListing.category) && (
             <div className="space-y-6">
-              <div className="bg-slate-850 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-750">
+              <div className="bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-700">
                   <div>
                     <h3 className="text-lg font-bold text-white flex items-center gap-2">
                       {partnerListing.category === 'motorbike' ? (
@@ -2198,7 +2198,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {servicePackages.map((pkg) => (
-                    <div key={pkg.id} className="bg-slate-900 border border-slate-750 rounded-2xl p-5 flex flex-col justify-between space-y-4">
+                    <div key={pkg.id} className="bg-slate-900 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between space-y-4">
                       <div className="space-y-2">
                         <div className="flex items-start justify-between gap-2">
                           <div>
@@ -2222,7 +2222,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                         </div>
 
                         {pkg.description && (
-                          <p className="text-xs text-slate-300 bg-slate-850 p-2.5 rounded-xl border border-slate-800">
+                          <p className="text-xs text-slate-300 bg-slate-900 p-2.5 rounded-xl border border-slate-800">
                             {pkg.description}
                           </p>
                         )}
@@ -2287,8 +2287,8 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
            ======================================================== */}
         {activeModule === 'profile_media' && (
           <div className="space-y-6">
-            <div className="bg-slate-850 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-750">
+            <div className="bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-700">
                 <div>
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     <ImageIcon className="w-5 h-5 text-teal-400" />
@@ -2434,7 +2434,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {profileForm.images.map((imgUrl, idx) => (
-                    <div key={idx} className="relative group rounded-xl overflow-hidden border border-slate-750 bg-slate-900">
+                    <div key={idx} className="relative group rounded-xl overflow-hidden border border-slate-700 bg-slate-900">
                       <img src={imgUrl} alt={`Ảnh ${idx + 1}`} className="w-full h-28 object-cover" />
                       <button
                         type="button"
@@ -2462,8 +2462,8 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
            ======================================================== */}
         {activeModule === 'payments_proof' && (
           <div className="space-y-6">
-            <div className="bg-slate-850 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-750">
+            <div className="bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-700">
                 <div>
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     <ShieldCheck className="w-5 h-5 text-teal-400" />
@@ -2487,7 +2487,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                   return (
                     <div
                       key={b.id}
-                      className="bg-slate-900 border border-slate-750 rounded-2xl p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-5"
+                      className="bg-slate-900 border border-slate-700 rounded-2xl p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-5"
                     >
                       <div className="space-y-2 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
@@ -2518,7 +2518,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                       </div>
 
                       {/* Khung bằng chứng thanh toán (Payment Proof Photo) */}
-                      <div className="flex items-center gap-4 bg-slate-850 p-3.5 rounded-2xl border border-slate-750 shrink-0">
+                      <div className="flex items-center gap-4 bg-slate-900 p-3.5 rounded-2xl border border-slate-700 shrink-0">
                         {proofStatus.hasProof && proofStatus.proofImageUrl ? (
                           <div className="flex items-center gap-3">
                             <div className="relative group cursor-pointer" onClick={() => setPreviewImageUrl(proofStatus.proofImageUrl!)}>
@@ -2555,7 +2555,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                         )}
 
                         {/* Nút hành động xác nhận tiền */}
-                        <div className="border-l border-slate-750 pl-3 flex flex-col gap-1.5">
+                        <div className="border-l border-slate-700 pl-3 flex flex-col gap-1.5">
                           {b.paymentStatus === 'partner_confirmed' ? (
                             <div className="text-xs font-bold text-emerald-400 flex items-center gap-1 bg-emerald-500/10 px-3 py-1.5 rounded-xl border border-emerald-500/20">
                               <Check className="w-4 h-4" />
@@ -2632,7 +2632,7 @@ export const PartnerDashboard: React.FC<PartnerDashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setPreviewImageUrl(null)}
-                  className="bg-slate-800 hover:bg-slate-750 text-white font-bold px-4 py-2 rounded-xl text-xs"
+                  className="bg-slate-800 hover:bg-slate-700 text-white font-bold px-4 py-2 rounded-xl text-xs"
                 >
                   Đóng
                 </button>

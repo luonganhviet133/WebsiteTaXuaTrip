@@ -1073,7 +1073,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   return (
-    <div className="bg-slate-900 py-8 px-4 sm:px-6 lg:px-8 text-white min-h-[850px]">
+    <div className="bg-slate-950 py-8 px-4 sm:px-6 lg:px-8 text-white min-h-[850px]">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* R4: tiêu đề gọn, không số liệu giả, không công tắc thu phí chỉ đổi trong trình duyệt */}
         <div>
@@ -1082,7 +1082,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* CỤM ĐIỀU HƯỚNG SUB-TABS ADMIN */}
-        <div className="bg-slate-850 border border-slate-750 p-2 rounded-2xl flex flex-wrap gap-2">
+        <div className="bg-slate-900 border border-slate-700 p-2 rounded-2xl flex flex-wrap gap-2">
           {[
             { id: 'members', label: 'Thành viên & Đối tác', icon: Users },
             { id: 'smart_listings', label: `Cơ sở & dịch vụ (${listings.length})`, icon: Building2 },
@@ -1111,7 +1111,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   isSelected
                     ? 'bg-teal-500 text-slate-950 shadow-lg shadow-teal-500/20 font-black'
-                    : 'bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-750'
+                    : 'bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isSelected ? 'text-slate-950' : 'text-teal-400'}`} />
@@ -1169,8 +1169,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             TAB 1: QUẢN TRỊ CƠ SỞ & KIỂM SOÁT SÂU TÍNH NĂNG CÁC BÊN DỊCH VỤ
            ======================================================== */}
         {adminTab === 'smart_listings' && (
-          <div className="bg-slate-850 border border-slate-750 rounded-3xl p-6 shadow-xl space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-750 pb-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-700 pb-4">
               <div>
                 <h3 className="text-base font-extrabold text-white flex items-center gap-2">
                   <Building2 className="w-5 h-5 text-teal-400" />
@@ -1350,7 +1350,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             )}
 
             {/* Bộ Lọc Đa Chiều Thông Minh */}
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-900 p-4 rounded-2xl border border-slate-750">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-900 p-4 rounded-2xl border border-slate-700">
               <div className="relative">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
@@ -1601,7 +1601,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
 
                     {/* Quản lý Thư viện Ảnh của cơ sở */}
-                    <div className="bg-slate-850 p-4 rounded-2xl border border-slate-750 space-y-3">
+                    <div className="bg-slate-900 p-4 rounded-2xl border border-slate-700 space-y-3">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <span className="text-xs font-bold text-teal-300">
                           Thư Viện Ảnh Cơ Sở ({(selectedListingDetail.images || []).length} ảnh)
@@ -1727,7 +1727,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
 
                     {/* Nhãn chứng nhận chuyên ngành do Admin cấp */}
-                    <div className="bg-slate-850 p-4 rounded-2xl border border-slate-750 space-y-2">
+                    <div className="bg-slate-900 p-4 rounded-2xl border border-slate-700 space-y-2">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <span className="text-xs font-bold text-amber-300">
                           Nhãn Chứng Nhận Thẩm Định Của Admin
@@ -1808,7 +1808,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {/* A. NẾU CƠ SỞ LÀ HOMESTAY -> ADMIN THÊM/SỬA/XÓA HẠNG PHÒNG, TIỆN NGHI, LỊCH TRỐNG */}
                     {selectedListingDetail.category === 'homestay' && (
                       <div className="space-y-4">
-                        <div className="bg-slate-850 p-4 rounded-2xl border border-slate-750 space-y-3">
+                        <div className="bg-slate-900 p-4 rounded-2xl border border-slate-700 space-y-3">
                           <span className="text-xs font-extrabold text-teal-300 uppercase block">
                             + Thêm Hạng Phòng Mới Cho Homestay Này (Quyền Admin)
                           </span>
@@ -1953,7 +1953,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           {(selectedListingDetail.roomTypes || []).map((rm) => (
-                            <div key={rm.id} className="bg-slate-850 border border-slate-750 p-4 rounded-2xl space-y-2">
+                            <div key={rm.id} className="bg-slate-900 border border-slate-700 p-4 rounded-2xl space-y-2">
                               <div className="flex items-start justify-between gap-2">
                                 <div>
                                   <h5 className="font-bold text-white text-sm">{rm.name}</h5>
@@ -2044,7 +2044,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {/* B. NẾU CƠ SỞ LÀ NHÀ XE KHÁCH (`bus`) -> ADMIN QUẢN LÝ CHUYẾN XE, SƠ ĐỒ GHẾ, ĐIỂM ĐÓN & XE MÁY KÈM */}
                     {selectedListingDetail.category === 'bus' && (
                       <div className="space-y-4">
-                        <div className="bg-slate-850 p-4 rounded-2xl border border-slate-750 space-y-3">
+                        <div className="bg-slate-900 p-4 rounded-2xl border border-slate-700 space-y-3">
                           <span className="text-xs font-extrabold text-teal-300 uppercase block">
                             + Thêm Chuyến Xe Mới Vào Hệ Thống (Quyền Admin)
                           </span>
@@ -2110,7 +2110,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                         <div className="space-y-3">
                           {localTrips.map((tr) => (
-                            <div key={tr.id} className="bg-slate-850 border border-slate-750 p-4 rounded-2xl space-y-3">
+                            <div key={tr.id} className="bg-slate-900 border border-slate-700 p-4 rounded-2xl space-y-3">
                               <div className="flex flex-wrap items-center justify-between gap-2">
                                 <div>
                                   <span className="font-bold text-white text-sm">{tr.operatorName}</span>
@@ -2235,7 +2235,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {(selectedListingDetail.category === 'restaurant' ||
                       selectedListingDetail.category === 'coffee') && (
                       <div className="space-y-4">
-                        <div className="bg-slate-850 p-4 rounded-2xl border border-slate-750 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="bg-slate-900 p-4 rounded-2xl border border-slate-700 grid grid-cols-1 sm:grid-cols-3 gap-3">
                           <div>
                             <label className="text-xs text-slate-400 block mb-1">Giờ mở cửa</label>
                             <input
@@ -2294,7 +2294,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </div>
                         </div>
 
-                        <div className="bg-slate-850 p-4 rounded-2xl border border-slate-750 space-y-3">
+                        <div className="bg-slate-900 p-4 rounded-2xl border border-slate-700 space-y-3">
                           <span className="text-xs font-extrabold text-teal-300 uppercase block">
                             + Thêm Món Vào Thực Đơn Cơ Sở (Quyền Admin)
                           </span>
@@ -2354,7 +2354,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           {(selectedListingDetail.menuItems || []).map((mn) => (
                             <div
                               key={mn.id}
-                              className="bg-slate-850 border border-slate-750 p-3.5 rounded-xl flex items-center justify-between gap-2"
+                              className="bg-slate-900 border border-slate-700 p-3.5 rounded-xl flex items-center justify-between gap-2"
                             >
                               <div>
                                 <div className="font-bold text-white text-xs">{mn.name}</div>
@@ -2403,7 +2403,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {/* D. NẾU CƠ SỞ LÀ XE MÁY, TOUR, PHOTO, TRANG PHỤC, MÁY ẢNH, TAXI -> ADMIN QUẢN LÝ GÓI DỊCH VỤ */}
                     {!['homestay', 'bus', 'restaurant', 'coffee'].includes(selectedListingDetail.category) && (
                       <div className="space-y-4">
-                        <div className="bg-slate-850 p-4 rounded-2xl border border-slate-750 space-y-3">
+                        <div className="bg-slate-900 p-4 rounded-2xl border border-slate-700 space-y-3">
                           <span className="text-xs font-extrabold text-teal-300 uppercase block">
                             + Thêm Gói Dịch Vụ / Phương Tiện Cho Cơ Sở Này (Quyền Admin)
                           </span>
@@ -2473,7 +2473,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           {(selectedListingDetail.servicePackages || []).map((pk) => (
                             <div
                               key={pk.id}
-                              className="bg-slate-850 border border-slate-750 p-3.5 rounded-xl flex items-center justify-between gap-2"
+                              className="bg-slate-900 border border-slate-700 p-3.5 rounded-xl flex items-center justify-between gap-2"
                             >
                               <div>
                                 <div className="font-bold text-white text-xs">{pk.name}</div>
@@ -2511,13 +2511,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               {filteredListings.map((l) => (
                 <div
                   key={l.id}
-                  className="bg-slate-900 border border-slate-750 hover:border-slate-700 rounded-2xl p-4.5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 transition-all"
+                  className="bg-slate-900 border border-slate-700 hover:border-slate-700 rounded-2xl p-4.5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 transition-all"
                 >
                   <div className="flex items-start sm:items-center gap-3.5">
                     <img
                       src={l.coverImage}
                       alt={l.title}
-                      className="w-14 h-14 rounded-xl object-cover shrink-0 border border-slate-750"
+                      className="w-14 h-14 rounded-xl object-cover shrink-0 border border-slate-700"
                     />
                     <div>
                       <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -2571,7 +2571,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   {/* Cụm công cụ điều khiển toàn quyền của Admin */}
                   <div className="flex flex-wrap items-center gap-2 border-t lg:border-t-0 border-slate-800 pt-3 lg:pt-0">
                     {/* Nút Ghim Ưu Tiên 1-Chạm & Ô chỉnh hạng ưu tiên trực tiếp */}
-                    <div className="flex items-center gap-1 bg-slate-850 border border-slate-750 rounded-xl p-1">
+                    <div className="flex items-center gap-1 bg-slate-900 border border-slate-700 rounded-xl p-1">
                       <button
                         type="button"
                         onClick={() => {
@@ -2707,8 +2707,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             TAB 2: QUẢN TRỊ NỘI DUNG & HÌNH ẢNH TOÀN WEBSITE (CMS STUDIO)
            ======================================================== */}
         {adminTab === 'cms_content' && (
-          <div className="bg-slate-850 border border-slate-750 rounded-3xl p-6 shadow-xl space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-750 pb-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-700 pb-4">
               <div>
                 <h3 className="text-base font-extrabold text-white flex items-center gap-2">
                   <Globe className="w-5 h-5 text-teal-400" />
@@ -2736,7 +2736,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             )}
 
             {/* Sub-navigation cho 7 phân khu nội dung & kênh social trên website */}
-            <div className="flex flex-wrap gap-2 bg-slate-900 p-2 rounded-2xl border border-slate-750">
+            <div className="flex flex-wrap gap-2 bg-slate-900 p-2 rounded-2xl border border-slate-700">
               {[
                 {
                   id: 'social_channels_utm',
@@ -2760,7 +2760,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all ${
                     cmsSubTab === st.id
                       ? 'bg-teal-600 text-white shadow'
-                      : 'bg-slate-850 text-slate-300 hover:text-white border border-slate-750'
+                      : 'bg-slate-900 text-slate-300 hover:text-white border border-slate-700'
                   }`}
                 >
                   {st.label}
@@ -3000,7 +3000,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
 
                   {/* Khối 2: Danh sách Kênh Social & SĐT Hiện Có (Sửa / Xóa / Bật-Tắt / Chọn Vị Trí) */}
-                  <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+                  <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                     <span className="text-xs font-extrabold text-teal-400 uppercase tracking-wide block">
                       DANH SÁCH KÊNH SOCIAL & SỐ ĐIỆN THOẠI ĐANG QUẢN TRỊ (SỬA TRỰC TIẾP / BẬT-TẮT / XÓA)
                     </span>
@@ -3009,7 +3009,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       {(cmsConfig.socialChannels || []).map((ch) => (
                         <div
                           key={ch.id}
-                          className={`bg-slate-850 border rounded-2xl p-4 space-y-3 transition-all ${
+                          className={`bg-slate-900 border rounded-2xl p-4 space-y-3 transition-all ${
                             ch.isActive ? 'border-slate-700' : 'border-slate-800 opacity-60'
                           }`}
                         >
@@ -3233,7 +3233,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                   {/* Khối 3: Trình Tạo Link Chiến Dịch UTM & Mã QR Nội Bộ + Checklist 30 Ngày (Chuyển từ Popup khách về Admin) */}
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                    <div className="lg:col-span-7 bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+                    <div className="lg:col-span-7 bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                       <div>
                         <span className="text-xs font-extrabold text-amber-400 uppercase tracking-wide block">
                           CÔNG CỤ MARKETING NỘI BỘ DÀNH CHO ADMIN (PHỄU OMNICHANNEL UTM)
@@ -3290,7 +3290,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </button>
                       </div>
 
-                      <div className="bg-slate-850 border border-slate-750 rounded-xl p-3.5 flex items-center gap-4">
+                      <div className="bg-slate-900 border border-slate-700 rounded-xl p-3.5 flex items-center gap-4">
                         <img
                           src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(
                             adminUtmUrl
@@ -3307,7 +3307,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
                     </div>
 
-                    <div className="lg:col-span-5 bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-3">
+                    <div className="lg:col-span-5 bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-extrabold text-teal-400 uppercase">
                           CHECKLIST VẬN HÀNH PHỄU CỘNG ĐỒNG 30 NGÀY (DÀNH CHO ADMIN)
@@ -3321,7 +3321,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         {adminLaunchChecklist.map((item) => (
                           <label
                             key={item.id}
-                            className="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-850 border border-slate-750 cursor-pointer hover:bg-slate-800 text-xs"
+                            className="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer hover:bg-slate-800 text-xs"
                           >
                             <input
                               type="checkbox"
@@ -3348,7 +3348,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {/* PHÂN KHU CMS 2: HERO, ẢNH NỀN & BANNER TRANG CHỦ */}
             {cmsSubTab === 'hero_banners' && (
               <div className="space-y-6">
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
                     <div>
                       <span className="text-xs font-extrabold text-teal-400 uppercase tracking-wide block">
@@ -3377,7 +3377,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           if (onUpdateSiteContent) onUpdateSiteContent(next);
                           showAdminToast('✅ Đã đặt lại cấu hình Hero chuẩn (Đã xóa trống mô tả chi tiết)!');
                         }}
-                        className="text-xs font-bold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 px-3 py-1.5 rounded-xl border border-slate-700 cursor-pointer"
+                        className="text-xs font-bold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-xl border border-slate-700 cursor-pointer"
                       >
                         Khôi phục chuẩn (Ẩn mô tả)
                       </button>
@@ -3540,7 +3540,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 {/* Danh sách Banner Quảng Bá / 3+ Thẻ Điểm Nhấn Trang Chủ (Điểm Săn Mây Đỉnh Nhất, Combo Tiết Kiệm, Ẩm Thực & Cafe Đỉnh Gió...) */}
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
                       <span className="text-xs font-extrabold text-teal-400 uppercase tracking-wide block">
@@ -3560,7 +3560,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
 
                   {/* Form thêm Thẻ Điểm Nhấn Hero mới */}
-                  <div className="bg-slate-850 p-4 rounded-xl border border-slate-750 space-y-3">
+                  <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
                     <span className="text-xs font-bold text-slate-200 block">+ Thêm Thẻ Điểm Nhấn Mới Trên Hero</span>
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                       <input
@@ -3651,7 +3651,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {(cmsConfig.heroBanners || []).map((hb, idx) => (
                       <div
                         key={hb.id}
-                        className={`bg-slate-850 border rounded-2xl overflow-hidden flex flex-col justify-between transition-all ${
+                        className={`bg-slate-900 border rounded-2xl overflow-hidden flex flex-col justify-between transition-all ${
                           hb.isActive !== false ? 'border-slate-700' : 'border-slate-800 opacity-60'
                         }`}
                       >
@@ -3838,7 +3838,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {/* PHÂN KHU CMS 2B: QUẢN TRỊ CÁC GÓI COMBO GỢI Ý & TOUR TREKKING ĐẶC BIỆT */}
             {cmsSubTab === 'curated_combos' && (
               <div className="space-y-5">
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
                       <h4 className="text-sm font-extrabold text-amber-300 flex items-center gap-2">
@@ -3851,7 +3851,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
 
                   {/* Form tạo Gói Combo / Trekking mới */}
-                  <div className="bg-slate-850 p-4 rounded-2xl border border-amber-500/30 space-y-3">
+                  <div className="bg-slate-900 p-4 rounded-2xl border border-amber-500/30 space-y-3">
                     <span className="text-xs font-extrabold text-amber-300 block">
                       + Tạo Gói Combo Săn Mây / Tour Trekking Ưu Tiên Mới
                     </span>
@@ -4022,7 +4022,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       .map((pkg) => (
                         <div
                           key={pkg.id}
-                          className={`bg-slate-850 border rounded-2xl p-4 space-y-3 transition-all ${
+                          className={`bg-slate-900 border rounded-2xl p-4 space-y-3 transition-all ${
                             pkg.isActive ? 'border-slate-700' : 'border-slate-800 opacity-60'
                           }`}
                         >
@@ -4240,7 +4240,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 {(cmsConfig.sectionBanners || []).map((sec) => (
                   <div
                     key={sec.id}
-                    className="bg-slate-900 border border-slate-750 rounded-2xl p-4 grid grid-cols-1 md:grid-cols-4 gap-4 items-center"
+                    className="bg-slate-900 border border-slate-700 rounded-2xl p-4 grid grid-cols-1 md:grid-cols-4 gap-4 items-center"
                   >
                     <div className="relative h-28 rounded-xl overflow-hidden border border-slate-700">
                       <img src={sec.bannerImageUrl} alt={sec.sectionName} className="w-full h-full object-cover" />
@@ -4310,7 +4310,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             {/* PHÂN KHU CMS 3: DẢI BĂNG CẢNH BÁO ĐÈO & SƯƠNG MÙ KHẨN CẤP */}
             {cmsSubTab === 'emergency_alert' && (
-              <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+              <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
                   <div>
                     <span className="text-xs font-bold text-amber-400 uppercase tracking-wide flex items-center gap-2">
@@ -4397,7 +4397,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {/* PHÂN KHU CMS 4: ĐIỂM SĂN MÂY & BẢN ĐỒ (THÊM / SỬA / XÓA ẢNH & NỘI DUNG) */}
             {cmsSubTab === 'cloud_landmarks' && (
               <div className="space-y-4">
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-4 space-y-3">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-4 space-y-3">
                   <span className="text-xs font-extrabold text-teal-400 uppercase block">
                     + Thêm Điểm Săn Mây Mới Lên Website
                   </span>
@@ -4476,7 +4476,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {cmsLandmarks.map((lm) => (
-                    <div key={lm.id} className="bg-slate-900 border border-slate-750 rounded-2xl p-4 flex gap-3.5">
+                    <div key={lm.id} className="bg-slate-900 border border-slate-700 rounded-2xl p-4 flex gap-3.5">
                       <img src={lm.imageUrl} alt={lm.name} className="w-24 h-24 rounded-xl object-cover shrink-0 border border-slate-700" />
                       <div className="flex-1 space-y-2">
                         <div className="flex items-start justify-between gap-2">
@@ -4538,7 +4538,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {cmsSubTab === 'weather_forecasts' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {cmsForecasts.map((fc, idx) => (
-                  <div key={fc.location + idx} className="bg-slate-900 border border-slate-750 rounded-2xl p-4 space-y-3">
+                  <div key={fc.location + idx} className="bg-slate-900 border border-slate-700 rounded-2xl p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="font-extrabold text-teal-300 text-sm">{fc.location}</span>
                       <span className="text-xs font-bold bg-teal-500/20 text-teal-300 px-2.5 py-0.5 rounded-full">
@@ -4613,7 +4613,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {/* PHÂN KHU CMS 6: BÀI VIẾT CỘNG ĐỒNG & THÔNG TIN FOOTER / CỨU HỘ */}
             {cmsSubTab === 'community_footer' && (
               <div className="space-y-6">
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-3">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-3">
                   <span className="text-xs font-extrabold text-teal-400 uppercase block">
                     + Đăng Bài Viết / Thông Báo Mới Lên Cộng Đồng Tà Xùa
                   </span>
@@ -4675,7 +4675,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {cmsPosts.map((po) => (
                       <div
                         key={po.id}
-                        className="bg-slate-850 border border-slate-750 p-3 rounded-xl flex items-center justify-between gap-3"
+                        className="bg-slate-900 border border-slate-700 p-3 rounded-xl flex items-center justify-between gap-3"
                       >
                         <div className="flex-1">
                           <div className="text-xs font-bold text-white">{po.title}</div>
@@ -4699,7 +4699,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 {/* Cấu hình Footer & Hotline Cứu Hộ */}
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-3">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-3">
                   <span className="text-xs font-extrabold text-teal-400 uppercase block">
                     Cấu Hình Thông Tin Chân Trang (Footer) & Hotline Cứu Hộ Đèo 24/7
                   </span>
@@ -4750,8 +4750,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
            ======================================================== */}
         {adminTab === 'ai_studio' && featureOpen('aiGateway') && (
           <div className="space-y-6">
-            <div className="bg-slate-850 border border-slate-750 rounded-3xl p-6 shadow-xl space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-750 pb-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 shadow-xl space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-700 pb-4">
                 <div>
                   <h3 className="text-base font-extrabold text-white flex items-center gap-2">
                     <Bot className="w-5 h-5 text-teal-400" />
@@ -4786,7 +4786,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       className={`px-4 py-2.5 rounded-xl text-xs font-bold text-left border transition-all cursor-pointer ${
                         isSel
                           ? 'bg-slate-800 border-teal-500 shadow-md ring-1 ring-teal-500'
-                          : 'bg-slate-900 border-slate-750 hover:border-slate-700 text-slate-300'
+                          : 'bg-slate-900 border-slate-700 hover:border-slate-700 text-slate-300'
                       }`}
                     >
                       <div className="flex items-center gap-2">
@@ -4802,7 +4802,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* FORM CẤU HÌNH VAI TRÒ & TÍNH CÁCH CHO CHATBOT ĐANG CHỌN */}
-              <form onSubmit={handleSaveBotConfig} className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+              <form onSubmit={handleSaveBotConfig} className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                   <span className="text-xs font-bold text-teal-400 uppercase tracking-wide">
                     Cấu Hình Chi Tiết: {activeBot.name}
@@ -4950,7 +4950,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </form>
 
               {/* DANH SÁCH FILE KIẾN THỨC GÁN CHO CHATBOT (RAG KNOWLEDGE BASE) */}
-              <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+              <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                   <div>
                     <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
@@ -4965,7 +4965,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 {/* Form thêm file nếu đang mở */}
                 {isAddingKnowledge && (
-                  <form onSubmit={handleCreateKnowledgeFile} className="bg-slate-850 p-4 rounded-xl border border-teal-500/40 space-y-3">
+                  <form onSubmit={handleCreateKnowledgeFile} className="bg-slate-900 p-4 rounded-xl border border-teal-500/40 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-teal-400">Tải File Kiến Thức Mới Lên RAG</span>
                       <button type="button" onClick={() => setIsAddingKnowledge(false)} className="text-slate-400 hover:text-white">
@@ -5021,7 +5021,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     return (
                       <div
                         key={file.id}
-                        className="bg-slate-850 p-3.5 rounded-xl border border-slate-750 flex items-center justify-between gap-3 text-xs"
+                        className="bg-slate-900 p-3.5 rounded-xl border border-slate-700 flex items-center justify-between gap-3 text-xs"
                       >
                         <div className="flex items-center gap-3">
                           <FileText className="w-5 h-5 text-teal-400 shrink-0" />
@@ -5070,7 +5070,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* GIÁM SÁT LỊCH SỬ TƯƠNG TÁC GIỮA CÁC MEMBER & CẢNH BÁO RỦI RO */}
-              <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+              <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                   <div>
                     <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
@@ -5093,7 +5093,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       className={`p-3.5 rounded-xl border text-xs space-y-1.5 ${
                         log.isFlaggedScam
                           ? 'bg-rose-950/30 border-rose-600/50 text-rose-200'
-                          : 'bg-slate-850 border-slate-750 text-slate-300'
+                          : 'bg-slate-900 border-slate-700 text-slate-300'
                       }`}
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -5188,7 +5188,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       rule: 'Gom nhóm câu hỏi từ kênh #hỏi-đáp đã ẩn danh 100%; bài đăng cần biên tập viên duyệt.'
                     }
                   ].map((ast, idx) => (
-                    <div key={idx} className="bg-slate-850 border border-slate-750 rounded-xl p-3.5 space-y-1.5">
+                    <div key={idx} className="bg-slate-900 border border-slate-700 rounded-xl p-3.5 space-y-1.5">
                       <div className="flex items-center justify-between gap-2">
                         <span className="font-extrabold text-white">{ast.name}</span>
                         <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300">
@@ -5216,8 +5216,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             TAB 5: VOUCHERS & TÍCH ĐIỂM
            ======================================================== */}
         {adminTab === 'vouchers_rewards' && (
-          <div className="bg-slate-850 border border-slate-750 rounded-3xl p-6 shadow-xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-750 pb-3">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 shadow-xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-700 pb-3">
               <h3 className="text-base font-extrabold text-white flex items-center gap-2">
                 <Gift className="w-5 h-5 text-amber-400" />
                 <span>Quản Lý Mã Ưu Đãi Voucher ({vouchers.length})</span>
@@ -5226,7 +5226,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {vouchers.map((v) => (
-                <div key={v.id} className="bg-slate-900 border border-slate-750 p-4 rounded-2xl flex items-center justify-between gap-3 text-xs">
+                <div key={v.id} className="bg-slate-900 border border-slate-700 p-4 rounded-2xl flex items-center justify-between gap-3 text-xs">
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-sm font-black text-amber-400">{v.code}</span>
@@ -5259,8 +5259,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             TAB 6: DUYỆT CHÍNH CHỦ
            ======================================================== */}
         {adminTab === 'claims' && (
-          <div className="bg-slate-850 border border-slate-750 rounded-3xl p-6 shadow-xl space-y-4">
-            <h3 className="text-base font-extrabold text-white flex items-center gap-2 border-b border-slate-750 pb-3">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 shadow-xl space-y-4">
+            <h3 className="text-base font-extrabold text-white flex items-center gap-2 border-b border-slate-700 pb-3">
               <ShieldCheck className="w-5 h-5 text-indigo-400" />
               <span>Yêu Cầu Xác Nhận Quyền Sở Hữu Cơ Sở ({claimRequests.length})</span>
             </h3>
@@ -5272,7 +5272,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             ) : (
               <div className="space-y-3">
                 {claimRequests.map((c) => (
-                  <div key={c.id} className="bg-slate-900 border border-slate-750 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
+                  <div key={c.id} className="bg-slate-900 border border-slate-700 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
                     <div>
                       <h4 className="font-bold text-white text-sm">{c.listingTitle}</h4>
                       <div className="text-slate-300 mt-0.5">
@@ -5317,8 +5317,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             TAB 7: KIỂM TOÁN BẰNG CHỨNG
            ======================================================== */}
         {adminTab === 'evidence_audit' && (
-          <div className="bg-slate-850 border border-slate-750 rounded-3xl p-6 shadow-xl space-y-4">
-            <h3 className="text-base font-extrabold text-white flex items-center gap-2 border-b border-slate-750 pb-3">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 shadow-xl space-y-4">
+            <h3 className="text-base font-extrabold text-white flex items-center gap-2 border-b border-slate-700 pb-3">
               <Lock className="w-5 h-5 text-teal-400" />
               <span>Kiểm Toán Truy Cập Dữ Liệu Bằng Chứng (Audit Log)</span>
             </h3>
@@ -5328,7 +5328,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             <div className="space-y-2">
               {auditLogs.map((log) => (
-                <div key={log.id} className="bg-slate-900 border border-slate-750 p-3 rounded-xl text-xs flex justify-between gap-3">
+                <div key={log.id} className="bg-slate-900 border border-slate-700 p-3 rounded-xl text-xs flex justify-between gap-3">
                   <div>
                     <div className="font-bold text-teal-300">{log.ticketId} • {log.actor}</div>
                     <div className="text-slate-300 mt-0.5">{log.reason}</div>
@@ -5344,9 +5344,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             TAB 4: QUẢN TRỊ & ĐIỀU PHỐI REVIDAPI GATEWAY (https://revidapi.com/dashboard/docs)
            ======================================================== */}
         {adminTab === 'revid_api_gateway' && featureOpen('aiGateway') && (
-          <div className="bg-slate-850 border border-slate-750 rounded-3xl p-6 shadow-xl space-y-6">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 shadow-xl space-y-6">
             {/* Header & Global Gateway Status */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-750 pb-5">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-700 pb-5">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-300 text-xs font-extrabold mb-2">
                   <Sparkles className="w-3.5 h-3.5" />
@@ -5424,7 +5424,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     revidSubSection === sub.id
                       ? 'bg-teal-500 text-slate-950 font-black shadow-md'
-                      : 'bg-slate-850 hover:bg-slate-800 text-slate-300 border border-slate-750'
+                      : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700'
                   }`}
                 >
                   {sub.label}
@@ -5438,7 +5438,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {revidSubSection === 'presets_manual' && (
               <div className="space-y-6">
                 {/* Mode Toggle Banner */}
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
                       <Sliders className="w-4 h-4 text-teal-400" />
@@ -5496,7 +5496,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         className={`rounded-2xl p-5 border transition-all flex flex-col justify-between gap-4 ${
                           isActive
                             ? 'bg-teal-950/35 border-teal-400 shadow-lg shadow-teal-500/10'
-                            : 'bg-slate-900 border-slate-750 hover:border-slate-600'
+                            : 'bg-slate-900 border-slate-700 hover:border-slate-600'
                         }`}
                       >
                         <div className="space-y-2.5">
@@ -5571,7 +5571,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 {/* Smart Orchestration Switches (Auto-Complexity, Cache Read, Key Rotation) */}
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                   <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
                     <Bot className="w-4 h-4 text-amber-400" />
                     <span>Các Cơ Chế Tự Động Hóa & Tối Ưu Chi Phí Thông Minh Trên RevidAPI</span>
@@ -5647,7 +5647,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                ===================================================================== */}
             {revidSubSection === 'complexity_matrix' && (
               <div className="space-y-5">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900 border border-slate-750 rounded-2xl p-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900 border border-slate-700 rounded-2xl p-4">
                   <div>
                     <h4 className="text-sm font-extrabold text-white">
                       Ma Trận Gán Model Theo Độ Phức Tạp (L1 → L5) Cho 7 Tác Vụ Cốt Lõi Trên Website
@@ -5677,7 +5677,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     return (
                       <div
                         key={route.featureId}
-                        className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4"
+                        className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4"
                       >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
                           <div>
@@ -5907,7 +5907,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {revidSubSection === 'overview_keys' && (
               <div className="space-y-6">
                 {/* Base URL & Auth Header Config */}
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <h4 className="text-sm font-extrabold text-white">
@@ -5994,7 +5994,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 {/* Multi-Key Vault */}
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                   <h4 className="text-sm font-extrabold text-white">
                     Kho Khóa API (Multi-Key Vault) & Tự Động Đảo Khóa Khi Chạm Rate Limit
                   </h4>
@@ -6146,7 +6146,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${
                           modelCategoryFilter === cat.id
                             ? 'bg-teal-500 text-slate-950 font-black'
-                            : 'bg-slate-900 text-slate-300 border border-slate-750'
+                            : 'bg-slate-900 text-slate-300 border border-slate-700'
                         }`}
                       >
                         {cat.label}
@@ -6166,7 +6166,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         key={m.id}
                         className={`rounded-2xl p-4 border flex flex-col justify-between gap-3 ${
                           m.isEnabled
-                            ? 'bg-slate-900 border-slate-750'
+                            ? 'bg-slate-900 border-slate-700'
                             : 'bg-slate-950/50 border-slate-800 opacity-60'
                         }`}
                       >
@@ -6238,7 +6238,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {revidSubSection === 'live_playground' && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Left Column: LLM Chat & Auto-Complexity Playground */}
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                   <div className="flex items-center justify-between">
                     <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
                       <MessageSquare className="w-4 h-4 text-teal-400" />
@@ -6382,7 +6382,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 {/* Right Column: Async Media Job Generator (/v1/generate & /v1/jobs/{id}) */}
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                   <div>
                     <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
                       <ImageIcon className="w-4 h-4 text-rose-400" />
@@ -6518,7 +6518,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {revidSubSection === 'logs_limits' && (
               <div className="space-y-6">
                 {/* Credit & Rate Limit Controls */}
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-4">
                   <h4 className="text-sm font-extrabold text-white">
                     Cấu Hình Hạn Mức Chi Tiêu Credit Hàng Ngày & Cầu Dao Tự Động (Circuit Breaker)
                   </h4>
@@ -6606,7 +6606,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 {/* API Call Ledger Table */}
-                <div className="bg-slate-900 border border-slate-750 rounded-2xl p-5 space-y-3">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-3">
                   <div className="flex items-center justify-between">
                     <h4 className="text-sm font-extrabold text-white">
                       Nhật Ký Gọi RevidAPI & Khấu Trừ Credit Thời Gian Thực ({revidConfig.callLogs.length} bản ghi)

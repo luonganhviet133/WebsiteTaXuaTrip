@@ -307,7 +307,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleCopy(primaryLiveUrl, 'primary')}
-                    className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-1.5 cursor-pointer"
+                    className="bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2.5 rounded-full inline-flex items-center gap-1.5 cursor-pointer"
                   >
                     {copiedUrl === 'primary' ? (
                       <>
@@ -460,7 +460,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                         value={projectName}
                         onChange={(e) => setProjectName(e.target.value)}
                         placeholder="ta-xua-trip-vn"
-                        className="w-full text-xs font-bold text-slate-900 focus:outline-none"
+                        className="w-full text-base font-bold text-slate-900 focus:outline-none"
                       />
                       <span className="text-xs text-slate-400 font-mono shrink-0">
                         .{provider === 'vercel' ? 'vercel.app' : 'netlify.app'}
@@ -485,7 +485,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                           ? 'Dán token từ vercel.com/account/tokens...'
                           : 'Dán token từ app.netlify.com...'
                       }
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
+                      className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2 text-base text-slate-900 focus:outline-none focus:border-brand-800"
                     />
                   </div>
                 </div>
@@ -554,7 +554,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                   <button
                     type="submit"
                     disabled={isDeploying}
-                    className="bg-brand-800 hover:bg-brand-700 disabled:opacity-60 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl inline-flex items-center gap-2 cursor-pointer shadow-xs"
+                    className="bg-brand-800 hover:bg-brand-700 disabled:opacity-60 text-white font-bold text-xs px-5 py-2.5 rounded-full inline-flex items-center gap-2 cursor-pointer shadow-xs"
                   >
                     <Rocket className="w-4 h-4" />
                     <span>
@@ -628,7 +628,7 @@ export const HostingModal: React.FC<HostingModalProps> = ({
                     'text/html;charset=utf-8'
                   )
                 }
-                className="shrink-0 bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-2 cursor-pointer"
+                className="shrink-0 bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2.5 rounded-full inline-flex items-center gap-2 cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 <span>

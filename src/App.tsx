@@ -7,7 +7,6 @@ import {
   BUS_TRIPS,
   CLOUD_FORECASTS,
   COMMUNITY_POSTS,
-  INITIAL_BOOKINGS,
   INITIAL_USER_PROFILE,
   CLOUD_LANDMARKS,
   INITIAL_REWARD_SETTINGS,
@@ -334,7 +333,8 @@ export default function App() {
   const [showAllCuratedCombos, setShowAllCuratedCombos] = useState<boolean>(false);
 
   const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>(COMMUNITY_POSTS);
-  const [bookings, setBookings] = useState<Booking[]>(INITIAL_BOOKINGS);
+  // R4: không hiện đơn mẫu; đơn thật lấy từ server trong Chuyến đi của tôi.
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [userProfile, setUserProfile] = useState(INITIAL_USER_PROFILE);
   const [billingEnabled, setBillingEnabled] = useState(false);
   // N06.3: khiếu nại thật từ server (admin) — dùng cho số đếm ở bảng quản trị và J.A.R.V.I.S. (chỉ đọc).
@@ -1532,7 +1532,7 @@ export default function App() {
                                   <ul className="space-y-1 text-xs text-slate-700">
                                     {combo.includedItems.map((itemText, idx) => (
                                       <li key={idx} className="flex items-start gap-1.5 leading-snug">
-                                        <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0 mt-0.5" />
+                                        <CheckCircle2 className="w-3.5 h-3.5 text-teal-700 shrink-0 mt-0.5" />
                                         <span>{itemText}</span>
                                       </li>
                                     ))}
@@ -1569,7 +1569,7 @@ export default function App() {
                                 <button
                                   type="button"
                                   onClick={() => handleSelectComboAction(combo)}
-                                  className="px-4 py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                                  className="px-4 py-2.5 rounded-full bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
                                 >
                                   Đặt Gói Combo →
                                 </button>
@@ -1643,7 +1643,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={() => handleOpenBusBookingModal(undefined, true)}
-                          className="px-4 py-2.5 rounded-full bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs shadow-sm cursor-pointer"
+                          className="px-4 py-2.5 rounded-full bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs shadow-sm cursor-pointer"
                         >
                           🚌 Đặt Combo Vé Xe + Xe Máy (-30k/xe) →
                         </button>
@@ -1844,7 +1844,7 @@ export default function App() {
                               className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${
                                 isActive
                                   ? 'bg-amber-400 text-slate-950 font-bold shadow-xs ring-2 ring-white/30'
-                                  : 'bg-slate-50 text-slate-700 border border-slate-200/80 shadow-2xs group-hover:text-teal-600 group-hover:border-teal-400 group-hover:shadow-[0_0_8px_rgba(20,184,166,0.2)]'
+                                  : 'bg-slate-50 text-slate-700 border border-slate-200/80 shadow-2xs group-hover:text-teal-700 group-hover:border-teal-400 group-hover:shadow-[0_0_8px_rgba(20,184,166,0.2)]'
                               }`}
                             >
                               {renderIcon(item.id)}
@@ -2147,7 +2147,7 @@ export default function App() {
                           setVisibleStayCount(12);
                         }}
                         placeholder="VD: Mẩy, Lu Trế, Bungalow kính..."
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-7 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-brand-800"
+                        className="w-full bg-slate-50 border border-slate-500 rounded-xl pl-8 pr-7 py-2 text-base font-semibold text-slate-800 focus:outline-none focus:border-brand-800"
                       />
                       {staySearchQuery && (
                         <button
@@ -2175,7 +2175,7 @@ export default function App() {
                         updateSearchIntent({ checkIn: e.target.value });
                         setStayFilterByAvailableDates(true);
                       }}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
+                      className="w-full bg-slate-50 border border-slate-500 rounded-xl px-2.5 py-2 text-base font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                     />
                   </div>
 
@@ -2194,7 +2194,7 @@ export default function App() {
                         updateSearchIntent({ checkOut: e.target.value });
                         setStayFilterByAvailableDates(true);
                       }}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
+                      className="w-full bg-slate-50 border border-slate-500 rounded-xl px-2.5 py-2 text-base font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                     />
                   </div>
 
@@ -2208,7 +2208,7 @@ export default function App() {
                       <select
                         value={stayAdults}
                         onChange={(e) => updateSearchIntent({ adults: Number(e.target.value) })}
-                        className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none w-full cursor-pointer"
+                        className="bg-transparent text-base font-bold text-slate-800 focus:outline-none w-full cursor-pointer"
                       >
                         {[1, 2, 3, 4, 5, 6, 8, 10, 12, 15].map((n) => (
                           <option key={n} value={n}>
@@ -2230,7 +2230,7 @@ export default function App() {
                         setSelectedArea(e.target.value);
                         setVisibleStayCount(12);
                       }}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-brand-800 cursor-pointer"
+                      className="w-full bg-slate-50 border border-slate-500 rounded-xl px-2.5 py-2 text-base font-bold text-slate-800 focus:outline-none focus:border-brand-800 cursor-pointer"
                     >
                       <option value="all">Tất cả khu vực ({allHomestays.length})</option>
                       <option value="Đỉnh Gió">Đỉnh Gió Trung Tâm</option>
@@ -2252,7 +2252,7 @@ export default function App() {
                           `Tìm thấy ${stayFilteredListings.length} homestay phù hợp (${shortInGlobal} – ${shortOutGlobal})!`
                         );
                       }}
-                      className="w-full h-[38px] lg:mt-3.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs flex items-center justify-center gap-1 shadow-xs transition-colors cursor-pointer"
+                      className="w-full h-[38px] lg:mt-3.5 rounded-full bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs flex items-center justify-center gap-1 shadow-xs transition-colors cursor-pointer"
                     >
                       <span>Lọc ({stayFilteredListings.length})</span>
                     </button>
@@ -2451,7 +2451,7 @@ export default function App() {
                           .getElementById('stay-results-list')
                           ?.scrollIntoView({ behavior: 'smooth' });
                       }}
-                      className="flex-1 min-h-[38px] px-3 py-1.5 rounded-lg bg-brand-800 text-white text-xs font-extrabold text-center cursor-pointer"
+                      className="flex-1 min-h-[38px] px-3 py-1.5 rounded-full bg-brand-800 text-white text-xs font-bold text-center cursor-pointer"
                     >
                       Xem {stayFilteredListings.length} căn trống →
                     </button>
@@ -2517,7 +2517,7 @@ export default function App() {
                           >
                             <span>{rc.label}</span>
                             {stayRoomCategory === rc.id && (
-                              <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                             )}
                           </button>
                         ))}
@@ -2614,7 +2614,7 @@ export default function App() {
                         <select
                           value={stayViewDirection}
                           onChange={(e) => setStayViewDirection(e.target.value)}
-                          className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 bg-white"
+                          className="w-full border border-slate-500 rounded-xl px-3 py-2 text-base font-semibold text-slate-800 bg-white"
                         >
                           <option value="all">Tất cả hướng nhìn</option>
                           <option value="mountain">Trực diện biển mây & Đỉnh núi</option>
@@ -2629,7 +2629,7 @@ export default function App() {
                         <select
                           value={stayCarAccess}
                           onChange={(e) => setStayCarAccess(e.target.value)}
-                          className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 bg-white"
+                          className="w-full border border-slate-500 rounded-xl px-3 py-2 text-base font-semibold text-slate-800 bg-white"
                         >
                           <option value="all">Mọi phương tiện</option>
                           <option value="yes">Ô tô 16 chỗ / Limousine vào tận sân</option>
@@ -2647,7 +2647,7 @@ export default function App() {
                             min={1}
                             value={stayAdults}
                             onChange={(e) => updateSearchIntent({ adults: Number(e.target.value) })}
-                            className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800"
+                            className="w-full bg-white border border-slate-500 rounded-xl px-2.5 py-1.5 text-base font-bold text-slate-800"
                           />
                         </div>
                         <div>
@@ -2659,7 +2659,7 @@ export default function App() {
                             min={0}
                             value={stayChildren}
                             onChange={(e) => updateSearchIntent({ children: Number(e.target.value) })}
-                            className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800"
+                            className="w-full bg-white border border-slate-500 rounded-xl px-2.5 py-1.5 text-base font-bold text-slate-800"
                           />
                         </div>
                         <div>
@@ -2672,7 +2672,7 @@ export default function App() {
                             max={10}
                             value={stayRooms}
                             onChange={(e) => updateSearchIntent({ rooms: Number(e.target.value) })}
-                            className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800"
+                            className="w-full bg-white border border-slate-500 rounded-xl px-2.5 py-1.5 text-base font-bold text-slate-800"
                           />
                         </div>
                       </div>
@@ -2716,7 +2716,7 @@ export default function App() {
                           aria-label="Sắp xếp danh sách homestay"
                           value={staySortBy}
                           onChange={(e) => setStaySortBy(e.target.value as any)}
-                          className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800 cursor-pointer"
+                          className="bg-slate-50 border border-slate-500 rounded-xl px-3 py-2 text-base font-bold text-brand-800 focus:outline-none focus:border-brand-800 cursor-pointer"
                         >
                           <option value="recommended">⭐ Đề xuất & Cấp 3</option>
                           <option value="price_asc">💰 Giá: Thấp đến Cao</option>
@@ -2928,7 +2928,7 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => setVisibleStayCount((prev) => prev + 12)}
-                            className="w-full sm:w-auto px-6 py-3 rounded-full bg-brand-800 hover:bg-brand-700 text-white text-xs sm:text-sm font-extrabold shadow-xs transition-all cursor-pointer"
+                            className="w-full sm:w-auto px-6 py-3 rounded-full bg-brand-800 hover:bg-brand-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer"
                           >
                             Xem thêm 12 homestay tiếp theo ({Math.min(visibleStayCount, stayFilteredListings.length)} / {stayFilteredListings.length})
                           </button>
@@ -3276,7 +3276,7 @@ export default function App() {
                           value={transportSearchQuery}
                           onChange={(e) => setTransportSearchQuery(e.target.value)}
                           placeholder="VD: Thành Mỹ, Hiền Hựu, Nội Bài..."
-                          className="w-full pl-9 pr-7 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
+                          className="w-full pl-9 pr-7 py-2 rounded-xl border border-slate-500 bg-slate-50 focus:bg-white text-base font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                         />
                         {transportSearchQuery && (
                           <button
@@ -3298,7 +3298,7 @@ export default function App() {
                       <select
                         value={transportPickupZone}
                         onChange={(e) => setTransportPickupZone(e.target.value as any)}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
+                        className="w-full px-3 py-2 rounded-xl border border-slate-500 bg-slate-50 text-base font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                       >
                         <option value="all">📍 Tất cả điểm đón (Hà Nội · Bắc Yên · Tỉnh)</option>
                         <option value="my_dinh_cau_giay">🚌 Bến xe Mỹ Đình · Cầu Giấy · Hòa Lạc</option>
@@ -3317,7 +3317,7 @@ export default function App() {
                       <select
                         value={transportTimeSlot}
                         onChange={(e) => setTransportTimeSlot(e.target.value as any)}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
+                        className="w-full px-3 py-2 rounded-xl border border-slate-500 bg-slate-50 text-base font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                       >
                         <option value="all">🕒 Mọi khung giờ (Sáng · Chiều · Đêm)</option>
                         <option value="morning">🌅 Chuyến Sáng (06:00 – 08:30 · Check-in trưa)</option>
@@ -3335,7 +3335,7 @@ export default function App() {
                         <select
                           value={transportVehicleType}
                           onChange={(e) => setTransportVehicleType(e.target.value as any)}
-                          className="w-full px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800"
+                          className="w-full px-2.5 py-2 rounded-xl border border-slate-500 bg-slate-50 text-base font-bold text-brand-800 focus:outline-none focus:border-brand-800"
                         >
                           <option value="all">🚐 Mọi dòng xe</option>
                           <option value="cabin_vip">🛏️ Cabin Đôi VIP</option>
@@ -3347,7 +3347,7 @@ export default function App() {
                           value={transportSortBy}
                           onChange={(e) => setTransportSortBy(e.target.value as any)}
                           aria-label="Sắp xếp phương tiện"
-                          className="px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-brand-800 focus:outline-none focus:border-brand-800 shrink-0"
+                          className="px-2.5 py-2 rounded-xl border border-slate-500 bg-slate-50 text-base font-bold text-brand-800 focus:outline-none focus:border-brand-800 shrink-0"
                         >
                           <option value="recommended">★ Đề xuất</option>
                           <option value="price_asc">Giá ↑</option>
@@ -3445,7 +3445,7 @@ export default function App() {
                       <button
                         type="button"
                         onClick={() => handleOpenBusBookingModal(trips[0]?.id, true)}
-                        className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-extrabold cursor-pointer whitespace-nowrap"
+                        className="w-full sm:w-auto px-4 py-2.5 rounded-full bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold cursor-pointer whitespace-nowrap"
                       >
                         Áp dụng Combo & Chọn Ghế →
                       </button>
@@ -3739,7 +3739,7 @@ export default function App() {
                               <button
                                 type="button"
                                 onClick={() => handleOpenBusBookingModal(trip.id, false)}
-                                className="h-8 bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-3.5 rounded-full transition-colors cursor-pointer whitespace-nowrap flex items-center"
+                                className="h-8 bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs px-3.5 rounded-full transition-colors cursor-pointer whitespace-nowrap flex items-center"
                               >
                                 Chọn Ghế Đón →
                               </button>
@@ -3783,7 +3783,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={handleResetTransportFilters}
-                      className="px-5 py-2.5 rounded-full bg-brand-800 text-white text-xs font-extrabold cursor-pointer"
+                      className="px-5 py-2.5 rounded-full bg-brand-800 text-white text-xs font-bold cursor-pointer"
                     >
                       Khôi phục toàn bộ phương tiện
                     </button>
@@ -4443,7 +4443,10 @@ export default function App() {
       />
 
       {/* Direct Host Chat Modal */}
-      {activeDirectChatListing && (
+      {activeDirectChatListing && !featureOpen('directChat') && (
+        <ComingSoonModal feature="directChat" onClose={() => setActiveDirectChatListing(null)} />
+      )}
+      {activeDirectChatListing && featureOpen('directChat') && (
         <DirectChatModal
           listing={activeDirectChatListing}
           isOpen={true}
@@ -4503,7 +4506,7 @@ export default function App() {
             <div className="space-y-4 max-w-2xl flex-1">
               <div>
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-black uppercase tracking-wider mb-2 border border-teal-200/60">
-                  <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-teal-700" />
                   <span>KÊNH CHÍNH CHỦ TÀ XÙA TRIP · ĐÃ THẨM ĐỊNH</span>
                 </div>
                 <h3 className="text-xl sm:text-2xl font-black text-brand-800 tracking-tight">
@@ -4535,7 +4538,7 @@ export default function App() {
                           ? '🚨 Cứu hộ'
                           : '📞 Hotline'}
                       </span>
-                      <span className="text-xs text-teal-600 font-extrabold group-hover:translate-x-0.5 transition-transform">
+                      <span className="text-xs text-teal-700 font-extrabold group-hover:translate-x-0.5 transition-transform">
                         ↗
                       </span>
                     </div>
@@ -4560,7 +4563,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setIsCommunityPopupOpen(true)}
-                className="mt-3 w-full px-4 py-2 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold transition-colors cursor-pointer shadow-2xs"
+                className="mt-3 w-full px-4 py-2 rounded-full bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold transition-colors cursor-pointer shadow-2xs"
               >
                 Mở Bản Đồ Kênh & QR →
               </button>

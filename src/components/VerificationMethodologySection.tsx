@@ -49,32 +49,9 @@ interface BlacklistCase {
   details: string;
 }
 
-const SAMPLE_BLACKLIST: BlacklistCase[] = [
-  {
-    phoneNumber: '0389124892',
-    accountNumber: '10387654321',
-    fakeName: 'Fanpage Giả Mạo: Homestay Mị Ơi Tà Xùa Giá Rẻ',
-    scamType: 'Lừa cọc phòng qua Fanpage chạy quảng cáo',
-    reportedDate: '10/2026',
-    details: 'Sao chép toàn bộ ảnh của Mị Ơi, hạ giá phòng xuống 350k/đêm rồi yêu cầu cọc 100%. Sau khi nhận tiền lập tức chặn số và khóa chat.'
-  },
-  {
-    phoneNumber: '0912445891',
-    accountNumber: '99882233441',
-    fakeName: 'Combo Xe Khách + Bungalow Tà Xùa 499k',
-    scamType: 'Combo du lịch ảo không có cơ sở thật',
-    reportedDate: '09/2026',
-    details: 'Sử dụng hình ảnh của một resort tại Sa Pa để quảng cáo view Tà Xùa. Thực tế không có phòng và không có xe đón tại Hà Nội.'
-  },
-  {
-    phoneNumber: '0778912345',
-    accountNumber: '0451000345678',
-    fakeName: 'Zalo mạo danh Quản lý Nhà Của An',
-    scamType: 'Mạo danh nhân viên lễ tân gửi STK cá nhân',
-    reportedDate: '11/2026',
-    details: 'Chủ động nhắn tin cho khách hàng bình luận trên các bài review, gửi số tài khoản cá nhân khác với tài khoản chính thức của chủ nhà.'
-  }
-];
+// R4: danh sách cảnh báo chỉ gồm vụ việc ĐÃ xác minh có bằng chứng (chưa có vụ nào).
+// Bản cũ chứa số điện thoại/số tài khoản tự đặt ra gán là lừa đảo → có thể bôi nhọ người thật, đã gỡ.
+const SAMPLE_BLACKLIST: BlacklistCase[] = [];
 
 export const VerificationMethodologySection: React.FC<VerificationMethodologySectionProps> = ({
   listings,
@@ -175,7 +152,7 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/20 border border-teal-400/40 text-teal-200 text-xs font-black uppercase tracking-wider mb-4 backdrop-blur-md">
             <ShieldCheck className="w-4 h-4 text-teal-300" />
-            <span>{verifiedSecBanner?.badgeText || 'CHỐNG LỪA ĐẢO & ẢO GIÁ 100%'}</span>
+            <span>{verifiedSecBanner?.badgeText || 'Xác minh & khiếu nại'}</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-4 leading-tight">
@@ -187,53 +164,50 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
               'Tại Tà Xùa Trip, chúng tôi tin rằng du khách có quyền "Đi thật. Biết trước.". Mỗi cơ sở, phòng nghỉ và nhà xe đều được kiểm duyệt thực địa độc lập, đo đạc đường đèo và xác thực tài khoản ngân hàng chính chủ để bảo vệ an toàn cho kỳ nghỉ của bạn.'}
           </p>
 
-          {/* 4 Thẻ chỉ số bảo chứng vàng */}
+          {/* R4: chỉ số thật thay cho các tuyên bố "100%", "0% rủi ro", "24/7" chưa được kiểm chứng */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
               <div className="flex items-center justify-between text-teal-300 mb-2">
-                <Compass className="w-5 h-5" />
-                <span className="text-xs font-black uppercase tracking-wider bg-teal-500/30 px-2 py-0.5 rounded-full">GPS chuẩn</span>
+                <Building2 className="w-5 h-5" aria-hidden="true" />
+                <span className="text-xs font-bold bg-white/10 px-2 py-0.5 rounded-full">Danh bạ</span>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-black text-white tabular-nums">100%</div>
-                <div className="text-xs text-slate-200 font-semibold mt-1">Tọa độ & Đường dốc thật</div>
-                <div className="text-xs text-slate-300 mt-0.5">Không có tọa độ ảo trên đèo</div>
+                <div className="text-2xl sm:text-3xl font-extrabold text-white tabular-nums">{tierCounts.total}</div>
+                <div className="text-xs text-slate-200 font-semibold mt-1">cơ sở trên Tà Xùa Trip</div>
+                <div className="text-xs text-slate-300 mt-0.5">Số liệu trực tiếp từ cơ sở dữ liệu</div>
               </div>
             </div>
-
-            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-amber-300 mb-2">
-                <Lock className="w-5 h-5" />
-                <span className="text-xs font-black uppercase tracking-wider bg-amber-500/30 px-2 py-0.5 rounded-full">An toàn cọc</span>
-              </div>
-              <div>
-                <div className="text-2xl sm:text-3xl font-black text-white tabular-nums">0%</div>
-                <div className="text-xs text-slate-200 font-semibold mt-1">Rủi ro lừa cọc phòng</div>
-                <div className="text-xs text-slate-300 mt-0.5">Xác thực STK chính chủ CCCD</div>
-              </div>
-            </div>
-
             <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
               <div className="flex items-center justify-between text-emerald-300 mb-2">
-                <Building2 className="w-5 h-5" />
-                <span className="text-xs font-black uppercase tracking-wider bg-emerald-500/30 px-2 py-0.5 rounded-full">Từng căn</span>
+                <ShieldCheck className="w-5 h-5" aria-hidden="true" />
+                <span className="text-xs font-bold bg-white/10 px-2 py-0.5 rounded-full">Đã xác minh</span>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-black text-white tabular-nums">Room ID</div>
-                <div className="text-xs text-slate-200 font-semibold mt-1">Định danh từng góc phòng</div>
-                <div className="text-xs text-slate-300 mt-0.5">Không dùng 1 ảnh cho cả khu</div>
+                <div className="text-2xl sm:text-3xl font-extrabold text-white tabular-nums">{tierCounts.tier2 + tierCounts.tier3}</div>
+                <div className="text-xs text-slate-200 font-semibold mt-1">cơ sở đạt cấp 2 trở lên</div>
+                <div className="text-xs text-slate-300 mt-0.5">Admin đã kiểm tra pháp lý hoặc thực địa</div>
               </div>
             </div>
-
             <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-blue-300 mb-2">
-                <Phone className="w-5 h-5" />
-                <span className="text-xs font-black uppercase tracking-wider bg-blue-500/30 px-2 py-0.5 rounded-full">Hỗ trợ 24/7</span>
+              <div className="flex items-center justify-between text-amber-300 mb-2">
+                <Lock className="w-5 h-5" aria-hidden="true" />
+                <span className="text-xs font-bold bg-white/10 px-2 py-0.5 rounded-full">Đặt cọc</span>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-black text-white tabular-nums">24/7</div>
-                <div className="text-xs text-slate-200 font-semibold mt-1">Hỗ trợ & Cứu hộ thực địa</div>
-                <div className="text-xs text-slate-300 mt-0.5">Tiếp nhận phản ánh & can thiệp</div>
+                <div className="text-2xl sm:text-3xl font-extrabold text-white tabular-nums">30%</div>
+                <div className="text-xs text-slate-200 font-semibold mt-1">chuyển thẳng cho cơ sở</div>
+                <div className="text-xs text-slate-300 mt-0.5">Tà Xùa Trip không giữ tiền của khách</div>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+              <div className="flex items-center justify-between text-sky-300 mb-2">
+                <Phone className="w-5 h-5" aria-hidden="true" />
+                <span className="text-xs font-bold bg-white/10 px-2 py-0.5 rounded-full">Khiếu nại</span>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-extrabold text-white tabular-nums">7 ngày</div>
+                <div className="text-xs text-slate-200 font-semibold mt-1">sau ngày trả phòng</div>
+                <div className="text-xs text-slate-300 mt-0.5">Gửi bằng chứng, admin xử lý và ghi nhật ký</div>
               </div>
             </div>
           </div>
@@ -258,7 +232,7 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
             </div>
             <div className="flex items-center gap-2 text-xs font-bold text-slate-500 shrink-0 bg-slate-50 px-3.5 py-2 rounded-2xl border border-slate-200/80">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <span>Đối chiếu từ 185 hồ sơ cơ sở Tà Xùa</span>
+              <span>Đối chiếu với {listings.length} cơ sở trong danh bạ Tà Xùa Trip</span>
             </div>
           </div>
 
@@ -273,7 +247,7 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
                 setHasScanned(Boolean(e.target.value.trim()));
               }}
               placeholder="Nhập Số điện thoại, Tên Homestay hoặc Số tài khoản nhận cọc... (VD: 0981234567, Mị Ơi, Lu Trế...)"
-              className="w-full pl-12 pr-28 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-800 focus:bg-white shadow-inner transition-all"
+              className="w-full pl-12 pr-28 py-3.5 rounded-2xl bg-slate-50 border border-slate-500 text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-800 focus:bg-white shadow-inner transition-all"
             />
             {scannerQuery && (
               <button
@@ -342,7 +316,7 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
                     <button
                       type="button"
                       onClick={() => onSelectListing(scanResult.data)}
-                      className="px-4 py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-sm self-start sm:self-center"
+                      className="px-4 py-2.5 rounded-full bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm self-start sm:self-center"
                     >
                       <span>Xem hồ sơ & Đặt phòng</span>
                       <ArrowRight className="w-4 h-4" />
@@ -439,7 +413,7 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
                         Chưa tìm thấy hồ sơ chính thức cho từ khóa "{scanResult.query}"
                       </h3>
                       <p className="text-xs text-amber-800 mt-1 leading-relaxed">
-                        Cơ sở, số điện thoại hoặc số tài khoản này hiện <strong>chưa nằm trong 185 cơ sở được thẩm định thực tế</strong> bởi Tà Xùa Trip. Điều này không có nghĩa chắc chắn là lừa đảo, nhưng bạn cần cẩn trọng cao độ:
+                        Cơ sở, số điện thoại hoặc số tài khoản này hiện <strong>chưa có trong danh bạ cơ sở</strong> của Tà Xùa Trip. Điều này không có nghĩa chắc chắn là lừa đảo, nhưng bạn cần cẩn trọng cao độ:
                       </p>
                       <ul className="text-xs text-amber-900 list-disc list-inside mt-2 space-y-1">
                         <li>Yêu cầu chủ phòng gọi video trực tiếp quay không gian phòng và khung cảnh ngoài cửa sổ.</li>
@@ -450,7 +424,7 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
                         <button
                           type="button"
                           onClick={() => onNavigateToStays(3)}
-                          className="px-3.5 py-1.5 rounded-xl bg-brand-800 text-white text-xs font-bold hover:bg-brand-700 transition-colors cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-full bg-brand-800 text-white text-xs font-bold hover:bg-brand-700 transition-colors cursor-pointer"
                         >
                           Xem các Homestay đã thẩm định Cấp 3 →
                         </button>
@@ -467,7 +441,7 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
         <section className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8">
           <div className="text-center max-w-2xl mx-auto mb-8">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-black uppercase tracking-wider mb-2">
-              <Award className="w-3.5 h-3.5 text-teal-600" />
+              <Award className="w-3.5 h-3.5 text-teal-700" />
               <span>HỆ THỐNG HUY HIỆU BẢO CHỨNG</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-brand-800 tracking-tight">
@@ -565,20 +539,20 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
                 </div>
                 <h3 className="text-lg font-black text-teal-950 mb-2">Xác Thực Pháp Lý & Tài Khoản</h3>
                 <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                  Đảm bảo an toàn 100% khi chuyển cọc: giấy tờ kinh doanh hợp lệ và tài khoản ngân hàng chính chủ ủy nhiệm chi.
+                  Admin đã kiểm tra giấy tờ kinh doanh và tài khoản ngân hàng đứng tên chủ cơ sở.
                 </p>
 
                 <div className="space-y-2.5 text-xs text-slate-700 mb-6">
                   <div className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-teal-700 shrink-0 mt-0.5" />
                     <span>Đã nộp Giấy phép ĐKKD hoặc Giấy chứng nhận PCCC.</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-teal-700 shrink-0 mt-0.5" />
                     <span>Xác thực tài khoản ngân hàng VietQR khớp CCCD chủ nhà.</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-teal-700 shrink-0 mt-0.5" />
                     <span>Cam kết giữ đúng phòng đã cọc, không bùng khách ngày lễ.</span>
                   </div>
                 </div>
@@ -619,15 +593,15 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
 
                 <div className="space-y-2.5 text-xs text-slate-800 mb-6 font-medium">
                   <div className="flex items-start gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <Sparkles className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
                     <span><strong>Đo độ dốc đường đèo:</strong> Ghi rõ xe 16 chỗ vào tận sân hay phải gửi ngoài.</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <Sparkles className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
                     <span><strong>Định danh Room ID:</strong> Chụp góc nhìn mây thật 1:1, không dùng ảnh góc rộng ảo.</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <Sparkles className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
                     <span><strong>Tiện nghi sinh tồn:</strong> Thử bình nóng lạnh, đệm sưởi mùa đông và đo sóng 4G.</span>
                   </div>
                 </div>
@@ -636,7 +610,7 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
               <button
                 type="button"
                 onClick={() => onNavigateToStays(3)}
-                className="w-full py-2.5 rounded-xl bg-brand-800 hover:bg-brand-700 text-xs font-black text-white transition-colors cursor-pointer text-center shadow-sm"
+                className="w-full py-2.5 rounded-full bg-brand-800 hover:bg-brand-700 text-xs font-bold text-white transition-colors cursor-pointer text-center shadow-sm"
               >
                 Ưu tiên xem {tierCounts.tier3} cơ sở Cấp 3 →
               </button>
@@ -722,7 +696,7 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
         <section className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8">
           <div className="text-center max-w-2xl mx-auto mb-8">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-black uppercase tracking-wider mb-2">
-              <Eye className="w-3.5 h-3.5 text-teal-600" />
+              <Eye className="w-3.5 h-3.5 text-teal-700" />
               <span>MINH BẠCH THỰC TẾ</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-brand-800 tracking-tight">
@@ -754,7 +728,7 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
                 <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-emerald-950">
                   <div className="flex items-center gap-1.5 font-extrabold text-emerald-800 mb-1">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>Bằng chứng thực tế do Tà Xùa Trip thẩm định:</span>
+                    <span>Ví dụ minh họa: cách Tà Xùa Trip ghi chú khi thẩm định</span>
                   </div>
                   <p className="leading-relaxed">
                     Trong cùng khu, <strong>chỉ căn Bungalow 01 & 02</strong> có góc nhìn mây trực diện 180°. <strong>Căn 03 & 04</strong> bị mái tôn hàng xóm che khuất 40% tầm nhìn và chỉ đón được mây khi biển mây dâng cao trên 1.600m. Chúng tôi gắn nhãn rõ từng căn để bạn không bị bỡ ngỡ.
@@ -783,7 +757,7 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
                 <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-emerald-950">
                   <div className="flex items-center gap-1.5 font-extrabold text-emerald-800 mb-1">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>Ghi chú thực địa chính xác từ Tà Xùa Trip:</span>
+                    <span>Ví dụ minh họa: ghi chú đường vào khi thẩm định</span>
                   </div>
                   <p className="leading-relaxed">
                     Ghi rõ: <em>"Đường bê tông dốc 18%, xe số 2 người lên tốt. Xe 16 chỗ hoặc gầm thấp bắt buộc gửi bãi đỗ trục chính Tà Xùa (cách 250m), có xe ôm bản địa hỗ trợ chở vali 30k/chuyến."</em>
@@ -937,7 +911,7 @@ export const VerificationMethodologySection: React.FC<VerificationMethodologySec
             <button
               type="button"
               onClick={() => onNavigateToStays(3)}
-              className="px-5 py-3 rounded-2xl bg-brand-800 hover:bg-brand-700 text-white text-xs font-black transition-all cursor-pointer shadow-sm flex items-center gap-2"
+              className="px-5 py-3 rounded-full bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold transition-all cursor-pointer shadow-sm flex items-center gap-2"
             >
               <span>Xem Homestay Cấp 3 Ngay</span>
               <ArrowRight className="w-4 h-4" />

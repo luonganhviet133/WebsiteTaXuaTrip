@@ -419,7 +419,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     min={todayVn}
                     aria-label="Ngày nhận phòng"
                     onChange={(e) => setCheckInDate(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer"
                   />
                 </div>
 
@@ -435,7 +435,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     min={checkInDate}
                     aria-label="Ngày trả phòng"
                     onChange={(e) => setCheckOutDate(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer"
                   />
                 </div>
 
@@ -452,7 +452,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     value={guestCount}
                     onChange={(e) => setGuestCount(Math.max(1, Number(e.target.value)))}
                     aria-label="Số khách"
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none"
                   />
                 </div>
 
@@ -466,7 +466,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     value={selectedArea}
                     onChange={(e) => setSelectedArea(e.target.value)}
                     aria-label="Chọn khu vực Tà Xùa"
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="all">{roomCount} phòng · Toàn Tà Xùa</option>
                     {areas
@@ -507,7 +507,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         : 'bg-white hover:bg-slate-50 text-brand-800 border-slate-200'
                     }`}
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-teal-600" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-teal-700" />
                     <span>Đã thẩm định</span>
                   </button>
 
@@ -520,7 +520,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         : 'bg-white hover:bg-slate-50 text-brand-800 border-slate-200'
                     }`}
                   >
-                    <CloudSun className="w-3.5 h-3.5 text-teal-600" />
+                    <CloudSun className="w-3.5 h-3.5 text-teal-700" />
                     <span>Săn mây</span>
                   </button>
 
@@ -536,7 +536,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         : 'bg-white hover:bg-slate-50 text-brand-800 border-slate-200'
                     }`}
                   >
-                    <Eye className="w-3.5 h-3.5 text-teal-600" />
+                    <Eye className="w-3.5 h-3.5 text-teal-700" />
                     <span>View từ giường</span>
                   </button>
 
@@ -556,7 +556,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         : 'bg-white hover:bg-slate-50 text-brand-800 border-slate-200'
                     }`}
                   >
-                    <Car className="w-3.5 h-3.5 text-teal-600" />
+                    <Car className="w-3.5 h-3.5 text-teal-700" />
                     <span>Ô tô vào được</span>
                   </button>
                 </div>
@@ -569,7 +569,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Tìm tên homestay, khu vực..."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-full pl-8 pr-3 py-2 sm:py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-800"
+                    className="w-full bg-slate-50 border border-slate-500 rounded-full pl-8 pr-3 py-2 sm:py-1.5 text-base text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-800"
                   />
                 </div>
               </div>
@@ -593,7 +593,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         onChangeComboCategory(e.target.value as 'all' | CuratedComboCategory);
                       }
                     }}
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="all">Tất cả Gói Combo & Trekking Đặc Biệt</option>
                     <option value="combo_2n1d">👑 Combo 2N1Đ (Xe Cabin + Phòng Kính + Xe Máy)</option>
@@ -614,7 +614,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     type="date"
                     value={comboDepartureDate}
                     onChange={(e) => setComboDepartureDate(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer"
                   />
                 </div>
 
@@ -630,7 +630,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     max={30}
                     value={comboGuests}
                     onChange={(e) => setComboGuests(Math.max(1, Number(e.target.value)))}
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none"
                   />
                 </div>
 
@@ -643,7 +643,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <select
                     value={selectedArea}
                     onChange={(e) => setSelectedArea(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="all">Toàn tuyến Tà Xùa</option>
                     <option value="Đỉnh Gió">Đỉnh Gió & Mị Ơi</option>
@@ -679,7 +679,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     }}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 cursor-pointer whitespace-nowrap"
                   >
-                    <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                    <Sparkles className="w-3.5 h-3.5 text-amber-700" />
                     <span>👑 Combo 2N1Đ Admin Đề Xuất (-260k)</span>
                   </button>
                   <button
@@ -690,7 +690,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     }}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white hover:bg-slate-50 text-brand-800 border border-slate-200 cursor-pointer whitespace-nowrap"
                   >
-                    <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-teal-700" />
                     <span>🥾 Có Porter H’Mông & Bảo hiểm</span>
                   </button>
                   <button
@@ -725,7 +725,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <select
                     value={busPickupZone}
                     onChange={(e) => setBusPickupZone(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="my_dinh_cau_giay">Bến xe Mỹ Đình · Công viên Cầu Giấy · Nhổn</option>
                     <option value="yen_nghia_bigc">Bến xe Yên Nghĩa · BigC Thăng Long · Hòa Lạc</option>
@@ -743,7 +743,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <select
                     value={busTimeSlot}
                     onChange={(e) => setBusTimeSlot(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="night_22h">🌙 Đêm 21:30 – 22:30 (Đón bình minh)</option>
                     <option value="morning_06h">🌅 Sáng 06:30 – 07:00 (Lên thẳng Đỉnh Gió)</option>
@@ -760,7 +760,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <select
                     value={busVehicleType}
                     onChange={(e) => setBusVehicleType(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="cabin_vip">Giường nằm Cabin Đôi VIP (360k–380k)</option>
                     <option value="limousine">Limousine 9–11 ghế Massage (340k–350k)</option>
@@ -805,7 +805,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     }}
                     className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white hover:bg-slate-50 text-brand-800 border border-slate-200 cursor-pointer whitespace-nowrap"
                   >
-                    <Route className="w-3.5 h-3.5 text-teal-600" />
+                    <Route className="w-3.5 h-3.5 text-teal-700" />
                     <span>Xem đầy đủ 16 Nhà xe & 6 khung giờ chạy →</span>
                   </button>
                 </div>
@@ -829,7 +829,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <select
                     value={bikeModelType}
                     onChange={(e) => setBikeModelType(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="wave_blade">Xe số leo đèo khỏe: Wave Alpha / Honda Blade / Sirius (150k/ngày)</option>
                     <option value="airblade_vision">Xe tay ga đời mới: AirBlade / Vision (180k/ngày · Đi Thảo Nguyên)</option>
@@ -846,7 +846,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <select
                     value={bikeDeliverySpot}
                     onChange={(e) => setBikeDeliverySpot(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="homestay_dinh_gio">Giao tận Homestay Đỉnh Gió / Trung Tâm</option>
                     <option value="bus_dropoff">Nhận tại điểm xuống Xe Khách lúc 04:30 sáng</option>
@@ -863,7 +863,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <select
                     value={bikeRentalDuration}
                     onChange={(e) => setBikeRentalDuration(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
+                    className="w-full text-base sm:text-sm font-bold text-brand-800 bg-transparent focus:outline-none cursor-pointer truncate"
                   >
                     <option value="1.5_days_noon">1.5 Ngày (Trả trước 12h trưa ngày về = 225k)</option>
                     <option value="1_day">Thuê 1 Ngày tiêu chuẩn (150k/ngày)</option>
@@ -891,7 +891,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     <span>Trả xe trước 12:00 trưa hôm sau chỉ tính 0.5 ngày</span>
                   </span>
                   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white text-brand-800 border border-slate-200 whitespace-nowrap">
-                    <Wrench className="w-3.5 h-3.5 text-teal-600" />
+                    <Wrench className="w-3.5 h-3.5 text-teal-700" />
                     <span>Kiểm tra phanh & lốp đèo 100% + Kèm 2 mũ & áo mưa</span>
                   </span>
                   <button

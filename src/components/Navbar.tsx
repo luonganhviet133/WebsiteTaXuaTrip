@@ -409,7 +409,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                               className="w-full text-left px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center justify-between cursor-pointer transition-colors"
                             >
                               <span className="flex items-center gap-2">
-                                <CalendarCheck className="w-3.5 h-3.5 text-teal-600" />
+                                <CalendarCheck className="w-3.5 h-3.5 text-teal-700" />
                                 <span>Đơn đặt của tôi</span>
                               </span>
                               <span className="px-2 py-0.5 rounded-full text-xs font-extrabold bg-teal-50 text-teal-700 border border-teal-200 tabular-nums">
@@ -472,7 +472,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                               }}
                               className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-bold text-amber-700 hover:bg-amber-50 flex items-center gap-2 cursor-pointer"
                             >
-                              <UserCheck className="w-3.5 h-3.5 text-amber-600" />
+                              <UserCheck className="w-3.5 h-3.5 text-amber-700" />
                               <span>Bảng Quản Lý Phòng & Lịch</span>
                             </button>
                           )}

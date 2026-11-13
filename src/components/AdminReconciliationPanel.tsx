@@ -26,7 +26,7 @@ export const AdminReconciliationPanel: React.FC = () => {
   const pending = items.data.filter((x) => x.status !== 'closed').length;
   return (
     <div className="bg-slate-900 px-4 pt-6">
-      <section aria-labelledby="admin-recon-title" className="max-w-6xl mx-auto bg-slate-850 border border-amber-500/40 rounded-3xl p-4 sm:p-6 space-y-3 text-white">
+      <section aria-labelledby="admin-recon-title" className="max-w-6xl mx-auto bg-slate-900 border border-amber-500/40 rounded-3xl p-4 sm:p-6 space-y-3 text-white">
         <h2 id="admin-recon-title" className="text-lg font-black">Đối soát tiền cọc ({pending} chưa xong)</h2>
         <p className="text-xs text-slate-400">Khách đã chuyển cọc nhưng đơn hết hạn/bị từ chối. Cơ sở hoàn trong 3 ngày hoặc giữ khi khách đồng ý; vụ tranh chấp chờ bạn kết luận.</p>
         <ul className="space-y-2">

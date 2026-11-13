@@ -178,7 +178,7 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
                   placeholder="Họ và tên của bạn"
                   value={regName}
                   onChange={(e) => setRegName(e.target.value)}
-                  className="px-3 py-1.5 text-xs bg-white border border-amber-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-amber-500 text-slate-800"
+                  className="px-3 py-1.5 text-base bg-white border border-amber-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-amber-500 text-slate-800"
                 />
                 <input
                   type="tel"
@@ -186,7 +186,7 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
                   placeholder="Số điện thoại / Zalo"
                   value={regPhone}
                   onChange={(e) => setRegPhone(e.target.value)}
-                  className="px-3 py-1.5 text-xs bg-white border border-amber-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-amber-500 text-slate-800"
+                  className="px-3 py-1.5 text-base bg-white border border-amber-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-amber-500 text-slate-800"
                 />
               </div>
               <div className="flex items-center justify-end gap-2 pt-1">
@@ -199,7 +199,7 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 bg-brand-800 text-white text-xs font-bold rounded-xl hover:bg-brand-700 cursor-pointer"
+                  className="px-4 py-1.5 bg-brand-800 text-white text-xs font-bold rounded-full hover:bg-brand-700 cursor-pointer"
                 >
                   Xác nhận thành viên
                 </button>
@@ -269,7 +269,7 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({
                 ? 'Nhập tin nhắn cho chủ cơ sở...'
                 : 'Đăng ký thành viên để gửi tin nhắn...'
             }
-            className="flex-1 px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-full text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-800 focus:bg-white transition-all"
+            className="flex-1 px-4 py-2.5 bg-slate-100 border border-slate-500 rounded-full text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-800 focus:bg-white transition-all"
           />
 
           <button

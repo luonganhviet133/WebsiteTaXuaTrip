@@ -1513,7 +1513,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       <button
                         type="button"
                         onClick={handleExportEvidencePdf}
-                        className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-3 py-2 rounded-xl inline-flex items-center gap-1.5 cursor-pointer"
+                        className="bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs px-3 py-2 rounded-full inline-flex items-center gap-1.5 cursor-pointer"
                       >
                         <FileText className="w-3.5 h-3.5" />
                         <span>Xuất PDF Bằng Chứng</span>
@@ -1653,13 +1653,13 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                           type="text"
                           value={editingBody}
                           onChange={(e) => setEditingBody(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs"
+                          className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2 text-base"
                         />
                         <div className="flex items-center gap-2">
                           <button
                             type="button"
                             onClick={() => handleSaveEditMessage(msg.id)}
-                            className="bg-brand-800 text-white text-xs font-bold px-3 py-1 rounded-lg cursor-pointer"
+                            className="bg-brand-800 text-white text-xs font-bold px-3 py-1 rounded-full cursor-pointer"
                           >
                             Lưu bản sửa
                           </button>
@@ -1780,11 +1780,11 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     value={newMessageBody}
                     onChange={(e) => setNewMessageBody(e.target.value)}
                     placeholder={`Nhắn tin vào ${currentSpace.name} (AI tự động lọc lừa đảo & che PII)...`}
-                    className="flex-1 bg-slate-50 border border-slate-300 rounded-2xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-800"
+                    className="flex-1 bg-slate-50 border border-slate-500 rounded-2xl px-4 py-2.5 text-base text-slate-900 focus:outline-none focus:border-brand-800"
                   />
                   <button
                     type="submit"
-                    className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-5 py-2.5 rounded-2xl inline-flex items-center gap-1.5 cursor-pointer shrink-0"
+                    className="bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs px-5 py-2.5 rounded-full inline-flex items-center gap-1.5 cursor-pointer shrink-0"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Gửi tin</span>
@@ -1842,7 +1842,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsCreatingDeal((prev) => !prev)}
-                  className="shrink-0 bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-4 py-3 rounded-2xl inline-flex items-center gap-2 shadow-md cursor-pointer self-start lg:self-auto"
+                  className="shrink-0 bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs px-4 py-3 rounded-full inline-flex items-center gap-2 shadow-md cursor-pointer self-start lg:self-auto"
                 >
                   <Plus className="w-4 h-4 text-amber-300" />
                   <span>{isCreatingDeal ? 'Đóng Form Đăng Kèo' : '+ Đăng Kèo Ghép Mới'}</span>
@@ -1880,7 +1880,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                   <select
                     value={shareAreaFilter}
                     onChange={(e) => setShareAreaFilter(e.target.value)}
-                    className="bg-white border border-amber-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-700"
+                    className="bg-white border border-amber-300 rounded-xl px-3 py-2 text-base font-bold text-slate-700"
                   >
                     <option value="all">📍 Mọi khu vực / Lộ trình</option>
                     <option value="Đỉnh Gió">Khu Đỉnh Gió</option>
@@ -1929,7 +1929,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     <select
                       value={newDealCategory}
                       onChange={(e) => setNewDealCategory(e.target.value as any)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-brand-800"
+                      className="w-full bg-slate-50 border border-slate-500 rounded-xl px-3 py-2 text-base font-bold text-brand-800"
                     >
                       <option value="transport">🚗 Ghép Xe Khách / Taxi Hà Nội ↔ Tà Xùa</option>
                       <option value="room">🏡 Ghép Phòng Homestay / Villa</option>
@@ -1945,7 +1945,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     <select
                       value={newDealListingTitle}
                       onChange={(e) => setNewDealListingTitle(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800"
+                      className="w-full bg-slate-50 border border-slate-500 rounded-xl px-3 py-2 text-base font-semibold text-slate-800"
                     >
                       <option value="">-- Chọn cơ sở đích để tăng độ tin cậy (Tùy chọn) --</option>
                       {listings
@@ -1977,7 +1977,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       value={newDealTitle}
                       onChange={(e) => setNewDealTitle(e.target.value)}
                       placeholder="VD: Tìm 2 bạn ghép xe 7 chỗ từ Bắc Yên lên Đỉnh Gió sáng Thứ 7..."
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900"
+                      className="w-full bg-slate-50 border border-slate-500 rounded-xl px-3.5 py-2 text-base font-bold text-slate-900"
                       required
                     />
                   </div>
@@ -1990,7 +1990,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       value={newDealDateRange}
                       onChange={(e) => setNewDealDateRange(e.target.value)}
                       placeholder="VD: 15/11/2026 (09:30 sáng)"
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900"
+                      className="w-full bg-slate-50 border border-slate-500 rounded-xl px-3 py-2 text-base text-slate-900"
                       required
                     />
                   </div>
@@ -2008,7 +2008,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       max={16}
                       value={newDealTotalSlots}
                       onChange={(e) => setNewDealTotalSlots(Math.max(2, Number(e.target.value) || 2))}
-                      className="w-full bg-white border border-teal-300 rounded-xl px-3 py-1.5 text-xs font-extrabold text-brand-800"
+                      className="w-full bg-white border border-teal-300 rounded-xl px-3 py-1.5 text-base font-extrabold text-brand-800"
                     />
                   </div>
                   <div>
@@ -2021,7 +2021,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       max={15}
                       value={newDealSlotsLeft}
                       onChange={(e) => setNewDealSlotsLeft(Math.max(1, Number(e.target.value) || 1))}
-                      className="w-full bg-white border border-teal-300 rounded-xl px-3 py-1.5 text-xs font-extrabold text-amber-800"
+                      className="w-full bg-white border border-teal-300 rounded-xl px-3 py-1.5 text-base font-extrabold text-amber-800"
                     />
                   </div>
                   <div>
@@ -2033,7 +2033,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       step={50000}
                       value={newDealTotalCostVnd}
                       onChange={(e) => setNewDealTotalCostVnd(Math.max(0, Number(e.target.value) || 0))}
-                      className="w-full bg-white border border-teal-300 rounded-xl px-3 py-1.5 text-xs font-extrabold text-brand-800"
+                      className="w-full bg-white border border-teal-300 rounded-xl px-3 py-1.5 text-base font-extrabold text-brand-800"
                     />
                   </div>
                   <div className="bg-white border border-teal-300 rounded-xl p-2.5 text-xs">
@@ -2056,7 +2056,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       value={newDealArea}
                       onChange={(e) => setNewDealArea(e.target.value)}
                       placeholder="VD: Bắc Yên ↔ Đỉnh Gió"
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs"
+                      className="w-full bg-slate-50 border border-slate-500 rounded-xl px-3 py-2 text-base"
                     />
                   </div>
                   <div>
@@ -2068,7 +2068,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       value={newDealOwnerName}
                       onChange={(e) => setNewDealOwnerName(e.target.value)}
                       placeholder="Tên của bạn..."
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs"
+                      className="w-full bg-slate-50 border border-slate-500 rounded-xl px-3 py-2 text-base"
                     />
                   </div>
                   <div>
@@ -2080,7 +2080,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       value={newDealOwnerPhone}
                       onChange={(e) => setNewDealOwnerPhone(e.target.value)}
                       placeholder="098x xxx xxx"
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono"
+                      className="w-full bg-slate-50 border border-slate-500 rounded-xl px-3 py-2 text-base font-mono"
                     />
                   </div>
                 </div>
@@ -2091,7 +2091,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     value={newDealDesc}
                     onChange={(e) => setNewDealDesc(e.target.value)}
                     placeholder="Ghi chú thêm (VD: Ưu tiên các bạn nữ lịch sự, không hút thuốc, thanh toán trực tiếp tại quầy lễ tân)..."
-                    className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs"
+                    className="flex-1 bg-slate-50 border border-slate-500 rounded-xl px-3.5 py-2 text-base"
                   />
                   <button
                     type="submit"
@@ -2208,7 +2208,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                               type="button"
                               onClick={() => handleRequestJoinDeal(deal.id)}
                               disabled={joinedDealIds.includes(deal.id)}
-                              className="bg-brand-800 hover:bg-brand-700 disabled:opacity-60 text-white font-extrabold text-xs px-4 py-2 rounded-xl cursor-pointer"
+                              className="bg-brand-800 hover:bg-brand-700 disabled:opacity-60 text-white font-bold text-xs px-4 py-2 rounded-full cursor-pointer"
                             >
                               {joinedDealIds.includes(deal.id)
                                 ? '✓ Đã gửi yêu cầu Xin Ghép'
@@ -2303,7 +2303,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsCreatingCloudReport((prev) => !prev)}
-                  className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl inline-flex items-center gap-1.5 cursor-pointer shadow-sm"
+                  className="bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2.5 rounded-full inline-flex items-center gap-1.5 cursor-pointer shadow-sm"
                 >
                   <Camera className="w-4 h-4 text-amber-300" />
                   <span>
@@ -2361,7 +2361,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                           setNewReportArea(val);
                           setNewReportSpotDetail(`${val} (Góc quan sát thực tế)`);
                         }}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-brand-800"
+                        className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2 text-base font-bold text-brand-800"
                       >
                         <option value="Đỉnh Gió">Đỉnh Gió</option>
                         <option value="Sống Lưng Khủng Long">Sống Lưng Khủng Long</option>
@@ -2378,7 +2378,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         type="text"
                         value={newReportSpotDetail}
                         onChange={(e) => setNewReportSpotDetail(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs"
+                        className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2 text-base"
                       />
                     </div>
                     <div>
@@ -2388,7 +2388,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       <select
                         value={newReportDensity}
                         onChange={(e) => setNewReportDensity(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-emerald-800"
+                        className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2 text-base font-bold text-emerald-800"
                       >
                         <option value="Biển mây dày đặc 95% · Đứng gió">Biển mây dày đặc 95% · Đứng gió</option>
                         <option value="Mây luồn thung lũng 85% · Nắng sớm">Mây luồn thung lũng 85% · Nắng sớm</option>
@@ -2404,7 +2404,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         type="number"
                         value={newReportTemp}
                         onChange={(e) => setNewReportTemp(Number(e.target.value))}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold"
+                        className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2 text-base font-bold"
                       />
                     </div>
                   </div>
@@ -2419,7 +2419,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         value={newReportImageUrl}
                         onChange={(e) => setNewReportImageUrl(e.target.value)}
                         placeholder="https://..."
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs"
+                        className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2 text-base"
                       />
                     </div>
                     <div>
@@ -2431,7 +2431,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                         value={newReportVideoUrl}
                         onChange={(e) => setNewReportVideoUrl(e.target.value)}
                         placeholder="Dán link video TikTok hoặc Facebook thực tế..."
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs"
+                        className="w-full bg-white border border-slate-500 rounded-xl px-3 py-2 text-base"
                       />
                     </div>
                   </div>
@@ -2442,11 +2442,11 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       value={newReportNote}
                       onChange={(e) => setNewReportNote(e.target.value)}
                       placeholder="Mô tả thêm về đường đi, gió, sương mù hoặc quán cafe đang ngồi..."
-                      className="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs"
+                      className="flex-1 bg-white border border-slate-500 rounded-xl px-3.5 py-2 text-base"
                     />
                     <button
                       type="submit"
-                      className="bg-brand-800 hover:bg-brand-700 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl cursor-pointer shrink-0"
+                      className="bg-brand-800 hover:bg-brand-700 text-white font-bold text-xs px-5 py-2.5 rounded-full cursor-pointer shrink-0"
                     >
                       Đăng Báo Mây Ngay
                     </button>
@@ -2599,7 +2599,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     value={forumSearchQuery}
                     onChange={(e) => setForumSearchQuery(e.target.value)}
                     placeholder="Tìm câu hỏi (VD: đèo Bắc Yên, săn mây)..."
-                    className="w-full bg-white border border-slate-300 rounded-xl pl-8 pr-3 py-1.5 text-xs"
+                    className="w-full bg-white border border-slate-500 rounded-xl pl-8 pr-3 py-1.5 text-base"
                   />
                 </div>
               </div>
@@ -2613,7 +2613,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     <select
                       value={type}
                       onChange={(e) => setType(e.target.value as any)}
-                      className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold"
+                      className="bg-white border border-slate-500 rounded-xl px-3 py-2 text-base font-bold"
                     >
                       <option value="road_alert">#đường-đi · Cảnh báo đường đèo</option>
                       <option value="share_room">#ghép-phòng · Tìm bạn ghép phòng</option>
@@ -2625,7 +2625,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       value={authorName}
                       onChange={(e) => setAuthorName(e.target.value)}
                       placeholder="Tên của bạn *"
-                      className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs"
+                      className="bg-white border border-slate-500 rounded-xl px-3 py-2 text-base"
                       required
                     />
                     <input
@@ -2633,7 +2633,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                       value={contactPhone}
                       onChange={(e) => setContactPhone(e.target.value)}
                       placeholder="SĐT xác minh *"
-                      className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs"
+                      className="bg-white border border-slate-500 rounded-xl px-3 py-2 text-base"
                       required
                     />
                   </div>
@@ -2642,7 +2642,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Tiêu đề câu hỏi hoặc cảnh báo đường đi *"
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs"
+                    className="w-full bg-white border border-slate-500 rounded-xl px-3.5 py-2 text-base"
                     required
                   />
                   <textarea
@@ -2650,12 +2650,12 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Nội dung chi tiết *"
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs"
+                    className="w-full bg-white border border-slate-500 rounded-xl px-3.5 py-2 text-base"
                     required
                   />
                   <button
                     type="submit"
-                    className="bg-brand-800 text-white font-extrabold text-xs px-5 py-2 rounded-xl cursor-pointer"
+                    className="bg-brand-800 text-white font-bold text-xs px-5 py-2 rounded-full cursor-pointer"
                   >
                     Đăng lên diễn đàn
                   </button>
@@ -2762,7 +2762,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
                               value={replyDraftText}
                               onChange={(e) => setReplyDraftText(e.target.value)}
                               placeholder="Nhập câu trả lời hoặc kinh nghiệm thực địa..."
-                              className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs"
+                              className="flex-1 bg-slate-50 border border-slate-500 rounded-xl px-3 py-2 text-base"
                             />
                             <button
                               type="button"

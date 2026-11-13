@@ -93,7 +93,7 @@ export const ReviewPanel: React.FC<{ bookingId: string; onChanged?: () => void }
             onChange={(e) => setComment(e.target.value)}
             rows={3}
             placeholder="Phòng, chủ nhà, đường lên, mây hôm bạn ở… (ít nhất 20 ký tự)"
-            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-slate-500 bg-white px-3 py-2 text-sm"
           />
           <div className="flex flex-wrap gap-2">
             <button type="submit" disabled={busy} className="px-3 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 cursor-pointer disabled:opacity-50">Đăng đánh giá</button>

@@ -315,7 +315,7 @@ export const AdminCommunityPanel: React.FC<{ listings: { id: string; title: stri
   const [tab, setTab] = useState<Tab>('fees');
   return (
     <div className="bg-slate-900 px-4 pt-6">
-      <section aria-labelledby="admin-community-title" className="max-w-6xl mx-auto bg-slate-850 border border-teal-500/30 rounded-3xl p-4 sm:p-6 space-y-4 text-white">
+      <section aria-labelledby="admin-community-title" className="max-w-6xl mx-auto bg-slate-900 border border-teal-500/30 rounded-3xl p-4 sm:p-6 space-y-4 text-white">
         <h2 id="admin-community-title" className="text-lg font-black">Phí nền tảng & Điểm Mây</h2>
         <div role="tablist" className="flex flex-wrap gap-2">
           {([['fees', 'Phí nền tảng'], ['points', 'Điểm Mây'], ['monthly', 'Top 3 (tháng/quý/năm)']] as const).map(([k, label]) => (

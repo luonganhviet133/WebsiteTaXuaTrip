@@ -118,7 +118,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full py-3 bg-brand-800 text-white text-xs font-bold rounded-2xl hover:bg-brand-700 transition-colors cursor-pointer"
+                className="w-full py-3 bg-brand-800 text-white text-xs font-bold rounded-full hover:bg-brand-700 transition-colors cursor-pointer"
               >
                 Đóng cửa sổ
               </button>
@@ -155,7 +155,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                     value={ownerName}
                     onChange={(e) => setOwnerName(e.target.value)}
                     placeholder="VD: Nguyễn Văn A (Chủ Homestay)"
-                    className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
+                    className="w-full px-3.5 py-2.5 text-base bg-white border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                   />
                 </div>
 
@@ -170,7 +170,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                       value={ownerPhone}
                       onChange={(e) => setOwnerPhone(e.target.value)}
                       placeholder="0981 xxx xxx"
-                      className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
+                      className="w-full px-3.5 py-2.5 text-base bg-white border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                     />
                   </div>
                   <div>
@@ -183,7 +183,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                       value={zalo}
                       onChange={(e) => setZalo(e.target.value)}
                       placeholder="0981 xxx xxx"
-                      className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
+                      className="w-full px-3.5 py-2.5 text-base bg-white border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                     />
                   </div>
                 </div>
@@ -198,7 +198,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                     value={cccdOrTax}
                     onChange={(e) => setCccdOrTax(e.target.value)}
                     placeholder="VD: 014201xxxxxx hoặc MST Hộ kinh doanh"
-                    className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
+                    className="w-full px-3.5 py-2.5 text-base bg-white border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                   />
                 </div>
 
@@ -211,7 +211,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                     value={proofNote}
                     onChange={(e) => setProofNote(e.target.value)}
                     placeholder="Mô tả giấy phép kinh doanh, hợp đồng thuê đất hoặc ảnh biển hiệu tại thực địa..."
-                    className="w-full px-3.5 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
+                    className="w-full px-3.5 py-2 text-base bg-white border border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-800 text-slate-800"
                   />
                 </div>
 
@@ -242,7 +242,7 @@ export const PartnerClaimModal: React.FC<PartnerClaimModalProps> = ({
                 <button
                   type="submit"
                   disabled={!hasAgreedTerms}
-                  className="px-6 py-2.5 bg-brand-800 hover:bg-brand-700 text-white text-xs font-extrabold rounded-2xl shadow-md transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="px-6 py-2.5 bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold rounded-full shadow-md transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
                   Xác Nhận & Gửi Hồ Sơ
                 </button>
